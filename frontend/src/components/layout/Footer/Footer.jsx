@@ -1,7 +1,9 @@
+import "./Footer.css";
+
 function Footer() {
   return (
-    <footer>
-      <p>© 2026 SpaceVision • NASA Data Explorer</p>
+    <footer className="footer">
+      <p>© 2026 SpaceVision. NASA Data Explorer.</p>
     </footer>
   );
 }
