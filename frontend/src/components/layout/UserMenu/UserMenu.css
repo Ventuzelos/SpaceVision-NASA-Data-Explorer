@@ -1,0 +1,28 @@
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-menu__button,
+.user-menu__profile,
+.user-menu__logout {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0.65rem 1rem;
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.user-menu__button {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.user-menu__button:hover,
+.user-menu__profile:hover,
+.user-menu__logout:hover {
+  background: var(--color-surface-light);
+}
