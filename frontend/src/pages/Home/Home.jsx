@@ -1,12 +1,11 @@
+import Hero from "../../components/home/Hero/Hero";
 
 function Home() {
   return (
-    <>
+    <main>
       <Hero />
-      <Search />
-      <FeaturedApis />
-      <Stats />
-      <CTA />
-    </>
+    </main>
   );
 }
+
+export default Home;
