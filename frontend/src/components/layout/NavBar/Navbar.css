@@ -1,11 +1,19 @@
 .navbar {
   width: 100%;
+  min-height: 80px;
+
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
   border-bottom: 1px solid var(--color-border);
-  background: var(--color-background);
+  background: rgba(11, 16, 32, 0.92);
+  backdrop-filter: blur(12px);
 }
 
 .navbar__container {
-  padding: 1rem 2rem!important;
+  min-height: 80px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -14,26 +22,6 @@
 .navbar__nav {
   display: flex;
   align-items: center;
-}
-
-.nav-links {
-  display: flex;
-  gap: 2rem;
-}
-
-.nav-links a {
-  color: var(--color-text);
-  text-decoration: none;
-  font-weight: 500;
-  transition: var(--transition-fast);
-}
-
-.nav-links a:hover {
-  color: var(--color-primary);
-}
-
-.nav-links a.active {
-  color: var(--color-primary);
 }
 
 @media (max-width: 768px) {
