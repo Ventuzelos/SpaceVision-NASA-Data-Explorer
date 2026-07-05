@@ -1,8 +1,17 @@
-import Button from "../common/Button/Button";
+import "./Button.css";
 
-function Button({ children, variant = "primary", type = "button", onClick }) {
+function Button({
+  children,
+  variant = "primary",
+  type = "button",
+  onClick,
+}) {
   return (
-    <button className={`btn btn--${variant}`} type={type} onClick={onClick}>
+    <button
+      type={type}
+      className={`btn btn--${variant}`}
+      onClick={onClick}
+    >
       {children}
     </button>
   );

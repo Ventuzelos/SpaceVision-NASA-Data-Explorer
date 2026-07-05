@@ -1,25 +1,16 @@
-import Logo from "../Logo/Logo";
-import NavLinks from "../NavLinks/NavLinks";
-import UserMenu from "../UserMenu/UserMenu";
-
+import { NavLink } from "react-router-dom";
 import "./NavLinks.css";
 
-function Navbar() {
-  const isAuthenticated = false;
-
+function NavLinks() {
   return (
-    <header className="navbar">
-      <div className="navbar__container">
-        <Logo />
-
-        <nav className="navbar__nav" aria-label="Main navigation">
-          <NavLinks isAuthenticated={isAuthenticated} />
-        </nav>
-
-        <UserMenu isAuthenticated={isAuthenticated} />
-      </div>
-    </header>
+    <div className="nav-links">
+      <NavLink to="/">Home</NavLink>
+      <NavLink to="/apod">APOD</NavLink>
+      <NavLink to="/mars-rover">Mars Rover</NavLink>
+      <NavLink to="/epic">EPIC</NavLink>
+      <NavLink to="/epic">EPIC</NavLink>
+    </div>
   );
 }
 
-export default Navbar;
+export default NavLinks;

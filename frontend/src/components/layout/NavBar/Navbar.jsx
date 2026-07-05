@@ -9,11 +9,13 @@ function Navbar() {
 
   return (
     <header className="navbar">
-      <div className="navbar__container">
+      <div className="container navbar__container">
         <Logo />
 
-        <nav className="navbar__nav" aria-label="Main navigation">
-          <NavLinks isAuthenticated={isAuthenticated} />
+        <nav class="navbar__nav">
+          <div class="nav-links">
+            <NavLinks />
+          </div>
         </nav>
 
         <UserMenu isAuthenticated={isAuthenticated} />
