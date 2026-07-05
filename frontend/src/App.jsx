@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import MainLayout from "./layouts/MainLayout";
+import MainLayout from "./layouts/MainLayout/MainLayout";
 
 import Home from "./pages/Home/Home";
 import APOD from "./pages/APOD/APOD";
@@ -14,11 +14,11 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route element={<MainLayout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/apod" element={<APOD />} />
-          <Route path="/mars-rover" element={<MarsRover />} />
-          <Route path="/epic" element={<EPIC />} />
-          <Route path="/favorites" element={<Favorites />} />
+          <Route index element={<Home />} />
+          <Route path="apod" element={<APOD />} />
+          <Route path="mars-rover" element={<MarsRover />} />
+          <Route path="epic" element={<EPIC />} />
+          <Route path="favorites" element={<Favorites />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

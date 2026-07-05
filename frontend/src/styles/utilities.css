@@ -1,3 +1,11 @@
+
+.container {
+  width: 100%;
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding-inline: var(--space-6);
+}
+
 .flex{
 
     display:flex;
