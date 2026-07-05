@@ -1,23 +1,20 @@
+import Button from "../../common/Button/Button";
 import "./UserMenu.css";
 
 function UserMenu({ isAuthenticated }) {
   if (!isAuthenticated) {
     return (
-      <button className="user-menu__button" type="button">
+      <Button variant="primary">
         Entrar
-      </button>
+      </Button>
     );
   }
 
   return (
     <div className="user-menu">
-      <button className="user-menu__profile" type="button">
-        Perfil
-      </button>
-
-      <button className="user-menu__logout" type="button">
-        Terminar sessão
-      </button>
+      <Button variant="secondary">Perfil</Button>
+      <Button variant="secondary">Favoritos</Button>
+      <Button variant="outline">Terminar sessão</Button>
     </div>
   );
 }
