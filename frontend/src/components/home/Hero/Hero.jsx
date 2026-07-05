@@ -1,30 +1,48 @@
 import { Link } from "react-router-dom";
+import Button from "../../common/Button/Button";
+import heroImage from "../../../assets/hero2.jpg";
+import SearchInput from "../../common/SearchInput/SearchInput";
 
 import "./Hero.css";
 
 function Hero() {
   return (
-    <section className="hero">
-      <div className="hero__content">
-        <p className="hero__subtitle">NASA Data Explorer</p>
+    <section
+      className="hero"
+      style={{ backgroundImage: `url(${heroImage})` }}
+    >
+      <div className="hero__overlay">
+        <div className="container hero__container">
 
-        <h1 className="hero__title">
-          Explore the Universe Through NASA's Open APIs
-        </h1>
+          <div className="hero__content">
 
-        <p className="hero__description">
-          Discover astronomy pictures, Mars rover photos, Earth imagery and much
-          more through a modern, interactive experience.
-        </p>
+            <h1 className="hero__title">
+              Explora o Universo com dados reais da NASA
+            </h1>
 
-        <div className="hero__actions">
-          <Link to="/apod" className="btn btn--primary">
-            Explore APOD
-          </Link>
+            <p className="hero__description">
+              Imagens, missões e descobertas do espaço, tudo num só lugar.
+              Uma forma interativa e educativa de explorar o Universo.
+            </p>
+            
+             <SearchInput placeholder="Pesquisar imagens, missões ou planetas..." />
 
-          <Link to="/mars-rover" className="btn btn--secondary">
-            Mars Rover
-          </Link>
+            <div className="hero__actions">
+              <Link to="/apod">
+                <Button>
+                  Explorar APOD
+                </Button>
+              </Link>
+
+              <Link to="/mars-rover">
+                <Button variant="secondary">
+                  Mars Rover
+                </Button>
+              </Link>
+            </div>
+
+          </div>
+
         </div>
       </div>
     </section>
