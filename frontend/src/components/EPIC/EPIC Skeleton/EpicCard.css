@@ -1,0 +1,49 @@
+.epic-card {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 32px;
+  border: 1px solid var(--color-border);
+  border-radius: 24px;
+  background: var(--color-surface);
+}
+
+.epic-card__media {
+  overflow: hidden;
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.2); /* Fundo escuro para destacar a Terra */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.epic-card__media img {
+  width: 100%;
+  max-height: 600px;
+  border: none;
+  border-radius: 20px;
+  object-fit: contain; /* Mantém o formato circular da Terra perfeito */
+  transition: transform 0.3s ease;
+}
+
+.epic-card__media img:hover {
+  transform: scale(1.02);
+}
+
+.epic-card__content h2 {
+  margin-bottom: 16px;
+}
+
+.epic-card__meta {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-top: 12px;
+}
+
+@media (max-width: 768px) {
+  .epic-card {
+    padding: 20px;
+    gap: 20px;
+  }
+}
