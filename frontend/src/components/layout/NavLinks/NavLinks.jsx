@@ -28,7 +28,7 @@ function NavLinks() {
 
       <NavLink to="/apod">APOD</NavLink>
 
-      <NavLink to="/mars-rover">Mars</NavLink>
+      <NavLink to="/donki">DONKI</NavLink>
 
       <NavLink to="/epic">Earth</NavLink>
 

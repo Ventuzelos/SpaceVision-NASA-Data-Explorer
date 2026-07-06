@@ -19,8 +19,8 @@ function CTASection() {
             <Button>Explorar APOD</Button>
           </Link>
 
-          <Link to="/mars-rover">
-            <Button variant="secondary">Ver Mars Rover</Button>
+          <Link to="/donki">
+            <Button variant="secondary">Ver DONKI</Button>
           </Link>
         </div>
       </div>

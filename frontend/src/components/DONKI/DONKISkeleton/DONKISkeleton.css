@@ -1,0 +1,83 @@
+.donki-skeleton {
+  padding: 24px;
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+  background: var(--color-surface);
+}
+
+.donki-skeleton__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.donki-skeleton__title,
+.donki-skeleton__badge,
+.donki-skeleton__date,
+.donki-skeleton__meta,
+.donki-skeleton__button,
+.donki-skeleton__icon {
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.08),
+    rgba(255, 255, 255, 0.18),
+    rgba(255, 255, 255, 0.08)
+  );
+  background-size: 200% 100%;
+  animation: donki-skeleton-loading 1.2s ease-in-out infinite;
+}
+
+.donki-skeleton__title {
+  width: 65%;
+  height: 22px;
+}
+
+.donki-skeleton__badge {
+  width: 56px;
+  height: 24px;
+}
+
+.donki-skeleton__date {
+  width: 45%;
+  height: 14px;
+  margin-bottom: 24px;
+}
+
+.donki-skeleton__meta {
+  width: 100%;
+  height: 16px;
+  margin-bottom: 14px;
+}
+
+.donki-skeleton__meta--short {
+  width: 75%;
+}
+
+.donki-skeleton__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 24px;
+}
+
+.donki-skeleton__button {
+  width: 35%;
+  height: 36px;
+}
+
+.donki-skeleton__icon {
+  width: 36px;
+  height: 36px;
+}
+
+@keyframes donki-skeleton-loading {
+  from {
+    background-position: 200% 0;
+  }
+
+  to {
+    background-position: -200% 0;
+  }
+}
