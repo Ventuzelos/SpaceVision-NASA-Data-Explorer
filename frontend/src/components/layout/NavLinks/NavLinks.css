@@ -46,3 +46,29 @@
 .nav-links a.active {
   color: var(--color-primary);
 }
+
+.favorites-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.favorites-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 20px;
+  height: 20px;
+
+  padding: 0 6px;
+
+  border-radius: 999px;
+
+  background: var(--color-primary);
+
+  color: var(--color-text);
+
+  font-size: 0.75rem;
+  font-weight: 700;
+}
