@@ -1,0 +1,94 @@
+.event-details__back {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-5);
+  font-family: var(--font-family);
+  font-size: 0.95rem;
+  transition: var(--transition-fast);
+}
+
+.event-details__back:hover {
+  color: var(--color-text);
+}
+
+.event-details__card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-7);
+}
+
+.event-details__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.event-details__date {
+  color: var(--color-text-secondary);
+  margin-top: var(--space-2);
+  text-transform: capitalize;
+}
+
+.event-details__badge {
+  background: rgba(79, 70, 229, 0.15);
+  color: var(--color-primary);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-4);
+  font-weight: 700;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.event-details__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-5);
+  margin-bottom: var(--space-6);
+}
+
+.event-details__item dt {
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+  margin-bottom: var(--space-1);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.event-details__item dd {
+  font-weight: 600;
+}
+
+.event-details__body {
+  white-space: pre-line;
+  color: var(--color-text-secondary);
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--space-5);
+  margin-bottom: var(--space-6);
+}
+
+.event-details__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  flex-wrap: wrap;
+}
+
+.event-details__source-link {
+  color: var(--color-accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.event-details__source-link:hover {
+  text-decoration: underline;
+}

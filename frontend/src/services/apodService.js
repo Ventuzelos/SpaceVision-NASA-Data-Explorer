@@ -1,9 +1,8 @@
-import { BASE_URL, NASA_API_KEY } from "./api";
+import api from "./api";
 
 export async function getApod() {
-  const response = await fetch(
-    `${BASE_URL}/planetary/apod?api_key=${NASA_API_KEY}`
-  );
+ const { data } = await api.get("/planetary/apod");
+return data;
 
   if (!response.ok) {
     throw new Error("Erro ao carregar a imagem do dia.");
