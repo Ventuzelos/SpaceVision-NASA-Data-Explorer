@@ -1,5 +1,5 @@
 import apodImage from "../assets/api-cards/apod.jpg";
-import marsImage from "../assets/api-cards/mars.jpg";
+import donkiImage from "../assets/api-cards/donki.jpg";
 import epicImage from "../assets/api-cards/epic.jpg";
 import neowsImage from "../assets/api-cards/neows.jpg";
 
@@ -11,10 +11,10 @@ export const nasaApis = [
     link: "/apod",
   },
   {
-    title: "Mars Rover",
-    description: "Explore photos captured on Mars",
-    image: marsImage,
-    link: "/mars-rover",
+    title: "DONKI",
+    description: "Data Overview for the Last 24 Hours",
+    image: donkiImage,
+    link: "/donki",
   },
   {
     title: "EPIC",

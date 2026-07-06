@@ -19,7 +19,7 @@ function Footer() {
           <div className="footer__group">
             <h4>Explorar</h4>
             <a href="/apod">APOD</a>
-            <a href="/mars-rover">Mars Rover</a>
+            <a href="/donki">DONKI</a>
             <a href="/epic">EPIC</a>
             <a href="/favorites">Favoritos</a>
           </div>

@@ -1,0 +1,115 @@
+.date-range-filter {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 22px 0;
+  margin: 28px 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.date-range-filter__left {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.date-range-filter__title {
+  color: var(--color-text);
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.date-range-filter__presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.date-range-filter__preset {
+  min-height: 34px;
+  padding: 0 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.date-range-filter__preset:hover {
+  border-color: var(--color-primary);
+  color: var(--color-text);
+  background: rgba(79, 70, 229, 0.14);
+}
+
+.date-range-filter__right {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.date-range-filter__field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.date-range-filter__field label {
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.date-range-filter__field input {
+  width: 170px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.85);
+  color: var(--color-text);
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.date-range-filter__field input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.18);
+}
+
+.date-range-filter button[type="submit"] {
+  height: 40px;
+  padding: 0 18px;
+  border-radius: 10px;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+@media (max-width: 900px) {
+  .date-range-filter {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .date-range-filter__right {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 640px) {
+  .date-range-filter__right {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .date-range-filter__field input,
+  .date-range-filter button[type="submit"] {
+    width: 100%;
+  }
+}
