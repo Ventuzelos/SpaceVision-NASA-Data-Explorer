@@ -12,10 +12,8 @@ function Navbar() {
       <div className="container navbar__container">
         <Logo />
 
-        <nav class="navbar__nav">
-          <div class="nav-links">
-            <NavLinks />
-          </div>
+        <nav className="navbar__nav" aria-label="Main navigation">
+          <NavLinks />
         </nav>
 
         <UserMenu isAuthenticated={isAuthenticated} />

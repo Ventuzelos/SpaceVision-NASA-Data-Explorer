@@ -1,0 +1,82 @@
+.favorites-page {
+  min-height: 100vh;
+}
+
+.favorites-hero {
+  padding: 96px 0 64px;
+}
+
+.favorites-hero__label {
+  color: var(--color-accent);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+.favorites-hero h1 {
+  margin-bottom: 24px;
+}
+
+.favorites-hero__text {
+  max-width: 640px;
+  color: var(--color-text-secondary);
+  font-size: 1.125rem;
+  line-height: 1.7;
+}
+
+.favorites-content {
+  padding: 0 0 96px;
+}
+
+.favorites-empty {
+  padding: 32px;
+  border: 1px solid var(--color-border);
+  border-radius: 24px;
+  background: var(--color-surface);
+}
+
+.favorites-empty p {
+  color: var(--color-text-secondary);
+  margin-top: 12px;
+}
+
+.favorites-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.favorite-card {
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 24px;
+  background: var(--color-surface);
+}
+
+.favorite-card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+}
+
+.favorite-card__content {
+  padding: 24px;
+}
+
+.favorite-card__content span {
+  color: var(--color-accent);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.favorite-card__content h2 {
+  margin: 12px 0;
+  font-size: 1.25rem;
+}
+
+.favorite-card__content p {
+  color: var(--color-text-secondary);
+  margin-bottom: 20px;
+}
