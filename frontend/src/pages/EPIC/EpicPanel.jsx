@@ -1,7 +1,7 @@
-//ESte componente é responsável por exibir o painel de fotos do EPIC, incluindo controles de data, grade de miniaturas e detalhes da foto selecionada.
-
-import { useState, useEffect, useCallback } from 'react';
+// Componente responsável por exibir o painel de fotos do EPIC, incluindo controles de data, grade de miniaturas e detalhes da foto selecionada.
+import React, { useState, useEffect, useCallback } from 'react';
 import { fetchEpicLatest, fetchEpicByDate } from '../../services/epicService';
+import EPICSkeleton from './EPICSkeleton';
 import EpicDateControls from './EpicDateControls';
 import EpicThumbnailGrid from './EpicThumbnailGrid';
 import EpicDetail from './EpicDetail';
@@ -47,6 +47,11 @@ export default function EpicPanel({ onOpenLightbox }) {
     loadLatest();
   }, [loadLatest]);
 
+  // Se estiver a carregar, exibe o Skeleton animado no lugar do painel
+  if (loading) {
+    return <EPICSkeleton />;
+  }
+
   return (
     <div className="panel">
       <div className="card">
@@ -57,21 +62,16 @@ export default function EpicPanel({ onOpenLightbox }) {
           onLatest={loadLatest}
         />
 
-        {loading && <p>A carregar...</p>}
-        {error && <p>ERRO: {error}</p>}
-        {!loading && !error && (
+        {error && <p className="error-text" style={{ color: 'var(--color-error, red)' }}>ERRO: {error}</p>}
+        
+        {!error && (
           <EpicThumbnailGrid photos={photos} date={date} onSelect={setSelected} />
         )}
       </div>
 
-      <EpicDetail photo={selected} date={date} onOpenLightbox={onOpenLightbox} />
+      {!error && (
+        <EpicDetail photo={selected} date={date} onOpenLightbox={onOpenLightbox} />
+      )}
     </div>
   );
 }
-
-
-//notas:
-// Este componente utiliza hooks do React para gerenciar o estado e efeitos colaterais, como carregamento de dados. Ele também utiliza componentes filhos para separar a lógica de controles de data, grade de miniaturas e detalhes da foto selecionada.
-// O componente lida com carregamento de dados, erros e seleção de fotos, proporcionando uma experiência de usuário interativa e responsiva.
-// O componente espera receber uma função onOpenLightbox como prop, que é chamada quando o usuário deseja abrir a foto selecionada em um lightbox.
-// O componente também utiliza o hook useCallback para memorizar as funções de carregamento de dados, evitando recriações desnecessárias em cada renderização.
