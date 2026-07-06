@@ -1,0 +1,78 @@
+.apod-card {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 32px;
+  border: 1px solid var(--color-border);
+  border-radius: 24px;
+  background: var(--color-surface);
+}
+
+.apod-card__media {
+  overflow: hidden;
+  border-radius: 20px;
+}
+
+.apod-card__media img,
+.apod-card__media iframe {
+  width: 100%;
+  max-height: 700px;
+  border: none;
+  border-radius: 20px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.apod-card__media img:hover {
+  transform: scale(1.02);
+}
+
+
+.apod-card__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.badge {
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(79, 70, 229, 0.15);
+  color: var(--color-text);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.apod-card__content h2 {
+  margin-bottom: 20px;
+}
+
+.apod-card__text {
+  color: var(--color-text-secondary);
+  line-height: 1.8;
+}
+
+.apod-card__text--collapsed {
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.apod-card__actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 32px;
+}
+
+.apod-card__actions a {
+  text-decoration: none;
+}
+
+@media (max-width: 768px) {
+  .apod-card {
+    padding: 20px;
+  }
+}
