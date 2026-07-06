@@ -1,4 +1,4 @@
-import "../common/Container.css";
+import "./Container.css";
 
 function Container({ children }) {
   return (
