@@ -4,10 +4,11 @@ import MainLayout from "./layouts/MainLayout/MainLayout";
 
 import Home from "./pages/Home/Home";
 import APOD from "./pages/APOD/APOD";
-import MarsRover from "./pages/MarsRover/MarsRover";
+import DONKI from "./pages/DONKI/DONKI";
 import EPIC from "./pages/EPIC/EPIC";
 import Favorites from "./pages/Favorites/Favorites";
 import NotFound from "./pages/NotFound/NotFound";
+
 
 function App() {
   return (
@@ -16,7 +17,7 @@ function App() {
         <Route element={<MainLayout />}>
           <Route index element={<Home />} />
           <Route path="apod" element={<APOD />} />
-          <Route path="mars-rover" element={<MarsRover />} />
+          <Route path="donki" element={<DONKI />} />
           <Route path="epic" element={<EPIC />} />
           <Route path="favorites" element={<Favorites />} />
           <Route path="*" element={<NotFound />} />

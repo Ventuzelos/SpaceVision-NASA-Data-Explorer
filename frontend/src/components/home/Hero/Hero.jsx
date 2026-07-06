@@ -34,9 +34,9 @@ function Hero() {
                 </Button>
               </Link>
 
-              <Link to="/mars-rover">
+              <Link to="/donki">
                 <Button variant="secondary">
-                  Mars Rover
+                  DONKI
                 </Button>
               </Link>
             </div>
