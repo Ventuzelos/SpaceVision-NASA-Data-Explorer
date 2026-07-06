@@ -1,6 +1,6 @@
 // Este serviço é responsável por interagir com a API do backend para obter dados do EPIC (Earth Polychromatic Imaging Camera) da NASA.
 
-// frontend/src/services/epicService.js
+// services/epicService.js
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 const EPIC_IMG_BASE = 'https://epic.gsfc.nasa.gov/archive/natural';
 
