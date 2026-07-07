@@ -1,0 +1,144 @@
+.neo-date-filter {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 22px 0;
+  margin: 28px 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+
+.neo-date-filter__left {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 480px;
+}
+
+.neo-date-filter__title {
+  color: var(--color-text);
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.neo-date-filter__presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.neo-date-filter__preset {
+  min-height: 34px;
+  padding: 0 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  font-family: var(--font-family);
+}
+
+.neo-date-filter__preset:hover {
+  border-color: var(--color-accent);
+  color: var(--color-text);
+  background: rgba(14, 165, 233, 0.14);
+}
+
+.neo-date-filter__preset:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.neo-date-filter__hint {
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+}
+
+.neo-date-filter__warning {
+  color: var(--color-warning);
+  background: rgba(250, 204, 21, 0.1);
+  border: 1px solid rgba(250, 204, 21, 0.35);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.neo-date-filter__right {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.neo-date-filter__field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.neo-date-filter__field label {
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.neo-date-filter__field input {
+  width: 170px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.85);
+  color: var(--color-text);
+  font-size: 0.9rem;
+  outline: none;
+  font-family: var(--font-family);
+}
+
+.neo-date-filter__field input:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.18);
+}
+
+.neo-date-filter button[type="submit"] {
+  height: 40px;
+  padding: 0 18px;
+  border-radius: 10px;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+@media (max-width: 900px) {
+  .neo-date-filter {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .neo-date-filter__left {
+    max-width: none;
+  }
+
+  .neo-date-filter__right {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 640px) {
+  .neo-date-filter__right {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .neo-date-filter__field input,
+  .neo-date-filter button[type="submit"] {
+    width: 100%;
+  }
+}
