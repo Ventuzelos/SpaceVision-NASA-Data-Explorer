@@ -14,6 +14,9 @@ import {
 } from "../../services/donkiService";
 import { getFavorites, toggleFavorite } from "../../services/favoritesService";
 
+import { usePagination } from "../../hooks/usePagination";
+import Pagination from "../../components/common/Pagination/Pagination";
+
 import "./DONKI.css";
 
 const SOURCE = "donki";
@@ -31,6 +34,15 @@ function DONKI() {
   const [favoriteKeys, setFavoriteKeys] = useState(
     () => new Set(getFavorites(SOURCE).map((fav) => fav.id))
   );
+
+  // Paginação: 10 eventos por página, só aparece se houver mais do que isso.
+  const {
+    paginatedItems: paginatedEvents,
+    currentPage,
+    totalPages,
+    setPage,
+    shouldShowPagination,
+  } = usePagination(events, 8);
 
   const loadEvents = useCallback(async (type, start, end) => {
     setLoading(true);
@@ -145,14 +157,12 @@ function DONKI() {
               </p>
             )}
 
-
-
             <div className="donki-page__grid">
               {loading &&
                 Array.from({ length: 6 }).map((_, index) => (
                   <DONKISkeleton key={index} />
                 ))}
-              {events.map((event) => (
+              {paginatedEvents.map((event) => (
                 <EventCard
                   key={`${event.type}-${event.id}`}
                   event={event}
@@ -162,6 +172,14 @@ function DONKI() {
                 />
               ))}
             </div>
+
+            {shouldShowPagination && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setPage}
+              />
+            )}
           </div>
         )}
       </Container>

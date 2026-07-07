@@ -14,6 +14,8 @@ import {
   computeStats,
 } from "../../services/neowsService";
 import { getFavorites, toggleFavorite } from "../../services/favoritesService";
+import { usePagination } from "../../hooks/usePagination";
+import Pagination from "../../components/common/Pagination/Pagination";
 
 import "./NeoWS.css";
 
@@ -84,6 +86,14 @@ function NeoWS() {
   const stats = computeStats(objects);
   const sortedObjects = sortByMissDistance(objects, sortDirection);
 
+   const {
+    paginatedItems: paginatedObjects,
+    currentPage,
+    totalPages,
+    setPage,
+    shouldShowPagination,
+  } = usePagination(sortedObjects, 8);
+
   return (
     <section className="neows-page">
       <Container>
@@ -137,7 +147,7 @@ function NeoWS() {
 
           {!loading &&
             !error &&
-            sortedObjects.map((neo) => (
+            paginatedObjects.map((neo) => (
               <NeoCard
                 key={neo.id}
                 neo={neo}
@@ -146,6 +156,15 @@ function NeoWS() {
               />
             ))}
         </div>
+
+        {!loading && !error && shouldShowPagination && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
+        )}
+
       </Container>
     </section>
   );
