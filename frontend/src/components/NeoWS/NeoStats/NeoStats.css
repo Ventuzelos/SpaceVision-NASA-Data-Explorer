@@ -1,0 +1,65 @@
+.neo-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-5);
+  margin-bottom: var(--space-6);
+}
+
+.neo-stats__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.neo-stats__card span {
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.neo-stats__card strong {
+  color: var(--color-text);
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.neo-stats__card strong.neo-stats__name {
+  font-size: 1.1rem;
+  line-height: 1.3;
+}
+
+.neo-stats__card small {
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+}
+
+.neo-stats__card--hazard {
+  border-color: rgba(251, 113, 133, 0.45);
+  background: rgba(251, 113, 133, 0.08);
+}
+
+.neo-stats__card--hazard span {
+  color: var(--color-error);
+}
+
+.neo-stats__card--hazard strong {
+  color: var(--color-error);
+}
+
+@media (max-width: 1024px) {
+  .neo-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .neo-stats {
+    grid-template-columns: 1fr;
+  }
+}
