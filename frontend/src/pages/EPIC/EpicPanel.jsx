@@ -1,4 +1,7 @@
-﻿// Página principal do painel EPIC — orquestra o serviço, a grid e o cartão de detalhe.
+﻿
+import './EPIC.css';
+
+// Página principal do painel EPIC — orquestra o serviço, a grid e o cartão de detalhe.
 import { useState, useEffect } from 'react';
 import EpicThumbnailGrid from '../../components/EPIC/EpicThumbnailGrid';
 import EpicCard from '../../components/EPIC/EpicCard';
