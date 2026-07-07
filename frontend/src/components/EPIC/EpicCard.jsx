@@ -18,7 +18,7 @@ export default function EpicCard({ detail }) {
           alt={caption}
           style={{
             maxWidth: '100%',
-            borderRadius: '8px',
+            borderRadius: 'var(--radius-md)',
             display: 'block',
             margin: '0 auto',
             cursor: 'zoom-in',
@@ -28,15 +28,15 @@ export default function EpicCard({ detail }) {
           style={{
             marginTop: '12px',
             fontSize: '12px',
-            color: 'var(--text2)',
-            fontFamily: 'var(--mono)',
+            color: 'var(--color-text-secondary)',
+            fontFamily: 'var(--font-family)',
           }}
         >
           {caption && <div style={{ marginBottom: '6px' }}>{caption}</div>}
           {lat && lon && (
             <div>Centro visível: {lat}° lat · {lon}° lon</div>
           )}
-          <div style={{ marginTop: '6px', color: 'var(--text3)' }}>
+          <div style={{ marginTop: '6px', color: 'var(--color-border)' }}>
             Formato PNG 2048×2048 px
           </div>
         </div>

@@ -23,7 +23,6 @@ export default function EpicThumbnail({ photo, date, onSelect }) {
       className="rover-img-wrap"
       onClick={handleClick}
       title={photo.caption || ''}
-      style={{ position: 'relative' }}
     >
       <img
         className="rover-img"
@@ -43,9 +42,9 @@ export default function EpicThumbnail({ photo, date, onSelect }) {
           right: 0,
           background: 'rgba(0,0,0,0.6)',
           padding: '4px 6px',
-          fontFamily: 'var(--mono)',
+          fontFamily: 'var(--font-family)',
           fontSize: '9px',
-          color: 'var(--cyan)',
+          color: 'var(--color-accent)',
         }}
       >
         {time} UTC
