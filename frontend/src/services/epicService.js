@@ -1,14 +1,18 @@
 // Servico EPIC para obter metadados e construir URLs de imagens
 
-import api from './api';
+import api, { NASA_API_KEY } from './api';
 
-export async function fetchEpicLatest() {
-  const res = await api.get('/EPIC/api/natural');
+export async function fetchEpicLatest(apiKey) {
+  const res = await api.get('/EPIC/api/natural', {
+    params: { api_key: apiKey || NASA_API_KEY },
+  });
   return res.data;
 }
 
-export async function fetchEpicByDate(date) {
-  const res = await api.get(`/EPIC/api/natural/date/${date}`);
+export async function fetchEpicByDate(date, apiKey) {
+  const res = await api.get(`/EPIC/api/natural/date/${date}`, {
+    params: { api_key: apiKey || NASA_API_KEY },
+  });
   return res.data;
 }
 
