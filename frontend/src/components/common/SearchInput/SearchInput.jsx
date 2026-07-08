@@ -1,3 +1,5 @@
+import Icon from "../Icon/Icon";
+
 import "./SearchInput.css";
 
 function SearchInput({
@@ -8,7 +10,10 @@ function SearchInput({
 }) {
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (onSubmit) onSubmit(value);
+
+    if (onSubmit) {
+      onSubmit(value);
+    }
   };
 
   return (
@@ -26,7 +31,7 @@ function SearchInput({
         className="search-input__button"
         aria-label="Pesquisar"
       >
-        🔍
+        <Icon name="Search" size={18} />
       </button>
     </form>
   );
