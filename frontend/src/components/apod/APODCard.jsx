@@ -1,7 +1,12 @@
 import { useState } from "react";
+
 import Button from "../common/Button/Button";
 import Toast from "../common/Toast/Toast";
+import Icon from "../common/Icon/Icon";
+import FavoriteButton from "../common/FavoriteButton/FavoriteButton";
+
 import "./APODCard.css";
+
 import {
   addFavorite,
   removeFavorite,
@@ -13,7 +18,6 @@ function APODCard({ apod }) {
 
   const favoriteId = `apod-${apod.date}`;
   const [favorite, setFavorite] = useState(isFavorite(favoriteId));
-
   const [toastMessage, setToastMessage] = useState("");
 
   const formattedDate = new Date(apod.date).toLocaleDateString("pt-PT", {
@@ -21,6 +25,7 @@ function APODCard({ apod }) {
     month: "long",
     year: "numeric",
   });
+
   function showToast(message) {
     setToastMessage(message);
 
@@ -43,13 +48,13 @@ function APODCard({ apod }) {
     if (favorite) {
       removeFavorite(favoriteId);
       setFavorite(false);
-      showToast("🗑️ Removido dos favoritos");
+      showToast("Removido dos favoritos");
       return;
     }
 
     addFavorite(favoriteItem);
     setFavorite(true);
-    showToast("✅ Adicionado aos favoritos");
+    showToast("Adicionado aos favoritos");
   }
 
   return (
@@ -62,39 +67,78 @@ function APODCard({ apod }) {
         )}
       </div>
 
-      <div >
+      <div>
         <div className="apod-card__badges">
-          <span className="badge">📅 {formattedDate}</span>
+          <span className="badge">
+            <Icon name="Calendar" size={16} />
+            {formattedDate}
+          </span>
 
-          {apod.copyright && <span className="badge">📷 {apod.copyright}</span>}
+          {apod.copyright && (
+            <span className="badge">
+              <Icon name="Image" size={16} />
+              {apod.copyright}
+            </span>
+          )}
 
           <span className="badge">
-            {apod.media_type === "image" ? "🖼️ Imagem" : "🎥 Vídeo"}
+            {apod.media_type === "image" ? (
+              <>
+                <Icon name="Image" size={16} />
+                Imagem
+              </>
+            ) : (
+              <>
+                <Icon name="Video" size={16} />
+                Vídeo
+              </>
+            )}
           </span>
         </div>
 
-        <h2>{apod.title}</h2>
+        <div className="apod-card__header">
+          <h2>{apod.title}</h2>
 
-        <p className={isExpanded ? "apod-card__text" : "apod-card__text apod-card__text--collapsed"}>
+          <FavoriteButton
+            active={favorite}
+            onClick={handleFavoriteClick}
+            ariaLabel={
+              favorite ? "Remover dos favoritos" : "Adicionar aos favoritos"
+            }
+          />
+        </div>
+
+        <p
+          className={
+            isExpanded
+              ? "apod-card__text"
+              : "apod-card__text apod-card__text--collapsed"
+          }
+        >
           {apod.explanation}
         </p>
 
         <div className="apod-card__actions">
-          <Button variant={favorite ? "primary" : "secondary"} onClick={handleFavoriteClick}>
-            {favorite ? "💜 Guardado nos Favoritos" : "🤍 Adicionar aos Favoritos"}
-          </Button>
-
-          <Button variant="secondary" onClick={() => setIsExpanded(!isExpanded)}>
+          <Button
+            variant="secondary"
+            onClick={() => setIsExpanded(!isExpanded)}
+          >
             {isExpanded ? "Mostrar menos" : "Ler mais"}
           </Button>
 
           {apod.hdurl && (
             <a href={apod.hdurl} target="_blank" rel="noopener noreferrer">
-              <Button>⬇ Ver imagem HD</Button>
+              <Button>
+                <>
+                  <Icon name="Download" size={16} />
+                  {" Ver imagem HD"}
+                </>
+              </Button>
             </a>
           )}
         </div>
       </div>
+
       <Toast message={toastMessage} />
     </article>
   );

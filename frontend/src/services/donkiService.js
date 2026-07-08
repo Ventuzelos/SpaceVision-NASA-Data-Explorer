@@ -15,7 +15,7 @@ export const donkiEventTypes = [
     label: "Solar Flares",
     shortLabel: "Erupções Solares",
     description: "Explosões de radiação intensa na superfície do Sol.",
-    icon: "☀️",
+    icon: "sun",
     color: "var(--color-donki-flr)",
   },
   {
@@ -23,7 +23,7 @@ export const donkiEventTypes = [
     label: "Coronal Mass Ejections",
     shortLabel: "Ejeções de Massa Coronal",
     description: "Grandes libertações de plasma e campo magnético solar.",
-    icon: "🌊",
+    icon: "waves",
     color: "var(--color-donki-cme)",
   },
   {
@@ -31,7 +31,7 @@ export const donkiEventTypes = [
     label: "Geomagnetic Storms",
     shortLabel: "Tempestades Geomagnéticas",
     description: "Perturbações no campo magnético da Terra.",
-    icon: "🧲",
+    icon: "magnet",
     color: "var(--color-donki-gst)",
   },
   {
@@ -39,7 +39,7 @@ export const donkiEventTypes = [
     label: "Solar Energetic Particles",
     shortLabel: "Partículas Energéticas Solares",
     description: "Partículas de alta energia ejetadas pelo Sol.",
-    icon: "✨",
+    icon: "sparkles",
     color: "var(--color-donki-sep)",
   },
   {
@@ -47,7 +47,7 @@ export const donkiEventTypes = [
     label: "High Speed Streams",
     shortLabel: "Fluxos de Vento Solar",
     description: "Correntes rápidas de vento solar vindas de buracos coronais.",
-    icon: "💨",
+    icon: "wind",
     color: "var(--color-donki-hss)",
   },
   {
@@ -55,7 +55,7 @@ export const donkiEventTypes = [
     label: "Notifications",
     shortLabel: "Notificações",
     description: "Alertas e relatórios oficiais do serviço DONKI.",
-    icon: "🔔",
+    icon: "bell",
     color: "var(--color-donki-notifications)",
   },
 ];
