@@ -3,8 +3,8 @@ import './EPIC.css';
 
 // Página principal do painel EPIC — orquestra o serviço, a grid e o cartão de detalhe.
 import { useState, useEffect } from 'react';
-import EpicThumbnailGrid from '../../components/EPIC/EpicThumbnailGrid';
-import EpicCard from '../../components/EPIC/EpicCard';
+import EpicThumbnailGrid from '../../components/epic/EpicThumbnailGrid';
+import EpicCard from '../../components/epic/EpicCard';
 import epicService from '../../services/epicService';
 
 export default function EpicPanel() {
