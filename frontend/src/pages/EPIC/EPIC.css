@@ -23,7 +23,12 @@
     --mono:'IBM Plex Mono',monospace; }
 .epic-page * { box-sizing:border-box;margin:0;padding:0; }
 .epic-page { scroll-behavior:smooth; }
-.epic-page { background:var(--void);
+.epic-page { background-color:var(--void);
+    background-image:
+      radial-gradient(ellipse 80% 60% at 30% 0%, rgba(56,208,240,0.10), transparent 60%),
+      linear-gradient(180deg, #070b18 0%, #0a1430 45%, #0c1e42 100%);
+    background-repeat:no-repeat;
+    background-size:100% 820px;
     color:var(--text);
     font-family:var(--body);
     line-height:1.5;
@@ -62,9 +67,7 @@
     min-height:calc(100vh - 64px);
     padding:64px clamp(20px,5vw,64px);
     max-width:1360px;margin:0 auto; }
-.epic-page .hero-bg { position:absolute;inset:0;z-index:-1;
-    background:radial-gradient(ellipse 80% 60% at 30% 0%, rgba(56,208,240,0.10), transparent 60%),
-               linear-gradient(180deg, #070b18 0%, #0a1430 55%, #0c1e42 100%); }
+
 @media(max-width:980px) {
   .epic-page .hero { grid-template-columns:1fr;padding-top:40px;min-height:auto; }
 }
@@ -192,7 +195,7 @@
 /* ============ THUMBNAIL GRID (overrides the shared .rover-grid/.rover-img-wrap
    rules — !important because the global stylesheet's cascade layer/load order
    otherwise wins regardless of selector specificity) ============ */
-   
+
 .epic-page .rover-grid {
   display:grid !important;
   grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)) !important;
