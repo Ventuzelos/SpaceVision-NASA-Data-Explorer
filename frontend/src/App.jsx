@@ -8,6 +8,9 @@ import DONKI from "./pages/DONKI/DONKI";
 import EPIC from "./pages/EPIC/EPIC";
 import Favorites from "./pages/Favorites/Favorites";
 import NotFound from "./pages/NotFound/NotFound";
+import About from "./pages/About/About";
+
+
 
 
 function App() {
@@ -21,6 +24,7 @@ function App() {
           <Route path="epic" element={<EPIC />} />
           <Route path="favorites" element={<Favorites />} />
           <Route path="*" element={<NotFound />} />
+          <Route path="about" element={<About />} />
         </Route>
       </Routes>
     </BrowserRouter>
