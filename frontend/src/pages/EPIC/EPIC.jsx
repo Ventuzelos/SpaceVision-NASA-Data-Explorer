@@ -25,16 +25,8 @@ export default function EPIC() {
     <div className="epic-page">
       <div className="stars" />
 
-      <nav>
-        <div className="brand"><span className="dot" />EPIC</div>
-        <div className="navlinks">
-          <a href="#hero">Visão geral</a>
-        
-        </div>
-      </nav>
 
       <section className="hero" id="hero">
-        <div className="hero-bg" />
         <div>
           <div className="eyebrow">EPIC · Earth Polychromatic Imaging Camera</div>
           <h1 className="headline">
@@ -99,6 +91,7 @@ export default function EPIC() {
         </div>
       </section>
 
+      <div className="bottom-glow">
       <section id="viewer">
         <div className="section-head">
           <div className="section-eyebrow">Try it live</div>
@@ -127,6 +120,7 @@ export default function EPIC() {
         <span>EPIC · NASA Open APIs · DSCOVR / NOAA</span>
         <span>Dados disponibilizados por api.nasa.gov</span>
       </footer>
+      </div>
 
       {lightbox && (
         <div className="epic-lightbox" onClick={() => setLightbox(null)}>
