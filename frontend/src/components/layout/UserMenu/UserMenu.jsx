@@ -1,12 +1,16 @@
+
+import { Link } from "react-router-dom";
 import Button from "../../common/Button/Button";
 import "./UserMenu.css";
 
-function UserMenu({ isAuthenticated }) {
+function UserMenu({ isAuthenticated}) {
+  
+
   if (!isAuthenticated) {
     return (
-      <Button variant="primary">
-        Entrar
-      </Button>
+      <Link to="/login">
+        <Button variant="primary">Entrar</Button>
+      </Link>
     );
   }
 

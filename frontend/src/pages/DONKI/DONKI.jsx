@@ -35,7 +35,7 @@ function DONKI() {
     () => new Set(getFavorites(SOURCE).map((fav) => fav.id))
   );
 
-  // Paginação: 10 eventos por página, só aparece se houver mais do que isso.
+  // Paginação: 8 eventos por página, só aparece se houver mais do que isso.
   const {
     paginatedItems: paginatedEvents,
     currentPage,
