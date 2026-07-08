@@ -1,31 +1,51 @@
 import { donkiEventTypes } from "../../../services/donkiService";
+import { Icons } from "../../../constants/icons";
 
 import "./EventTypeSelector.css";
 
+const donkiIcons = {
+  sun: Icons.Sun,
+  waves: Icons.Waves,
+  magnet: Icons.Magnet,
+  sparkles: Icons.Sparkles,
+  wind: Icons.Wind,
+  bell: Icons.Bell,
+};
+
 function EventTypeSelector({ activeType, onSelect }) {
   return (
-    <div className="event-type-selector" role="tablist" aria-label="Tipo de evento DONKI">
-      {donkiEventTypes.map((type) => (
-        <button
-          key={type.id}
-          type="button"
-          role="tab"
-          aria-selected={activeType === type.id}
-          className={`event-type-card ${
-            activeType === type.id ? "event-type-card--active" : ""
-          }`}
-          style={{ "--type-color": type.color }}
-          onClick={() => onSelect(type.id)}
-        >
-          <span className="event-type-card__icon" aria-hidden="true">
-            {type.icon}
-          </span>
-          <span className="event-type-card__label">{type.shortLabel}</span>
-          <span className="event-type-card__description">
-            {type.description}
-          </span>
-        </button>
-      ))}
+    <div
+      className="event-type-selector"
+      role="tablist"
+      aria-label="Tipo de evento DONKI"
+    >
+      {donkiEventTypes.map((type) => {
+        const Icon = donkiIcons[type.icon];
+
+        return (
+          <button
+            key={type.id}
+            type="button"
+            role="tab"
+            aria-selected={activeType === type.id}
+            className={`event-type-card ${
+              activeType === type.id ? "event-type-card--active" : ""
+            }`}
+            style={{ "--type-color": type.color }}
+            onClick={() => onSelect(type.id)}
+          >
+            <span className="event-type-card__icon" aria-hidden="true">
+              {Icon && <Icon size={24} strokeWidth={2} />}
+            </span>
+
+            <span className="event-type-card__label">{type.shortLabel}</span>
+
+            <span className="event-type-card__description">
+              {type.description}
+            </span>
+          </button>
+        );
+      })}
     </div>
   );
 }
