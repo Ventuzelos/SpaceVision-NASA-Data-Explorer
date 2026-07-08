@@ -1,3 +1,6 @@
+import Icon from "../../common/Icon/Icon";
+import FavoriteButton from "../../common/FavoriteButton/FavoriteButton";
+
 import "./NeoCard.css";
 
 function formatDate(value) {
@@ -17,6 +20,7 @@ function formatDate(value) {
 
 function formatNumber(value, unit = "") {
   if (value == null || Number.isNaN(value)) return "N/D";
+
   return `${new Intl.NumberFormat("pt-PT", {
     maximumFractionDigits: 0,
   }).format(value)}${unit}`;
@@ -24,11 +28,13 @@ function formatNumber(value, unit = "") {
 
 function formatSingleDiameter(value) {
   if (value == null || Number.isNaN(value)) return "N/D";
+
   return value < 1 ? `${Math.round(value * 1000)} m` : `${value.toFixed(2)} km`;
 }
 
 function formatDiameterRange(min, max) {
   if (min == null || max == null) return "N/D";
+
   return `${formatSingleDiameter(min)} – ${formatSingleDiameter(max)}`;
 }
 
@@ -39,24 +45,21 @@ function NeoCard({ neo, isFavorite, onToggleFavorite }) {
     >
       {neo.isHazardous && (
         <span className="neo-card__hazard-tag">
-          <span aria-hidden="true">⚠️</span> Potencialmente perigoso
+          <Icon name="AlertCircle" size={16} />
+          Potencialmente perigoso
         </span>
       )}
 
       <div className="neo-card__header">
         <h3 className="neo-card__title">{neo.name}</h3>
 
-        <button
-          type="button"
-          className={`neo-card__favorite ${
-            isFavorite ? "neo-card__favorite--active" : ""
-          }`}
+        <FavoriteButton
+          active={isFavorite}
           onClick={() => onToggleFavorite(neo)}
-          aria-label="Adicionar aos favoritos"
-          aria-pressed={isFavorite}
-        >
-          {isFavorite ? "★" : "☆"}
-        </button>
+          ariaLabel={
+            isFavorite ? "Remover dos favoritos" : "Adicionar aos favoritos"
+          }
+        />
       </div>
 
       <p className="neo-card__date">
@@ -68,6 +71,7 @@ function NeoCard({ neo, isFavorite, onToggleFavorite }) {
           <span>Distância (miss distance)</span>
           <strong>{formatNumber(neo.missDistanceKm, " km")}</strong>
         </li>
+
         <li>
           <span>Distância lunar</span>
           <strong>
@@ -76,12 +80,14 @@ function NeoCard({ neo, isFavorite, onToggleFavorite }) {
               : "N/D"}
           </strong>
         </li>
+
         <li>
           <span>Diâmetro estimado</span>
           <strong>
             {formatDiameterRange(neo.diameterMinKm, neo.diameterMaxKm)}
           </strong>
         </li>
+
         <li>
           <span>Velocidade relativa</span>
           <strong>{formatNumber(neo.velocityKmH, " km/h")}</strong>
@@ -95,7 +101,8 @@ function NeoCard({ neo, isFavorite, onToggleFavorite }) {
           target="_blank"
           rel="noreferrer"
         >
-          Ver no JPL <span aria-hidden="true">→</span>
+          Ver no JPL
+          <Icon name="ArrowRight" size={16} />
         </a>
       )}
     </article>

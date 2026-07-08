@@ -89,23 +89,3 @@
   gap: var(--space-3);
 }
 
-.event-card__favorite {
-  background: none;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  width: 36px;
-  height: 36px;
-  cursor: pointer;
-  color: var(--color-text-secondary);
-  font-size: 1.1rem;
-  transition: var(--transition-fast);
-}
-
-.event-card__favorite--active {
-  color: var(--color-warning);
-  border-color: var(--color-warning);
-}
-
-.event-card__favorite:hover {
-  transform: translateY(-2px);
-}
