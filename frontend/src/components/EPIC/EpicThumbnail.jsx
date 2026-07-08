@@ -3,6 +3,36 @@
 
 import { buildThumbUrl, buildImageUrl } from '../../services/epicService';
 
+const wrapStyle = {
+  position: 'relative',
+  aspectRatio: '1 / 1',
+  width: '100%',
+  borderRadius: '10px',
+  overflow: 'hidden',
+  cursor: 'pointer',
+  border: '1px solid var(--line-strong, rgba(255,255,255,0.15))',
+  background: 'var(--panel-2, #101d3c)',
+};
+
+const imgStyle = {
+  width: '100%',
+  height: '100%',
+  objectFit: 'cover',
+  display: 'block',
+};
+
+const timeLabelStyle = {
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  right: 0,
+  background: 'rgba(0,0,0,0.6)',
+  padding: '4px 6px',
+  fontFamily: 'var(--font-family)',
+  fontSize: '9px',
+  color: 'var(--color-accent)',
+};
+
 export default function EpicThumbnail({ photo, date, onSelect }) {
   const thumbUrl = buildThumbUrl(photo, date);
   const fullUrl = buildImageUrl(photo, date);
@@ -21,11 +51,13 @@ export default function EpicThumbnail({ photo, date, onSelect }) {
   return (
     <div
       className="rover-img-wrap"
+      style={wrapStyle}
       onClick={handleClick}
       title={photo.caption || ''}
     >
       <img
         className="rover-img"
+        style={imgStyle}
         src={thumbUrl}
         alt={photo.image}
         onError={(e) => {
@@ -34,19 +66,7 @@ export default function EpicThumbnail({ photo, date, onSelect }) {
           e.currentTarget.style.objectFit = 'contain';
         }}
       />
-      <div
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          background: 'rgba(0,0,0,0.6)',
-          padding: '4px 6px',
-          fontFamily: 'var(--font-family)',
-          fontSize: '9px',
-          color: 'var(--color-accent)',
-        }}
-      >
+      <div style={timeLabelStyle}>
         {time} UTC
       </div>
     </div>
