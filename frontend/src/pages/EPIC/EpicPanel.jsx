@@ -1,118 +1,76 @@
-﻿
-import './EPIC.css';
-
-// Página principal do painel EPIC — orquestra o serviço, a grid e o cartão de detalhe.
-import { useState, useEffect } from 'react';
-import EpicThumbnailGrid from '../../components/epic/EpicThumbnailGrid';
-import EpicCard from '../../components/epic/EpicCard';
-import epicService from '../../services/epicService';
-
-export default function EpicPanel() {
-  const [photos, setPhotos] = useState([]);
-  const [date, setDate] = useState('');
-  const [detail, setDetail] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-
-  async function loadLatest() {
-    setLoading(true);
-    setError('');
-    try {
-      const data = await epicService.fetchEpicLatest();
-      const latestDate = data[0].date.split(' ')[0];
-      setDate(latestDate);
-      setPhotos(data);
-      selectFirst(data, latestDate);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
+﻿export default function EpicPanel({ photos, loading, loadingMsg, error, date, onSelect, onRetry }) {
+  if (loading) {
+    return (
+      <div className="grid-wrap">
+        <div className="state-msg">
+          <div className="spinner" />
+          {loadingMsg}
+        </div>
+      </div>
+    );
   }
 
-  async function loadByDate(selectedDate) {
-    if (!selectedDate) return;
-    setLoading(true);
-    setError('');
-    try {
-      const data = await epicService.fetchEpicByDate(selectedDate);
-      setDate(selectedDate);
-      setPhotos(data);
-      selectFirst(data, selectedDate);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
+  if (error) {
+    return (
+      <div className="grid-wrap">
+        <div className="state-msg err">
+          Não foi possível obter dados da EPIC.
+          <br />
+          {error}
+          <br />
+          <button className="btn" style={{ marginTop: 14 }} onClick={onRetry}>
+            ↺ Tentar de novo
+          </button>
+        </div>
+      </div>
+    );
   }
 
-  function selectFirst(data, selectedDate) {
-    const p0 = data[0];
-    setDetail({
-      url: epicService.buildImageUrl(p0, selectedDate),
-      caption: p0.caption || p0.image,
-      time: p0.date?.split(' ')[1]?.substring(0, 5) || '',
-      lat: p0.centroid_coordinates?.lat?.toFixed(1) || '',
-      lon: p0.centroid_coordinates?.lon?.toFixed(1) || '',
-    });
+  if (!photos || !photos.length) {
+    return (
+      <div className="grid-wrap">
+        <div className="state-msg">Escolhe uma data ou carrega a captura mais recente.</div>
+      </div>
+    );
   }
 
-  useEffect(() => {
-    loadLatest();
-  }, []);
+  const [y, m, d] = date.split('-');
 
   return (
-    <div className="panel active">
-      <div className="card">
-        <div className="card-header">
-          <span className="card-title">Earth Polychromatic Imaging Camera</span>
-          <span className="card-label">GET /EPIC/api/natural</span>
-        </div>
-
-        <div className="date-controls">
-          <label style={{ fontFamily: 'var(--mono)', fontSize: '11px', color: 'var(--text2)' }}>
-            DATA:
-          </label>
-          <input
-            type="date"
-            className="date-input"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-          />
-          <button className="btn btn-sm" onClick={() => loadByDate(date)}>
-            CARREGAR
-          </button>
-          <button className="btn btn-sm btn-cyan" onClick={loadLatest}>
-            ● MAIS RECENTE
-          </button>
-        </div>
-
-        {loading && (
-          <div className="apod-loading" style={{ height: '160px' }}>
-            <div className="spinner" />
-            <div className="apod-loading-text" style={{ fontSize: '11px' }}>
-              A CONTACTAR O DSCOVR...
-            </div>
-          </div>
-        )}
-
-        {!loading && error && (
-          <div className="apod-error">
-            <div style={{ color: 'var(--red)', fontFamily: 'var(--mono)', fontSize: '12px' }}>
-              ERRO: {error}
-            </div>
-            <button className="btn btn-sm" style={{ marginTop: '12px' }} onClick={loadLatest}>
-              ↺ TENTAR DE NOVO
-            </button>
-          </div>
-        )}
-
-        {!loading && !error && (
-          <EpicThumbnailGrid photos={photos} date={date} onSelect={setDetail} />
-        )}
+    <>
+      <div className="meta-row">
+        <span className="tag tag-glow">{photos.length} CAPTURAS</span>
+        <span className="tag tag-green">DSCOVR · L1</span>
+        <span className="tag">{date}</span>
       </div>
-
-      <EpicCard detail={detail} />
-    </div>
+      <div className="grid-wrap">
+        <div className="thumb-grid">
+          {photos.map((p, i) => {
+            const thumbUrl = `https://epic.gsfc.nasa.gov/archive/natural/${y}/${m}/${d}/thumbs/${p.image}.jpg`;
+            const fullUrl = `https://epic.gsfc.nasa.gov/archive/natural/${y}/${m}/${d}/png/${p.image}.png`;
+            const time = p.date ? p.date.split(' ')[1].substring(0, 5) : '';
+            return (
+              <div
+                key={p.image + i}
+                className="thumb"
+                title={p.caption || ''}
+                onClick={() => onSelect(p)}
+              >
+                <img
+                  src={thumbUrl}
+                  alt={p.image}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = fullUrl;
+                    e.target.style.objectFit = 'contain';
+                  }}
+                />
+                <div className="t">{time} UTC</div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </>
   );
 }
