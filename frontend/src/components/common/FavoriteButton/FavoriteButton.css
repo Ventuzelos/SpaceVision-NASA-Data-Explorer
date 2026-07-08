@@ -1,0 +1,35 @@
+.favorite-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 40px;
+  height: 40px;
+
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  color: var(--color-text-secondary);
+
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.favorite-button:hover {
+  border-color: var(--color-primary);
+}
+
+.favorite-button--active:hover {
+  border-color: var(--color-error);
+  color: var(--color-error);
+}
+
+.favorite-button--active {
+  color: var(--color-error);
+  border-color: var(--color-error);
+}
+
+.favorite-button__icon--active {
+  fill: currentColor;
+}
