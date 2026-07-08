@@ -1,7 +1,7 @@
 // Cartão de detalhe — mostra a imagem completa da Terra (2048x2048)
 // junto com legenda e coordenadas do centro visível.
 
-export default function EpicCard({ detail }) {
+export default function EpicCard({ detail, onImageClick }) {
   if (!detail) return null;
 
   const { url, caption, time, lat, lon } = detail;
@@ -16,6 +16,7 @@ export default function EpicCard({ detail }) {
         <img
           src={url}
           alt={caption}
+          onClick={onImageClick}
           style={{
             maxWidth: '100%',
             borderRadius: 'var(--radius-md)',
