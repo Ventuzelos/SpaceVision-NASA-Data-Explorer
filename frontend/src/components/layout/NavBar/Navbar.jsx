@@ -5,7 +5,11 @@ import UserMenu from "../UserMenu/UserMenu";
 import "./Navbar.css";
 
 function Navbar() {
-  const isAuthenticated = false;
+  
+   const isAuthenticated = !!localStorage.getItem("spacevision_session");
+   // o localStorage não sai da sessão apenas por reiniciar a página, então o estado de autenticação é mantido mesmo após o refresh da página. 
+   //Temos que ativar o botão "terminar sessão" para que o usuário possa encerrar a sessão e limpar o localStorage, caso contrário, ele permanecerá autenticado mesmo após reiniciar a página.
+  
 
   return (
     <header className="navbar">
