@@ -11,6 +11,7 @@ import NotFound from "./pages/NotFound/NotFound";
 import About from "./pages/About/About";
 
 
+import NeoWS from "./pages/NEOWATCH/NeoWS";
 
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
           <Route path="apod" element={<APOD />} />
           <Route path="donki" element={<DONKI />} />
           <Route path="epic" element={<EPIC />} />
+          <Route path="neowatch" element={<NeoWS />} />
           <Route path="favorites" element={<Favorites />} />
           <Route path="*" element={<NotFound />} />
           <Route path="about" element={<About />} />

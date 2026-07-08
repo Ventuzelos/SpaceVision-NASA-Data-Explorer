@@ -1,0 +1,51 @@
+.neows-page {
+  padding-block: var(--space-8);
+}
+
+.neows-page__header {
+  max-width: 720px;
+  margin-bottom: var(--space-7);
+}
+
+.neows-page__eyebrow {
+  display: inline-block;
+  color: var(--color-accent);
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-3);
+}
+
+.neows-page__header h1 {
+  margin-bottom: var(--space-4);
+}
+
+.neows-page__header p {
+  color: var(--color-text-secondary);
+}
+
+.neows-page__error {
+  color: var(--color-error);
+  background: rgba(251, 113, 133, 0.1);
+  border: 1px solid rgba(251, 113, 133, 0.35);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.neows-page__empty {
+  color: var(--color-text-secondary);
+  background: var(--color-surface);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-6);
+  text-align: center;
+  margin-bottom: var(--space-5);
+}
+
+.neows-page__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-5);
+}

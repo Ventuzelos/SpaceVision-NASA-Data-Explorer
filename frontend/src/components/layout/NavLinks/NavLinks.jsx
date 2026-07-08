@@ -35,6 +35,7 @@ function NavLinks() {
       <NavLink to="/gallery">Gallery</NavLink>
 
       <NavLink to="/about">Sobre nós</NavLink>
+        <NavLink to="/neowatch">Discover</NavLink>
 
       <NavLink to="/favorites" className="favorites-link">
         Favorites
