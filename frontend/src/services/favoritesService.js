@@ -1,4 +1,9 @@
 const FAVORITES_KEY = "spacevision_favorites";
+export const FAVORITES_UPDATED_EVENT = "favoritesUpdated";
+
+function notifyFavoritesUpdated() {
+  window.dispatchEvent(new Event(FAVORITES_UPDATED_EVENT));
+}
 
 export function getFavorites(source = null) {
   const favorites = localStorage.getItem(FAVORITES_KEY);
@@ -21,6 +26,7 @@ export function addFavorite(favorite) {
   if (!exists) {
     favorites.push(favorite);
     localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
+    notifyFavoritesUpdated();
   }
 }
 
@@ -36,6 +42,7 @@ export function removeFavorite(id, source = null) {
   });
 
   localStorage.setItem(FAVORITES_KEY, JSON.stringify(updatedFavorites));
+  notifyFavoritesUpdated();
 }
 
 export function toggleFavorite(favorite) {
