@@ -15,6 +15,8 @@ import NeoWS from "./pages/NEOWATCH/NeoWS";
 import Login from "./pages/Login/Login";      
 import Register from "./pages/Register/Register"; 
 import Admin from "./pages/Admin/Admin";
+import Profile from "./pages/Profile/Profile";
+
 
 function App() {
   return (
@@ -30,6 +32,7 @@ function App() {
           <Route path="login" element={<Login />} />   
           <Route path="register" element={<Register />} />
           <Route path="admin" element={<Admin />} />
+          <Route path="profile" element={<Profile />} />
           <Route path="*" element={<NotFound />} />
           <Route path="about" element={<About />} />
         </Route>
