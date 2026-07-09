@@ -1,13 +1,8 @@
-﻿export default function EpicPanel({ photos, loading, loadingMsg, error, date, onSelect, onRetry }) {
+﻿import EpicSkeleton from '../../components/EPIC/EpicSkeleton/EpicSkeleton';
+
+export default function EpicPanel({ photos, loading, error, date, onSelect, onRetry }) {
   if (loading) {
-    return (
-      <div className="grid-wrap">
-        <div className="state-msg">
-          <div className="spinner" />
-          {loadingMsg}
-        </div>
-      </div>
-    );
+    return <EpicSkeleton />;
   }
 
   if (error) {
@@ -48,13 +43,20 @@
           {photos.map((p, i) => {
             const thumbUrl = `https://epic.gsfc.nasa.gov/archive/natural/${y}/${m}/${d}/thumbs/${p.image}.jpg`;
             const fullUrl = `https://epic.gsfc.nasa.gov/archive/natural/${y}/${m}/${d}/png/${p.image}.png`;
-            const time = p.date ? p.date.split(' ')[1].substring(0, 5) : '';
+            const time = p.date ? p.date.split(' ')[1]?.substring(0, 5) : '';
+            const handleSelect = () => onSelect({
+              url: fullUrl,
+              caption: p.caption || p.image,
+              time,
+              lat: p.centroid_coordinates?.lat?.toFixed(1) || '',
+              lon: p.centroid_coordinates?.lon?.toFixed(1) || '',
+            });
             return (
               <div
                 key={p.image + i}
                 className="thumb"
                 title={p.caption || ''}
-                onClick={() => onSelect(p)}
+                onClick={handleSelect}
               >
                 <img
                   src={thumbUrl}

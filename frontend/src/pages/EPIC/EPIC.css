@@ -18,9 +18,9 @@
     --text-faint:#5c6a8c;
     --red:#f0645c;
     --green:#6ee7b7;
-    --disp:'Space Grotesk',sans-serif;
-    --body:'IBM Plex Sans',sans-serif;
-    --mono:'IBM Plex Mono',monospace; }
+    --disp:var(--font-family);
+    --body:var(--font-family);
+    --mono:var(--font-family); }
 .epic-page * { box-sizing:border-box;margin:0;padding:0; }
 .epic-page { scroll-behavior:smooth; }
 .epic-page { background-color:var(--void);
@@ -104,7 +104,7 @@
 .epic-page .btn:active { transform:scale(0.98); }
 .epic-page .btn-primary { background:linear-gradient(135deg,var(--glow) 0%, var(--violet) 100%);
     color:#081018;border:none;font-weight:600; }
-.epic-page .btn-primary:hover { filter:brightness(1.08); }
+.epic-page .btn-primary:hover { background:linear-gradient(135deg,var(--glow) 0%, var(--violet) 100%);filter:brightness(1.08); }
 .epic-page .readout { margin-top:44px;
     display:flex;gap:0;
     border-top:1px solid var(--line); }
