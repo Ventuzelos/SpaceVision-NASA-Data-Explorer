@@ -69,7 +69,7 @@ export default function EpicCard({ detail, onImageClick }) {
           {lat && lon && (
             <div>Centro visível: {lat}° lat · {lon}° lon</div>
           )}
-          <div style={{ marginTop: '6px', color: 'var(--color-border)' }}>
+          <div style={{ marginTop: '6px', color: 'var(--color-text-secondary)' }}>
             Formato PNG 2048×2048 px
           </div>
         </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './EPIC.css';
 import { NASA_API_KEY } from '../../services/api';
 import { useEpicPhotos } from '../../hooks/useEpicPhotos';
@@ -14,6 +14,27 @@ export default function EPIC() {
   // utilizador / contexto de definições — basta trocar este estado inicial.
   const [apiKey] = useState(NASA_API_KEY);
   const [lightbox, setLightbox] = useState(null);
+  const lightboxRef = useRef(null);
+  const previousFocusRef = useRef(null);
+
+  useEffect(() => {
+    if (!lightbox) return undefined;
+
+    previousFocusRef.current = document.activeElement;
+    lightboxRef.current?.focus();
+
+    function handleKeyDown(e) {
+      if (e.key === 'Escape') {
+        setLightbox(null);
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      previousFocusRef.current?.focus?.();
+    };
+  }, [lightbox]);
 
   const {
     photos, date, selected, setSelected,
@@ -30,18 +51,17 @@ export default function EPIC() {
   }, [loadLatest]);
 
   return (
-    <div className="epic-page">
+    <main className="epic-page">
       <section className="hero" id="hero">
         <div>
           <div className="eyebrow">EPIC · Earth Polychromatic Imaging Camera</div>
           <h1 className="headline">
-            A daily portrait of our pale blue dot
+            O nosso planeta. Visto de longe, em tempo real.
           </h1>
           <p className="lede">
-            A bordo do satélite DSCOVR, no ponto de Lagrange L1, a EPIC é um espectroradiómetro
-            de 10 canais que captura o disco inteiro do lado iluminado da Terra a cada duas horas.
-            A EPIC API da NASA disponibiliza essas imagens — e os metadados de
-            cada captura — prontos a consultar por data.
+            Descubra a Terra como nunca a viu. Através dos olhos da câmara EPIC, a bordo do
+            satélite DSCOVR no ponto de Lagrange L1, aceda a imagens atualizadas a cada duas
+            horas que capturam a totalidade do disco terrestre totalmente iluminado pelo Sol.
           </p>
           <div className="hero-cta">
             <a href="#viewer" className="btn btn-primary">Ver imagens do dia →</a>
@@ -139,18 +159,21 @@ export default function EPIC() {
           />
         </div>
       </section>
-
-      <footer>
-        <span>EPIC · NASA Open APIs · DSCOVR / NOAA</span>
-        <span>Dados disponibilizados por api.nasa.gov</span>
-      </footer>
       </div>
 
       {lightbox && (
-        <div className="epic-lightbox" onClick={() => setLightbox(null)}>
+        <div
+          className="epic-lightbox"
+          onClick={() => setLightbox(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label={lightbox.caption || 'Imagem EPIC ampliada'}
+          tabIndex={-1}
+          ref={lightboxRef}
+        >
           <img src={lightbox.url} alt={lightbox.caption || ''} />
         </div>
       )}
-    </div>
+    </main>
   );
 }
