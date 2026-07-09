@@ -11,6 +11,8 @@ function todayStr() {
 
 function toDetail(photo, date) {
   return {
+    image: photo.image,
+    date,
     url: buildImageUrl(photo, date),
     caption: photo.caption || photo.image,
     time: photo.date ? photo.date.split(' ')[1]?.substring(0, 5) : '',

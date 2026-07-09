@@ -4,6 +4,9 @@ import { NASA_API_KEY } from '../../services/api';
 import { useEpicPhotos } from '../../hooks/useEpicPhotos';
 import EpicPanel from './EpicPanel';
 import EpicDetail from './EpicDetail';
+import EpicDateControls from './EpicDateControls';
+import EpicHeroVideo from '../../components/EPIC/EpicHeroVideo';
+import EpicTimeline from '../../components/EPIC/EpicTimeline';
 
 export default function EPIC() {
   // Chave da NASA usada pelos pedidos EPIC. Por agora usa a chave interna
@@ -17,15 +20,17 @@ export default function EPIC() {
     loading, error, loadLatest, loadByDate,
   } = useEpicPhotos(apiKey);
 
+  const [pendingDate, setPendingDate] = useState(date);
+  useEffect(() => {
+    setPendingDate(date);
+  }, [date]);
+
   useEffect(() => {
     loadLatest();
   }, [loadLatest]);
 
   return (
     <div className="epic-page">
-      <div className="stars" />
-
-
       <section className="hero" id="hero">
         <div>
           <div className="eyebrow">EPIC · Earth Polychromatic Imaging Camera</div>
@@ -48,14 +53,22 @@ export default function EPIC() {
           </div>
         </div>
 
-        <div className="instrument">
-          <div className="ring r1" />
-          <div className="ring r2" />
-          <div className="crosshair" />
-          <div className="tick t1">L1 LAGRANGE</div>
-          <div className="tick t2">DSCOVR</div>
-          <div className="earth" />
-          <div className="tag">DISCO COMPLETO · LUZ NATURAL</div>
+        <div className="hero-video-panel">
+          <EpicHeroVideo />
+        </div>
+      </section>
+
+      <section id="timeline">
+        <div className="section-head" style={{ paddingTop: 16 }}>
+          <div className="section-eyebrow">Da órbita até hoje</div>
+          <div className="section-title">Mais de uma década a fotografar o nosso planeta</div>
+          <p className="section-sub">
+            Os marcos principais da missão DSCOVR e da câmara EPIC, desde o lançamento até à atualidade.
+          </p>
+        </div>
+        <div className="timeline-spacer" />
+        <div className="timeline-card">
+          <EpicTimeline />
         </div>
       </section>
 
@@ -93,27 +106,38 @@ export default function EPIC() {
 
       <div className="bottom-glow">
       <section id="viewer">
-        <div className="section-head">
-          <div className="section-eyebrow">Try it live</div>
-          <div className="section-title">Visualizador de imagens</div>
-          <p className="section-sub">Escolhe uma data para ver todas as capturas do disco terrestre desse dia.</p>
+        <div className="viewer-intro">
+          <div className="section-head">
+            <div className="section-eyebrow">Try it live</div>
+            <div className="section-title">Visualizador de imagens</div>
+            <p className="section-sub">Escolhe uma data para ver todas as capturas do disco terrestre desse dia.</p>
+          </div>
+
+          <EpicDateControls
+            date={pendingDate}
+            onDateChange={setPendingDate}
+            onLoad={() => loadByDate(pendingDate)}
+            onLatest={loadLatest}
+          />
         </div>
 
-        <EpicPanel
-          photos={photos}
-          loading={loading}
-          loadingMsg="A carregar imagens..."
-          error={error}
-          date={date}
-          onSelect={setSelected}
-          onRetry={loadLatest}
-        />
+        <div className="viewer-layout">
+          <EpicDetail
+            photo={selected}
+            date={date}
+            onOpenLightbox={setLightbox}
+          />
 
-        <EpicDetail
-          photo={selected}
-          date={date}
-          onOpenLightbox={setLightbox}
-        />
+          <EpicPanel
+            photos={photos}
+            loading={loading}
+            loadingMsg="A carregar imagens..."
+            error={error}
+            date={date}
+            onSelect={setSelected}
+            onRetry={loadLatest}
+          />
+        </div>
       </section>
 
       <footer>
