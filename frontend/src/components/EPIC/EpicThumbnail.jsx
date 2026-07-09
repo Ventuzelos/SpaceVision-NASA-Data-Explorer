@@ -19,7 +19,7 @@ export default function EpicThumbnail({ photo, date, onSelect }) {
       image: photo.image,
       date,
       url: fullUrl,
-      caption: photo.caption || photo.image,
+      caption: photo.caption || `Vista completa da Terra captada pela EPIC${time ? ` às ${time} UTC` : ''}`,
       time,
       lat: photo.centroid_coordinates?.lat?.toFixed(1) || '',
       lon: photo.centroid_coordinates?.lon?.toFixed(1) || '',
@@ -40,11 +40,26 @@ export default function EpicThumbnail({ photo, date, onSelect }) {
     setFavorite((f) => !f);
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleSelect();
+    }
+  };
+
   return (
-    <div className="thumb" title={photo.caption || ''} onClick={handleSelect}>
+    <div
+      className="thumb"
+      title={photo.caption || ''}
+      onClick={handleSelect}
+      role="button"
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+      aria-label={photo.caption || `Imagem EPIC ${time ? `às ${time} UTC` : ''}`}
+    >
       <img
         src={thumbUrl}
-        alt={photo.image}
+        alt=""
         onError={(e) => {
           e.currentTarget.onerror = null;
           e.currentTarget.src = fullUrl;
