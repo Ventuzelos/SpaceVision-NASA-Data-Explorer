@@ -1,45 +1,23 @@
+import { useState } from 'react';
+import { Clock } from 'lucide-react';
+import { buildThumbUrl, buildImageUrl } from '../../services/epicService';
+import FavoriteButton from '../common/FavoriteButton/FavoriteButton';
+import { isFavorite, toggleFavorite } from '../../services/favoritesService';
+
 // Componente "folha" desenha uma unica miniatura EPIC.
 // Nao sabe nada sobre a lista toda, so sobre a sua propria foto.
-
-import { buildThumbUrl, buildImageUrl } from '../../services/epicService';
-
-const wrapStyle = {
-  position: 'relative',
-  aspectRatio: '1 / 1',
-  width: '100%',
-  borderRadius: '10px',
-  overflow: 'hidden',
-  cursor: 'pointer',
-  border: '1px solid var(--line-strong, rgba(255,255,255,0.15))',
-  background: 'var(--panel-2, #101d3c)',
-};
-
-const imgStyle = {
-  width: '100%',
-  height: '100%',
-  objectFit: 'cover',
-  display: 'block',
-};
-
-const timeLabelStyle = {
-  position: 'absolute',
-  bottom: 0,
-  left: 0,
-  right: 0,
-  background: 'rgba(0,0,0,0.6)',
-  padding: '4px 6px',
-  fontFamily: 'var(--font-family)',
-  fontSize: '9px',
-  color: 'var(--color-accent)',
-};
-
 export default function EpicThumbnail({ photo, date, onSelect }) {
   const thumbUrl = buildThumbUrl(photo, date);
   const fullUrl = buildImageUrl(photo, date);
   const time = photo.date ? photo.date.split(' ')[1]?.substring(0, 5) : '';
 
-  const handleClick = () => {
+  const favoriteId = `epic-${photo.image}`;
+  const [favorite, setFavorite] = useState(isFavorite(favoriteId));
+
+  const handleSelect = () => {
     onSelect({
+      image: photo.image,
+      date,
       url: fullUrl,
       caption: photo.caption || photo.image,
       time,
@@ -48,16 +26,23 @@ export default function EpicThumbnail({ photo, date, onSelect }) {
     });
   };
 
+  const handleFavoriteClick = (e) => {
+    e.stopPropagation();
+    toggleFavorite({
+      id: favoriteId,
+      type: 'epic',
+      title: `EPIC · Terra${time ? ` (${time} UTC)` : ''}`,
+      date,
+      imageUrl: fullUrl,
+      hdUrl: fullUrl,
+      description: photo.caption || '',
+    });
+    setFavorite((f) => !f);
+  };
+
   return (
-    <div
-      className="rover-img-wrap"
-      style={wrapStyle}
-      onClick={handleClick}
-      title={photo.caption || ''}
-    >
+    <div className="thumb" title={photo.caption || ''} onClick={handleSelect}>
       <img
-        className="rover-img"
-        style={imgStyle}
         src={thumbUrl}
         alt={photo.image}
         onError={(e) => {
@@ -66,9 +51,16 @@ export default function EpicThumbnail({ photo, date, onSelect }) {
           e.currentTarget.style.objectFit = 'contain';
         }}
       />
-      <div style={timeLabelStyle}>
-        {time} UTC
+      <div className="thumb-badge">
+        <Clock size={10} />
+        {time}
       </div>
+      <FavoriteButton
+        active={favorite}
+        onClick={handleFavoriteClick}
+        size={12}
+        ariaLabel={favorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
+      />
     </div>
   );
 }
