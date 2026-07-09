@@ -1,0 +1,121 @@
+.admin-page {
+  padding: var(--space-8) 0;
+}
+
+.admin-page__label {
+  color: var(--color-accent);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-2);
+}
+
+.admin-page__header {
+  max-width: 720px;
+  margin-bottom: var(--space-7);
+}
+
+.admin-page__subtitle {
+  margin-top: var(--space-3);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-5);
+  margin-bottom: var(--space-8);
+}
+
+.admin-stats__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.admin-stats__card span {
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.admin-stats__card strong {
+  color: var(--color-text);
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.admin-page__section-title {
+  font-size: 1.4rem;
+  margin-bottom: var(--space-5);
+}
+
+.admin-page__empty {
+  color: var(--color-text-secondary);
+}
+
+.admin-messages {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.admin-message-card {
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.admin-message-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-3);
+}
+
+.admin-message-card__author {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.admin-message-card__author strong {
+  color: var(--color-text);
+}
+
+.admin-message-card__author span {
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+}
+
+.admin-message-card__head time {
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.admin-message-card__body {
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+@media (max-width: 640px) {
+  .admin-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-message-card__head {
+    flex-direction: column;
+  }
+}
