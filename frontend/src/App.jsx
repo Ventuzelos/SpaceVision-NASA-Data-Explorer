@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import MainLayout from "./layouts/MainLayout/MainLayout";
+import LoginLayout from "./layouts/MainLayout/LoginLayout";
 
 import Home from "./pages/Home/Home";
 import APOD from "./pages/APOD/APOD";
@@ -29,13 +30,17 @@ function App() {
           <Route path="epic" element={<EPIC />} />
           <Route path="neowatch" element={<NeoWS />} />
           <Route path="favorites" element={<Favorites />} />
-          <Route path="login" element={<Login />} />   
-          <Route path="register" element={<Register />} />
           <Route path="admin" element={<Admin />} />
           <Route path="profile" element={<Profile />} />
           <Route path="*" element={<NotFound />} />
           <Route path="about" element={<About />} />
         </Route>
+
+        <Route element={<LoginLayout />}>
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
+        </Route>
+        
       </Routes>
     </BrowserRouter>
   );

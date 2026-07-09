@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Container from "../../components/common/Container/Container";
 import Button from "../../components/common/Button/Button";
 import { loginUser } from "../../services/authService";
+import logo from "../../assets/logos/logo-horizontal.svg";
 import "./Login.css";
 
 function Login() {
@@ -33,68 +34,90 @@ function Login() {
   }
 
   return (
-    <main className="auth-page">
-      <section className="auth-hero">
-        <Container>
-          <p className="auth-hero__label">Bem-vindo de volta</p>
+  <main className="login-page">
 
-          <h1>Entrar na tua conta</h1>
+    <div className="login-left">
 
-          <p className="auth-hero__text">
-            Acede à tua área pessoal para consultares os teus favoritos e
-            continuares a explorar o universo SpaceVision.
-          </p>
-        </Container>
-      </section>
+      <div className="login-info">
 
-      <section className="auth-content">
-        <Container>
-          <div className="auth-card">
-            <form className="auth-form" onSubmit={handleSubmit} noValidate>
-              <div className="auth-field">
-                <label htmlFor="email">Email</label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  placeholder="o-teu-email@exemplo.com"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
+        <img src={logo} alt="SpaceVision" className="login-logo" />
 
-              <div className="auth-field">
-                <label htmlFor="password">Palavra-passe</label>
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  placeholder="••••••••"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                  minLength={6}
-                />
-              </div>
+        <h2>Explora o universo</h2>
+        <h2>com dados reais</h2>
 
-              {error && <p className="auth-error">{error}</p>}
+      </div>
+      
+      <div className="login-image-wrapper">
+        <img
+          src="https://images-assets.nasa.gov/image/art002e009289/art002e009289~large.jpg"
+          alt="A Setting Earth - NASA Artemis II"
+          className="login-bottom-image"
+        />
+      </div>
 
-              <Button type="submit" variant="primary" disabled={isSubmitting}>
-                {isSubmitting ? "A entrar..." : "Entrar"}
-              </Button>
-            </form>
+    </div>
 
-            <p className="auth-switch">
-              Ainda não tens conta? <Link to="/register">Regista-te</Link>
-            </p>
+    <div className="login-right">
+
+      <div className="auth-card">
+
+        <h1>Entrar na tua conta</h1>
+
+        <form className="auth-form" onSubmit={handleSubmit} noValidate>
+
+          <div className="auth-field">
+            <label htmlFor="email">Email</label>
+
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              placeholder="o-teu-email@exemplo.com"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
           </div>
-        </Container>
-      </section>
-    </main>
-  );
+
+          <div className="auth-field">
+            <label htmlFor="password">Palavra-passe</label>
+
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autoComplete="current-password"
+              placeholder="••••••••"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              minLength={6}
+            />
+          </div>
+
+          {error && <p className="auth-error">{error}</p>}
+
+          <Button
+            type="submit"
+            variant="primary"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "A entrar..." : "Entrar"}
+          </Button>
+
+        </form>
+
+        <p className="auth-switch">
+          Ainda não tens conta? <Link to="/register">Regista-te</Link>
+        </p>
+
+      </div>
+
+    </div>
+
+  </main>
+);
 }
 
 export default Login;
