@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import MainLayout from "./layouts/MainLayout/MainLayout";
-import LoginLayout from "./layouts/MainLayout/LoginLayout";
 
 import Home from "./pages/Home/Home";
 import APOD from "./pages/APOD/APOD";
@@ -10,13 +9,12 @@ import EPIC from "./pages/EPIC/EPIC";
 import Favorites from "./pages/Favorites/Favorites";
 import NotFound from "./pages/NotFound/NotFound";
 import About from "./pages/About/About";
+import FAQ from "./pages/FAQ/FAQ";
 
 
 import NeoWS from "./pages/NEOWATCH/NeoWS";
 import Login from "./pages/Login/Login";      
 import Register from "./pages/Register/Register"; 
-import Admin from "./pages/Admin/Admin";
-import Profile from "./pages/Profile/Profile";
 
 
 function App() {
@@ -30,17 +28,12 @@ function App() {
           <Route path="epic" element={<EPIC />} />
           <Route path="neowatch" element={<NeoWS />} />
           <Route path="favorites" element={<Favorites />} />
-          <Route path="admin" element={<Admin />} />
-          <Route path="profile" element={<Profile />} />
+          <Route path="login" element={<Login />} />   
+          <Route path="register" element={<Register />} />
           <Route path="*" element={<NotFound />} />
           <Route path="about" element={<About />} />
+          <Route path="faq" element={<FAQ />} />
         </Route>
-
-        <Route element={<LoginLayout />}>
-          <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
-        </Route>
-        
       </Routes>
     </BrowserRouter>
   );
