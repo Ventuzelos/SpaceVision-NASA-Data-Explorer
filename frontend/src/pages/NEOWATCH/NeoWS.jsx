@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import Container from "../../components/common/Container/Container";
+import BennuViewer from "../../components/NeoWS/BennuViewer/BennuViewer";
 import NeoDateRangeFilter from "../../components/NeoWS/NeoDateRangeFilter/NeoDateRangeFilter";
 import NeoStats from "../../components/NeoWS/NeoStats/NeoStats";
 import NeoSortControl from "../../components/NeoWS/NeoSortControl/NeoSortControl";
@@ -98,18 +99,25 @@ function NeoWS() {
     <section className="neows-page">
       <Container>
         <header className="neows-page__header">
-          <span className="neows-page__eyebrow">
-            NeoWS · Near-Earth Objects
-          </span>
+  <div className="neows-page__intro">
+    <span className="neows-page__eyebrow">
+      NeoWS · Near-Earth Objects
+    </span>
 
-          <h1>NEO Watch — Objetos Próximos da Terra</h1>
+    <h1>Objetos Próximos da Terra</h1>
 
-          <p>
-            Consulta asteroides e cometas cuja órbita os traz perto da Terra,
-            com estatísticas agregadas e destaque para os objetos
-            potencialmente perigosos monitorizados pela NASA.
-          </p>
-        </header>
+    <p>
+      Consulta asteroides e cometas cuja órbita os traz perto da Terra,
+      com estatísticas agregadas e destaque para os objetos
+      potencialmente perigosos monitorizados pela NASA.
+    </p>
+  </div>
+
+ <div className="neows-page__viewer">
+    <BennuViewer />
+  </div>
+  
+</header>
 
         <NeoDateRangeFilter
           startDate={startDate}
@@ -126,8 +134,7 @@ function NeoWS() {
 
         {!loading && !error && objects.length === 0 && (
           <p className="neows-page__empty">
-            Não foram encontrados objetos para este período. Experimenta outro
-            intervalo de datas.
+            Não foram encontrados objetos para este período. Experimenta outro intervalo de datas.
           </p>
         )}
 
@@ -139,22 +146,24 @@ function NeoWS() {
           />
         )}
 
-        <div className="neows-page__grid">
-          {loading &&
-            Array.from({ length: 6 }).map((_, index) => (
-              <NeoSkeleton key={index} />
-            ))}
+        <div className="neows-page__list-panel">
+          <div className="neows-page__grid">
+            {loading &&
+              Array.from({ length: 6 }).map((_, index) => (
+                <NeoSkeleton key={index} />
+              ))}
 
-          {!loading &&
-            !error &&
-            paginatedObjects.map((neo) => (
-              <NeoCard
-                key={neo.id}
-                neo={neo}
-                isFavorite={favoriteKeys.has(neo.id)}
-                onToggleFavorite={handleToggleFavorite}
-              />
-            ))}
+            {!loading &&
+              !error &&
+              paginatedObjects.map((neo) => (
+                <NeoCard
+                  key={neo.id}
+                  neo={neo}
+                  isFavorite={favoriteKeys.has(neo.id)}
+                  onToggleFavorite={handleToggleFavorite}
+                />
+              ))}
+          </div>
         </div>
 
         {!loading && !error && shouldShowPagination && (

@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import Button from "../Button/Button";
+import { saveContactMessage } from "../../../services/messagesService";
 
 import "./ContactForm.css";
 
@@ -53,6 +54,8 @@ function ContactForm() {
       // existir um endpoint de contacto, ex:
       // await axios.post("/api/contact", values);
       await new Promise((resolve) => setTimeout(resolve, 900));
+
+      saveContactMessage(values);
 
       setStatus("success");
       setValues(initialValues);
