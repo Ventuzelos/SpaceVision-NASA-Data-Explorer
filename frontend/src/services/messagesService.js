@@ -33,3 +33,9 @@ export function getContactMessages() {
 export function getContactMessagesCount() {
   return getStoredMessages().length;
 }
+
+export function getContactMessagesByEmail(email) {
+  return getStoredMessages().filter(
+    (msg) => msg.email.toLowerCase() === email.toLowerCase()
+  );
+}
