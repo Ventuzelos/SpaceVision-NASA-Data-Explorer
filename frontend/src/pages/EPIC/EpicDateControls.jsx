@@ -6,6 +6,7 @@ export default function EpicDateControls({ date, onDateChange, onLoad, onLatest 
         <input
           type="date"
           value={date}
+          max={new Date().toISOString().split('T')[0]}
           onChange={(e) => onDateChange(e.target.value)}
         />
       </div>
