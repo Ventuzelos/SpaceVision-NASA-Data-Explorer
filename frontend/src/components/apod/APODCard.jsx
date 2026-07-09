@@ -67,7 +67,7 @@ function APODCard({ apod }) {
         )}
       </div>
 
-      <div>
+      <div className="apod-card__content">
         <div className="apod-card__badges">
           <span className="badge">
             <Icon name="Calendar" size={16} />
