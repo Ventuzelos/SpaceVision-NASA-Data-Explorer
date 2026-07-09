@@ -15,7 +15,7 @@
     --violet-dim:rgba(155,140,249,0.35);
     --text:#e3eaf5;
     --text-dim:#93a1c0;
-    --text-faint:#5c6a8c;
+    --text-faint:#828fb2;
     --red:#f0645c;
     --green:#6ee7b7;
     --disp:var(--font-family);
@@ -29,21 +29,6 @@
     -webkit-font-smoothing:antialiased; }
 .epic-page a { color:inherit; }
 .epic-page::selection, .epic-page *::selection { background:var(--glow-dim);color:var(--cloud); }
-/* ============ NAV ============ */
-.epic-page nav { position:sticky;top:0;z-index:40;
-    display:flex;align-items:center;justify-content:space-between;
-    padding:18px clamp(20px,5vw,64px);
-    background:rgba(6,10,18,0.78);
-    backdrop-filter:blur(10px);
-    border-bottom:1px solid var(--line); }
-.epic-page .brand { display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:12px;letter-spacing:0.12em;color:var(--text-dim); }
-.epic-page .brand .dot { width:7px;height:7px;border-radius:50%;background:var(--glow);box-shadow:0 0 8px var(--glow); }
-.epic-page .navlinks { display:flex;gap:28px;font-size:13px;color:var(--text-dim);font-family:var(--mono); }
-.epic-page .navlinks a { transition:color .2s; }
-.epic-page .navlinks a:hover { color:var(--glow-soft); }
-@media(max-width:700px) {
-  .epic-page .navlinks { display:none; }
-}
 /* ============ HERO ============ */
 .epic-page .hero { position:relative;z-index:1;
     display:grid;grid-template-columns:1fr 1fr;gap:48px;
@@ -253,38 +238,6 @@
   border-color:transparent;
 }
 
-/* ============ THUMBNAIL GRID (overrides the shared .rover-grid/.rover-img-wrap
-   rules — !important because the global stylesheet's cascade layer/load order
-   otherwise wins regardless of selector specificity) ============ */
-
-.epic-page .rover-grid {
-  display:grid !important;
-  grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)) !important;
-  gap:14px !important;
-  padding:18px 22px 22px !important;
-}
-.epic-page .rover-img-wrap {
-  position:relative !important;
-  aspect-ratio:1/1 !important;
-  width:auto !important;height:auto !important;
-  border-radius:10px !important;
-  overflow:hidden !important;
-  cursor:pointer;
-  border:1px solid var(--line-strong);
-  background:var(--panel-2);
-  transition:border-color .2s, transform .2s;
-}
-.epic-page .rover-img-wrap:hover {
-  border-color:var(--glow);
-  transform:translateY(-3px);
-}
-.epic-page .rover-img {
-  width:100% !important;height:100% !important;
-  object-fit:cover !important;
-  display:block !important;
-  border-radius:0 !important;
-}
-
 .epic-page .grid-wrap {
   padding:18px 22px 22px;
 }
@@ -344,12 +297,7 @@
 }
 .epic-lightbox img { max-width:min(90vw,900px);max-height:88vh;border-radius:10px;box-shadow:0 0 60px rgba(56,208,240,0.15); }
 
-.epic-page footer { margin-top:100px;padding:34px clamp(20px,5vw,64px);border-top:1px solid var(--line);
-    display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;
-    font-family:var(--mono);font-size:11px;color:var(--text-faint); }
-
-
-    /* ============ Overlay de hora nas miniaturas ============ */
+/* ============ Overlay de hora nas miniaturas ============ */
 .epic-page .thumb-time {
   position: absolute;
   bottom: 0; left: 0; right: 0;

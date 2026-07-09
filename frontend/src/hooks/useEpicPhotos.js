@@ -10,12 +10,13 @@ function todayStr() {
 }
 
 function toDetail(photo, date) {
+  const time = photo.date ? photo.date.split(' ')[1]?.substring(0, 5) : '';
   return {
     image: photo.image,
     date,
     url: buildImageUrl(photo, date),
-    caption: photo.caption || photo.image,
-    time: photo.date ? photo.date.split(' ')[1]?.substring(0, 5) : '',
+    caption: photo.caption || `Vista completa da Terra captada pela EPIC${time ? ` às ${time} UTC` : ''}`,
+    time,
     lat: photo.centroid_coordinates?.lat?.toFixed(1) || '',
     lon: photo.centroid_coordinates?.lon?.toFixed(1) || '',
   };
