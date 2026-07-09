@@ -1,15 +1,10 @@
 .btn {
   border: none;
   cursor: pointer;
-
-  padding: 0.9rem 1.6rem;
-
+  padding: 0.5rem 1.6rem;
   border-radius: var(--radius-md);
-
   font-weight: 600;
-
   transition: var(--transition-normal);
-
   font-family: var(--font-family);
 }
 
