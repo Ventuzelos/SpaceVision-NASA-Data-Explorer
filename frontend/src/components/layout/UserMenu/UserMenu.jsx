@@ -22,9 +22,13 @@ function UserMenu({ user }) {
 
   return (
     <div className="user-menu">
-      {user.isAdmin && (
+      {user.isAdmin ? (
         <Link to="/admin">
           <Button variant="secondary">Painel Admin</Button>
+        </Link>
+      ) : (
+        <Link to="/profile">
+          <Button variant="secondary">Perfil</Button>
         </Link>
       )}
       <Link to="/favorites">
