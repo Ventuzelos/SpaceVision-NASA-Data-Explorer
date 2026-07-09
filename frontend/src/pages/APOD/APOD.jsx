@@ -3,6 +3,8 @@ import Container from "../../components/common/Container/Container";
 import APODCard from "../../components/apod/APODCard";
 import { getApod } from "../../services/apodService";
 import APODSkeleton from "../../components/apod/APODSkeleton/APODSkeleton";
+import Breadcrumb from "../../components/common/Breadcrumb/Breadcrumb";
+import Section from "../../components/common/Section/Section";
 import "./APOD.css";
 
 function APOD() {
@@ -29,26 +31,28 @@ function APOD() {
     <main className="apod-page">
       <section className="apod-hero">
         <Container>
-          <p className="apod-hero__label">NASA Astronomy Picture of the Day</p>
+          <Breadcrumb />
 
-          <h1>Imagem astronómica do dia</h1>
-
-          <p className="apod-hero__text">
-            Explora diariamente uma imagem real da NASA, acompanhada da sua
-            explicação científica.
-          </p>
+          <Section
+            eyebrow="NASA Astronomy Picture of the Day"
+            title="Imagem astronómica do dia"
+            description="Explora diariamente uma imagem real da NASA, acompanhada da sua explicação científica."
+          />
         </Container>
       </section>
 
-      <section className="apod-content">
-        <Container>
+      <Container>
+        <Section
+          title="Imagem em destaque"
+          description="Conteúdo atualizado diariamente através da API oficial da NASA."
+        >
           {isLoading && <APODSkeleton />}
 
           {error && <p className="apod-error">{error}</p>}
 
           {apod && <APODCard apod={apod} />}
-        </Container>
-      </section>
+        </Section>
+      </Container>
     </main>
   );
 }
