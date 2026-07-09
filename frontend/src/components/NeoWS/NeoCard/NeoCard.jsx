@@ -39,72 +39,90 @@ function formatDiameterRange(min, max) {
 }
 
 function NeoCard({ neo, isFavorite, onToggleFavorite }) {
+  const riskLabel = neo.isHazardous ? "Risco: Alto" : "Risco: Baixo";
+
   return (
     <article
       className={`neo-card ${neo.isHazardous ? "neo-card--hazard" : ""}`}
     >
-      {neo.isHazardous && (
-        <span className="neo-card__hazard-tag">
-          <Icon name="AlertCircle" size={16} />
-          Potencialmente perigoso
-        </span>
-      )}
+      <div className="neo-card__avatar" aria-hidden="true">
+        <Icon name={neo.isHazardous ? "AlertCircle" : "Satellite"} size={20} />
+      </div>
 
-      <div className="neo-card__header">
-        <h3 className="neo-card__title">{neo.name}</h3>
+      <div className="neo-card__main">
+        <div className="neo-card__title-row">
+          <h3 className="neo-card__title">{neo.name}</h3>
+          {neo.isHazardous && (
+            <span className="neo-card__hazard-tag">
+              <Icon name="AlertCircle" size={12} />
+              Potencialmente perigoso
+            </span>
+          )}
+        </div>
 
+        <p className="neo-card__date">
+          Aproximação: {formatDate(neo.closeApproachDate)}
+        </p>
+
+        <ul className="neo-card__meta">
+          <li>
+            <span>Distância (miss distance)</span>
+            <strong>{formatNumber(neo.missDistanceKm, " km")}</strong>
+          </li>
+
+          <li>
+            <span>Distância lunar</span>
+            <strong>
+              {neo.missDistanceLunar != null
+                ? `${neo.missDistanceLunar.toFixed(1)} LD`
+                : "N/D"}
+            </strong>
+          </li>
+
+          <li>
+            <span>Diâmetro estimado</span>
+            <strong>
+              {formatDiameterRange(neo.diameterMinKm, neo.diameterMaxKm)}
+            </strong>
+          </li>
+
+          <li>
+            <span>Velocidade relativa</span>
+            <strong>{formatNumber(neo.velocityKmH, " km/h")}</strong>
+          </li>
+        </ul>
+
+        {neo.jplUrl && (
+          <a
+            className="neo-card__link"
+            href={neo.jplUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Ver no JPL
+            <Icon name="ArrowRight" size={14} />
+          </a>
+        )}
+      </div>
+
+      <div className="neo-card__side">
         <FavoriteButton
           active={isFavorite}
           onClick={() => onToggleFavorite(neo)}
+          size={16}
           ariaLabel={
             isFavorite ? "Remover dos favoritos" : "Adicionar aos favoritos"
           }
         />
-      </div>
 
-      <p className="neo-card__date">
-        Aproximação: {formatDate(neo.closeApproachDate)}
-      </p>
-
-      <ul className="neo-card__meta">
-        <li>
-          <span>Distância (miss distance)</span>
-          <strong>{formatNumber(neo.missDistanceKm, " km")}</strong>
-        </li>
-
-        <li>
-          <span>Distância lunar</span>
-          <strong>
-            {neo.missDistanceLunar != null
-              ? `${neo.missDistanceLunar.toFixed(1)} LD`
-              : "N/D"}
-          </strong>
-        </li>
-
-        <li>
-          <span>Diâmetro estimado</span>
-          <strong>
-            {formatDiameterRange(neo.diameterMinKm, neo.diameterMaxKm)}
-          </strong>
-        </li>
-
-        <li>
-          <span>Velocidade relativa</span>
-          <strong>{formatNumber(neo.velocityKmH, " km/h")}</strong>
-        </li>
-      </ul>
-
-      {neo.jplUrl && (
-        <a
-          className="neo-card__link"
-          href={neo.jplUrl}
-          target="_blank"
-          rel="noreferrer"
+        <span
+          className={`neo-card__risk ${
+            neo.isHazardous ? "neo-card__risk--high" : "neo-card__risk--low"
+          }`}
         >
-          Ver no JPL
-          <Icon name="ArrowRight" size={16} />
-        </a>
-      )}
+          {riskLabel}
+        </span>
+      </div>
     </article>
   );
 }
