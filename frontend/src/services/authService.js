@@ -1,6 +1,12 @@
 const USERS_KEY = "spacevision_users";
 const SESSION_KEY = "spacevision_session";
 
+// Conta de administrador pré-definida. Em produção isto devia vir do
+// back-end, mas como o projeto ainda não tem autenticação real do lado
+// do servidor, semeamos uma conta admin no localStorage.
+const ADMIN_EMAIL = "admin@spacevision.com";
+const ADMIN_DEFAULT_PASSWORD = "Admin123";
+
 function getUsers() {
   const users = localStorage.getItem(USERS_KEY);
   return users ? JSON.parse(users) : [];
@@ -10,8 +16,33 @@ function saveUsers(users) {
   localStorage.setItem(USERS_KEY, JSON.stringify(users));
 }
 
+function ensureAdminSeed() {
+  const users = getUsers();
+  const hasAdmin = users.some(
+    (user) => user.email.toLowerCase() === ADMIN_EMAIL
+  );
+
+  if (!hasAdmin) {
+    users.push({
+      id: "admin-seed",
+      name: "Administrador",
+      email: ADMIN_EMAIL,
+      password: ADMIN_DEFAULT_PASSWORD,
+      isAdmin: true,
+    });
+    saveUsers(users);
+  }
+}
+
+ensureAdminSeed();
+
 function setSession(user) {
-  const session = { id: user.id, name: user.name, email: user.email };
+  const session = {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    isAdmin: !!user.isAdmin || user.email.toLowerCase() === ADMIN_EMAIL,
+  };
   localStorage.setItem(SESSION_KEY, JSON.stringify(session));
   window.dispatchEvent(new Event("authUpdated"));
   return session;
@@ -69,4 +100,15 @@ export function getCurrentUser() {
 
 export function isAuthenticated() {
   return !!getCurrentUser();
+}
+
+export function isAdmin() {
+  const user = getCurrentUser();
+  return !!user?.isAdmin;
+}
+
+export function getRegisteredUsersCount() {
+  // Não contamos a conta de administrador semeada como "conta registada".
+  return getUsers().filter((user) => user.email.toLowerCase() !== ADMIN_EMAIL)
+    .length;
 }
