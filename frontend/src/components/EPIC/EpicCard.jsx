@@ -18,7 +18,8 @@ export default function EpicCard({ detail, onImageClick }) {
           alt={caption}
           onClick={onImageClick}
           style={{
-            maxWidth: '100%',
+            width: '100%',
+            maxWidth: '380px',
             borderRadius: 'var(--radius-md)',
             display: 'block',
             margin: '0 auto',
