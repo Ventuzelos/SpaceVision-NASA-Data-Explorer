@@ -112,3 +112,48 @@ export function getRegisteredUsersCount() {
   return getUsers().filter((user) => user.email.toLowerCase() !== ADMIN_EMAIL)
     .length;
 }
+
+export function updateCurrentUser({ name, email }) {
+  const currentUser = getCurrentUser();
+
+  if (!currentUser) {
+    throw new Error("Não existe sessão iniciada.");
+  }
+
+  const users = getUsers();
+
+  const emailTaken = users.some(
+    (user) =>
+      user.id !== currentUser.id &&
+      user.email.toLowerCase() === email.toLowerCase()
+  );
+
+  if (emailTaken) {
+    throw new Error("Já existe uma conta com este email.");
+  }
+
+  const updatedUsers = users.map((user) =>
+    user.id === currentUser.id ? { ...user, name, email } : user
+  );
+
+  saveUsers(updatedUsers);
+
+  const updatedUser = updatedUsers.find((user) => user.id === currentUser.id);
+  return setSession(updatedUser);
+}
+
+export function deleteCurrentUser() {
+  const currentUser = getCurrentUser();
+
+  if (!currentUser) {
+    throw new Error("Não existe sessão iniciada.");
+  }
+
+  const remainingUsers = getUsers().filter(
+    (user) => user.id !== currentUser.id
+  );
+  saveUsers(remainingUsers);
+
+  localStorage.removeItem(SESSION_KEY);
+  window.dispatchEvent(new Event("authUpdated"));
+}
