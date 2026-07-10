@@ -32,7 +32,7 @@ function extractErrorMessage(err) {
   );
 }
 
-export function useEpicPhotos(apiKey) {
+export function useEpicPhotos() {
   const [photos, setPhotos] = useState([]);
   const [date, setDate] = useState(todayStr());
   const [selected, setSelected] = useState(null);
@@ -49,7 +49,7 @@ export function useEpicPhotos(apiKey) {
     setLoading(true);
     setError(null);
     try {
-      const data = await fetchEpicLatest(apiKey);
+      const data = await fetchEpicLatest();
       if (!Array.isArray(data) || !data.length) {
         throw new Error('Sem imagens disponíveis.');
       }
@@ -69,7 +69,7 @@ export function useEpicPhotos(apiKey) {
     setLoading(true);
     setError(null);
     try {
-      const data = await fetchEpicByDate(targetDate, apiKey);
+      const data = await fetchEpicByDate(targetDate);
       if (!Array.isArray(data) || !data.length) {
         throw new Error('Sem imagens para esta data. Tenta outra data.');
       }

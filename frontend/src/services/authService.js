@@ -1,159 +1,51 @@
-const USERS_KEY = "spacevision_users";
-const SESSION_KEY = "spacevision_session";
+import backendApi from "./backendApi";
 
-// Conta de administrador pré-definida. Em produção isto devia vir do
-// back-end, mas como o projeto ainda não tem autenticação real do lado
-// do servidor, semeamos uma conta admin no localStorage.
-const ADMIN_EMAIL = "admin@spacevision.com";
-const ADMIN_DEFAULT_PASSWORD = "Admin123";
+const TOKEN_KEY = "spacevision_token";
 
-function getUsers() {
-  const users = localStorage.getItem(USERS_KEY);
-  return users ? JSON.parse(users) : [];
-}
+export async function loginUser(credentials) {
+  const response = await backendApi.post("/login", credentials);
 
-function saveUsers(users) {
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
-}
+  const { user, token } = response.data;
 
-function ensureAdminSeed() {
-  const users = getUsers();
-  const hasAdmin = users.some(
-    (user) => user.email.toLowerCase() === ADMIN_EMAIL
-  );
+  sessionStorage.setItem(TOKEN_KEY, token);
 
-  if (!hasAdmin) {
-    users.push({
-      id: "admin-seed",
-      name: "Administrador",
-      email: ADMIN_EMAIL,
-      password: ADMIN_DEFAULT_PASSWORD,
-      isAdmin: true,
-    });
-    saveUsers(users);
-  }
-}
-
-ensureAdminSeed();
-
-function setSession(user) {
-  const session = {
-    id: user.id,
-    name: user.name,
-    email: user.email,
-    isAdmin: !!user.isAdmin || user.email.toLowerCase() === ADMIN_EMAIL,
+  return {
+    user,
+    token,
   };
-  localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-  window.dispatchEvent(new Event("authUpdated"));
-  return session;
 }
 
-export function registerUser({ name, email, password }) {
-  const users = getUsers();
+export async function registerUser(userData) {
+  const response = await backendApi.post("/register", userData);
 
-  const exists = users.some(
-    (user) => user.email.toLowerCase() === email.toLowerCase()
-  );
+  const { user, token } = response.data;
 
-  if (exists) {
-    throw new Error("Já existe uma conta com este email.");
-  }
+  sessionStorage.setItem(TOKEN_KEY, token);
 
-  const newUser = {
-    id: Date.now().toString(),
-    name,
-    email,
-    password,
+  return {
+    user,
+    token,
   };
-
-  users.push(newUser);
-  saveUsers(users);
-
-  return setSession(newUser);
 }
 
-export function loginUser({ email, password }) {
-  const users = getUsers();
+export async function getAuthenticatedUser() {
+  const response = await backendApi.get("/user");
 
-  const user = users.find(
-    (item) =>
-      item.email.toLowerCase() === email.toLowerCase() &&
-      item.password === password
-  );
+  return response.data;
+}
 
-  if (!user) {
-    throw new Error("Email ou palavra-passe incorretos.");
+export async function logoutUser() {
+  try {
+    await backendApi.post("/logout");
+  } finally {
+    sessionStorage.removeItem(TOKEN_KEY);
   }
-
-  return setSession(user);
 }
 
-export function logoutUser() {
-  localStorage.removeItem(SESSION_KEY);
-  window.dispatchEvent(new Event("authUpdated"));
+export function getToken() {
+  return sessionStorage.getItem(TOKEN_KEY);
 }
 
-export function getCurrentUser() {
-  const session = localStorage.getItem(SESSION_KEY);
-  return session ? JSON.parse(session) : null;
-}
-
-export function isAuthenticated() {
-  return !!getCurrentUser();
-}
-
-export function isAdmin() {
-  const user = getCurrentUser();
-  return !!user?.isAdmin;
-}
-
-export function getRegisteredUsersCount() {
-  // Não contamos a conta de administrador semeada como "conta registada".
-  return getUsers().filter((user) => user.email.toLowerCase() !== ADMIN_EMAIL)
-    .length;
-}
-
-export function updateCurrentUser({ name, email }) {
-  const currentUser = getCurrentUser();
-
-  if (!currentUser) {
-    throw new Error("Não existe sessão iniciada.");
-  }
-
-  const users = getUsers();
-
-  const emailTaken = users.some(
-    (user) =>
-      user.id !== currentUser.id &&
-      user.email.toLowerCase() === email.toLowerCase()
-  );
-
-  if (emailTaken) {
-    throw new Error("Já existe uma conta com este email.");
-  }
-
-  const updatedUsers = users.map((user) =>
-    user.id === currentUser.id ? { ...user, name, email } : user
-  );
-
-  saveUsers(updatedUsers);
-
-  const updatedUser = updatedUsers.find((user) => user.id === currentUser.id);
-  return setSession(updatedUser);
-}
-
-export function deleteCurrentUser() {
-  const currentUser = getCurrentUser();
-
-  if (!currentUser) {
-    throw new Error("Não existe sessão iniciada.");
-  }
-
-  const remainingUsers = getUsers().filter(
-    (user) => user.id !== currentUser.id
-  );
-  saveUsers(remainingUsers);
-
-  localStorage.removeItem(SESSION_KEY);
-  window.dispatchEvent(new Event("authUpdated"));
+export function removeToken() {
+  sessionStorage.removeItem(TOKEN_KEY);
 }
