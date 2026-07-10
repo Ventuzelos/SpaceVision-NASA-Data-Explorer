@@ -16,6 +16,20 @@ class NasaController extends Controller
     ) {
     }
 
+   public function apod(Request $request)
+{
+    $validated = $request->validate([
+        'date' => ['nullable', 'date'],
+    ]);
+
+    $response = $this->nasa()->get('/planetary/apod', $validated);
+
+    return response()->json(
+        $response->json(),
+        $response->status()
+    );
+}
+    public function epic()
     public function apod(Request $request): JsonResponse
     {
         $validated = $request->validate([
