@@ -1,6 +1,13 @@
 ﻿import EpicSkeleton from '../../components/EPIC/EpicSkeleton/EpicSkeleton';
+import EpicThumbnail from '../../components/EPIC/EpicThumbnail';
+import Pagination from '../../components/common/Pagination/Pagination';
+import { usePagination } from '../../hooks/usePagination';
 
 export default function EpicPanel({ photos, loading, error, date, onSelect, onRetry }) {
+  const {
+    paginatedItems, currentPage, totalPages, setPage,
+  } = usePagination(photos || [], 8);
+
   if (loading) {
     return <EpicSkeleton />;
   }
@@ -29,10 +36,8 @@ export default function EpicPanel({ photos, loading, error, date, onSelect, onRe
     );
   }
 
-  const [y, m, d] = date.split('-');
-
   return (
-    <>
+    <div className="thumb-panel">
       <div className="meta-row">
         <span className="tag tag-glow">{photos.length} CAPTURAS</span>
         <span className="tag tag-green">DSCOVR · L1</span>
@@ -40,39 +45,12 @@ export default function EpicPanel({ photos, loading, error, date, onSelect, onRe
       </div>
       <div className="grid-wrap">
         <div className="thumb-grid">
-          {photos.map((p, i) => {
-            const thumbUrl = `https://epic.gsfc.nasa.gov/archive/natural/${y}/${m}/${d}/thumbs/${p.image}.jpg`;
-            const fullUrl = `https://epic.gsfc.nasa.gov/archive/natural/${y}/${m}/${d}/png/${p.image}.png`;
-            const time = p.date ? p.date.split(' ')[1]?.substring(0, 5) : '';
-            const handleSelect = () => onSelect({
-              url: fullUrl,
-              caption: p.caption || p.image,
-              time,
-              lat: p.centroid_coordinates?.lat?.toFixed(1) || '',
-              lon: p.centroid_coordinates?.lon?.toFixed(1) || '',
-            });
-            return (
-              <div
-                key={p.image + i}
-                className="thumb"
-                title={p.caption || ''}
-                onClick={handleSelect}
-              >
-                <img
-                  src={thumbUrl}
-                  alt={p.image}
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = fullUrl;
-                    e.target.style.objectFit = 'contain';
-                  }}
-                />
-                <div className="t">{time} UTC</div>
-              </div>
-            );
-          })}
+          {paginatedItems.map((p, i) => (
+            <EpicThumbnail key={p.image + i} photo={p} date={date} onSelect={onSelect} />
+          ))}
         </div>
+        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setPage} />
       </div>
-    </>
+    </div>
   );
 }
