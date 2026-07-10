@@ -10,8 +10,7 @@ function CTASection() {
         <h2>Pronto para explorar o Universo?</h2>
 
         <p>
-          Começa pela imagem astronómica do dia ou explora fotografias reais
-          captadas em Marte.
+          Começa pela imagem astronómica do dia ou navega pelas nossas APIs.
         </p>
 
         <div className="cta-section__actions">
