@@ -26,6 +26,6 @@ export const nasaApis = [
     title: "NeoWs",
     description: "Near Earth Object Web Service",
     image: neowsImage,
-    link: "/neows",
+    link: "/neowatch",
   },
 ];
