@@ -1,6 +1,16 @@
 import api from "./api";
 
 export async function getApod() {
-  const { data } = await api.get("/apod");
-  return data;
+  const response = await api.get("/apod");
+  return response.data;
+}
+
+export async function getApodByDate(date) {
+  const response = await api.get("/apod", {
+    params: {
+      date,
+    },
+  });
+
+  return response.data;
 }
