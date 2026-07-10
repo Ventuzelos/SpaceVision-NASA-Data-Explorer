@@ -16,13 +16,19 @@ class NasaController extends Controller
             ]);
     }
 
-    public function apod()
-    {
-        $response = $this->nasa()->get('/planetary/apod');
+   public function apod(Request $request)
+{
+    $validated = $request->validate([
+        'date' => ['nullable', 'date'],
+    ]);
 
-        return response()->json($response->json(), $response->status());
-    }
+    $response = $this->nasa()->get('/planetary/apod', $validated);
 
+    return response()->json(
+        $response->json(),
+        $response->status()
+    );
+}
     public function epic()
     {
         $response = $this->nasa()->get('/EPIC/api/natural');

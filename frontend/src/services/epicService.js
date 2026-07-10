@@ -1,33 +1,39 @@
-// Servico EPIC para obter metadados e construir URLs de imagens
+// Serviço EPIC para obter metadados e construir URLs de imagens
 
 import api from "./api";
 
-export async function fetchEpicByDate(date) {
-  const res = await api.get(`/epic/${date}`);
-  return res.data;
+export async function fetchEpicLatest() {
+  const response = await api.get("/epic");
+  return response.data;
 }
 
-export async function fetchEpicByDate(date, apiKey) {
-  const res = await api.get(`/EPIC/api/natural/date/${date}`, {
-    params: { api_key: apiKey || NASA_API_KEY },
-  });
-  return res.data;
+export async function fetchEpicByDate(date) {
+  const response = await api.get(`/epic/${date}`);
+  return response.data;
 }
 
 export function buildImageUrl(photo, date) {
-  const d = date || (photo?.date && photo.date.split(' ')[0]);
-  if (!d) return '';
-  const [y, m, day] = d.split('-');
-  // Imagem em alta resolucao (PNG)
-  return `https://epic.gsfc.nasa.gov/archive/natural/${y}/${m}/${day}/png/${photo.image}.png`;
+  const resolvedDate = date || photo?.date?.split(" ")[0];
+
+  if (!resolvedDate || !photo?.image) {
+    return "";
+  }
+
+  const [year, month, day] = resolvedDate.split("-");
+
+  return `https://epic.gsfc.nasa.gov/archive/natural/${year}/${month}/${day}/png/${photo.image}.png`;
 }
 
 export function buildThumbUrl(photo, date) {
-  const d = date || (photo?.date && photo.date.split(' ')[0]);
-  if (!d) return '';
-  const [y, m, day] = d.split('-');
-  // Miniatura real (pasta thumbs), muito mais leve que a imagem completa
-  return `https://epic.gsfc.nasa.gov/archive/natural/${y}/${m}/${day}/thumbs/${photo.image}.jpg`;
+  const resolvedDate = date || photo?.date?.split(" ")[0];
+
+  if (!resolvedDate || !photo?.image) {
+    return "";
+  }
+
+  const [year, month, day] = resolvedDate.split("-");
+
+  return `https://epic.gsfc.nasa.gov/archive/natural/${year}/${month}/${day}/thumbs/${photo.image}.jpg`;
 }
 
 const epicService = {
