@@ -16,7 +16,7 @@ Uma aplicação web moderna para explorar as APIs públicas da NASA através de 
 
 O **SpaceVision** é uma aplicação web desenvolvida para permitir aos utilizadores explorar dados reais disponibilizados pela NASA através das suas APIs oficiais.
 
-A aplicação reúne diferentes serviços da NASA numa única plataforma, permitindo visualizar imagens astronómicas, fotografias captadas pelos rovers em Marte, imagens da Terra e outros conteúdos relacionados com o espaço.
+A aplicação reúne diferentes serviços da NASA numa única plataforma, permitindo visualizar imagens astronómicas, eventos de meteorologia espacial, imagens da Terra, asteroides próximos do planeta e outros conteúdos relacionados com o espaço.
 
 Este projeto está a ser desenvolvido como **Projeto Final** do curso **Software Developer** do **CESAE Digital**, combinando conhecimentos de UX/UI Design, Front-End, Back-End e integração de APIs.
 
@@ -36,14 +36,21 @@ Este projeto está a ser desenvolvido como **Projeto Final** do curso **Software
 ## APIs da NASA
 
 - Astronomy Picture of the Day (APOD)
-- Mars Rover Photos
-- EPIC (Earth Polychromatic Imaging Camera)
-- Near Earth Objects *(Em desenvolvimento)*
+- DONKI — eventos de meteorologia espacial
+- EPIC — Earth Polychromatic Imaging Camera
+- NeoWs — Near Earth Objects
+- NASA Image and Video Library
 
 ## Funcionalidades
 
-- Pesquisa
-- Favoritos
+- Consulta da imagem astronómica do dia
+- Pesquisa de imagens por data
+- Exploração de eventos de meteorologia espacial
+- Consulta de imagens da Terra
+- Consulta de asteroides próximos da Terra
+- Pesquisa de imagens e vídeos da NASA
+- Sistema de favoritos
+- Autenticação de utilizadores
 - Interface responsiva
 - Tema escuro
 
@@ -210,21 +217,23 @@ http://localhost:5173
 
 ## Sprint 2
 
-- [ ] Integração da API APOD
-- [ ] Integração da API Mars Rover
-- [ ] Integração da API EPIC
-- [ ] Galeria de Imagens
+- [x] Integração da API APOD
+- [x] Integração da API DONKI
+- [x] Integração da API EPIC
+- [x] Integração da API NeoWs
+- [x] Integração da NASA Image and Video Library
 
 ## Sprint 3
 
-- [ ] Sistema de Favoritos
-- [ ] Pesquisa
+- [x] Sistema de Favoritos
+- [x] Pesquisa
 - [ ] Filtros
 
 ## Sprint 4
 
 - [ ] Melhorias de Performance
 - [ ] Melhorias de Acessibilidade
+- [ ] Melhorias de Design
 - [ ] Testes finais
 
 ---
@@ -263,9 +272,6 @@ Toda a lógica relacionada com consumo de APIs encontra-se isolada na pasta **se
 
 *Em desenvolvimento*
 
-## Mars Rover
-
-*Em desenvolvimento*
 
 ---
 
@@ -274,9 +280,10 @@ Toda a lógica relacionada com consumo de APIs encontra-se isolada na pasta **se
 Este projeto utiliza as APIs públicas disponibilizadas pela NASA.
 
 - Astronomy Picture of the Day
-- Mars Rover Photos
 - EPIC
-- NASA Image Library
+- DONKI
+- NEOWATCH
+- NASA Image e Video Library
 
 Documentação oficial:
 
