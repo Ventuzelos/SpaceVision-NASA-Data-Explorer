@@ -4,9 +4,9 @@
 
 :root {
   /* Brand Colors */
-  --color-primary: #4F46E5;
-  --color-secondary: #7C3AED;
-  --color-accent: #0EA5E9;
+  --color-primary: linear-gradient(135deg, #7e47fd 0%, #4840f0 50%, #4f8df0 100%);
+  --color-secondary: #7e47fd;
+  --color-accent: #4f8df0;
 
   /* Semantic Colors */
   --color-success: #10B981;
@@ -32,6 +32,8 @@
 
   /* Typography */
   --font-family: "Inter", sans-serif;
+  /* Breadcrumb */
+  --font-size-2: 0.875rem;
 
   /* Spacing */
   --space-1: .25rem;

@@ -1,10 +1,35 @@
 // Cartão de detalhe — mostra a imagem completa da Terra (2048x2048)
 // junto com legenda e coordenadas do centro visível.
 
+import { useState, useEffect } from 'react';
+import FavoriteButton from '../common/FavoriteButton/FavoriteButton';
+import { isFavorite, toggleFavorite } from '../../services/favoritesService';
+
 export default function EpicCard({ detail, onImageClick }) {
+  const favoriteId = detail?.image ? `epic-${detail.image}` : null;
+  const [favorite, setFavorite] = useState(false);
+
+  useEffect(() => {
+    setFavorite(favoriteId ? isFavorite(favoriteId) : false);
+  }, [favoriteId]);
+
   if (!detail) return null;
 
-  const { url, caption, time, lat, lon } = detail;
+  const { url, caption, time, lat, lon, date } = detail;
+
+  function handleFavoriteClick() {
+    if (!favoriteId) return;
+    toggleFavorite({
+      id: favoriteId,
+      type: 'epic',
+      title: `EPIC · Terra${time ? ` (${time} UTC)` : ''}`,
+      date,
+      imageUrl: url,
+      hdUrl: url,
+      description: caption,
+    });
+    setFavorite((f) => !f);
+  }
 
   return (
     <div className="card">
@@ -13,19 +38,25 @@ export default function EpicCard({ detail, onImageClick }) {
         <span className="card-label">{time ? `${time} UTC` : ''}</span>
       </div>
       <div style={{ textAlign: 'center' }}>
-        <img
-          src={url}
-          alt={caption}
-          onClick={onImageClick}
-          style={{
-            width: '100%',
-            maxWidth: '380px',
-            borderRadius: 'var(--radius-md)',
-            display: 'block',
-            margin: '0 auto',
-            cursor: 'zoom-in',
-          }}
-        />
+        <div className="card-image-wrap" style={{ width: '100%', maxWidth: '640px' }}>
+          <img
+            src={url}
+            alt={caption}
+            onClick={onImageClick}
+            style={{
+              width: '100%',
+              borderRadius: 'var(--radius-md)',
+              display: 'block',
+              cursor: 'zoom-in',
+            }}
+          />
+          <FavoriteButton
+            active={favorite}
+            onClick={handleFavoriteClick}
+            size={18}
+            ariaLabel={favorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
+          />
+        </div>
         <div
           style={{
             marginTop: '12px',
@@ -38,7 +69,7 @@ export default function EpicCard({ detail, onImageClick }) {
           {lat && lon && (
             <div>Centro visível: {lat}° lat · {lon}° lon</div>
           )}
-          <div style={{ marginTop: '6px', color: 'var(--color-border)' }}>
+          <div style={{ marginTop: '6px', color: 'var(--color-text-secondary)' }}>
             Formato PNG 2048×2048 px
           </div>
         </div>

@@ -32,12 +32,11 @@ function NavLinks() {
 
       <NavLink to="/epic">Earth</NavLink>
 
-      <NavLink to="/neowatch">NEO Watch</NavLink>
-
-      <NavLink to="/gallery">Discover</NavLink>
+      <NavLink to="/gallery">Gallery</NavLink>
 
       <NavLink to="/about">Sobre nós</NavLink>
-        
+        <NavLink to="/neowatch">Discover</NavLink>
+      <NavLink to="/faq">FAQ</NavLink>
 
       <NavLink to="/favorites" className="favorites-link">
         Favorites
