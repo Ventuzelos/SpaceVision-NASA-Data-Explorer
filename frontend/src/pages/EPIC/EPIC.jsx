@@ -4,15 +4,16 @@ import { useEpicPhotos } from "../../hooks/useEpicPhotos";
 import EpicPanel from "./EpicPanel";
 import EpicDetail from "./EpicDetail";
 import EpicDateControls from "./EpicDateControls";
-import EpicHeroVideo from "../../components/EPIC/EpicHeroVideo";
-import EpicTimeline from "../../components/EPIC/EpicTimeline";
+import EpicHeroVideo from "../../components/epic/EpicHeroVideo";
+import EpicTimeline from "../../components/epic/EpicTimeline";
 
 import "./EPIC.css";
 
 export default function EPIC() {
   const [lightbox, setLightbox] = useState(null);
   const [pendingDate, setPendingDate] = useState("");
-
+  const [dateError, setDateError] = useState("");
+  const closeButtonRef = useRef(null);
   const lightboxRef = useRef(null);
   const previousFocusRef = useRef(null);
 
@@ -25,6 +26,8 @@ export default function EPIC() {
     error,
     loadLatest,
     loadByDate,
+    emptyMessage,
+    retryLastRequest,
   } = useEpicPhotos();
 
   useEffect(() => {
@@ -41,11 +44,15 @@ export default function EPIC() {
     }
 
     previousFocusRef.current = document.activeElement;
-    lightboxRef.current?.focus();
+    closeButtonRef.current?.focus();
 
     function handleKeyDown(event) {
       if (event.key === "Escape") {
         setLightbox(null);
+      }
+      if (event.key === "Tab") {
+        event.preventDefault();
+        closeButtonRef.current?.focus();
       }
     }
 
@@ -56,6 +63,31 @@ export default function EPIC() {
       previousFocusRef.current?.focus?.();
     };
   }, [lightbox]);
+
+  function handleLoadByDate() {
+    const today =
+      new Date().toISOString().split("T")[0];
+
+    if (!pendingDate) {
+      setDateError("Seleciona uma data.");
+      return;
+    }
+
+    if (pendingDate > today) {
+      setDateError(
+        "Não é possível consultar uma data futura."
+      );
+      return;
+    }
+
+    setDateError("");
+    loadByDate(pendingDate);
+  }
+
+  function handleLoadLatest() {
+    setDateError("");
+    loadLatest();
+  }
 
   return (
     <main className="epic-page">
@@ -197,9 +229,14 @@ export default function EPIC() {
 
             <EpicDateControls
               date={pendingDate}
-              onDateChange={setPendingDate}
-              onLoad={() => loadByDate(pendingDate)}
-              onLatest={loadLatest}
+              onDateChange={(value) => {
+                setPendingDate(value);
+                setDateError("");
+              }}
+              onLoad={handleLoadByDate}
+              onLatest={handleLoadLatest}
+              loading={loading}
+              validationError={dateError}
             />
           </div>
 
@@ -213,11 +250,11 @@ export default function EPIC() {
             <EpicPanel
               photos={photos}
               loading={loading}
-              loadingMsg="A carregar imagens..."
               error={error}
+              emptyMessage={emptyMessage}
               date={date}
               onSelect={setSelected}
-              onRetry={loadLatest}
+              onRetry={retryLastRequest}
             />
           </div>
         </section>
@@ -226,17 +263,48 @@ export default function EPIC() {
       {lightbox && (
         <div
           className="epic-lightbox"
-          onClick={() => setLightbox(null)}
           role="dialog"
           aria-modal="true"
-          aria-label={lightbox.caption || "Imagem EPIC ampliada"}
-          tabIndex={-1}
+          aria-labelledby="epic-lightbox-title"
+          aria-describedby="epic-lightbox-description"
+          onClick={() => setLightbox(null)}
           ref={lightboxRef}
         >
-          <img
-            src={lightbox.url}
-            alt={lightbox.caption || ""}
-          />
+          <div
+            className="epic-lightbox__content"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <h2
+              id="epic-lightbox-title"
+              className="sr-only"
+            >
+              Imagem EPIC ampliada
+            </h2>
+
+            <button
+              ref={closeButtonRef}
+              className="epic-lightbox__close"
+              type="button"
+              aria-label="Fechar imagem ampliada"
+              onClick={() => setLightbox(null)}
+            >
+              ×
+            </button>
+
+            <img
+              src={lightbox.url}
+              alt={lightbox.caption || "Imagem da Terra"}
+            />
+
+            {lightbox.caption && (
+              <p
+                id="epic-lightbox-description"
+                className="epic-lightbox__caption"
+              >
+                {lightbox.caption}
+              </p>
+            )}
+          </div>
         </div>
       )}
     </main>
