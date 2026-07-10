@@ -62,7 +62,7 @@ export function useEpicPhotos() {
     } finally {
       setLoading(false);
     }
-  }, [apiKey, applyPhotos]);
+  }, [applyPhotos]);
 
   const loadByDate = useCallback(async (targetDate) => {
     if (!targetDate) return;
@@ -81,7 +81,7 @@ export function useEpicPhotos() {
     } finally {
       setLoading(false);
     }
-  }, [apiKey, applyPhotos]);
+  }, [applyPhotos]);
 
   return {
     photos,
