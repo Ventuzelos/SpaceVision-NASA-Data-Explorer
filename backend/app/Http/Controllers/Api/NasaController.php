@@ -3,69 +3,131 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Services\NasaApiService;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\RequestException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 
 class NasaController extends Controller
 {
-    private function nasa()
-    {
-        return Http::baseUrl(config('services.nasa.base_url'))
-            ->withQueryParameters([
-                'api_key' => config('services.nasa.key'),
-            ]);
+    public function __construct(
+        private readonly NasaApiService $nasaApiService
+    ) {
     }
 
-    public function apod()
-    {
-        $response = $this->nasa()->get('/planetary/apod');
-
-        return response()->json($response->json(), $response->status());
-    }
-
-    public function epic()
-    {
-        $response = $this->nasa()->get('/EPIC/api/natural');
-
-        return response()->json($response->json(), $response->status());
-    }
-
-    public function epicByDate(string $date)
-    {
-        $response = $this->nasa()->get("/EPIC/api/natural/date/{$date}");
-
-        return response()->json($response->json(), $response->status());
-    }
-
-    public function neoFeed(Request $request)
+    public function apod(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'start_date' => ['required', 'date'],
-            'end_date' => ['required', 'date', 'after_or_equal:start_date'],
+            'date' => ['sometimes', 'date_format:Y-m-d'],
         ]);
 
-        $response = $this->nasa()->get('/neo/rest/v1/feed', $validated);
-
-        return response()->json($response->json(), $response->status());
+        return $this->getNasaResponse(
+            'planetary/apod',
+            $validated
+        );
     }
 
-    public function donki(Request $request, string $type)
+    public function epic(): JsonResponse
     {
-        $allowedTypes = ['FLR', 'CME', 'GST', 'SEP', 'HSS', 'notifications'];
+        return $this->getNasaResponse(
+            'EPIC/api/natural'
+        );
+    }
 
-        if (!in_array($type, $allowedTypes)) {
+    public function epicByDate(string $date): JsonResponse
+    {
+        validator(
+            ['date' => $date],
+            ['date' => ['required', 'date_format:Y-m-d']]
+        )->validate();
+
+        return $this->getNasaResponse(
+            "EPIC/api/natural/date/{$date}"
+        );
+    }
+
+    public function neoFeed(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'start_date' => [
+                'required',
+                'date_format:Y-m-d',
+            ],
+            'end_date' => [
+                'required',
+                'date_format:Y-m-d',
+                'after_or_equal:start_date',
+            ],
+        ]);
+
+        return $this->getNasaResponse(
+            'neo/rest/v1/feed',
+            $validated
+        );
+    }
+
+    public function donki(
+        Request $request,
+        string $type
+    ): JsonResponse {
+        $allowedTypes = [
+            'FLR',
+            'CME',
+            'GST',
+            'SEP',
+            'HSS',
+            'notifications',
+        ];
+
+        if (!in_array($type, $allowedTypes, true)) {
             return response()->json([
                 'message' => 'Tipo DONKI inválido.',
             ], 400);
         }
 
         $validated = $request->validate([
-            'startDate' => ['required', 'date'],
-            'endDate' => ['required', 'date', 'after_or_equal:startDate'],
+            'startDate' => [
+                'required',
+                'date_format:Y-m-d',
+            ],
+            'endDate' => [
+                'required',
+                'date_format:Y-m-d',
+                'after_or_equal:startDate',
+            ],
         ]);
 
-        $response = $this->nasa()->get("/DONKI/{$type}", $validated);
+        return $this->getNasaResponse(
+            "DONKI/{$type}",
+            $validated
+        );
+    }
 
-        return response()->json($response->json(), $response->status());
+    private function getNasaResponse(
+        string $endpoint,
+        array $query = []
+    ): JsonResponse {
+        try {
+            $data = $this->nasaApiService->get(
+                $endpoint,
+                $query
+            );
+
+            return response()->json($data);
+        } catch (RequestException $exception) {
+            $response = $exception->response;
+
+            return response()->json(
+                $response->json() ?? [
+                    'message' => 'A NASA devolveu uma resposta inválida.',
+                ],
+                $response->status()
+            );
+        } catch (ConnectionException) {
+            return response()->json([
+                'message' => 'Não foi possível estabelecer ligação à NASA.',
+            ], 503);
+        }
     }
 }
