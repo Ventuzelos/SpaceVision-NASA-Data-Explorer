@@ -26,8 +26,8 @@ export function buildThumbUrl(photo, date) {
   const d = date || (photo?.date && photo.date.split(' ')[0]);
   if (!d) return '';
   const [y, m, day] = d.split('-');
-  // Versao JPEG (menor) usada como thumb
-  return `https://epic.gsfc.nasa.gov/archive/natural/${y}/${m}/${day}/jpg/${photo.image}.jpg`;
+  // Miniatura real (pasta thumbs), muito mais leve que a imagem completa
+  return `https://epic.gsfc.nasa.gov/archive/natural/${y}/${m}/${day}/thumbs/${photo.image}.jpg`;
 }
 
 const epicService = {
