@@ -22,7 +22,11 @@ import {
   CheckCircle,
   Trash2,
   ArrowLeft,
-ExternalLink,
+  ExternalLink,
+  ChevronDown,
+  ShieldCheck,
+  Database,
+  UserCircle,
 } from "lucide-react";
 
 export const Icons = {
@@ -49,5 +53,9 @@ export const Icons = {
   CheckCircle,
   Trash2,
   ArrowLeft,
-ExternalLink,
+  ExternalLink,
+  ChevronDown,
+  ShieldCheck,
+  Database,
+  UserCircle,
 };
