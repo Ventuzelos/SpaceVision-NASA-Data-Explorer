@@ -1,4 +1,3 @@
-import api from "./api";
 import nasaApi from "./nasaApi";
 
 const DONKI_ENDPOINTS = {
@@ -15,7 +14,8 @@ export const donkiEventTypes = [
     id: "FLR",
     label: "Solar Flares",
     shortLabel: "Erupções Solares",
-    description: "Explosões de radiação intensa na superfície do Sol.",
+    description:
+      "Explosões de radiação intensa na superfície do Sol.",
     icon: "sun",
     color: "var(--color-donki-flr)",
   },
@@ -23,7 +23,8 @@ export const donkiEventTypes = [
     id: "CME",
     label: "Coronal Mass Ejections",
     shortLabel: "Ejeções de Massa Coronal",
-    description: "Grandes libertações de plasma e campo magnético solar.",
+    description:
+      "Grandes libertações de plasma e campo magnético solar.",
     icon: "waves",
     color: "var(--color-donki-cme)",
   },
@@ -31,7 +32,8 @@ export const donkiEventTypes = [
     id: "GST",
     label: "Geomagnetic Storms",
     shortLabel: "Tempestades Geomagnéticas",
-    description: "Perturbações no campo magnético da Terra.",
+    description:
+      "Perturbações no campo magnético da Terra.",
     icon: "magnet",
     color: "var(--color-donki-gst)",
   },
@@ -39,7 +41,8 @@ export const donkiEventTypes = [
     id: "SEP",
     label: "Solar Energetic Particles",
     shortLabel: "Partículas Energéticas Solares",
-    description: "Partículas de alta energia ejetadas pelo Sol.",
+    description:
+      "Partículas de alta energia ejetadas pelo Sol.",
     icon: "sparkles",
     color: "var(--color-donki-sep)",
   },
@@ -47,7 +50,8 @@ export const donkiEventTypes = [
     id: "HSS",
     label: "High Speed Streams",
     shortLabel: "Fluxos de Vento Solar",
-    description: "Correntes rápidas de vento solar vindas de buracos coronais.",
+    description:
+      "Correntes rápidas de vento solar vindas de buracos coronais.",
     icon: "wind",
     color: "var(--color-donki-hss)",
   },
@@ -55,7 +59,8 @@ export const donkiEventTypes = [
     id: "NOTIFICATIONS",
     label: "Notifications",
     shortLabel: "Notificações",
-    description: "Alertas e relatórios oficiais do serviço DONKI.",
+    description:
+      "Alertas e relatórios oficiais do serviço DONKI.",
     icon: "bell",
     color: "var(--color-donki-notifications)",
   },
@@ -76,18 +81,37 @@ export function getDefaultDateRange(daysBack = 7) {
   };
 }
 
-export async function fetchDonkiEvents(type, startDate, endDate) {
+export async function fetchDonkiEvents(
+  type,
+  startDate,
+  endDate
+) {
   const endpoint = DONKI_ENDPOINTS[type];
 
   if (!endpoint) {
-    throw new Error(`Tipo de evento DONKI desconhecido: ${type}`);
+    throw new Error(
+      `Tipo de evento DONKI desconhecido: ${type}`
+    );
+  }
+
+  if (!startDate || !endDate) {
+    throw new Error(
+      "É necessário indicar um intervalo de datas."
+    );
   }
 
   const { data } = await nasaApi.get(endpoint, {
-    params: { startDate, endDate },
+    params: {
+      startDate,
+      endDate,
+    },
   });
 
-  return (data ?? []).map((event) => normalizeEvent(type, event));
+  const events = Array.isArray(data) ? data : [];
+
+  return events.map((event) =>
+    normalizeEvent(type, event)
+  );
 }
 
 function formatDateTime(value) {
