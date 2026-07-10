@@ -36,8 +36,9 @@ return [
     ],
 
     'nasa' => [
-    'key' => env('NASA_API_KEY'),
+    'api_key' => env('NASA_API_KEY'),
     'base_url' => env('NASA_BASE_URL', 'https://api.nasa.gov'),
+    'cache_ttl' => (int) env('NASA_CACHE_TTL', 3600),
 ],
 
 ];
