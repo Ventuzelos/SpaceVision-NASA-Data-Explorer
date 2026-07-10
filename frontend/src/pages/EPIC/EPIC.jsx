@@ -1,9 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './EPIC.css';
 import { NASA_API_KEY } from '../../services/api';
 import { useEpicPhotos } from '../../hooks/useEpicPhotos';
 import EpicPanel from './EpicPanel';
 import EpicDetail from './EpicDetail';
+import EpicDateControls from './EpicDateControls';
+import EpicHeroVideo from '../../components/EPIC/EpicHeroVideo';
+import EpicTimeline from '../../components/EPIC/EpicTimeline';
 
 export default function EPIC() {
   // Chave da NASA usada pelos pedidos EPIC. Por agora usa a chave interna
@@ -11,32 +14,54 @@ export default function EPIC() {
   // utilizador / contexto de definições — basta trocar este estado inicial.
   const [apiKey] = useState(NASA_API_KEY);
   const [lightbox, setLightbox] = useState(null);
+  const lightboxRef = useRef(null);
+  const previousFocusRef = useRef(null);
+
+  useEffect(() => {
+    if (!lightbox) return undefined;
+
+    previousFocusRef.current = document.activeElement;
+    lightboxRef.current?.focus();
+
+    function handleKeyDown(e) {
+      if (e.key === 'Escape') {
+        setLightbox(null);
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      previousFocusRef.current?.focus?.();
+    };
+  }, [lightbox]);
 
   const {
     photos, date, selected, setSelected,
     loading, error, loadLatest, loadByDate,
   } = useEpicPhotos(apiKey);
 
+  const [pendingDate, setPendingDate] = useState(date);
+  useEffect(() => {
+    setPendingDate(date);
+  }, [date]);
+
   useEffect(() => {
     loadLatest();
   }, [loadLatest]);
 
   return (
-    <div className="epic-page">
-      <div className="stars" />
-
-
+    <main className="epic-page">
       <section className="hero" id="hero">
         <div>
           <div className="eyebrow">EPIC · Earth Polychromatic Imaging Camera</div>
           <h1 className="headline">
-            A daily portrait of our pale blue dot
+            O nosso planeta. Visto de longe, em tempo real.
           </h1>
           <p className="lede">
-            A bordo do satélite DSCOVR, no ponto de Lagrange L1, a EPIC é um espectroradiómetro
-            de 10 canais que captura o disco inteiro do lado iluminado da Terra a cada duas horas.
-            A EPIC API da NASA disponibiliza essas imagens — e os metadados de
-            cada captura — prontos a consultar por data.
+            Descubra a Terra como nunca a viu. Através dos olhos da câmara EPIC, a bordo do
+            satélite DSCOVR no ponto de Lagrange L1, aceda a imagens atualizadas a cada duas
+            horas que capturam a totalidade do disco terrestre totalmente iluminado pelo Sol.
           </p>
           <div className="hero-cta">
             <a href="#viewer" className="btn btn-primary">Ver imagens do dia →</a>
@@ -48,14 +73,22 @@ export default function EPIC() {
           </div>
         </div>
 
-        <div className="instrument">
-          <div className="ring r1" />
-          <div className="ring r2" />
-          <div className="crosshair" />
-          <div className="tick t1">L1 LAGRANGE</div>
-          <div className="tick t2">DSCOVR</div>
-          <div className="earth" />
-          <div className="tag">DISCO COMPLETO · LUZ NATURAL</div>
+        <div className="hero-video-panel">
+          <EpicHeroVideo />
+        </div>
+      </section>
+
+      <section id="timeline">
+        <div className="section-head" style={{ paddingTop: 16 }}>
+          <div className="section-eyebrow">Da órbita até hoje</div>
+          <div className="section-title">Mais de uma década a fotografar o nosso planeta</div>
+          <p className="section-sub">
+            Os marcos principais da missão DSCOVR e da câmara EPIC, desde o lançamento até à atualidade.
+          </p>
+        </div>
+        <div className="timeline-spacer" />
+        <div className="timeline-card">
+          <EpicTimeline />
         </div>
       </section>
 
@@ -93,40 +126,54 @@ export default function EPIC() {
 
       <div className="bottom-glow">
       <section id="viewer">
-        <div className="section-head">
-          <div className="section-eyebrow">Try it live</div>
-          <div className="section-title">Visualizador de imagens</div>
-          <p className="section-sub">Escolhe uma data para ver todas as capturas do disco terrestre desse dia.</p>
+        <div className="viewer-intro">
+          <div className="section-head">
+            <div className="section-eyebrow">Try it live</div>
+            <div className="section-title">Visualizador de imagens</div>
+            <p className="section-sub">Escolhe uma data para ver todas as capturas do disco terrestre desse dia.</p>
+          </div>
+
+          <EpicDateControls
+            date={pendingDate}
+            onDateChange={setPendingDate}
+            onLoad={() => loadByDate(pendingDate)}
+            onLatest={loadLatest}
+          />
         </div>
 
-        <EpicPanel
-          photos={photos}
-          loading={loading}
-          loadingMsg="A carregar imagens..."
-          error={error}
-          date={date}
-          onSelect={setSelected}
-          onRetry={loadLatest}
-        />
+        <div className="viewer-layout">
+          <EpicDetail
+            photo={selected}
+            date={date}
+            onOpenLightbox={setLightbox}
+          />
 
-        <EpicDetail
-          photo={selected}
-          date={date}
-          onOpenLightbox={setLightbox}
-        />
+          <EpicPanel
+            photos={photos}
+            loading={loading}
+            loadingMsg="A carregar imagens..."
+            error={error}
+            date={date}
+            onSelect={setSelected}
+            onRetry={loadLatest}
+          />
+        </div>
       </section>
-
-      <footer>
-        <span>EPIC · NASA Open APIs · DSCOVR / NOAA</span>
-        <span>Dados disponibilizados por api.nasa.gov</span>
-      </footer>
       </div>
 
       {lightbox && (
-        <div className="epic-lightbox" onClick={() => setLightbox(null)}>
+        <div
+          className="epic-lightbox"
+          onClick={() => setLightbox(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label={lightbox.caption || 'Imagem EPIC ampliada'}
+          tabIndex={-1}
+          ref={lightboxRef}
+        >
           <img src={lightbox.url} alt={lightbox.caption || ''} />
         </div>
       )}
-    </div>
+    </main>
   );
 }
