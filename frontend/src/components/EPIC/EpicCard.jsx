@@ -1,79 +1,141 @@
-// Cartão de detalhe — mostra a imagem completa da Terra (2048x2048)
-// junto com legenda e coordenadas do centro visível.
+import { useEffect, useState } from "react";
+import FavoriteButton from "../common/FavoriteButton/FavoriteButton";
+import {
+  isFavorite,
+  toggleFavorite,
+} from "../../services/favoritesService";
 
-import { useState, useEffect } from 'react';
-import FavoriteButton from '../common/FavoriteButton/FavoriteButton';
-import { isFavorite, toggleFavorite } from '../../services/favoritesService';
+export default function EpicCard({
+  detail,
+  onImageClick,
+}) {
+  const favoriteId = detail?.image
+    ? `epic-${detail.image}`
+    : null;
 
-export default function EpicCard({ detail, onImageClick }) {
-  const favoriteId = detail?.image ? `epic-${detail.image}` : null;
   const [favorite, setFavorite] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
-    setFavorite(favoriteId ? isFavorite(favoriteId) : false);
+    setFavorite(
+      favoriteId ? isFavorite(favoriteId) : false
+    );
   }, [favoriteId]);
 
-  if (!detail) return null;
+  useEffect(() => {
+    setImageError(false);
+  }, [detail?.url]);
 
-  const { url, caption, time, lat, lon, date } = detail;
+  if (!detail) {
+    return null;
+  }
+
+  const {
+    url,
+    caption,
+    time,
+    lat,
+    lon,
+    date,
+  } = detail;
 
   function handleFavoriteClick() {
-    if (!favoriteId) return;
+    if (!favoriteId) {
+      return;
+    }
+
     toggleFavorite({
       id: favoriteId,
-      type: 'epic',
-      title: `EPIC · Terra${time ? ` (${time} UTC)` : ''}`,
+      type: "epic",
+      title: `EPIC · Terra${
+        time ? ` (${time} UTC)` : ""
+      }`,
       date,
       imageUrl: url,
       hdUrl: url,
       description: caption,
     });
-    setFavorite((f) => !f);
+
+    setFavorite((currentValue) => !currentValue);
+  }
+
+  function handleImageKeyDown(event) {
+    if (
+      event.key === "Enter" ||
+      event.key === " "
+    ) {
+      event.preventDefault();
+      onImageClick?.();
+    }
   }
 
   return (
-    <div className="card">
+    <article className="card">
       <div className="card-header">
-        <span className="card-title">Terra — Disco Completo</span>
-        <span className="card-label">{time ? `${time} UTC` : ''}</span>
+        <span className="card-title">
+          Terra — Disco Completo
+        </span>
+
+        <span className="card-label">
+          {time ? `${time} UTC` : ""}
+        </span>
       </div>
-      <div style={{ textAlign: 'center' }}>
-        <div className="card-image-wrap" style={{ width: '100%', maxWidth: '640px' }}>
+
+      <div className="card-image-wrap">
+        {imageError ? (
+          <div
+            className="epic-image-fallback"
+            role="img"
+            aria-label="A imagem EPIC não está disponível"
+          >
+            <strong>Imagem indisponível</strong>
+
+            <span>
+              Não foi possível carregar esta captura da
+              Terra.
+            </span>
+          </div>
+        ) : (
           <img
+            className="epic-detail-image"
             src={url}
             alt={caption}
+            role="button"
+            tabIndex={0}
+            aria-label={`${caption}. Abrir imagem ampliada.`}
             onClick={onImageClick}
-            style={{
-              width: '100%',
-              borderRadius: 'var(--radius-md)',
-              display: 'block',
-              cursor: 'zoom-in',
-            }}
+            onKeyDown={handleImageKeyDown}
+            onError={() => setImageError(true)}
           />
-          <FavoriteButton
-            active={favorite}
-            onClick={handleFavoriteClick}
-            size={18}
-            ariaLabel={favorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
-          />
-        </div>
-        <div
-          style={{
-            marginTop: '12px',
-            fontSize: '12px',
-            color: 'var(--color-text-secondary)',
-            fontFamily: 'var(--font-family)',
-          }}
-        >
-          {caption && <div style={{ marginBottom: '6px' }}>{caption}</div>}
-          {lat && lon && (
-            <div>Centro visível: {lat}° lat · {lon}° lon</div>
-          )}
-          <div style={{ marginTop: '6px', color: 'var(--color-text-secondary)' }}>
-            Formato PNG 2048×2048 px
-          </div>
-        </div>
+        )}
+
+        <FavoriteButton
+          active={favorite}
+          onClick={handleFavoriteClick}
+          size={18}
+          ariaLabel={
+            favorite
+              ? "Remover dos favoritos"
+              : "Adicionar aos favoritos"
+          }
+        />
       </div>
-    </div>
+
+      <div className="epic-card__metadata">
+        {caption && (
+          <p className="epic-card__caption">
+            {caption}
+          </p>
+        )}
+
+        {lat && lon && (
+          <p>
+            Centro visível: {lat}° lat · {lon}° lon
+          </p>
+        )}
+
+        <p>Formato PNG 2048 × 2048 px</p>
+      </div>
+    </article>
   );
 }
