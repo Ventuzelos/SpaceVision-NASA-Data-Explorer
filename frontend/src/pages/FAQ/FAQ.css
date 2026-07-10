@@ -5,7 +5,7 @@
 
 .faq-hero {
   text-align: center;
-  max-width: 640px;
+  
   margin: 0 auto var(--space-7);
 }
 
@@ -108,7 +108,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
-  max-width: 800px;
+  
   margin: 0 auto;
 }
 
@@ -233,7 +233,7 @@
 /* ---- estado vazio ---- */
 .faq-empty {
   text-align: center;
-  max-width: 800px;
+  
   margin: var(--space-5) auto 0;
   padding: var(--space-7);
   background: rgba(255, 255, 255, 0.03);
