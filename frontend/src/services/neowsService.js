@@ -1,6 +1,6 @@
-import api from "./api";
+import nasaApi from "./nasaApi";
 
-const FEED_ENDPOINT = "/neo/rest/v1/feed";
+const FEED_ENDPOINT = "/neo/feed";
 
 // Limite imposto pela NASA NeoWS Feed API: máx. 7 dias por pesquisa (RF-06)
 export const MAX_RANGE_DAYS = 7;
@@ -105,7 +105,7 @@ export async function fetchNeoFeed(startDate, endDate) {
     endDate
   );
 
-  const { data } = await api.get(FEED_ENDPOINT, {
+  const { data } = await nasaApi.get(FEED_ENDPOINT, {
     params: { start_date: safeStart, end_date: safeEnd },
   });
 

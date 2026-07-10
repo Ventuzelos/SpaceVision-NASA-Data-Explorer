@@ -1,12 +1,13 @@
 import api from "./api";
+import nasaApi from "./nasaApi";
 
 const DONKI_ENDPOINTS = {
-  FLR: "/DONKI/FLR",
-  CME: "/DONKI/CME",
-  GST: "/DONKI/GST",
-  SEP: "/DONKI/SEP",
-  HSS: "/DONKI/HSS",
-  NOTIFICATIONS: "/DONKI/notifications",
+  FLR: "/donki/FLR",
+  CME: "/donki/CME",
+  GST: "/donki/GST",
+  SEP: "/donki/SEP",
+  HSS: "/donki/HSS",
+  NOTIFICATIONS: "/donki/notifications",
 };
 
 export const donkiEventTypes = [
@@ -82,7 +83,7 @@ export async function fetchDonkiEvents(type, startDate, endDate) {
     throw new Error(`Tipo de evento DONKI desconhecido: ${type}`);
   }
 
-  const { data } = await api.get(endpoint, {
+  const { data } = await nasaApi.get(endpoint, {
     params: { startDate, endDate },
   });
 
