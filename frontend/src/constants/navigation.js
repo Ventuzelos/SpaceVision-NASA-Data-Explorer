@@ -11,18 +11,23 @@ export const publicNavigation = [
   },
   {
     id: 3,
-    label: "Mars",
-    path: "/mars-rover",
+    label: "DONKI",
+    path: "/donki",
   },
   {
     id: 4,
     label: "Earth",
     path: "/epic",
   },
+   {
+    id: 5,
+    label: "Asteroids",
+    path: "/neowatch",
+  },
   {
     id: 5,
     label: "Discover",
-    path: "/neowatch",
+    path: "/discover",
   },
 ];
 
