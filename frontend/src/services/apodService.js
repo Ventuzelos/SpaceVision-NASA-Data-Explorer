@@ -1,16 +1,21 @@
-import api from "./api";
+import nasaApi from "./nasaApi";
 
 export async function getApod() {
-  const response = await api.get("/apod");
-  return response.data;
+  const { data } = await nasaApi.get("/apod");
+
+  return data;
 }
 
 export async function getApodByDate(date) {
-  const response = await api.get("/apod", {
+  if (!date) {
+    throw new Error("É necessário indicar uma data.");
+  }
+
+  const { data } = await nasaApi.get("/apod", {
     params: {
       date,
     },
   });
 
-  return response.data;
+  return data;
 }
