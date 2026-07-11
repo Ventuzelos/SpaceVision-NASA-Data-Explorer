@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Clock } from 'lucide-react';
-import { buildThumbUrl, buildImageUrl } from '../../services/epicService';
-import FavoriteButton from '../common/FavoriteButton/FavoriteButton';
-import { isFavorite, toggleFavorite } from '../../services/favoritesService';
+import './EpicThumbnail.css';
+import { buildThumbUrl, buildImageUrl } from '../../../services/epicService';
+import FavoriteButton from '../../common/FavoriteButton/FavoriteButton';
+import { isFavorite, toggleFavorite } from '../../../services/favoritesService';
 
 // Componente "folha" desenha uma unica miniatura EPIC.
 // Nao sabe nada sobre a lista toda, so sobre a sua propria foto.

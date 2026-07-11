@@ -1,0 +1,9 @@
+.epic-page #timeline { padding-bottom:60px; }
+.epic-page .timeline-spacer { height:40px; }
+.epic-page .timeline-card {
+  background:var(--panel);
+  border:1px solid var(--line-strong);
+  border-radius:20px;
+  padding:40px clamp(20px, 4vw, 48px) 32px;
+  box-shadow:var(--shadow-md);
+}

@@ -2,8 +2,9 @@
 // junto com legenda e coordenadas do centro visível.
 
 import { useState, useEffect } from 'react';
-import FavoriteButton from '../common/FavoriteButton/FavoriteButton';
-import { isFavorite, toggleFavorite } from '../../services/favoritesService';
+import './EpicCard.css';
+import FavoriteButton from '../../common/FavoriteButton/FavoriteButton';
+import { isFavorite, toggleFavorite } from '../../../services/favoritesService';
 
 export default function EpicCard({ detail, onImageClick }) {
   const favoriteId = detail?.image ? `epic-${detail.image}` : null;
@@ -37,18 +38,13 @@ export default function EpicCard({ detail, onImageClick }) {
         <span className="card-title">Terra — Disco Completo</span>
         <span className="card-label">{time ? `${time} UTC` : ''}</span>
       </div>
-      <div style={{ textAlign: 'center' }}>
-        <div className="card-image-wrap" style={{ width: '100%', maxWidth: '640px' }}>
+      <div className="card-body">
+        <div className="card-image-wrap">
           <img
             src={url}
             alt={caption}
             onClick={onImageClick}
-            style={{
-              width: '100%',
-              borderRadius: 'var(--radius-md)',
-              display: 'block',
-              cursor: 'zoom-in',
-            }}
+            className="card-image"
           />
           <FavoriteButton
             active={favorite}
@@ -57,19 +53,12 @@ export default function EpicCard({ detail, onImageClick }) {
             ariaLabel={favorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
           />
         </div>
-        <div
-          style={{
-            marginTop: '12px',
-            fontSize: '12px',
-            color: 'var(--color-text-secondary)',
-            fontFamily: 'var(--font-family)',
-          }}
-        >
-          {caption && <div style={{ marginBottom: '6px' }}>{caption}</div>}
+        <div className="card-meta">
+          {caption && <div className="card-caption">{caption}</div>}
           {lat && lon && (
             <div>Centro visível: {lat}° lat · {lon}° lon</div>
           )}
-          <div style={{ marginTop: '6px', color: 'var(--color-text-secondary)' }}>
+          <div className="card-format">
             Formato PNG 2048×2048 px
           </div>
         </div>

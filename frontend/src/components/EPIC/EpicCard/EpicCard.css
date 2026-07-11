@@ -1,0 +1,40 @@
+.epic-page .card {
+  background:var(--panel);
+  border:1px solid var(--line-strong);
+  border-radius:16px;
+  padding:20px;
+}
+.epic-page .card-header {
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:16px;
+}
+.epic-page .card-title { font-family:var(--disp);font-size:16px;font-weight:600;color:var(--cloud); }
+.epic-page .card-label { font-family:var(--mono);font-size:12px;color:var(--text-dim); }
+.epic-page .card-body { text-align:center; }
+.epic-page .card-image-wrap {
+  position:relative;
+  margin:0 auto;
+  width:100%;
+  max-width:640px;
+}
+.epic-page .card-image {
+  width:100%;
+  border-radius:var(--radius-md);
+  display:block;
+  cursor:zoom-in;
+}
+.epic-page .card .favorite-button {
+  position:absolute;
+  top:12px;right:12px;
+  background:rgba(4,7,14,0.65);
+  backdrop-filter:blur(2px);
+  border-color:transparent;
+}
+.epic-page .card-meta {
+  margin-top:12px;
+  font-size:12px;
+  color:var(--color-text-secondary);
+  font-family:var(--font-family);
+}
+.epic-page .card-caption { margin-bottom:6px; }
+.epic-page .card-format { margin-top:6px;color:var(--color-text-secondary); }

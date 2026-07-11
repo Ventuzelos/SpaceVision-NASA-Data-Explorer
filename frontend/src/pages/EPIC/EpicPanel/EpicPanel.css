@@ -1,0 +1,21 @@
+.epic-page .thumb-panel { display:flex;flex-direction:column; }
+.epic-page .meta-row {
+  display:flex;align-items:center;flex-wrap:nowrap;
+  gap:6px;
+  padding:18px 22px 0;
+  margin-bottom:18px;
+}
+.epic-page .tag {
+  display:inline-flex;align-items:center;
+  background:var(--panel);border:1px solid var(--line-strong);
+  color:var(--text);font-family:var(--mono);font-size:11px;
+  padding:4px 9px;border-radius:999px;white-space:nowrap;
+}
+.epic-page .tag-glow { border-color:var(--glow-dim);color:var(--glow); }
+.epic-page .grid-wrap { padding:0 22px 22px; }
+.epic-page .thumb-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(150px, 1fr));
+  gap:14px;
+}
+/* .state-msg não tem nenhuma definição CSS no projeto (também não tinha antes desta reorganização). */

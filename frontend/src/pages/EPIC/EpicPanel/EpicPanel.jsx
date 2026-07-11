@@ -1,7 +1,9 @@
-﻿import EpicSkeleton from '../../components/EPIC/EpicSkeleton/EpicSkeleton';
-import EpicThumbnail from '../../components/EPIC/EpicThumbnail';
-import Pagination from '../../components/common/Pagination/Pagination';
-import { usePagination } from '../../hooks/usePagination';
+import './EpicPanel.css';
+import EpicSkeleton from '../../../components/EPIC/EpicSkeleton/EpicSkeleton';
+import EpicThumbnail from '../../../components/EPIC/EpicThumbnail/EpicThumbnail';
+import EpicDscovrInfo from '../../../components/EPIC/EpicDscovrInfo/EpicDscovrInfo';
+import Pagination from '../../../components/common/Pagination/Pagination';
+import { usePagination } from '../../../hooks/usePagination';
 
 export default function EpicPanel({ photos, loading, error, date, onSelect, onRetry }) {
   const {
@@ -40,7 +42,7 @@ export default function EpicPanel({ photos, loading, error, date, onSelect, onRe
     <div className="thumb-panel">
       <div className="meta-row">
         <span className="tag tag-glow">{photos.length} CAPTURAS</span>
-        <span className="tag tag-green">DSCOVR · L1</span>
+        <EpicDscovrInfo />
         <span className="tag">{date}</span>
       </div>
       <div className="grid-wrap">

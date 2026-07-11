@@ -1,0 +1,7 @@
+.epic-page .date-controls { display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap; }
+.epic-page .field-label { font-family:var(--mono);font-size:10px;letter-spacing:0.1em;color:var(--text-faint);text-transform:uppercase;margin-bottom:6px; }
+.epic-page input[type=date] { font-family:var(--mono);font-size:13px;color:var(--text);
+    background:var(--panel-2);border:1px solid var(--line-strong);border-radius:6px;
+    padding:9px 12px;outline:none;transition:border-color .2s; }
+.epic-page input[type=date]:focus { border-color:var(--glow); }
+.epic-page input::-webkit-calendar-picker-indicator { filter:invert(0.8);cursor:pointer; }

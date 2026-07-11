@@ -1,0 +1,7 @@
+.epic-lightbox {
+  position:fixed;inset:0;z-index:100;
+  background:rgba(4,7,14,0.92);
+  display:flex;align-items:center;justify-content:center;
+  padding:32px;cursor:zoom-out;
+}
+.epic-lightbox img { max-width:min(90vw,900px);max-height:88vh;border-radius:10px;box-shadow:0 0 60px rgba(56,208,240,0.15); }
