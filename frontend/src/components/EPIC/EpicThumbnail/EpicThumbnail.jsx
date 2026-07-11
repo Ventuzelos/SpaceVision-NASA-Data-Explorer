@@ -1,14 +1,15 @@
-import { useEffect, useState } from "react";
-import { Clock } from "lucide-react";
+import { useEffect, useState } from 'react';
+import { Clock } from 'lucide-react';
+import './EpicThumbnail.css';
 import {
   buildImageUrl,
   buildThumbUrl,
-} from "../../services/epicService";
-import FavoriteButton from "../common/FavoriteButton/FavoriteButton";
+} from '../../../services/epicService';
+import FavoriteButton from '../../common/FavoriteButton/FavoriteButton';
 import {
   isFavorite,
   toggleFavorite,
-} from "../../services/favoritesService";
+} from '../../../services/favoritesService';
 
 export default function EpicThumbnail({
   photo,
@@ -19,7 +20,7 @@ export default function EpicThumbnail({
   const fullUrl = buildImageUrl(photo, date);
 
   const time =
-    photo.date?.split(" ")[1]?.substring(0, 5) || "";
+    photo.date?.split(' ')[1]?.substring(0, 5) || '';
 
   const favoriteId = `epic-${photo.image}`;
 
@@ -50,15 +51,15 @@ export default function EpicThumbnail({
       caption:
         photo.caption ||
         `Vista completa da Terra captada pela EPIC${
-          time ? ` às ${time} UTC` : ""
+          time ? ` às ${time} UTC` : ''
         }`,
       time,
       lat:
         photo.centroid_coordinates?.lat?.toFixed(1) ||
-        "",
+        '',
       lon:
         photo.centroid_coordinates?.lon?.toFixed(1) ||
-        "",
+        '',
     });
   }
 
@@ -67,14 +68,14 @@ export default function EpicThumbnail({
 
     toggleFavorite({
       id: favoriteId,
-      type: "epic",
+      type: 'epic',
       title: `EPIC · Terra${
-        time ? ` (${time} UTC)` : ""
+        time ? ` (${time} UTC)` : ''
       }`,
       date,
       imageUrl: fullUrl,
       hdUrl: fullUrl,
-      description: photo.caption || "",
+      description: photo.caption || '',
     });
 
     setFavorite((currentValue) => !currentValue);
@@ -82,8 +83,8 @@ export default function EpicThumbnail({
 
   function handleKeyDown(event) {
     if (
-      event.key === "Enter" ||
-      event.key === " "
+      event.key === 'Enter' ||
+      event.key === ' '
     ) {
       event.preventDefault();
       handleSelect();
@@ -102,18 +103,18 @@ export default function EpicThumbnail({
   return (
     <div
       className={`thumb${
-        imageError ? " thumb--error" : ""
+        imageError ? ' thumb--error' : ''
       }`}
-      title={photo.caption || ""}
+      title={photo.caption || ''}
       role="button"
       tabIndex={imageError ? -1 : 0}
       aria-disabled={imageError}
       aria-label={
         imageError
-          ? "Imagem EPIC indisponível"
+          ? 'Imagem EPIC indisponível'
           : photo.caption ||
             `Imagem EPIC${
-              time ? ` às ${time} UTC` : ""
+              time ? ` às ${time} UTC` : ''
             }`
       }
       onClick={handleSelect}
@@ -144,8 +145,8 @@ export default function EpicThumbnail({
         size={12}
         ariaLabel={
           favorite
-            ? "Remover dos favoritos"
-            : "Adicionar aos favoritos"
+            ? 'Remover dos favoritos'
+            : 'Adicionar aos favoritos'
         }
       />
     </div>

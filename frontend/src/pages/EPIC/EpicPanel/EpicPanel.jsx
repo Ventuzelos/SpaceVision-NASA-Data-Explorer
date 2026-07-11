@@ -1,8 +1,10 @@
-﻿import EpicSkeleton from "../../components/epic/EpicSkeleton/EpicSkeleton";
-import EpicThumbnail from "../../components/epic/EpicThumbnail";
-import ErrorState from "../../components/common/ErrorState/ErrorState";
-import Pagination from "../../components/common/Pagination/Pagination";
-import { usePagination } from "../../hooks/usePagination";
+import './EpicPanel.css';
+import EpicSkeleton from '../../../components/EPIC/EpicSkeleton/EpicSkeleton';
+import EpicThumbnail from '../../../components/EPIC/EpicThumbnail/EpicThumbnail';
+import EpicDscovrInfo from '../../../components/EPIC/EpicDscovrInfo/EpicDscovrInfo';
+import ErrorState from '../../../components/common/ErrorState/ErrorState';
+import Pagination from '../../../components/common/Pagination/Pagination';
+import { usePagination } from '../../../hooks/usePagination';
 
 export default function EpicPanel({
   photos,
@@ -53,7 +55,7 @@ export default function EpicPanel({
 
           <p>
             {emptyMessage ||
-              "Seleciona uma data ou carrega a captura mais recente."}
+              'Seleciona uma data ou carrega a captura mais recente.'}
           </p>
         </div>
       </div>
@@ -67,9 +69,7 @@ export default function EpicPanel({
           {photos.length} CAPTURAS
         </span>
 
-        <span className="tag tag-green">
-          DSCOVR · L1
-        </span>
+        <EpicDscovrInfo />
 
         <span className="tag">{date}</span>
       </div>
