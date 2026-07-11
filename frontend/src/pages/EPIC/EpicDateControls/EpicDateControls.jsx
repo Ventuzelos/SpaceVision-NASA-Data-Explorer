@@ -1,3 +1,5 @@
+import './EpicDateControls.css';
+
 export default function EpicDateControls({
   date,
   onDateChange,
@@ -28,12 +30,12 @@ export default function EpicDateControls({
           id="epic-date"
           type="date"
           value={date}
-          max={new Date().toISOString().split("T")[0]}
+          max={new Date().toISOString().split('T')[0]}
           disabled={loading}
           aria-invalid={Boolean(validationError)}
           aria-describedby={
             validationError
-              ? "epic-date-error"
+              ? 'epic-date-error'
               : undefined
           }
           onChange={(event) =>
@@ -57,7 +59,7 @@ export default function EpicDateControls({
         type="submit"
         disabled={loading}
       >
-        {loading ? "A carregar..." : "Carregar"}
+        {loading ? 'A carregar...' : 'Carregar'}
       </button>
 
       <button
