@@ -1,0 +1,25 @@
+.epic-page .dscovr-info { position:relative;display:inline-flex;flex:0 0 auto; }
+.epic-page .dscovr-info__tag {
+  display:inline-flex;align-items:center;gap:4px;
+  background:var(--panel);border:1px solid var(--line-strong);
+  color:var(--text);font-family:var(--mono);font-size:11px;
+  padding:4px 7px 4px 9px;border-radius:999px;cursor:pointer;white-space:nowrap;
+  transition:border-color .2s;
+}
+.epic-page .dscovr-info__tag:hover,
+.epic-page .dscovr-info__tag[aria-expanded="true"] { border-color:var(--glow-dim); }
+.epic-page .dscovr-info__icon { color:var(--glow); }
+.epic-page .dscovr-info__popover {
+  position:absolute;top:calc(100% + 8px);left:0;z-index:5;
+  width:260px;max-width:calc(100vw - 64px);
+  background:var(--panel-2);border:1px solid var(--line-strong);
+  border-radius:12px;padding:14px 16px;
+  box-shadow:var(--shadow-md);
+}
+.epic-page .dscovr-info__popover p {
+  font-family:var(--body);font-size:12.5px;line-height:1.6;color:var(--text-dim);
+}
+.epic-page .dscovr-info__popover .dscovr-info__title {
+  font-size:13px;font-weight:500;color:var(--cloud);margin-bottom:8px;
+}
+.epic-page .dscovr-info__popover p + p { margin-top:8px; }

@@ -1,0 +1,86 @@
+.epic-page .timeline-h {
+  display:grid;
+  grid-template-columns:repeat(5, 1fr);
+  column-gap:16px;
+  position:relative;
+}
+.epic-page .timeline-h::before {
+  content:'';
+  grid-row:2;grid-column:1/-1;
+  align-self:center;
+  height:1px;
+  background:var(--line-strong);
+}
+.epic-page .timeline-h-cell {
+  display:flex;flex-direction:column;align-items:center;
+  text-align:center;
+}
+.epic-page .timeline-h-cell--top { grid-row:1;justify-content:flex-end;padding-bottom:24px; }
+.epic-page .timeline-h-cell--bottom { grid-row:3;justify-content:flex-start;padding-top:24px; }
+/* Coluna explícita para cada um dos 5 marcos — sem isto, o browser
+   coloca a linha (que ocupa "1/-1" na linha 2) e os pontos (sem coluna
+   definida) em conflito, e acaba por criar colunas extra à direita
+   em vez de alinhar os pontos com os textos de cima/baixo. */
+.epic-page .timeline-h > *:nth-child(5n+1) { grid-column:1; }
+.epic-page .timeline-h > *:nth-child(5n+2) { grid-column:2; }
+.epic-page .timeline-h > *:nth-child(5n+3) { grid-column:3; }
+.epic-page .timeline-h > *:nth-child(5n+4) { grid-column:4; }
+.epic-page .timeline-h > *:nth-child(5n+5) { grid-column:5; }
+.epic-page .timeline-h-content { max-width:210px; }
+.epic-page .timeline-h-content h4 { font-family:var(--disp);font-size:14.5px;font-weight:600;color:var(--cloud);line-height:1.3; }
+.epic-page .timeline-h-content p { font-size:11.5px;color:var(--text-dim);line-height:1.55;margin-top:6px; }
+.epic-page .timeline-h-node {
+  grid-row:2;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  position:relative;z-index:1;
+}
+.epic-page .timeline-h-dot {
+  width:12px;height:12px;border-radius:50%;
+  background:var(--dot-color, var(--glow));
+  box-shadow:0 0 10px var(--dot-color, var(--glow-dim));
+  border:2px solid var(--void);
+}
+.epic-page .timeline-h-dot--active { width:16px;height:16px; }
+.epic-page .timeline-h-year {
+  font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:0.04em;
+  white-space:nowrap;
+}
+@media(max-width:900px) {
+  /* Em ecrãs estreitos o padrão "texto alternado acima/abaixo da linha"
+     não cabe bem e obriga a scroll horizontal. Em vez disso, a timeline
+     passa a uma lista vertical: cada marco mostra o ponto+ano seguido
+     do respetivo texto, na ordem de leitura normal. */
+  .epic-page .timeline-h { display:flex;flex-direction:column;gap:0; }
+  .epic-page .timeline-h::before { display:none; }
+  .epic-page .timeline-h-cell { align-items:flex-start;text-align:left; }
+  .epic-page .timeline-h-cell--top,
+  .epic-page .timeline-h-cell--bottom { padding:0 0 0 22px; }
+  .epic-page .timeline-h-cell:empty { display:none; }
+  .epic-page .timeline-h-content { max-width:none; }
+  .epic-page .timeline-h-node {
+    flex-direction:row;align-items:center;gap:10px;
+    padding:18px 0 6px;
+    border-top:1px solid var(--line);
+  }
+  .epic-page .timeline-h-node:nth-child(6) { border-top:none;padding-top:0; }
+
+  /* Ordem visual: ponto+ano do marco 1, texto do marco 1, ponto+ano
+     do marco 2, texto do marco 2, e assim sucessivamente — em vez da
+     ordem no DOM (todos os "top", depois todos os "node", depois
+     todos os "bottom"), necessária para o layout de grelha horizontal. */
+  .epic-page .timeline-h-cell--top:nth-child(1),
+  .epic-page .timeline-h-cell--bottom:nth-child(11) { order:1; }
+  .epic-page .timeline-h-cell--top:nth-child(2),
+  .epic-page .timeline-h-cell--bottom:nth-child(12) { order:3; }
+  .epic-page .timeline-h-cell--top:nth-child(3),
+  .epic-page .timeline-h-cell--bottom:nth-child(13) { order:5; }
+  .epic-page .timeline-h-cell--top:nth-child(4),
+  .epic-page .timeline-h-cell--bottom:nth-child(14) { order:7; }
+  .epic-page .timeline-h-cell--top:nth-child(5),
+  .epic-page .timeline-h-cell--bottom:nth-child(15) { order:9; }
+  .epic-page .timeline-h-node:nth-child(6) { order:0; }
+  .epic-page .timeline-h-node:nth-child(7) { order:2; }
+  .epic-page .timeline-h-node:nth-child(8) { order:4; }
+  .epic-page .timeline-h-node:nth-child(9) { order:6; }
+  .epic-page .timeline-h-node:nth-child(10) { order:8; }
+}
