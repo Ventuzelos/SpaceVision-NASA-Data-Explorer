@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
-import FavoriteButton from "../common/FavoriteButton/FavoriteButton";
+import { useEffect, useState } from 'react';
+import './EpicCard.css';
+import FavoriteButton from '../../common/FavoriteButton/FavoriteButton';
 import {
   isFavorite,
   toggleFavorite,
-} from "../../services/favoritesService";
+} from '../../../services/favoritesService';
 
 export default function EpicCard({
   detail,
@@ -46,9 +47,9 @@ export default function EpicCard({
 
     toggleFavorite({
       id: favoriteId,
-      type: "epic",
+      type: 'epic',
       title: `EPIC · Terra${
-        time ? ` (${time} UTC)` : ""
+        time ? ` (${time} UTC)` : ''
       }`,
       date,
       imageUrl: url,
@@ -61,8 +62,8 @@ export default function EpicCard({
 
   function handleImageKeyDown(event) {
     if (
-      event.key === "Enter" ||
-      event.key === " "
+      event.key === 'Enter' ||
+      event.key === ' '
     ) {
       event.preventDefault();
       onImageClick?.();
@@ -77,7 +78,7 @@ export default function EpicCard({
         </span>
 
         <span className="card-label">
-          {time ? `${time} UTC` : ""}
+          {time ? `${time} UTC` : ''}
         </span>
       </div>
 
@@ -115,8 +116,8 @@ export default function EpicCard({
           size={18}
           ariaLabel={
             favorite
-              ? "Remover dos favoritos"
-              : "Adicionar aos favoritos"
+              ? 'Remover dos favoritos'
+              : 'Adicionar aos favoritos'
           }
         />
       </div>

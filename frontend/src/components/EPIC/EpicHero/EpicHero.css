@@ -1,0 +1,69 @@
+.epic-page .hero { position:relative;z-index:1;
+    display:grid;grid-template-columns:1fr 1fr;gap:48px;
+    align-items:center;
+    min-height:calc(100vh - 64px);
+    padding:64px clamp(20px,5vw,64px);
+    max-width:var(--container-width);margin:0 auto; }
+/* grid tracks de 1fr não encolhem abaixo do min-content dos filhos por
+   omissão — sem isto o .readout força overflow horizontal em ecrãs estreitos. */
+.epic-page .hero > * { min-width:0; }
+
+@media(max-width:980px) {
+  .epic-page .hero { grid-template-columns:1fr;padding-top:40px;min-height:auto; }
+}
+.epic-page .eyebrow { display:inline-flex;align-items:center;gap:8px;
+    font-family:var(--mono);font-size:11px;letter-spacing:0.16em;
+    color:var(--glow-soft);text-transform:uppercase;
+    margin-bottom:22px; }
+.epic-page .eyebrow::before { content:'';width:16px;height:1px;background:var(--glow); }
+.epic-page h1.headline { font-family:var(--disp);
+    font-weight:600;
+    font-size:clamp(32px,4.4vw,52px);
+    line-height:1.08;
+    letter-spacing:-0.01em;
+    color:var(--cloud);
+    max-width:15ch; }
+.epic-page h1.headline em { font-style:normal;
+    background:linear-gradient(100deg, var(--glow) 0%, var(--violet-soft) 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent; }
+.epic-page .lede { margin-top:22px;
+    font-size:15.5px;
+    color:var(--text-dim);
+    max-width:52ch;
+    line-height:1.7; }
+.epic-page .lede strong { color:var(--text);font-weight:600; }
+.epic-page .hero-cta { margin-top:30px;display:flex;gap:14px;flex-wrap:wrap; }
+.epic-page .btn { font-family:var(--mono);font-size:12.5px;letter-spacing:0.04em;
+    padding:11px 20px;border-radius:7px;border:1px solid var(--line-strong);
+    background:var(--panel);color:var(--text);cursor:pointer;
+    transition:border-color .2s, background .2s, transform .15s;
+    display:inline-flex;align-items:center;gap:8px; }
+.epic-page .btn:hover { border-color:var(--glow-dim);background:var(--panel-2); }
+.epic-page .btn:active { transform:scale(0.98); }
+.epic-page .btn-primary { background:linear-gradient(135deg,var(--glow) 0%, var(--violet) 100%);
+    color:#081018;border:none;font-weight:600; }
+.epic-page .btn-primary:hover { background:linear-gradient(135deg,var(--glow) 0%, var(--violet) 100%);filter:brightness(1.08); }
+/* CTA do hero segue a mesma forma do botão "Entrar" (components/common/Button),
+   mantendo apenas a cor/gradiente próprios da EPIC */
+.epic-page .hero-cta .btn-primary {
+    padding:0.9rem 1.6rem;
+    border-radius:var(--radius-md);
+    font-size:1rem;
+    letter-spacing:normal;
+    transition:var(--transition-normal); }
+.epic-page .hero-cta .btn-primary:hover { transform:translateY(-2px); }
+.epic-page .readout { margin-top:44px;
+    display:grid;grid-template-columns:repeat(3, 1fr);gap:0 20px;
+    border-top:1px solid var(--line); }
+.epic-page .readout div { min-width:0;padding:16px 20px 0 0;
+    border-right:1px solid var(--line); }
+.epic-page .readout div:last-child { border-right:none;padding-right:0; }
+.epic-page .readout .val { font-family:var(--mono);font-size:19px;color:var(--cloud);font-weight:500; }
+.epic-page .readout .lab { font-family:var(--mono);font-size:10px;letter-spacing:0.1em;color:var(--text-faint);text-transform:uppercase;margin-top:4px; }
+.epic-page .hero-video-panel { position:relative;
+    width:100%;aspect-ratio:1/1;max-width:620px;margin:0 auto;
+    border-radius:20px;overflow:hidden;
+    border:1px solid var(--line-strong);
+    box-shadow:var(--shadow-lg); }
