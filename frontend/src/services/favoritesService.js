@@ -1,66 +1,106 @@
-const FAVORITES_KEY = "spacevision_favorites";
+import backendApi from "./backendApi";
+
 export const FAVORITES_UPDATED_EVENT = "favoritesUpdated";
 
 function notifyFavoritesUpdated() {
   window.dispatchEvent(new Event(FAVORITES_UPDATED_EVENT));
 }
 
-export function getFavorites(source = null) {
-  const favorites = localStorage.getItem(FAVORITES_KEY);
-  const parsedFavorites = favorites ? JSON.parse(favorites) : [];
+export async function getFavorites(source = null) {
+  const response = await backendApi.get("/favorites");
+
+  const favorites = Array.isArray(response.data)
+    ? response.data
+    : [];
 
   if (!source) {
-    return parsedFavorites;
+    return favorites;
   }
 
-  return parsedFavorites.filter((favorite) => favorite.source === source);
+  return favorites.filter(
+    (favorite) =>
+      favorite.nasa_type === source ||
+      favorite.source === source
+  );
 }
 
-export function addFavorite(favorite) {
-  const favorites = getFavorites();
+export async function addFavorite(favorite) {
+  const payload = {
+    nasa_type:
+      favorite.nasa_type ||
+      favorite.source ||
+      favorite.type,
 
-  const exists = favorites.some(
-    (item) => item.id === favorite.id && item.source === favorite.source
+    nasa_id:
+      favorite.nasa_id ||
+      favorite.id,
+
+    title:
+      favorite.title ||
+      "Conteúdo NASA",
+
+    image_url:
+      favorite.image_url ||
+      favorite.imageUrl ||
+      null,
+
+    data:
+      favorite.data || {
+        date: favorite.date || null,
+        description: favorite.description || null,
+        hd_url: favorite.hdUrl || null,
+      },
+  };
+
+  const response = await backendApi.post("/favorites", payload);
+
+  notifyFavoritesUpdated();
+
+  return response.data;
+}
+
+export async function removeFavorite(id) {
+  const response = await backendApi.delete(`/favorites/${id}`);
+
+  notifyFavoritesUpdated();
+
+  return response.data;
+}
+
+export async function isFavorite(id, source = null) {
+  const favorites = await getFavorites(source);
+
+  return favorites.some((favorite) => {
+    const favoriteId =
+      favorite.nasa_id ||
+      favorite.id;
+
+    return String(favoriteId) === String(id);
+  });
+}
+
+export async function toggleFavorite(favorite) {
+  const favorites = await getFavorites(
+    favorite.source || favorite.type || favorite.nasa_type
   );
 
-  if (!exists) {
-    favorites.push(favorite);
-    localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
-    notifyFavoritesUpdated();
-  }
-}
-
-export function removeFavorite(id, source = null) {
-  const favorites = getFavorites();
-
-  const updatedFavorites = favorites.filter((favorite) => {
-    if (source) {
-      return !(favorite.id === id && favorite.source === source);
-    }
-
-    return favorite.id !== id;
+  const existingFavorite = favorites.find((item) => {
+    const itemId = item.nasa_id || item.id;
+    return String(itemId) === String(favorite.id);
   });
 
-  localStorage.setItem(FAVORITES_KEY, JSON.stringify(updatedFavorites));
-  notifyFavoritesUpdated();
-}
-
-export function toggleFavorite(favorite) {
-  const favorites = getFavorites();
-
-  const exists = favorites.some(
-    (item) => item.id === favorite.id && item.source === favorite.source
-  );
-
-  if (exists) {
-    removeFavorite(favorite.id, favorite.source);
-  } else {
-    addFavorite(favorite);
+  if (existingFavorite) {
+    await removeFavorite(existingFavorite.id);
+    return {
+      isFavorite: false,
+      favorite: null,
+    };
   }
-}
 
-export function isFavorite(id, source = null) {
-  const favorites = getFavorites(source);
+  const createdFavorite = await addFavorite(favorite);
 
-  return favorites.some((favorite) => favorite.id === id);
+  return {
+    isFavorite: true,
+    favorite: createdFavorite,
+  };
 }
