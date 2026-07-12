@@ -135,6 +135,8 @@ function NeoWS() {
   }, []);
 
   useEffect(() => {
+    // Inicia o carregamento de dados externos.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadFeed(
       dateRange.startDate,
       dateRange.endDate
@@ -285,36 +287,36 @@ function NeoWS() {
 
         {(loading ||
           (!error && objects.length > 0)) && (
-          <section
-            className="neows-page__list-panel"
-            aria-label="Lista de objetos próximos da Terra"
-            aria-busy={loading}
-          >
-            <div className="neows-page__grid">
-              {loading &&
-                Array.from({ length: 6 }).map(
-                  (_, index) => (
-                    <NeoSkeleton key={index} />
-                  )
-                )}
+            <section
+              className="neows-page__list-panel"
+              aria-label="Lista de objetos próximos da Terra"
+              aria-busy={loading}
+            >
+              <div className="neows-page__grid">
+                {loading &&
+                  Array.from({ length: 6 }).map(
+                    (_, index) => (
+                      <NeoSkeleton key={index} />
+                    )
+                  )}
 
-              {!loading &&
-                !error &&
-                paginatedObjects.map((neo) => (
-                  <NeoCard
-                    key={neo.id}
-                    neo={neo}
-                    isFavorite={favoriteKeys.has(
-                      neo.id
-                    )}
-                    onToggleFavorite={
-                      handleToggleFavorite
-                    }
-                  />
-                ))}
-            </div>
-          </section>
-        )}
+                {!loading &&
+                  !error &&
+                  paginatedObjects.map((neo) => (
+                    <NeoCard
+                      key={neo.id}
+                      neo={neo}
+                      isFavorite={favoriteKeys.has(
+                        neo.id
+                      )}
+                      onToggleFavorite={
+                        handleToggleFavorite
+                      }
+                    />
+                  ))}
+              </div>
+            </section>
+          )}
 
         {!loading &&
           !error &&
