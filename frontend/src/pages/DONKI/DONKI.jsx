@@ -61,10 +61,7 @@ function DONKI() {
     useState(null);
 
   const [favoriteKeys, setFavoriteKeys] = useState(
-    () =>
-      new Set(
-        getFavorites(SOURCE).map((favorite) => favorite.id)
-      )
+    () => new Set()
   );
 
   const {
@@ -122,6 +119,41 @@ function DONKI() {
     dateRange.endDate,
   ]);
 
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadFavoriteKeys() {
+      try {
+        const favorites = await getFavorites(SOURCE);
+
+        const keys = favorites.map(
+          (favorite) =>
+            favorite.nasa_id ||
+            favorite.id
+        );
+
+        if (isMounted) {
+          setFavoriteKeys(new Set(keys));
+        }
+      } catch (requestError) {
+        console.error(
+          "Erro ao carregar favoritos DONKI:",
+          requestError
+        );
+
+        if (isMounted) {
+          setFavoriteKeys(new Set());
+        }
+      }
+    }
+
+    loadFavoriteKeys();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   function handleSelectType(type) {
     setActiveType(type);
     setValidationError("");
@@ -164,29 +196,56 @@ function DONKI() {
     );
   }
 
-  function handleToggleFavorite(event) {
+  async function handleToggleFavorite(event) {
     const key = `${event.type}-${event.id}`;
 
-    toggleFavorite({
-      source: SOURCE,
-      id: key,
-      title: event.title,
-      date: event.date,
-      type: event.type,
-      link: event.link,
-    });
+    try {
+      const result = await toggleFavorite({
+        source: SOURCE,
+        id: key,
+        title: event.title,
+        date: event.date,
+        type: event.type,
+        link: event.link,
+        data: {
+          event_type: event.type,
+          event_id: event.id,
+          date: event.date,
+          link: event.link,
+          description:
+            event.description ||
+            event.note ||
+            null,
+        },
+      });
 
-    setFavoriteKeys((previousKeys) => {
-      const nextKeys = new Set(previousKeys);
+      setFavoriteKeys((previousKeys) => {
+        const nextKeys = new Set(previousKeys);
 
-      if (nextKeys.has(key)) {
-        nextKeys.delete(key);
+        if (result.isFavorite) {
+          nextKeys.add(key);
+        } else {
+          nextKeys.delete(key);
+        }
+
+        return nextKeys;
+      });
+    } catch (requestError) {
+      console.error(
+        "Erro ao atualizar favorito DONKI:",
+        requestError
+      );
+
+      if (requestError.response?.status === 401) {
+        window.alert(
+          "Precisas de iniciar sessão para guardar favoritos."
+        );
       } else {
-        nextKeys.add(key);
+        window.alert(
+          "Não foi possível atualizar o favorito."
+        );
       }
-
-      return nextKeys;
-    });
+    }
   }
 
   const activeTypeConfig = donkiEventTypes.find(
