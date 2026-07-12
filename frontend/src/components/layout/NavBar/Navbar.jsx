@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
-import { useLocation } from "react-router-dom";
+
 
 import Logo from "../Logo/Logo";
 import NavLinks from "../NavLinks/NavLinks";
@@ -10,7 +10,6 @@ import "./Navbar.css";
 
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const location = useLocation();
 
   function toggleMenu() {
     setIsMenuOpen((currentValue) => !currentValue);
@@ -34,9 +33,6 @@ function Navbar() {
     };
   }, []);
 
-  useEffect(() => {
-    closeMenu();
-  }, [location.pathname]);
 
   useEffect(() => {
     document.body.style.overflow = isMenuOpen

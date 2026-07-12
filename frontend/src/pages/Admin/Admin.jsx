@@ -1,4 +1,4 @@
-// import { Navigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 import Container from "../../components/common/Container/Container";
 import useAuth from "../../hooks/useAuth";
