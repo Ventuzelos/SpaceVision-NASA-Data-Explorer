@@ -14,6 +14,10 @@ import {
   removeToken,
 } from "../services/authService";
 
+import {
+  clearFavoritesCache,
+} from "../services/favoritesService";
+
 export const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
@@ -59,10 +63,16 @@ export function AuthProvider({ children }) {
   }
 
   async function logout() {
-    await logoutUser();
-    setUser(null);
+    try {
+      await logoutUser();
+    } catch (error) {
+      console.error("Erro ao terminar sessão:", error);
+    } finally {
+      removeToken();
+      clearFavoritesCache();
+      setUser(null);
+    }
   }
-
   const value = useMemo(
     () => ({
       user,
