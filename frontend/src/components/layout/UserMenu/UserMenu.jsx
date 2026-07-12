@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+} from "react-router-dom";
 import { ChevronDown, Heart, LogOut, Shield, User } from "lucide-react";
 
 import Button from "../../common/Button/Button";
@@ -9,7 +12,7 @@ import "./UserMenu.css";
 
 function UserMenu() {
   const navigate = useNavigate();
-  const location = useLocation();
+
 
   const {
     user,
@@ -22,10 +25,6 @@ function UserMenu() {
     useState(false);
 
   const menuRef = useRef(null);
-
-  useEffect(() => {
-    setIsAccountMenuOpen(false);
-  }, [location.pathname]);
 
   useEffect(() => {
     function handleOutsideClick(event) {
@@ -132,7 +131,7 @@ function UserMenu() {
               <Link
                 to="/admin"
                 className="account-dropdown__item"
-                role="menuitem"
+                role="menuitem" onClick={() => setIsAccountMenuOpen(false)}
               >
                 <Shield size={18} aria-hidden="true" />
                 Painel Admin
@@ -142,7 +141,7 @@ function UserMenu() {
             <Link
               to="/profile"
               className="account-dropdown__item"
-              role="menuitem"
+              role="menuitem" onClick={() => setIsAccountMenuOpen(false)}
             >
               <User size={18} aria-hidden="true" />
               Perfil
@@ -151,7 +150,7 @@ function UserMenu() {
             <Link
               to="/favorites"
               className="account-dropdown__item"
-              role="menuitem"
+              role="menuitem" onClick={() => setIsAccountMenuOpen(false)}
             >
               <Heart size={18} aria-hidden="true" />
               Favoritos

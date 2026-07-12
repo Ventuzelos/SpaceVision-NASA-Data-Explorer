@@ -108,6 +108,8 @@ function DONKI() {
   );
 
   useEffect(() => {
+    // Inicia o carregamento de dados externos.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadEvents(
       "FLR",
       dateRange.startDate,

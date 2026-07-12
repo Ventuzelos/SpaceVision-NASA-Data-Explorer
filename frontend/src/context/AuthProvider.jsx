@@ -1,9 +1,10 @@
 import {
-  createContext,
   useEffect,
   useMemo,
   useState,
 } from "react";
+
+import AuthContext from "./authContext";
 
 import {
   getAuthenticatedUser,
@@ -18,11 +19,10 @@ import {
   clearFavoritesCache,
 } from "../services/favoritesService";
 
-export const AuthContext = createContext(null);
-
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [isAuthLoading, setIsAuthLoading] = useState(true);
+  const [isAuthLoading, setIsAuthLoading] =
+    useState(true);
 
   useEffect(() => {
     async function loadUser() {
@@ -34,11 +34,18 @@ export function AuthProvider({ children }) {
       }
 
       try {
-        const authenticatedUser = await getAuthenticatedUser();
+        const authenticatedUser =
+          await getAuthenticatedUser();
+
         setUser(authenticatedUser);
       } catch (error) {
-        console.error("Não foi possível recuperar a sessão:", error);
+        console.error(
+          "Não foi possível recuperar a sessão:",
+          error
+        );
+
         removeToken();
+        clearFavoritesCache();
         setUser(null);
       } finally {
         setIsAuthLoading(false);
@@ -50,6 +57,8 @@ export function AuthProvider({ children }) {
 
   async function login(credentials) {
     const data = await loginUser(credentials);
+
+    clearFavoritesCache();
     setUser(data.user);
 
     return data.user;
@@ -57,6 +66,8 @@ export function AuthProvider({ children }) {
 
   async function register(userData) {
     const data = await registerUser(userData);
+
+    clearFavoritesCache();
     setUser(data.user);
 
     return data.user;
@@ -66,13 +77,17 @@ export function AuthProvider({ children }) {
     try {
       await logoutUser();
     } catch (error) {
-      console.error("Erro ao terminar sessão:", error);
+      console.error(
+        "Erro ao terminar sessão:",
+        error
+      );
     } finally {
       removeToken();
       clearFavoritesCache();
       setUser(null);
     }
   }
+
   const value = useMemo(
     () => ({
       user,
