@@ -42,20 +42,27 @@ function DiscovrSurpriseCard() {
   }
 
   return (
-    <div className="discovr-surprise__card discovr-surprise__card--glass">
-      <Icon name="Sparkles" size={28} className="discovr-surprise__icon" />
-
-      <h2>Surpreenda-me!</h2>
-
-      <p className="discovr-surprise__fact" key={factIndex}>
-        {hasRevealedFact
-          ? SPACE_FACTS[factIndex]
-          : "Carrega no botão para descobrires um facto espacial aleatório."}
-      </p>
-
+    <div className="discovr-surprise">
       <Button onClick={handleSurpriseMe}>
-        {hasRevealedFact ? "Outro facto" : "Surpreenda-me!"}
+        {hasRevealedFact ? "Outro facto" : "Surpreenda-me"}
       </Button>
+
+      {hasRevealedFact && (
+        <div className="discovr-surprise__reveal" key={factIndex}>
+          <Icon name="Sparkles" size={16} className="discovr-surprise__icon" />
+
+          <p className="discovr-surprise__fact">{SPACE_FACTS[factIndex]}</p>
+
+          <button
+            type="button"
+            className="discovr-surprise__close"
+            onClick={() => setHasRevealedFact(false)}
+            aria-label="Fechar facto"
+          >
+            <Icon name="X" size={14} />
+          </button>
+        </div>
+      )}
     </div>
   );
 }

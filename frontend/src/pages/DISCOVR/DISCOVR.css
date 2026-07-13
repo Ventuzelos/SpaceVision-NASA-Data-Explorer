@@ -5,6 +5,8 @@
 /* ---- sections ---- */
 .discovr-section {
   margin-bottom: var(--space-8);
+  /* navbar sticky (80px) + DiscovrSectionNav sticky (~49px) por cima */
+  scroll-margin-top: 136px;
 }
 
 .discovr-section__title {

@@ -29,6 +29,8 @@ import {
   UserCircle,
   WifiOff,
   Radar,
+  X,
+  ArrowUp,
 } from "lucide-react";
 
 export const Icons = {
@@ -62,4 +64,6 @@ export const Icons = {
   UserCircle,
   WifiOff,
   Radar,
+  X,
+  ArrowUp,
 };

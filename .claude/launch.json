@@ -1,0 +1,19 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "frontend-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--", "--port", "5183", "--strictPort"],
+      "cwd": "frontend",
+      "port": 5183
+    },
+    {
+      "name": "backend-dev",
+      "runtimeExecutable": "php",
+      "runtimeArgs": ["artisan", "serve"],
+      "cwd": "backend",
+      "port": 8000
+    }
+  ]
+}

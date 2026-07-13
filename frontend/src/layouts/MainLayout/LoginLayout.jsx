@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 import Navbar from "../../components/layout/Navbar/Navbar";
+import BackToTop from "../../components/common/BackToTop/BackToTop";
 
 import "./LoginLayout.css";
 
@@ -8,6 +9,7 @@ function LoginLayout() {
     <div className="login-layout">
       <Navbar />
       <Outlet />
+      <BackToTop />
     </div>
   );
 }
