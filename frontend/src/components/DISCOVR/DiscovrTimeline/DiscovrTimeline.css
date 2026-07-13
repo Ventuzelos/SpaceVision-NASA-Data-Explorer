@@ -1,189 +1,225 @@
 /* ---- linha do tempo interativa ---- */
-.discovr-timeline-card {
-  padding: var(--space-5) clamp(20px, 4vw, 48px);
-}
-
-/* Timeline horizontal: uma grelha de 3 linhas partilhadas por todos os
-   marcos (texto de cima / linha+ponto / texto de baixo) garante que o
-   ponto de cada marco fica sempre alinhado com a linha central, mesmo
-   quando os textos "de cima" e "de baixo" têm alturas diferentes. */
-.discovr-timeline-h {
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  column-gap: var(--space-3);
+/* Cena em ecrã inteiro sobre uma fotografia: uma linha com um ponto por
+   marco, alternando ano acima/abaixo. Cada ponto é só isso até ser clicado
+   — nessa altura abre um cartão com a missão, em vez de mostrar sempre
+   todo o texto dos 8 marcos ao mesmo tempo em cima da imagem. */
+.discovr-timeline-scene {
   position: relative;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-top: var(--space-7);
+  /* Maior que o margin-bottom de .discovr-section (var(--space-8), 4rem):
+     margens verticais adjacentes colapsam para a maior das duas, por isso
+     precisa de ultrapassar esse valor para o espaço aumentar de facto. */
+  margin-bottom: 6rem;
 }
 
-.discovr-timeline-h::before {
-  content: "";
-  grid-row: 2;
-  grid-column: 1 / -1;
-  align-self: center;
+.discovr-timeline-scene__bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+.discovr-timeline-scene__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(11, 16, 32, 0.55) 0%,
+    rgba(11, 16, 32, 0.72) 55%,
+    rgba(11, 16, 32, 0.92) 100%
+  );
+}
+
+.discovr-timeline-scene__path {
+  position: relative;
+  padding: clamp(90px, 12vw, 130px) clamp(24px, 6vw, 96px);
+}
+
+/* Sem scroll horizontal: a faixa ocupa a largura disponível, mas com um
+   limite máximo e centrada — sem isto, os 8 marcos espalhavam-se pela
+   fotografia toda de ponta a ponta, mesmo em ecrãs muito largos. */
+
+.discovr-timeline-scene__track {
+  position: relative;
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.discovr-timeline-scene__rail {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
   height: 1px;
-  background: var(--color-border);
+  background: rgba(249, 250, 252, 0.3);
 }
 
-.discovr-timeline-h__cell {
+.discovr-timeline-scene__marker {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 1px;
+}
+
+.discovr-timeline-scene__dot {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  padding: 0;
+  background: var(--color-accent);
+  box-shadow: 0 0 0 4px rgba(11, 16, 32, 0.6), 0 0 14px var(--color-accent);
+  border: none;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.discovr-timeline-scene__dot--active {
+  width: 18px;
+  height: 18px;
+}
+
+.discovr-timeline-scene__dot:hover,
+.discovr-timeline-scene__dot--open {
+  transform: scale(1.25);
+}
+
+.discovr-timeline-scene__info {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
 }
 
-.discovr-timeline-h__cell--top {
-  grid-row: 1;
-  justify-content: flex-end;
-  padding-bottom: var(--space-5);
+.discovr-timeline-scene__info--above {
+  bottom: calc(50% + 14px);
+  flex-direction: column-reverse;
 }
 
-.discovr-timeline-h__cell--bottom {
-  grid-row: 3;
-  justify-content: flex-start;
-  padding-top: var(--space-5);
+.discovr-timeline-scene__info--below {
+  top: calc(50% + 14px);
 }
 
-/* Coluna explícita para cada um dos 8 marcos — sem isto, o browser
-   coloca a linha (que ocupa "1/-1" na linha 2) e os pontos (sem coluna
-   definida) em conflito. */
-.discovr-timeline-h > *:nth-child(8n+1) { grid-column: 1; }
-.discovr-timeline-h > *:nth-child(8n+2) { grid-column: 2; }
-.discovr-timeline-h > *:nth-child(8n+3) { grid-column: 3; }
-.discovr-timeline-h > *:nth-child(8n+4) { grid-column: 4; }
-.discovr-timeline-h > *:nth-child(8n+5) { grid-column: 5; }
-.discovr-timeline-h > *:nth-child(8n+6) { grid-column: 6; }
-.discovr-timeline-h > *:nth-child(8n+7) { grid-column: 7; }
-.discovr-timeline-h > *:nth-child(8n+8) { grid-column: 8; }
-
-.discovr-timeline-h__content {
-  max-width: 160px;
+.discovr-timeline-scene__info--start {
+  left: 0;
+  transform: translateX(0);
+  align-items: flex-start;
 }
 
-.discovr-timeline-h__content h4 {
-  font-size: 0.85rem;
+.discovr-timeline-scene__info--end {
+  left: auto;
+  right: 0;
+  transform: translateX(0);
+  align-items: flex-end;
+}
+
+.discovr-timeline-scene__year {
+  border: none;
+  background: none;
+  padding: 4px 2px;
+  color: var(--color-text);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: var(--transition-fast);
+}
+
+.discovr-timeline-scene__year:hover {
+  filter: brightness(1.2);
+}
+
+.discovr-timeline-scene__card {
+  position: relative;
+  width: 220px;
+  margin-top: var(--space-2);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-top: 3px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  background: rgba(17, 24, 39, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-lg);
+  text-align: left;
+  animation: discovr-timeline-card-in 0.18s ease;
+}
+
+.discovr-timeline-scene__info--above .discovr-timeline-scene__card {
+  margin-top: 0;
+  margin-bottom: var(--space-2);
+}
+
+.discovr-timeline-scene__info--end .discovr-timeline-scene__card {
+  margin-left: auto;
+}
+
+.discovr-timeline-scene__card h4 {
+  padding-right: var(--space-5);
+  font-size: 0.95rem;
   font-weight: 600;
   color: var(--color-text);
   line-height: 1.3;
+  margin: 0 0 var(--space-2);
+}
+
+.discovr-timeline-scene__card p {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
   margin: 0;
 }
 
-.discovr-timeline-h__content p {
-  font-size: 0.75rem;
-  color: var(--color-text-secondary);
-  line-height: 1.5;
-  margin-top: var(--space-2);
-}
-
-.discovr-timeline-h__node {
-  grid-row: 2;
+.discovr-timeline-scene__card-close {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: var(--space-2);
-  position: relative;
-  z-index: 1;
+  justify-content: center;
+  padding: 2px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
 }
 
-.discovr-timeline-h__dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--dot-color, var(--color-accent));
-  box-shadow: 0 0 10px var(--dot-color, var(--color-accent));
-  border: 2px solid var(--color-surface);
+.discovr-timeline-scene__card-close:hover {
+  color: var(--color-text);
 }
 
-.discovr-timeline-h__dot--active {
-  width: 16px;
-  height: 16px;
-}
-
-.discovr-timeline-h__year {
-  font-family: var(--font-family);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  white-space: nowrap;
+@keyframes discovr-timeline-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 900px) {
-  /* Em ecrãs estreitos o padrão "texto alternado acima/abaixo da linha"
-     não cabe bem e obriga a scroll horizontal. Em vez disso, a timeline
-     passa a uma lista vertical: cada marco mostra o ponto+ano seguido
-     do respetivo texto, na ordem de leitura normal. */
-  .discovr-timeline-h {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
+  .discovr-timeline-scene__card {
+    width: 180px;
+  }
+}
+
+/* Sem scroll, os 8 anos ficam mais próximos uns dos outros em ecrãs
+   estreitos — texto mais pequeno e sem quebra de linha evita que se
+   sobreponham. */
+@media (max-width: 480px) {
+  .discovr-timeline-scene__year {
+    font-size: 0.9rem;
   }
 
-  .discovr-timeline-h::before {
-    display: none;
+  .discovr-timeline-scene__card {
+    width: 150px;
   }
-
-  .discovr-timeline-h__cell {
-    align-items: flex-start;
-    text-align: left;
-  }
-
-  .discovr-timeline-h__cell--top,
-  .discovr-timeline-h__cell--bottom {
-    padding: 0 0 0 var(--space-5);
-  }
-
-  .discovr-timeline-h__cell:empty {
-    display: none;
-  }
-
-  .discovr-timeline-h__content {
-    max-width: none;
-  }
-
-  .discovr-timeline-h__node {
-    flex-direction: row;
-    align-items: center;
-    gap: var(--space-3);
-    padding: var(--space-4) 0 var(--space-2);
-    border-top: 1px solid var(--color-border);
-  }
-
-  .discovr-timeline-h__node:nth-child(9) {
-    border-top: none;
-    padding-top: 0;
-  }
-
-  /* Ordem visual: ponto+ano do marco 1, texto do marco 1, ponto+ano
-     do marco 2, texto do marco 2, e assim sucessivamente — em vez da
-     ordem no DOM (todos os "top", depois todos os "node", depois
-     todos os "bottom"). */
-  .discovr-timeline-h__node:nth-child(9) { order: 0; }
-  .discovr-timeline-h__cell--top:nth-child(1),
-  .discovr-timeline-h__cell--bottom:nth-child(17) { order: 1; }
-
-  .discovr-timeline-h__node:nth-child(10) { order: 2; }
-  .discovr-timeline-h__cell--top:nth-child(2),
-  .discovr-timeline-h__cell--bottom:nth-child(18) { order: 3; }
-
-  .discovr-timeline-h__node:nth-child(11) { order: 4; }
-  .discovr-timeline-h__cell--top:nth-child(3),
-  .discovr-timeline-h__cell--bottom:nth-child(19) { order: 5; }
-
-  .discovr-timeline-h__node:nth-child(12) { order: 6; }
-  .discovr-timeline-h__cell--top:nth-child(4),
-  .discovr-timeline-h__cell--bottom:nth-child(20) { order: 7; }
-
-  .discovr-timeline-h__node:nth-child(13) { order: 8; }
-  .discovr-timeline-h__cell--top:nth-child(5),
-  .discovr-timeline-h__cell--bottom:nth-child(21) { order: 9; }
-
-  .discovr-timeline-h__node:nth-child(14) { order: 10; }
-  .discovr-timeline-h__cell--top:nth-child(6),
-  .discovr-timeline-h__cell--bottom:nth-child(22) { order: 11; }
-
-  .discovr-timeline-h__node:nth-child(15) { order: 12; }
-  .discovr-timeline-h__cell--top:nth-child(7),
-  .discovr-timeline-h__cell--bottom:nth-child(23) { order: 13; }
-
-  .discovr-timeline-h__node:nth-child(16) { order: 14; }
-  .discovr-timeline-h__cell--top:nth-child(8),
-  .discovr-timeline-h__cell--bottom:nth-child(24) { order: 15; }
 }
