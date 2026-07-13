@@ -11,6 +11,7 @@ import { usePagination } from "../../hooks/usePagination";
 import useAuth from "../../hooks/useAuth";
 import "./Favorites.css";
 import FavoriteDetailsModal from "../../components/favorites/FavoriteDetailsModal";
+import Toast from "../../components/common/Toast/Toast";
 
 
 
@@ -25,6 +26,7 @@ const FAVORITE_FILTERS = [
 ];
 
 function Favorites() {
+  const [toastMessage, setToastMessage] = useState("");
   const [selectedFavorite, setSelectedFavorite] = useState(null);
   const { user } = useAuth();
 
@@ -85,18 +87,37 @@ function Favorites() {
     loadFavorites();
   }, []);
 
-  async function handleRemoveFavorite(id) {
-    try {
-      await removeFavorite(id);
+  function showToast(message) {
+  setToastMessage(message);
 
-      setFavorites((currentFavorites) =>
-        currentFavorites.filter((favorite) => favorite.id !== id)
-      );
-    } catch (err) {
-      console.error("Erro ao remover favorito:", err);
-      setError("Não foi possível remover o favorito.");
+  window.setTimeout(() => {
+    setToastMessage("");
+  }, 2500);
+}
+
+  async function handleRemoveFavorite(id) {
+  try {
+    await removeFavorite(id);
+
+    setFavorites((currentFavorites) =>
+      currentFavorites.filter(
+        (favorite) => favorite.id !== id
+      )
+    );
+
+    if (selectedFavorite?.id === id) {
+      setSelectedFavorite(null);
     }
+
+    showToast("Removido dos favoritos");
+  } catch (err) {
+    console.error("Erro ao remover favorito:", err);
+
+    showToast(
+      "Não foi possível remover o favorito"
+    );
   }
+}
 
   function handleFilterChange(filter) {
     setActiveFilter(filter);
@@ -234,14 +255,16 @@ function Favorites() {
             )}
         </Container>
       </section>
-       {selectedFavorite && (
+           {selectedFavorite && (
       <FavoriteDetailsModal
         favorite={selectedFavorite}
         onClose={() => setSelectedFavorite(null)}
       />
     )}
-    </main>
-  );
+
+    <Toast message={toastMessage} />
+  </main>
+);
 }
 
 export default Favorites;
