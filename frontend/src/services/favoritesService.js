@@ -24,10 +24,6 @@ function normalizeFavorites(responseData) {
 }
 
 async function fetchFavorites() {
-  /*
-   * Se já existir um pedido em curso, todos os componentes
-   * aguardam pelo mesmo pedido em vez de criar novos.
-   */
   if (favoritesRequest) {
     return favoritesRequest;
   }
@@ -66,53 +62,75 @@ export async function getFavorites(
     const favoriteSource =
       favorite.nasa_type ||
       favorite.source ||
-      favorite.type;
+      favorite.type ||
+      "";
 
-    return favoriteSource === source;
+    return (
+      String(favoriteSource).toLowerCase() ===
+      String(source).toLowerCase()
+    );
   });
 }
 
 export async function addFavorite(favorite) {
-  const payload = {
-    nasa_type:
-      favorite.nasa_type ||
+  const nasaType = String(
+    favorite.nasa_type ||
       favorite.source ||
-      favorite.type,
+      favorite.type ||
+      ""
+  ).toLowerCase();
 
-    nasa_id:
+  const payload = {
+    nasa_type: nasaType,
+
+    nasa_id: String(
       favorite.nasa_id ||
-      favorite.id,
+        favorite.id ||
+        ""
+    ),
 
     title:
       favorite.title ||
+      favorite.data?.title ||
+      favorite.data?.name ||
       "Conteúdo NASA",
 
     image_url:
       favorite.image_url ||
       favorite.imageUrl ||
+      favorite.data?.image_url ||
+      favorite.data?.imageUrl ||
+      favorite.data?.hdurl ||
+      favorite.data?.url ||
       null,
 
     data:
-      favorite.data || {
-        date: favorite.date || null,
-        description:
-          favorite.description || null,
-        hd_url: favorite.hdUrl || null,
-      },
+      favorite.data &&
+      typeof favorite.data === "object"
+        ? favorite.data
+        : {
+            ...favorite,
+            nasa_type: nasaType,
+          },
   };
+
+  console.log(
+    "Favorito enviado ao backend:",
+    payload
+  );
 
   const response = await backendApi.post(
     "/favorites",
     payload
   );
 
-  const createdFavorite =
-    response.data?.data || response.data;
+  const createdFavorite = response.data;
 
-  /*
-   * Atualizamos diretamente a cache sem voltar
-   * a pedir todos os favoritos ao backend.
-   */
+  console.log(
+    "Favorito completo devolvido pelo backend:",
+    createdFavorite
+  );
+
   if (favoritesCache !== null) {
     favoritesCache = [
       ...favoritesCache.filter(
@@ -162,32 +180,39 @@ export async function isFavorite(
 }
 
 export async function toggleFavorite(favorite) {
-  const source =
-    favorite.source ||
-    favorite.type ||
-    favorite.nasa_type;
+  const source = String(
+    favorite.nasa_type ||
+      favorite.source ||
+      favorite.type ||
+      ""
+  ).toLowerCase();
 
-  const favoriteId =
+  const favoriteId = String(
     favorite.nasa_id ||
-    favorite.id;
+      favorite.id ||
+      ""
+  );
 
-  const favorites = await getFavorites(source);
+  const favorites = await getFavorites(
+    source,
+    true
+  );
 
   const existingFavorite = favorites.find(
     (item) => {
-      const itemId =
+      const itemId = String(
         item.nasa_id ||
-        item.id;
-
-      return (
-        String(itemId) ===
-        String(favoriteId)
+          item.id
       );
+
+      return itemId === favoriteId;
     }
   );
 
   if (existingFavorite) {
-    await removeFavorite(existingFavorite.id);
+    await removeFavorite(
+      existingFavorite.id
+    );
 
     return {
       isFavorite: false,
@@ -195,8 +220,19 @@ export async function toggleFavorite(favorite) {
     };
   }
 
-  const createdFavorite =
-    await addFavorite(favorite);
+  const createdFavorite = await addFavorite({
+    ...favorite,
+    nasa_type: source,
+    nasa_id: favoriteId,
+
+    data:
+      favorite.data &&
+      typeof favorite.data === "object"
+        ? favorite.data
+        : {
+            ...favorite,
+          },
+  });
 
   return {
     isFavorite: true,
