@@ -91,13 +91,16 @@ function APODCard({ apod }) {
         nasa_type: "apod",
         nasa_id: favoriteId,
         title: apod.title,
-        image_url: apod.url,
+        image_url:
+          apod.media_type === "image"
+            ? apod.hdurl || apod.url || null
+            : null,
         data: {
-          date: apod.date,
-          hd_url: apod.hdurl || null,
-          description: apod.explanation,
-          media_type: apod.media_type,
-          copyright: apod.copyright || null,
+          ...apod,
+          image_url:
+            apod.media_type === "image"
+              ? apod.hdurl || apod.url || null
+              : null,
         },
       };
 
