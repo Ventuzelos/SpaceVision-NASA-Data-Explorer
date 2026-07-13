@@ -1,0 +1,108 @@
+.notfound-page {
+  min-height: calc(100vh - 140px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(var(--space-5), 6vw, var(--space-8)) 0;
+}
+
+.notfound {
+  width: min(560px, 92%);
+  margin: 0 auto;
+  padding: clamp(var(--space-5), 5vw, var(--space-7)) clamp(var(--space-4), 4vw, var(--space-6));
+  text-align: center;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  backdrop-filter: blur(12px);
+}
+
+.notfound__image {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto clamp(var(--space-4), 3vw, var(--space-6));
+}
+
+.notfound__image svg {
+  width: clamp(200px, 48vw, 420px);
+  height: auto;
+}
+
+.notfound__eyebrow {
+  display: inline-block;
+  color: var(--color-accent);
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-3);
+}
+
+.notfound__title {
+  font-size: clamp(1.4rem, 5.5vw, 2.25rem);
+  margin-bottom: var(--space-4);
+}
+
+.notfound__text {
+  color: var(--color-text-secondary);
+  font-size: clamp(0.9rem, 2vw, 1rem);
+  line-height: 1.6;
+  margin-bottom: clamp(var(--space-4), 4vw, var(--space-6));
+}
+
+.notfound__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.notfound__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  flex: 1 1 180px;
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-md);
+  font-family: var(--font-family);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition-fast);
+  border: 1px solid transparent;
+}
+
+.notfound__btn--primary {
+  background: var(--color-primary);
+  color: var(--color-text);
+}
+
+.notfound__btn--primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.notfound__btn--ghost {
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.notfound__btn--ghost:hover {
+  border-color: var(--color-primary);
+  color: var(--color-text);
+}
+
+/* único breakpoint: abaixo disto os botões empilham em vez de lado a lado */
+@media (max-width: 420px) {
+  .notfound__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .notfound__btn {
+    flex: 1 1 auto;
+  }
+}
