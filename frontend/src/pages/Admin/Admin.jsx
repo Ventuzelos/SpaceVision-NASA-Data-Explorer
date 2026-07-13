@@ -1,10 +1,37 @@
+import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 
 import Container from "../../components/common/Container/Container";
 import Breadcrumb from "../../components/common/Breadcrumb/Breadcrumb";
+import ErrorState from "../../components/common/ErrorState/ErrorState";
+import Icon from "../../components/common/Icon/Icon";
 import useAuth from "../../hooks/useAuth";
 
+import {
+  getUsersCount,
+  getFavoritesStats,
+  getMessagesStats,
+} from "../../services/adminService";
+
 import "./Admin.css";
+
+function formatDate(value) {
+  return new Date(value).toLocaleDateString("pt-PT", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+function formatCount(value) {
+   if (value === null || value === undefined || isNaN(Number(value))) {
+    return "0";
+  }
+  return new Intl.NumberFormat("pt-PT").format(value);
+}
+
 
 function Admin() {
   const {
@@ -13,6 +40,60 @@ function Admin() {
     isAuthenticated,
     isAuthLoading,
   } = useAuth();
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [usersCount, setUsersCount] = useState(null);
+  const [messagesStats, setMessagesStats] = useState({
+    total: 0,
+    messages: [],
+  });
+  const [favoritesStats, setFavoritesStats] = useState({
+    total: 0,
+    byCategory: [],
+  });
+
+  useEffect(() => {
+    if (!isAuthenticated || !isAdmin) return;
+
+    loadDashboard();
+  }, [isAuthenticated, isAdmin]);
+
+  async function loadDashboard() {
+    try {
+      setIsLoading(true);
+      setError("");
+
+      const [users, favorites] = await Promise.all([
+        getUsersCount(),
+        getFavoritesStats(),
+      ]);
+       
+      console.log(users);
+
+      setUsersCount(users);
+      setFavoritesStats(favorites);
+      setMessagesStats(getMessagesStats());
+
+      /*const favorites = await getFavoritesStats();
+
+      setUsersCount(null);
+      setFavoritesStats(favorites);
+      setMessagesStats(getMessagesStats());*/
+
+      
+    } catch (err) {
+      console.error(
+        "Erro ao carregar o painel de administração:",
+        err
+      );
+      setError(
+        "Não foi possível carregar os dados do painel de administração."
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   if (isAuthLoading) {
     return (
@@ -38,40 +119,158 @@ function Admin() {
         <Breadcrumb title="Administração" />
 
         <header className="admin-page__header">
-          <p className="admin-page__label">
-            Administração
-          </p>
+          
 
           <h1>Painel de administração</h1>
 
-          <p>Bem-vinda, {user?.name}.</p>
+              <p className="admin-page__subtitle">
+            Bem-vinda, {user?.name}! 
+          </p>
+          <p className="admin-page__subtitle">
+            Aqui tens um resumo da
+            atividade da plataforma.
+          </p>
         </header>
 
-        <section className="admin-grid">
-          <article className="admin-card">
-            <h2>Utilizadores</h2>
+        {isLoading && (
+          <p className="admin-page__empty">A carregar dados...</p>
+        )}
 
-            <p>
-              A contagem de utilizadores será ligada ao backend.
-            </p>
-          </article>
+        {!isLoading && error && (
+          <ErrorState message={error} onRetry={loadDashboard} />
+        )}
 
-          <article className="admin-card">
-            <h2>Mensagens</h2>
+        {!isLoading && !error && (
+          <>
+            <section
+              className="admin-stats"
+              aria-label="Estatísticas gerais"
+            >
+              <article className="admin-stats__card">
+                <span>
+                  <Icon name="Users" size={16} /> Utilizadores
+                  registados
+                </span>
 
-            <p>
-              As mensagens de contacto serão ligadas ao backend.
-            </p>
-          </article>
+                <strong>{formatCount(usersCount)}</strong>
 
-          <article className="admin-card">
-            <h2>Favoritos</h2>
+                {usersCount === null && (
+                  <small className="admin-stats__hint">
+                    Endpoint de utilizadores ainda não disponível
+                    no backend.
+                  </small>
+                )}
+              </article>
 
-            <p>
-              As estatísticas de favoritos serão ligadas ao backend.
-            </p>
-          </article>
-        </section>
+              <article className="admin-stats__card">
+                <span>
+                  <Icon name="Mail" size={16} /> Mensagens de
+                  contacto
+                </span>
+
+                <strong>
+                  {formatCount(messagesStats.total)}
+                </strong>
+              </article>
+
+              <article className="admin-stats__card">
+                <span>
+                  <Icon name="Heart" size={16} /> Favoritos
+                  guardados
+                </span>
+
+                <strong>
+                  {formatCount(favoritesStats.total)}
+                </strong>
+              </article>
+            </section>
+
+            <section
+              className="admin-section"
+              aria-label="Favoritos por categoria"
+            >
+              <h2 className="admin-page__section-title">
+                Favoritos por categoria
+              </h2>
+
+              {favoritesStats.total === 0 ? (
+                <p className="admin-page__empty">
+                  Ainda não existem favoritos guardados.
+                </p>
+              ) : (
+                <ul className="admin-favorite-breakdown">
+                  {favoritesStats.byCategory.map((category) => {
+                    const percentage = favoritesStats.total
+                      ? Math.round(
+                          (category.count /
+                            favoritesStats.total) *
+                            100
+                        )
+                      : 0;
+
+                    return (
+                      <li
+                        key={category.value}
+                        className="admin-favorite-breakdown__item"
+                      >
+                        <div className="admin-favorite-breakdown__head">
+                          <span>{category.label}</span>
+                          <strong>{category.count}</strong>
+                        </div>
+
+                        <div className="admin-favorite-breakdown__bar">
+                          <div
+                            className="admin-favorite-breakdown__bar-fill"
+                            style={{ width: `${percentage}%` }}
+                          />
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </section>
+
+            <section
+              className="admin-section"
+              aria-label="Mensagens de contacto"
+            >
+              <h2 className="admin-page__section-title">
+                Mensagens de contacto
+              </h2>
+
+              {messagesStats.messages.length === 0 ? (
+                <p className="admin-page__empty">
+                  Ainda não foram enviadas mensagens de contacto.
+                </p>
+              ) : (
+                <div className="admin-messages">
+                  {messagesStats.messages.map((message) => (
+                    <article
+                      key={message.id}
+                      className="admin-message-card"
+                    >
+                      <div className="admin-message-card__head">
+                        <div className="admin-message-card__author">
+                          <strong>{message.name}</strong>
+                          <span>{message.email}</span>
+                        </div>
+
+                        <time dateTime={message.createdAt}>
+                          {formatDate(message.createdAt)}
+                        </time>
+                      </div>
+
+                      <p className="admin-message-card__body">
+                        {message.message}
+                      </p>
+                    </article>
+                  ))}
+                </div>
+              )}
+            </section>
+          </>
+        )}
       </Container>
     </main>
   );
