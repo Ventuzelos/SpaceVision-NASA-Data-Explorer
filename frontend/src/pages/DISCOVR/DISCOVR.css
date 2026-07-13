@@ -1,0 +1,136 @@
+.discovr-page {
+  padding-bottom: var(--space-8);
+}
+
+/* ---- sections ---- */
+.discovr-section {
+  margin-bottom: var(--space-8);
+}
+
+.discovr-section__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+  color: var(--color-accent);
+}
+
+.discovr-section__subtitle {
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-6);
+  max-width: 640px;
+}
+
+/* ---- link partilhado (com seta que se afasta no hover) ---- */
+.discovr-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-accent);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: gap var(--transition-fast);
+}
+
+.discovr-link:hover {
+  gap: var(--space-3);
+}
+
+/* ---- primitivas de skeleton partilhadas entre secções ---- */
+.discovr-skeleton {
+  border-radius: var(--radius-md);
+  background: linear-gradient(
+    90deg,
+    var(--color-surface) 25%,
+    var(--color-surface-light) 50%,
+    var(--color-surface) 75%
+  );
+  background-size: 200% 100%;
+  animation: discovr-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes discovr-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.discovr-skeleton-line {
+  height: 14px;
+  width: 100%;
+  margin-bottom: var(--space-3);
+  border-radius: var(--radius-sm);
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-light) 25%,
+    var(--color-border) 50%,
+    var(--color-surface-light) 75%
+  );
+  background-size: 200% 100%;
+  animation: discovr-shimmer 1.4s ease-in-out infinite;
+}
+
+.discovr-skeleton-line--eyebrow {
+  width: 45%;
+  height: 10px;
+  margin-bottom: var(--space-4);
+}
+
+.discovr-skeleton-line--title {
+  width: 85%;
+  height: 22px;
+  margin-bottom: var(--space-4);
+}
+
+.discovr-skeleton-line--short {
+  width: 65%;
+  margin-bottom: var(--space-5);
+}
+
+.discovr-skeleton-line--link {
+  width: 40%;
+  height: 16px;
+  margin-bottom: 0;
+}
+
+.discovr-skeleton--control {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+}
+
+/* ---- cartão de erro compacto partilhado (galeria + radar) ---- */
+.discovr-error-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  max-width: 320px;
+  margin: 0 auto;
+  padding: var(--space-7) var(--space-6);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  text-align: center;
+}
+
+.discovr-error-card__icon {
+  color: var(--color-text-secondary);
+  opacity: 0.7;
+}
+
+.discovr-error-card h3 {
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+.discovr-error-card p {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0 0 var(--space-2);
+}
