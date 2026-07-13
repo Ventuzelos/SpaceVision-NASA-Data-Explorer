@@ -15,6 +15,7 @@ import {
   fetchDonkiEvents,
   getDefaultDateRange,
 } from "../../services/donkiService";
+
 import {
   getFavorites,
   toggleFavorite,
@@ -26,6 +27,7 @@ import getApiErrorMessage from "../../utils/getApiErrorMessage";
 import "./DONKI.css";
 
 const SOURCE = "donki";
+const EVENTS_PER_PAGE = 8;
 
 function validateDateRange(startDate, endDate) {
   if (!startDate || !endDate) {
@@ -42,13 +44,30 @@ function validateDateRange(startDate, endDate) {
   return "";
 }
 
+function getEventFavoriteId(event) {
+  const eventId =
+    event.id ||
+    event.flrID ||
+    event.activityID ||
+    event.gstID ||
+    event.sepID ||
+    event.hssID ||
+    event.cmeAnalyses?.[0]?.activityID ||
+    event.messageID ||
+    event.date;
+
+  return `${event.type || "donki"}-${eventId}`;
+}
+
 function DONKI() {
   const [dateRange] = useState(() => getDefaultDateRange(7));
 
   const [activeType, setActiveType] = useState("FLR");
+
   const [startDate, setStartDate] = useState(
     dateRange.startDate
   );
+
   const [endDate, setEndDate] = useState(
     dateRange.endDate
   );
@@ -58,6 +77,7 @@ function DONKI() {
   const [error, setError] = useState("");
   const [validationError, setValidationError] =
     useState("");
+
   const [selectedEvent, setSelectedEvent] =
     useState(null);
 
@@ -71,7 +91,7 @@ function DONKI() {
     totalPages,
     setPage,
     shouldShowPagination,
-  } = usePagination(events, 8);
+  } = usePagination(events, EVENTS_PER_PAGE);
 
   const loadEvents = useCallback(
     async (type, start, end) => {
@@ -86,7 +106,7 @@ function DONKI() {
           end
         );
 
-        setEvents(results);
+        setEvents(Array.isArray(results) ? results : []);
       } catch (requestError) {
         console.error(
           "Erro ao carregar eventos DONKI:",
@@ -109,8 +129,6 @@ function DONKI() {
   );
 
   useEffect(() => {
-    // Inicia o carregamento de dados externos.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadEvents(
       "FLR",
       dateRange.startDate,
@@ -129,10 +147,8 @@ function DONKI() {
       try {
         const favorites = await getFavorites(SOURCE);
 
-        const keys = favorites.map(
-          (favorite) =>
-            favorite.nasa_id ||
-            favorite.id
+        const keys = favorites.map((favorite) =>
+          String(favorite.nasa_id || favorite.id)
         );
 
         if (isMounted) {
@@ -200,54 +216,38 @@ function DONKI() {
   }
 
   async function handleToggleFavorite(event) {
-    const key = `${event.type}-${event.id}`;
+    const favoriteId = getEventFavoriteId(event);
 
     try {
-      const result = await toggleFavorite({
-        source: SOURCE,
-        id: key,
-        title: event.title,
-        date: event.date,
-        type: event.type,
-        link: event.link,
+      await toggleFavorite({
+        nasa_type: SOURCE,
+        nasa_id: favoriteId,
+        title: event.title || "Evento DONKI",
+        image_url: null,
+
         data: {
-          event_type: event.type,
-          event_id: event.id,
-          date: event.date,
-          link: event.link,
-          description:
-            event.description ||
-            event.note ||
-            null,
+          ...event,
+          event_date: event.date || null,
+          donki_type: event.type || activeType,
         },
       });
 
-      setFavoriteKeys((previousKeys) => {
-        const nextKeys = new Set(previousKeys);
+      setFavoriteKeys((currentKeys) => {
+        const updatedKeys = new Set(currentKeys);
 
-        if (result.isFavorite) {
-          nextKeys.add(key);
+        if (updatedKeys.has(favoriteId)) {
+          updatedKeys.delete(favoriteId);
         } else {
-          nextKeys.delete(key);
+          updatedKeys.add(favoriteId);
         }
 
-        return nextKeys;
+        return updatedKeys;
       });
     } catch (requestError) {
       console.error(
         "Erro ao atualizar favorito DONKI:",
         requestError
       );
-
-      if (requestError.response?.status === 401) {
-        window.alert(
-          "Precisas de iniciar sessão para guardar favoritos."
-        );
-      } else {
-        window.alert(
-          "Não foi possível atualizar o favorito."
-        );
-      }
     }
   }
 
@@ -258,7 +258,8 @@ function DONKI() {
   return (
     <main className="donki-page">
       <Container>
-         <Breadcrumb title="DONKI" />
+        <Breadcrumb title="DONKI" />
+
         <header className="donki-page__header">
           <span className="donki-page__eyebrow">
             DONKI · Space Weather Database
@@ -308,7 +309,7 @@ function DONKI() {
           <EventDetails
             event={selectedEvent}
             isFavorite={favoriteKeys.has(
-              `${selectedEvent.type}-${selectedEvent.id}`
+              getEventFavoriteId(selectedEvent)
             )}
             onToggleFavorite={handleToggleFavorite}
             onBack={() => setSelectedEvent(null)}
@@ -374,19 +375,24 @@ function DONKI() {
 
               {!loading &&
                 !error &&
-                paginatedEvents.map((event) => (
-                  <EventCard
-                    key={`${event.type}-${event.id}`}
-                    event={event}
-                    isFavorite={favoriteKeys.has(
-                      `${event.type}-${event.id}`
-                    )}
-                    onToggleFavorite={
-                      handleToggleFavorite
-                    }
-                    onViewDetails={setSelectedEvent}
-                  />
-                ))}
+                paginatedEvents.map((event) => {
+                  const favoriteId =
+                    getEventFavoriteId(event);
+
+                  return (
+                    <EventCard
+                      key={favoriteId}
+                      event={event}
+                      isFavorite={favoriteKeys.has(
+                        favoriteId
+                      )}
+                      onToggleFavorite={
+                        handleToggleFavorite
+                      }
+                      onViewDetails={setSelectedEvent}
+                    />
+                  );
+                })}
             </div>
 
             {!loading &&
