@@ -30,13 +30,10 @@ export default function EpicThumbnail({
   const favoriteId = `epic-${photo.image}`;
 
   const [favorite, setFavorite] = useState(false);
+
   const [isFavoriteLoading, setIsFavoriteLoading] =
     useState(false);
 
-  /*
-   * Guardamos o URL da imagem que falhou.
-   * Primeiro tenta thumbnail; se falhar, tenta imagem completa.
-   */
   const [failedThumbUrl, setFailedThumbUrl] =
     useState("");
 
@@ -93,16 +90,20 @@ export default function EpicThumbnail({
       image: photo.image,
       date,
       url: fullUrl,
+
       caption:
         photo.caption ||
         `Vista completa da Terra captada pela EPIC${
           time ? ` às ${time} UTC` : ""
         }`,
+
       time,
+
       lat:
         photo.centroid_coordinates?.lat?.toFixed(
           1
         ) || "",
+
       lon:
         photo.centroid_coordinates?.lon?.toFixed(
           1
@@ -132,43 +133,64 @@ export default function EpicThumbnail({
 
       const result = await toggleFavorite({
         id: favoriteId,
+        nasa_id: favoriteId,
         source: "epic",
         type: "epic",
+        nasa_type: "epic",
+
         title: `EPIC · Terra${
           time ? ` (${time} UTC)` : ""
         }`,
+
         date,
+
         imageUrl: fullUrl,
+        image_url: fullUrl,
+
         hdUrl: fullUrl,
         description: photo.caption || "",
+
         data: {
+          ...photo,
           date,
           time,
           caption: photo.caption || "",
           image: photo.image,
           image_url: fullUrl,
+          url: fullUrl,
           hd_url: fullUrl,
           latitude,
           longitude,
+
+          centroid_coordinates: {
+            lat: latitude,
+            lon: longitude,
+          },
         },
       });
 
       setFavorite(result.isFavorite);
+
+      window.dispatchEvent(
+        new CustomEvent("epicFavoriteUpdated", {
+          detail: {
+            isFavorite: result.isFavorite,
+          },
+        })
+      );
     } catch (error) {
       console.error(
         "Erro ao atualizar favorito EPIC:",
         error
       );
 
-      if (error.response?.status === 401) {
-        window.alert(
-          "Precisas de iniciar sessão para guardar favoritos."
-        );
-      } else {
-        window.alert(
-          "Não foi possível atualizar o favorito."
-        );
-      }
+      window.dispatchEvent(
+        new CustomEvent("epicFavoriteError", {
+          detail: {
+            status: error.response?.status,
+          },
+        })
+      );
     } finally {
       setIsFavoriteLoading(false);
     }

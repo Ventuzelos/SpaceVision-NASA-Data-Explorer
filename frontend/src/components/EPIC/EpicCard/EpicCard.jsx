@@ -17,15 +17,10 @@ export default function EpicCard({
     : null;
 
   const [favorite, setFavorite] = useState(false);
+
   const [isFavoriteLoading, setIsFavoriteLoading] =
     useState(false);
 
-  /*
-   * Em vez de guardar apenas true/false,
-   * guardamos qual URL falhou.
-   * Assim, quando a URL muda, o erro anterior deixa
-   * automaticamente de se aplicar.
-   */
   const [failedImageUrl, setFailedImageUrl] =
     useState("");
 
@@ -92,43 +87,64 @@ export default function EpicCard({
 
       const result = await toggleFavorite({
         id: favoriteId,
+        nasa_id: favoriteId,
         source: "epic",
         type: "epic",
+        nasa_type: "epic",
+
         title: `EPIC · Terra${
           time ? ` (${time} UTC)` : ""
         }`,
+
         date,
+
         imageUrl: url,
+        image_url: url,
+
         hdUrl: url,
         description: caption,
+
         data: {
+          ...detail,
           date,
           time,
           caption,
           image: detail.image,
           image_url: url,
+          url,
           hd_url: url,
           latitude: lat,
           longitude: lon,
+
+          centroid_coordinates: {
+            lat,
+            lon,
+          },
         },
       });
 
       setFavorite(result.isFavorite);
+
+      window.dispatchEvent(
+        new CustomEvent("epicFavoriteUpdated", {
+          detail: {
+            isFavorite: result.isFavorite,
+          },
+        })
+      );
     } catch (error) {
       console.error(
         "Erro ao atualizar favorito EPIC:",
         error
       );
 
-      if (error.response?.status === 401) {
-        window.alert(
-          "Precisas de iniciar sessão para guardar favoritos."
-        );
-      } else {
-        window.alert(
-          "Não foi possível atualizar o favorito."
-        );
-      }
+      window.dispatchEvent(
+        new CustomEvent("epicFavoriteError", {
+          detail: {
+            status: error.response?.status,
+          },
+        })
+      );
     } finally {
       setIsFavoriteLoading(false);
     }

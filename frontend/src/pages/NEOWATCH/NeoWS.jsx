@@ -14,6 +14,7 @@ import NeoCard from "../../components/NeoWS/NeoCard/NeoCard";
 import NeoSkeleton from "../../components/NeoWS/NeoSkeleton/NeoSkeleton";
 import Pagination from "../../components/common/Pagination/Pagination";
 import Breadcrumb from "../../components/common/Breadcrumb/Breadcrumb";
+import Toast from "../../components/common/Toast/Toast";
 
 import {
   computeStats,
@@ -98,6 +99,9 @@ function NeoWS() {
   const [favoriteLoadingKeys, setFavoriteLoadingKeys] =
     useState(() => new Set());
 
+  const [toastMessage, setToastMessage] =
+    useState("");
+
   const stats = computeStats(objects);
 
   const sortedObjects = sortByMissDistance(
@@ -115,6 +119,14 @@ function NeoWS() {
     sortedObjects,
     OBJECTS_PER_PAGE
   );
+
+  function showToast(message) {
+    setToastMessage(message);
+
+    window.setTimeout(() => {
+      setToastMessage("");
+    }, 2500);
+  }
 
   const loadFeed = useCallback(
     async (start, end) => {
@@ -339,6 +351,7 @@ function NeoWS() {
           ...neo,
 
           id: favoriteId,
+
           name:
             neo.name ||
             rawNeo.name ||
@@ -420,6 +433,12 @@ function NeoWS() {
 
         return nextKeys;
       });
+
+      showToast(
+        result.isFavorite
+          ? "Adicionado aos favoritos"
+          : "Removido dos favoritos"
+      );
     } catch (requestError) {
       console.error(
         "Erro ao atualizar favorito NeoWatch:",
@@ -429,12 +448,12 @@ function NeoWS() {
       if (
         requestError.response?.status === 401
       ) {
-        window.alert(
-          "Precisas de iniciar sessão para guardar favoritos."
+        showToast(
+          "Precisas de iniciar sessão para guardar favoritos"
         );
       } else {
-        window.alert(
-          "Não foi possível atualizar o favorito."
+        showToast(
+          "Não foi possível atualizar o favorito"
         );
       }
     } finally {
@@ -597,6 +616,8 @@ function NeoWS() {
             />
           )}
       </Container>
+
+      <Toast message={toastMessage} />
     </main>
   );
 }
