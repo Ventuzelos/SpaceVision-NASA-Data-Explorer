@@ -10,7 +10,6 @@ import EpicPipeline from '../../components/EPIC/EpicPipeline/EpicPipeline';
 import EpicSectionHead from '../../components/EPIC/EpicSectionHead/EpicSectionHead';
 import EpicLightbox from '../../components/EPIC/EpicLightbox/EpicLightbox';
 import EpicBackToTop from '../../components/EPIC/EpicBackToTop/EpicBackToTop';
-import Breadcrumb from "../../components/common/Breadcrumb/Breadcrumb";
 
 import "./EPIC.css";
 
