@@ -1,43 +1,75 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+
 import Container from "../../components/common/Container/Container";
 import Button from "../../components/common/Button/Button";
-import { registerUser } from "../../services/authService";
+import useAuth from "../../hooks/useAuth";
+
 import "./Register.css";
 
 function Register() {
   const navigate = useNavigate();
+  const { register } = useAuth();
 
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
-    confirmPassword: "",
+    passwordConfirmation: "",
   });
+
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function handleChange(e) {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  function handleChange(event) {
+    const { name, value } = event.target;
+
+    setFormData((currentFormData) => ({
+      ...currentFormData,
+      [name]: value,
+    }));
   }
 
-  function handleSubmit(e) {
-    e.preventDefault();
+  async function handleSubmit(event) {
+    event.preventDefault();
+
     setError("");
 
-    if (formData.password !== formData.confirmPassword) {
+    if (formData.password.length < 8) {
+      setError("A palavra-passe deve ter pelo menos 8 caracteres.");
+      return;
+    }
+
+    if (formData.password !== formData.passwordConfirmation) {
       setError("As palavras-passe não coincidem.");
       return;
     }
 
-    setIsSubmitting(true);
-
     try {
-      registerUser(formData);
+      setIsSubmitting(true);
+
+      await register({
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        password: formData.password,
+        password_confirmation: formData.passwordConfirmation,
+      });
+
       navigate("/");
-    } catch (err) {
-      setError(err.message);
+    } catch (requestError) {
+      console.error("Erro no registo:", requestError);
+
+      const validationErrors =
+        requestError.response?.data?.errors;
+
+      const message =
+        validationErrors?.email?.[0] ||
+        validationErrors?.password?.[0] ||
+        validationErrors?.name?.[0] ||
+        requestError.response?.data?.message ||
+        "Não foi possível criar a conta.";
+
+      setError(message);
     } finally {
       setIsSubmitting(false);
     }
@@ -47,7 +79,9 @@ function Register() {
     <main className="auth-page">
       <section className="auth-hero">
         <Container>
-          <p className="auth-hero__label">Junta-te a nós</p>
+          <p className="auth-hero__label">
+            Junta-te a nós
+          </p>
 
           <h1>Cria a tua conta</h1>
 
@@ -61,9 +95,16 @@ function Register() {
       <section className="auth-content">
         <Container>
           <div className="auth-card">
-            <form className="auth-form" onSubmit={handleSubmit} noValidate>
+            <form
+              className="auth-form"
+              onSubmit={handleSubmit}
+              noValidate
+            >
               <div className="auth-field">
-                <label htmlFor="name">Nome</label>
+                <label htmlFor="name">
+                  Nome
+                </label>
+
                 <input
                   id="name"
                   name="name"
@@ -77,7 +118,10 @@ function Register() {
               </div>
 
               <div className="auth-field">
-                <label htmlFor="email">Email</label>
+                <label htmlFor="email">
+                  Email
+                </label>
+
                 <input
                   id="email"
                   name="email"
@@ -91,44 +135,63 @@ function Register() {
               </div>
 
               <div className="auth-field">
-                <label htmlFor="password">Palavra-passe</label>
+                <label htmlFor="password">
+                  Palavra-passe
+                </label>
+
                 <input
                   id="password"
                   name="password"
                   type="password"
                   autoComplete="new-password"
-                  placeholder="••••••••"
+                  placeholder="Mínimo de 8 caracteres"
                   value={formData.password}
                   onChange={handleChange}
                   required
-                  minLength={6}
+                  minLength={8}
                 />
               </div>
 
               <div className="auth-field">
-                <label htmlFor="confirmPassword">Confirmar palavra-passe</label>
+                <label htmlFor="passwordConfirmation">
+                  Confirmar palavra-passe
+                </label>
+
                 <input
-                  id="confirmPassword"
-                  name="confirmPassword"
+                  id="passwordConfirmation"
+                  name="passwordConfirmation"
                   type="password"
                   autoComplete="new-password"
-                  placeholder="••••••••"
-                  value={formData.confirmPassword}
+                  placeholder="Repete a palavra-passe"
+                  value={formData.passwordConfirmation}
                   onChange={handleChange}
                   required
-                  minLength={6}
+                  minLength={8}
                 />
               </div>
 
-              {error && <p className="auth-error">{error}</p>}
+              {error && (
+                <p className="auth-error" role="alert">
+                  {error}
+                </p>
+              )}
 
-              <Button type="submit" variant="primary" disabled={isSubmitting}>
-                {isSubmitting ? "A criar conta..." : "Criar conta"}
+              <Button
+                type="submit"
+                variant="primary"
+                disabled={isSubmitting}
+              >
+                {isSubmitting
+                  ? "A criar conta..."
+                  : "Criar conta"}
               </Button>
             </form>
 
             <p className="auth-switch">
-              Já tens conta? <Link to="/login">Entrar</Link>
+              Já tens conta?{" "}
+              <Link to="/login">
+                Entrar
+              </Link>
             </p>
           </div>
         </Container>

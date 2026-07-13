@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 import { useEpicPhotos } from '../../hooks/useEpicPhotos';
 import EpicPanel from './EpicPanel/EpicPanel';
@@ -12,12 +12,12 @@ import EpicLightbox from '../../components/EPIC/EpicLightbox/EpicLightbox';
 import EpicBackToTop from '../../components/EPIC/EpicBackToTop/EpicBackToTop';
 import Breadcrumb from "../../components/common/Breadcrumb/Breadcrumb";
 
-import './EPIC.css';
+import "./EPIC.css";
 
 export default function EPIC() {
   const [lightbox, setLightbox] = useState(null);
-  const [pendingDate, setPendingDate] = useState('');
-  const [dateError, setDateError] = useState('');
+  const [pendingDate, setPendingDate] = useState("");
+  const [dateError, setDateError] = useState("");
 
   const {
     photos,
@@ -32,33 +32,42 @@ export default function EPIC() {
     retryLastRequest,
   } = useEpicPhotos();
 
-  useEffect(() => {
-    setPendingDate(date || '');
-  }, [date]);
+  const displayedDate = pendingDate || date || "";
 
   useEffect(() => {
+
     loadLatest();
   }, [loadLatest]);
 
+  function handleDateChange(value) {
+    setPendingDate(value);
+    setDateError("");
+  }
+
   function handleLoadByDate() {
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toISOString().split("T")[0];
 
-    if (!pendingDate) {
-      setDateError('Seleciona uma data.');
+    if (!displayedDate) {
+      setDateError("Seleciona uma data.");
       return;
     }
 
-    if (pendingDate > today) {
-      setDateError('Não é possível consultar uma data futura.');
+    if (displayedDate > today) {
+      setDateError(
+        "Não é possível consultar uma data futura."
+      );
       return;
     }
 
-    setDateError('');
-    loadByDate(pendingDate);
+    setDateError("");
+    setPendingDate(displayedDate);
+    loadByDate(displayedDate);
   }
 
   function handleLoadLatest() {
-    setDateError('');
+    setDateError("");
+
+    setPendingDate("");
     loadLatest();
   }
 
@@ -66,7 +75,9 @@ export default function EPIC() {
     <main className="epic-page">
 
       <EpicHero />
+
       <EpicTimelineSection />
+
       <EpicPipeline />
 
       <div className="bottom-glow">
@@ -79,11 +90,8 @@ export default function EPIC() {
             />
 
             <EpicDateControls
-              date={pendingDate}
-              onDateChange={(value) => {
-                setPendingDate(value);
-                setDateError('');
-              }}
+              date={displayedDate}
+              onDateChange={handleDateChange}
               onLoad={handleLoadByDate}
               onLatest={handleLoadLatest}
               loading={loading}
@@ -94,7 +102,6 @@ export default function EPIC() {
           <div className="viewer-layout">
             <EpicDetail
               photo={selected}
-              date={date}
               onOpenLightbox={setLightbox}
             />
 
@@ -111,7 +118,11 @@ export default function EPIC() {
         </section>
       </div>
 
-      <EpicLightbox photo={lightbox} onClose={() => setLightbox(null)} />
+      <EpicLightbox
+        photo={lightbox}
+        onClose={() => setLightbox(null)}
+      />
+
       <EpicBackToTop />
     </main>
   );

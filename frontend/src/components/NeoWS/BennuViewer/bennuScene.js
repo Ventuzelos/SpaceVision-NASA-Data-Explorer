@@ -112,8 +112,6 @@ export function createBennuScene(container, options = {}) {
 
   let daysPerSecond = options.initialSpeed ?? 0.6;
   let playing = true;
-  let showOrbits = true;
-  let showAxis = true;
   let followBennu = true;
   let simDays = 0;
   let disposed = false;
@@ -463,12 +461,10 @@ export function createBennuScene(container, options = {}) {
       daysPerSecond = value;
     },
     setShowOrbits(value) {
-      showOrbits = value;
       earthOrbitLine.visible = value;
       bennuOrbitLine.visible = value;
     },
     setShowAxis(value) {
-      showAxis = value;
       axisHelperGroup.visible = value;
     },
     setFollow(value) {

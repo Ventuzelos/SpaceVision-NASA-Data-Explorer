@@ -105,10 +105,12 @@ function APOD() {
     });
   }
 
-  useEffect(() => {
-    loadApod();
-    loadPreviousApods();
-  }, []);
+useEffect(() => {
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  loadApod();
+
+  loadPreviousApods();
+}, []);
 
   return (
     <main className="apod-page">

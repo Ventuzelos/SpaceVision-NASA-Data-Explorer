@@ -14,8 +14,11 @@ import FAQ from "./pages/FAQ/FAQ";
 
 
 import NeoWS from "./pages/NEOWATCH/NeoWS";
-import Login from "./pages/Login/Login";      
-import Register from "./pages/Register/Register"; 
+import Login from "./pages/Login/Login";
+import Register from "./pages/Register/Register";
+
+import Profile from "./pages/Profile/Profile";
+import Admin from "./pages/Admin/Admin";
 
 
 function App() {
@@ -29,16 +32,21 @@ function App() {
           <Route path="epic" element={<EPIC />} />
           <Route path="neowatch" element={<NeoWS />} />
           <Route path="favorites" element={<Favorites />} />
-          <Route path="*" element={<NotFound />} />
+
           <Route path="about" element={<About />} />
           <Route path="faq" element={<FAQ />} />
+
+          <Route path="profile" element={<Profile />} />
+          <Route path="admin" element={<Admin />} />
+
+          <Route path="*" element={<NotFound />} />
         </Route>
 
         <Route element={<LoginLayout />}>
-        <Route path="login" element={<Login />} />   
-        <Route path="register" element={<Register />} />
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
         </Route>
-        
+
       </Routes>
     </BrowserRouter>
   );

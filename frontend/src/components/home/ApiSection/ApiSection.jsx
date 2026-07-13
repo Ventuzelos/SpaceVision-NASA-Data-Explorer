@@ -1,5 +1,5 @@
 import "./ApiSection.css";
-import ApiCard from "./ApiCard/ApiCard";
+// import ApiCard from "./ApiCard/ApiCard";
 import ApiGrid from "./ApiGrid/ApiGrid";
 import { nasaApis } from "../../../data/nasaApis";
 
