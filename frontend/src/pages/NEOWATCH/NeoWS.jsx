@@ -153,7 +153,7 @@ function NeoWS() {
 
     async function loadFavoriteKeys() {
       try {
-        const favorites = await getFavorites(SOURCE);
+        const favorites = await getFavorites(SOURCE, true);
 
         const keys = favorites.map((favorite) =>
           String(
