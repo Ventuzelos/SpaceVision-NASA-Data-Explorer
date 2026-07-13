@@ -3,6 +3,16 @@
   min-height: 70vh;
 }
 
+.faq-page .breadcrumb {
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.faq-page .breadcrumb__list {
+  justify-content: center;
+}
+
 .faq-hero {
   text-align: center;
   
@@ -13,7 +23,7 @@
   display: inline-block;
   color: var(--color-accent);
   font-weight: 600;
-  font-size: 0.8rem;
+  font-size: 1rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   margin-bottom: var(--space-3);
@@ -34,40 +44,13 @@
 /* ---- pesquisa ---- */
 .faq-search {
   display: flex;
-  align-items: center;
-  gap: var(--space-3);
+  justify-content: center;
   max-width: 640px;
   margin: 0 auto var(--space-5);
-  padding: var(--space-4) var(--space-5);
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  backdrop-filter: blur(12px);
-  transition: var(--transition-fast);
 }
 
-.faq-search:focus-within {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
-}
-
-.faq-search svg {
-  flex-shrink: 0;
-  color: var(--color-text-secondary);
-}
-
-.faq-search input {
-  flex: 1;
-  background: none;
-  border: none;
-  outline: none;
-  color: var(--color-text);
-  font-family: var(--font-family);
-  font-size: 1rem;
-}
-
-.faq-search input::placeholder {
-  color: var(--color-text-secondary);
+.faq-search .search-input {
+  max-width: 100%;
 }
 
 /* ---- filtros ---- */

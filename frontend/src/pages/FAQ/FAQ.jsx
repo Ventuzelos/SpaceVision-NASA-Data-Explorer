@@ -4,6 +4,8 @@ import Container from "../../components/common/Container/Container";
 import Icon from "../../components/common/Icon/Icon";
 import Breadcrumb from "../../components/common/Breadcrumb/Breadcrumb";
 import "./FAQ.css";
+import SearchInput from "../../components/common/SearchInput/SearchInput";
+
 
 const CATEGORIES = ["Todas", "APIs NASA", "Dados", "Conta"];
 
@@ -156,9 +158,7 @@ function FAQ() {
         </header>
 
         <div className="faq-search">
-          <Icon name="Search" size={20} />
-          <input
-            type="text"
+          <SearchInput
             placeholder="Pesquisar por APOD, EPIC, favoritos..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
