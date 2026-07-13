@@ -10,6 +10,9 @@ import Pagination from "../../components/common/Pagination/Pagination";
 import { usePagination } from "../../hooks/usePagination";
 import useAuth from "../../hooks/useAuth";
 import "./Favorites.css";
+import FavoriteDetailsModal from "../../components/favorites/FavoriteDetailsModal";
+
+
 
 const FAVORITES_PER_PAGE = 8;
 
@@ -22,6 +25,7 @@ const FAVORITE_FILTERS = [
 ];
 
 function Favorites() {
+  const [selectedFavorite, setSelectedFavorite] = useState(null);
   const { user } = useAuth();
 
   const [favorites, setFavorites] = useState([]);
@@ -213,6 +217,7 @@ function Favorites() {
                       key={favorite.id}
                       favorite={favorite}
                       onRemove={handleRemoveFavorite}
+                      onView={setSelectedFavorite}
                     />
                   ))}
                 </div>
@@ -225,9 +230,16 @@ function Favorites() {
                   />
                 )}
               </>
+              
             )}
         </Container>
       </section>
+       {selectedFavorite && (
+      <FavoriteDetailsModal
+        favorite={selectedFavorite}
+        onClose={() => setSelectedFavorite(null)}
+      />
+    )}
     </main>
   );
 }
