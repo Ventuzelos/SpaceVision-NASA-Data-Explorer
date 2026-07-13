@@ -1,24 +1,60 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Button from "../common/Button/Button";
 import Toast from "../common/Toast/Toast";
 import Icon from "../common/Icon/Icon";
 import FavoriteButton from "../common/FavoriteButton/FavoriteButton";
 
-import "./APODCard.css";
-
 import {
   addFavorite,
+  getFavorites,
   removeFavorite,
-  isFavorite,
 } from "../../services/favoritesService";
+
+import "./APODCard.css";
 
 function APODCard({ apod }) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [favorite, setFavorite] = useState(false);
+  const [favoriteDatabaseId, setFavoriteDatabaseId] = useState(null);
+  const [isFavoriteLoading, setIsFavoriteLoading] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
 
   const favoriteId = `apod-${apod.date}`;
-  const [favorite, setFavorite] = useState(isFavorite(favoriteId));
-  const [toastMessage, setToastMessage] = useState("");
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function checkFavorite() {
+      try {
+        const favorites = await getFavorites("apod");
+
+        const existingFavorite = favorites.find((item) => {
+          const itemId = item.nasa_id || item.id;
+
+          return String(itemId) === String(favoriteId);
+        });
+
+        if (isMounted) {
+          setFavorite(Boolean(existingFavorite));
+          setFavoriteDatabaseId(existingFavorite?.id || null);
+        }
+      } catch (error) {
+        console.error("Erro ao verificar favorito:", error);
+
+        if (isMounted) {
+          setFavorite(false);
+          setFavoriteDatabaseId(null);
+        }
+      }
+    }
+
+    checkFavorite();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [favoriteId]);
 
   const formattedDate = new Date(apod.date).toLocaleDateString("pt-PT", {
     day: "numeric",
@@ -29,32 +65,58 @@ function APODCard({ apod }) {
   function showToast(message) {
     setToastMessage(message);
 
-    setTimeout(() => {
+    window.setTimeout(() => {
       setToastMessage("");
     }, 2500);
   }
 
-  function handleFavoriteClick() {
-    const favoriteItem = {
-      id: favoriteId,
-      type: "apod",
-      title: apod.title,
-      date: apod.date,
-      imageUrl: apod.url,
-      hdUrl: apod.hdurl,
-      description: apod.explanation,
-    };
-
-    if (favorite) {
-      removeFavorite(favoriteId);
-      setFavorite(false);
-      showToast("Removido dos favoritos");
+  async function handleFavoriteClick() {
+    if (isFavoriteLoading) {
       return;
     }
 
-    addFavorite(favoriteItem);
-    setFavorite(true);
-    showToast("Adicionado aos favoritos");
+    try {
+      setIsFavoriteLoading(true);
+
+      if (favorite && favoriteDatabaseId) {
+        await removeFavorite(favoriteDatabaseId);
+
+        setFavorite(false);
+        setFavoriteDatabaseId(null);
+        showToast("Removido dos favoritos");
+        return;
+      }
+
+      const favoriteItem = {
+        nasa_type: "apod",
+        nasa_id: favoriteId,
+        title: apod.title,
+        image_url: apod.url,
+        data: {
+          date: apod.date,
+          hd_url: apod.hdurl || null,
+          description: apod.explanation,
+          media_type: apod.media_type,
+          copyright: apod.copyright || null,
+        },
+      };
+
+      const createdFavorite = await addFavorite(favoriteItem);
+
+      setFavorite(true);
+      setFavoriteDatabaseId(createdFavorite.id);
+      showToast("Adicionado aos favoritos");
+    } catch (error) {
+      console.error("Erro ao atualizar favorito:", error);
+
+      if (error.response?.status === 401) {
+        showToast("Inicia sessão para guardar favoritos");
+      } else {
+        showToast("Não foi possível atualizar o favorito");
+      }
+    } finally {
+      setIsFavoriteLoading(false);
+    }
   }
 
   return (
@@ -102,8 +164,11 @@ function APODCard({ apod }) {
           <FavoriteButton
             active={favorite}
             onClick={handleFavoriteClick}
+            disabled={isFavoriteLoading}
             ariaLabel={
-              favorite ? "Remover dos favoritos" : "Adicionar aos favoritos"
+              favorite
+                ? "Remover dos favoritos"
+                : "Adicionar aos favoritos"
             }
           />
         </div>
@@ -127,7 +192,11 @@ function APODCard({ apod }) {
           </Button>
 
           {apod.hdurl && (
-            <a href={apod.hdurl} target="_blank" rel="noopener noreferrer">
+            <a
+              href={apod.hdurl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <Button>
                 <>
                   <Icon name="Download" size={16} />
