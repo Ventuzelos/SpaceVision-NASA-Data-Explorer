@@ -4,7 +4,7 @@ import { Icons } from "../../../constants/icons";
 
 import Button from "../../common/Button/Button";
 import SearchInput from "../../common/SearchInput/SearchInput";
-import heroImage from "../../../assets/hero2.jpg";
+import heroImage from "../../../assets/hero.webp";
 import { searchablePages } from "../../../constants/searchPages";
 
 import "./Hero.css";

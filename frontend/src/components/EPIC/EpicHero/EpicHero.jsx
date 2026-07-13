@@ -1,10 +1,12 @@
 import './EpicHero.css';
 import EpicHeroVideo from '../EpicHeroVideo/EpicHeroVideo';
+import Breadcrumb from "../../common/Breadcrumb/Breadcrumb";
 
 export default function EpicHero() {
   return (
     <section className="hero" id="hero">
       <div>
+        <Breadcrumb title="Earth" />
         <div className="eyebrow">EPIC · Earth Polychromatic Imaging Camera</div>
         <h1 className="headline">
           O nosso planeta. Visto de longe, em tempo real.

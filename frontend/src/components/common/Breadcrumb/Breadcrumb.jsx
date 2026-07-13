@@ -1,23 +1,35 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home } from "lucide-react";
+import { ChevronRight, Home } from "lucide-react";
+
 import "./Breadcrumb.css";
 
 const routeNames = {
   apod: "APOD",
-  "donki": "DONKI",
-  earth: "Earth",
-  gallery: "Gallery",
-  favorites: "Favorites",
+  donki: "DONKI",
+  epic: "Earth",
+  neowatch: "NeoWatch",
+  gallery: "Discover",
   discover: "Discover",
+  favorites: "Favoritos",
   about: "Sobre nós",
+  faq: "FAQ",
+  profile: "Perfil",
+  admin: "Administração",
 };
 
 function Breadcrumb({ title }) {
   const { pathname } = useLocation();
 
-  const segments = pathname.split("/").filter(Boolean);
+  const segments = pathname
+    .split("/")
+    .filter(Boolean);
 
-  const items = [{ label: "Home", to: "/" }];
+  const items = [
+    {
+      label: "Home",
+      to: "/",
+    },
+  ];
 
   let currentPath = "";
 
@@ -25,39 +37,71 @@ function Breadcrumb({ title }) {
     currentPath += `/${segment}`;
 
     items.push({
-      label: routeNames[segment] || segment,
+      label:
+        routeNames[segment] ||
+        decodeURIComponent(segment),
       to: currentPath,
     });
   });
 
-  if (title) {
+  if (title && items.length > 1) {
     items[items.length - 1] = {
       label: title,
     };
   }
 
   return (
-    <nav className="breadcrumb" aria-label="Breadcrumb">
+    <nav
+      className="breadcrumb"
+      aria-label="Navegação estrutural"
+    >
       <ol className="breadcrumb__list">
         {items.map((item, index) => {
-          const isLast = index === items.length - 1;
+          const isFirst = index === 0;
+          const isLast =
+            index === items.length - 1;
 
           return (
-            <li key={index} className="breadcrumb__item">
+            <li
+              key={`${item.label}-${index}`}
+              className="breadcrumb__item"
+            >
               {isLast ? (
-                <span className="breadcrumb__current">
-                  {index === 0 && <Home size={14} />}
+                <span
+                  className="breadcrumb__current"
+                  aria-current="page"
+                >
+                  {isFirst && (
+                    <Home
+                      size={15}
+                      aria-hidden="true"
+                    />
+                  )}
+
                   {item.label}
                 </span>
               ) : (
-                <Link className="breadcrumb__link" to={item.to}>
-                  {index === 0 && <Home size={14} />}
+                <Link
+                  className="breadcrumb__link"
+                  to={item.to}
+                >
+                  {isFirst && (
+                    <Home
+                      size={15}
+                      aria-hidden="true"
+                    />
+                  )}
+
                   {item.label}
                 </Link>
               )}
 
               {!isLast && (
-                <span className="breadcrumb__separator">›</span>
+                <ChevronRight
+                  className="breadcrumb__separator"
+                  size={15}
+                  aria-hidden="true"
+                />
               )}
             </li>
           );
