@@ -27,6 +27,8 @@ import {
   ShieldCheck,
   Database,
   UserCircle,
+  WifiOff,
+  Radar,
 } from "lucide-react";
 
 export const Icons = {
@@ -58,4 +60,6 @@ export const Icons = {
   ShieldCheck,
   Database,
   UserCircle,
+  WifiOff,
+  Radar,
 };

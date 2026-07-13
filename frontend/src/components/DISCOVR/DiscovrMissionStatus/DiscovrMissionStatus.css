@@ -1,0 +1,99 @@
+/* ---- status das missões ---- */
+/* Colunas fixas por breakpoint (em vez de auto-fit) para que os
+   cartões caiam sempre em linhas completas — com auto-fit, 4 cartões
+   podiam ficar 3+1, e o Grid só estica a altura dentro da mesma linha,
+   deixando o cartão sozinho mais baixo que os restantes. */
+.discovr-status-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-5);
+}
+
+@media (min-width: 640px) {
+  .discovr-status-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1100px) {
+  .discovr-status-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.discovr-status-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: var(--space-6);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.discovr-status-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  color: var(--color-accent);
+}
+
+.discovr-status-card__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.discovr-status-card__badge--success {
+  color: var(--color-success);
+  background: color-mix(in srgb, var(--color-success) 15%, transparent);
+}
+
+.discovr-status-card__badge--upcoming {
+  color: var(--color-secondary);
+  background: color-mix(in srgb, var(--color-secondary) 15%, transparent);
+}
+
+.discovr-status-card__pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: discovr-pulse 2s ease-in-out infinite;
+}
+
+@keyframes discovr-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.discovr-status-card h3 {
+  font-size: 1.05rem;
+  margin-bottom: var(--space-2);
+}
+
+.discovr-status-card p {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-bottom: var(--space-4);
+}
+
+.discovr-status-card__updated {
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  opacity: 0.7;
+  margin-top: auto;
+}
