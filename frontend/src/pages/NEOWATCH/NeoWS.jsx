@@ -13,6 +13,7 @@ import NeoSortControl from "../../components/NeoWS/NeoSortControl/NeoSortControl
 import NeoCard from "../../components/NeoWS/NeoCard/NeoCard";
 import NeoSkeleton from "../../components/NeoWS/NeoSkeleton/NeoSkeleton";
 import Pagination from "../../components/common/Pagination/Pagination";
+import Breadcrumb from "../../components/common/Breadcrumb/Breadcrumb";
 
 import {
   computeStats,
@@ -285,6 +286,7 @@ function NeoWS() {
       <Container>
         <header className="neows-page__header">
           <div className="neows-page__intro">
+            <Breadcrumb title="NeoWatch" />
             <span className="neows-page__eyebrow">
               NeoWs · Near-Earth Objects
             </span>

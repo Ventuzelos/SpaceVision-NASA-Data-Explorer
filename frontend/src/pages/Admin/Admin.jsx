@@ -1,7 +1,9 @@
 import { Navigate } from "react-router-dom";
 
 import Container from "../../components/common/Container/Container";
-import useAuth from "../../hooks/useAuth";
+import { getCurrentUser, getRegisteredUsersCount } from "../../services/authService";
+import { getContactMessages } from "../../services/messagesService";
+import Breadcrumb from "../../components/common/Breadcrumb/Breadcrumb";
 
 import "./Admin.css";
 
@@ -34,6 +36,7 @@ function Admin() {
   return (
     <main className="admin-page">
       <Container>
+        <Breadcrumb title="Administração" />
         <header className="admin-page__header">
           <p className="admin-page__label">
             Administração

@@ -5,6 +5,7 @@ import {
   removeFavorite,
 } from "../../services/favoritesService";
 import FavoriteCard from "../../components/favorites/FavoriteCard";
+import Breadcrumb from "../../components/common/Breadcrumb/Breadcrumb";
 import "./Favorites.css";
 
 function Favorites() {
@@ -56,10 +57,8 @@ function Favorites() {
     <main className="favorites-page">
       <section className="favorites-hero">
         <Container>
-          <p className="favorites-hero__label">
-            Os teus conteúdos guardados
-          </p>
-
+          <Breadcrumb title="Favoritos" />
+          <p className="favorites-hero__label">Os teus conteúdos guardados</p>
           <h1>Favoritos</h1>
 
           <p className="favorites-hero__text">

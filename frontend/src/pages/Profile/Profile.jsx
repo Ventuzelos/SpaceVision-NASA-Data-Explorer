@@ -4,9 +4,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import Container from "../../components/common/Container/Container";
 import Button from "../../components/common/Button/Button";
 import Toast from "../../components/common/Toast/Toast";
-
-import useAuth from "../../hooks/useAuth";
-
+import Breadcrumb from "../../components/common/Breadcrumb/Breadcrumb";
 import {
   getFavorites,
 } from "../../services/favoritesService";
@@ -285,6 +283,7 @@ function Profile() {
   return (
     <section className="profile-page">
       <Container>
+        <Breadcrumb title="Perfil" />
         <header className="profile-page__header">
           <p className="profile-page__label">
             Área pessoal
