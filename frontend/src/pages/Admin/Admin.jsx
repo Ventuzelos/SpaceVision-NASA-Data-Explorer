@@ -1,9 +1,8 @@
 import { Navigate } from "react-router-dom";
 
 import Container from "../../components/common/Container/Container";
-import { getCurrentUser, getRegisteredUsersCount } from "../../services/authService";
-import { getContactMessages } from "../../services/messagesService";
 import Breadcrumb from "../../components/common/Breadcrumb/Breadcrumb";
+import useAuth from "../../hooks/useAuth";
 
 import "./Admin.css";
 
@@ -37,6 +36,7 @@ function Admin() {
     <main className="admin-page">
       <Container>
         <Breadcrumb title="Administração" />
+
         <header className="admin-page__header">
           <p className="admin-page__label">
             Administração
@@ -44,14 +44,13 @@ function Admin() {
 
           <h1>Painel de administração</h1>
 
-          <p>
-            Bem-vinda, {user?.name}.
-          </p>
+          <p>Bem-vinda, {user?.name}.</p>
         </header>
 
         <section className="admin-grid">
           <article className="admin-card">
             <h2>Utilizadores</h2>
+
             <p>
               A contagem de utilizadores será ligada ao backend.
             </p>
@@ -59,6 +58,7 @@ function Admin() {
 
           <article className="admin-card">
             <h2>Mensagens</h2>
+
             <p>
               As mensagens de contacto serão ligadas ao backend.
             </p>
@@ -66,6 +66,7 @@ function Admin() {
 
           <article className="admin-card">
             <h2>Favoritos</h2>
+
             <p>
               As estatísticas de favoritos serão ligadas ao backend.
             </p>
