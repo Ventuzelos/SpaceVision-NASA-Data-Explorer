@@ -7,6 +7,7 @@ import Home from "./pages/Home/Home";
 import APOD from "./pages/APOD/APOD";
 import DONKI from "./pages/DONKI/DONKI";
 import EPIC from "./pages/EPIC/EPIC";
+import DISCOVR from "./pages/DISCOVR/DISCOVR";
 import Favorites from "./pages/Favorites/Favorites";
 import NotFound from "./pages/NotFound/NotFound";
 import About from "./pages/About/About";
@@ -30,6 +31,7 @@ function App() {
           <Route path="apod" element={<APOD />} />
           <Route path="donki" element={<DONKI />} />
           <Route path="epic" element={<EPIC />} />
+          <Route path="discover" element={<DISCOVR />} />
           <Route path="neowatch" element={<NeoWS />} />
           <Route path="favorites" element={<Favorites />} />
 

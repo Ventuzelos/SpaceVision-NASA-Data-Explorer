@@ -1,0 +1,163 @@
+/* ---- radar de asteroides ---- */
+.discovr-asteroid-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.discovr-asteroid-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid transparent;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  transition: var(--transition-fast);
+}
+
+.discovr-asteroid-card:hover {
+  border-color: var(--color-accent);
+}
+
+/* Destaque subtil para objetos "potencialmente perigosos" segundo a NASA:
+   apenas uma tira lateral e um leve tom de fundo, sem sobrecarregar o cartão. */
+.discovr-asteroid-card--hazard {
+  border-left-color: var(--color-error);
+  background: color-mix(in srgb, var(--color-error) 6%, var(--color-surface));
+}
+
+.discovr-asteroid-card--hazard .discovr-asteroid-card__radar,
+.discovr-asteroid-card--hazard .discovr-asteroid-card__radar-pulse {
+  background: var(--color-error);
+}
+
+/* Ponto de radar pulsante: um ponto sólido com um anel que expande e
+   desvanece por cima, simulando um "ping" ativo. */
+.discovr-asteroid-card__radar {
+  position: relative;
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  margin-top: 6px;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+
+.discovr-asteroid-card__radar-pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--color-accent);
+  animation: discovr-radar-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes discovr-radar-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  75%,
+  100% {
+    transform: scale(2.8);
+    opacity: 0;
+  }
+}
+
+.discovr-asteroid-card__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.discovr-asteroid-card__header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.discovr-asteroid-card__header h3 {
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+.discovr-asteroid-card__hazard-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px var(--space-3);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-error) 15%, transparent);
+  color: var(--color-error);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+/* Informação crítica primeiro: distância e diâmetro ficam sempre
+   visíveis, sem precisar de expandir o cartão. */
+.discovr-asteroid-card__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6);
+}
+
+.discovr-asteroid-card__stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.discovr-asteroid-card__stat-label {
+  color: var(--color-text-secondary);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.discovr-asteroid-card__stat-value {
+  color: var(--color-text);
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.discovr-asteroid-card--skeleton .discovr-asteroid-card__radar {
+  animation: discovr-shimmer 1.4s ease-in-out infinite;
+}
+
+.discovr-asteroid-card--skeleton .discovr-skeleton-line--title {
+  width: 55%;
+  margin-bottom: var(--space-3);
+}
+
+.discovr-asteroid-card--skeleton .discovr-skeleton-line--short {
+  width: 35%;
+  margin-bottom: 0;
+}
+
+.discovr-asteroid-list__link {
+  display: inline-flex;
+}
+
+.discovr-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-7);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin-bottom: var(--space-5);
+}
+
+.discovr-empty svg {
+  color: var(--color-text-secondary);
+  opacity: 0.6;
+}
