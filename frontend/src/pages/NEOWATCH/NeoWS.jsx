@@ -34,6 +34,7 @@ import getApiErrorMessage from "../../utils/getApiErrorMessage";
 import "./NeoWS.css";
 
 const SOURCE = "neows";
+const OBJECTS_PER_PAGE = 8;
 const DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000;
 
 function validateDateRange(startDate, endDate) {
@@ -80,11 +81,13 @@ function NeoWS() {
   );
 
   const [objects, setObjects] = useState([]);
+
   const [sortDirection, setSortDirection] =
     useState("asc");
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
   const [validationError, setValidationError] =
     useState("");
 
@@ -108,37 +111,44 @@ function NeoWS() {
     totalPages,
     setPage,
     shouldShowPagination,
-  } = usePagination(sortedObjects, 8);
+  } = usePagination(
+    sortedObjects,
+    OBJECTS_PER_PAGE
+  );
 
-  const loadFeed = useCallback(async (start, end) => {
-    setLoading(true);
-    setError("");
-    setObjects([]);
+  const loadFeed = useCallback(
+    async (start, end) => {
+      setLoading(true);
+      setError("");
+      setObjects([]);
 
-    try {
-      const { objects: results } =
-        await fetchNeoFeed(start, end);
+      try {
+        const { objects: results } =
+          await fetchNeoFeed(start, end);
 
-      setObjects(results);
-    } catch (requestError) {
-      console.error(
-        "Erro ao carregar objetos NeoWS:",
-        requestError
-      );
+        setObjects(
+          Array.isArray(results) ? results : []
+        );
+      } catch (requestError) {
+        console.error(
+          "Erro ao carregar objetos NeoWS:",
+          requestError
+        );
 
-      setError(
-        getApiErrorMessage(
-          requestError,
-          "Não foi possível carregar os objetos próximos da Terra."
-        )
-      );
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+        setError(
+          getApiErrorMessage(
+            requestError,
+            "Não foi possível carregar os objetos próximos da Terra."
+          )
+        );
+      } finally {
+        setLoading(false);
+      }
+    },
+    []
+  );
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadFeed(
       dateRange.startDate,
       dateRange.endDate
@@ -154,12 +164,15 @@ function NeoWS() {
 
     async function loadFavoriteKeys() {
       try {
-        const favorites = await getFavorites(SOURCE, true);
+        const favorites = await getFavorites(
+          SOURCE,
+          true
+        );
 
         const keys = favorites.map((favorite) =>
           String(
             favorite.nasa_id ||
-            favorite.id
+              favorite.id
           )
         );
 
@@ -214,35 +227,185 @@ function NeoWS() {
     setFavoriteLoadingKeys((currentKeys) => {
       const nextKeys = new Set(currentKeys);
       nextKeys.add(favoriteId);
+
       return nextKeys;
     });
 
     try {
+      const rawNeo =
+        neo.raw &&
+        typeof neo.raw === "object"
+          ? neo.raw
+          : neo;
+
+      const approach =
+        rawNeo.close_approach_data?.[0] ||
+        neo.close_approach_data?.[0] ||
+        null;
+
+      const diameterKilometers =
+        rawNeo.estimated_diameter?.kilometers ||
+        neo.estimated_diameter?.kilometers ||
+        null;
+
+      const diameterMeters =
+        rawNeo.estimated_diameter?.meters ||
+        neo.estimated_diameter?.meters ||
+        null;
+
+      const missDistanceKm =
+        neo.missDistanceKm ||
+        neo.miss_distance_km ||
+        approach?.miss_distance?.kilometers ||
+        null;
+
+      const lunarDistance =
+        neo.missDistanceLunar ||
+        neo.lunarDistance ||
+        neo.lunar_distance ||
+        approach?.miss_distance?.lunar ||
+        null;
+
+      const velocityKmH =
+        neo.velocityKmH ||
+        neo.velocity_km_h ||
+        neo.relative_velocity_kmh ||
+        approach?.relative_velocity
+          ?.kilometers_per_hour ||
+        null;
+
+      const diameterMinKm =
+        neo.diameterMinKm ||
+        neo.diameter_min_km ||
+        diameterKilometers
+          ?.estimated_diameter_min ||
+        null;
+
+      const diameterMaxKm =
+        neo.diameterMaxKm ||
+        neo.diameter_max_km ||
+        diameterKilometers
+          ?.estimated_diameter_max ||
+        null;
+
+      const diameterMinM =
+        neo.diameterMinM ||
+        neo.diameter_min_m ||
+        diameterMeters
+          ?.estimated_diameter_min ||
+        (diameterMinKm !== null
+          ? Number(diameterMinKm) * 1000
+          : null);
+
+      const diameterMaxM =
+        neo.diameterMaxM ||
+        neo.diameter_max_m ||
+        diameterMeters
+          ?.estimated_diameter_max ||
+        (diameterMaxKm !== null
+          ? Number(diameterMaxKm) * 1000
+          : null);
+
+      const jplUrl =
+        neo.jplUrl ||
+        neo.jpl_url ||
+        neo.nasa_jpl_url ||
+        rawNeo.nasa_jpl_url ||
+        null;
+
+      const closeApproachDate =
+        neo.closeApproachDate ||
+        neo.close_approach_date ||
+        approach?.close_approach_date_full ||
+        approach?.close_approach_date ||
+        null;
+
+      const isHazardous =
+        neo.isHazardous ??
+        neo.is_potentially_hazardous_asteroid ??
+        rawNeo.is_potentially_hazardous_asteroid ??
+        false;
+
       const result = await toggleFavorite({
-        source: SOURCE,
-        id: favoriteId,
-        title: neo.name,
-        date: neo.closeApproachDate,
-        type: SOURCE,
-        link: neo.jplUrl,
-        description: neo.isHazardous
-          ? "Objeto próximo da Terra potencialmente perigoso."
-          : "Objeto próximo da Terra monitorizado pela NASA.",
+        nasa_type: SOURCE,
+        nasa_id: favoriteId,
+        title:
+          neo.name ||
+          rawNeo.name ||
+          "Objeto próximo da Terra",
+        image_url: null,
+
         data: {
+          ...neo,
+
+          id: favoriteId,
+          name:
+            neo.name ||
+            rawNeo.name ||
+            "Objeto próximo da Terra",
+
+          raw: rawNeo,
+
+          date: closeApproachDate,
+          approach_date: closeApproachDate,
           close_approach_date:
-            neo.closeApproachDate,
-          is_hazardous: neo.isHazardous,
-          miss_distance_km:
-            neo.missDistanceKm,
+            closeApproachDate,
+
+          miss_distance_km: missDistanceKm,
+          distance_km: missDistanceKm,
+          missDistanceKm,
+
+          lunar_distance: lunarDistance,
           miss_distance_lunar:
-            neo.missDistanceLunar,
-          diameter_min_km:
-            neo.diameterMinKm,
-          diameter_max_km:
-            neo.diameterMaxKm,
-          velocity_km_h:
-            neo.velocityKmH,
-          jpl_url: neo.jplUrl,
+            lunarDistance,
+          lunarDistance,
+
+          relative_velocity_kmh:
+            velocityKmH,
+          velocity_km_h: velocityKmH,
+          velocityKmH,
+
+          estimated_diameter_min_m:
+            diameterMinM,
+          estimated_diameter_max_m:
+            diameterMaxM,
+
+          diameter_min_km: diameterMinKm,
+          diameter_max_km: diameterMaxKm,
+          diameterMinKm,
+          diameterMaxKm,
+
+          estimated_diameter:
+            rawNeo.estimated_diameter ||
+            neo.estimated_diameter ||
+            {
+              kilometers: {
+                estimated_diameter_min:
+                  diameterMinKm,
+                estimated_diameter_max:
+                  diameterMaxKm,
+              },
+              meters: {
+                estimated_diameter_min:
+                  diameterMinM,
+                estimated_diameter_max:
+                  diameterMaxM,
+              },
+            },
+
+          is_hazardous: isHazardous,
+          isHazardous,
+
+          is_potentially_hazardous_asteroid:
+            isHazardous,
+
+          risk: isHazardous
+            ? "Elevado"
+            : "Baixo",
+
+          link: jplUrl,
+          jpl_url: jplUrl,
+          nasa_jpl_url: jplUrl,
         },
       });
 
@@ -263,7 +426,9 @@ function NeoWS() {
         requestError
       );
 
-      if (requestError.response?.status === 401) {
+      if (
+        requestError.response?.status === 401
+      ) {
         window.alert(
           "Precisas de iniciar sessão para guardar favoritos."
         );
@@ -276,6 +441,7 @@ function NeoWS() {
       setFavoriteLoadingKeys((currentKeys) => {
         const nextKeys = new Set(currentKeys);
         nextKeys.delete(favoriteId);
+
         return nextKeys;
       });
     }
@@ -287,6 +453,7 @@ function NeoWS() {
         <header className="neows-page__header">
           <div className="neows-page__intro">
             <Breadcrumb title="NeoWatch" />
+
             <span className="neows-page__eyebrow">
               NeoWs · Near-Earth Objects
             </span>
@@ -394,7 +561,9 @@ function NeoWS() {
                 {!loading &&
                   !error &&
                   paginatedObjects.map((neo) => {
-                    const favoriteId = String(neo.id);
+                    const favoriteId = String(
+                      neo.id
+                    );
 
                     return (
                       <NeoCard
