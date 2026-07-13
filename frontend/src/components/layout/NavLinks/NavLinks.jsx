@@ -10,7 +10,7 @@ function NavLinks() {
       <NavLink to="/donki">DONKI</NavLink>
       <NavLink to="/epic">Earth</NavLink>
       <NavLink to="/neowatch">NeoWatch</NavLink>
-      <NavLink to="/gallery">Discover</NavLink>
+      <NavLink to="/discover">Discover</NavLink>
       <NavLink to="/about">Sobre nós</NavLink>
       <NavLink to="/faq">FAQ</NavLink>
     </div>
