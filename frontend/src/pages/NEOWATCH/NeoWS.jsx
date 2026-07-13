@@ -1,4 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 
 import Container from "../../components/common/Container/Container";
 import ErrorState from "../../components/common/ErrorState/ErrorState";
@@ -84,13 +88,11 @@ function NeoWS() {
     useState("");
 
   const [favoriteKeys, setFavoriteKeys] = useState(
-    () =>
-      new Set(
-        getFavorites(SOURCE).map(
-          (favorite) => favorite.id
-        )
-      )
+    () => new Set()
   );
+
+  const [favoriteLoadingKeys, setFavoriteLoadingKeys] =
+    useState(() => new Set());
 
   const stats = computeStats(objects);
 
@@ -135,6 +137,7 @@ function NeoWS() {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadFeed(
       dateRange.startDate,
       dateRange.endDate
@@ -144,6 +147,42 @@ function NeoWS() {
     dateRange.startDate,
     dateRange.endDate,
   ]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadFavoriteKeys() {
+      try {
+        const favorites = await getFavorites(SOURCE, true);
+
+        const keys = favorites.map((favorite) =>
+          String(
+            favorite.nasa_id ||
+            favorite.id
+          )
+        );
+
+        if (isMounted) {
+          setFavoriteKeys(new Set(keys));
+        }
+      } catch (requestError) {
+        console.error(
+          "Erro ao carregar favoritos NeoWatch:",
+          requestError
+        );
+
+        if (isMounted) {
+          setFavoriteKeys(new Set());
+        }
+      }
+    }
+
+    loadFavoriteKeys();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   function handleSearch(
     newStartDate = startDate,
@@ -164,29 +203,81 @@ function NeoWS() {
     loadFeed(newStartDate, newEndDate);
   }
 
-  function handleToggleFavorite(neo) {
-    toggleFavorite({
-      source: SOURCE,
-      id: neo.id,
-      title: neo.name,
-      date: neo.closeApproachDate,
-      type: neo.isHazardous
-        ? "Potencialmente perigoso"
-        : "Objeto próximo",
-      link: neo.jplUrl,
-    });
+  async function handleToggleFavorite(neo) {
+    const favoriteId = String(neo.id);
 
-    setFavoriteKeys((previousKeys) => {
-      const nextKeys = new Set(previousKeys);
+    if (favoriteLoadingKeys.has(favoriteId)) {
+      return;
+    }
 
-      if (nextKeys.has(neo.id)) {
-        nextKeys.delete(neo.id);
-      } else {
-        nextKeys.add(neo.id);
-      }
-
+    setFavoriteLoadingKeys((currentKeys) => {
+      const nextKeys = new Set(currentKeys);
+      nextKeys.add(favoriteId);
       return nextKeys;
     });
+
+    try {
+      const result = await toggleFavorite({
+        source: SOURCE,
+        id: favoriteId,
+        title: neo.name,
+        date: neo.closeApproachDate,
+        type: SOURCE,
+        link: neo.jplUrl,
+        description: neo.isHazardous
+          ? "Objeto próximo da Terra potencialmente perigoso."
+          : "Objeto próximo da Terra monitorizado pela NASA.",
+        data: {
+          close_approach_date:
+            neo.closeApproachDate,
+          is_hazardous: neo.isHazardous,
+          miss_distance_km:
+            neo.missDistanceKm,
+          miss_distance_lunar:
+            neo.missDistanceLunar,
+          diameter_min_km:
+            neo.diameterMinKm,
+          diameter_max_km:
+            neo.diameterMaxKm,
+          velocity_km_h:
+            neo.velocityKmH,
+          jpl_url: neo.jplUrl,
+        },
+      });
+
+      setFavoriteKeys((currentKeys) => {
+        const nextKeys = new Set(currentKeys);
+
+        if (result.isFavorite) {
+          nextKeys.add(favoriteId);
+        } else {
+          nextKeys.delete(favoriteId);
+        }
+
+        return nextKeys;
+      });
+    } catch (requestError) {
+      console.error(
+        "Erro ao atualizar favorito NeoWatch:",
+        requestError
+      );
+
+      if (requestError.response?.status === 401) {
+        window.alert(
+          "Precisas de iniciar sessão para guardar favoritos."
+        );
+      } else {
+        window.alert(
+          "Não foi possível atualizar o favorito."
+        );
+      }
+    } finally {
+      setFavoriteLoadingKeys((currentKeys) => {
+        const nextKeys = new Set(currentKeys);
+        nextKeys.delete(favoriteId);
+        return nextKeys;
+      });
+    }
   }
 
   return (
@@ -285,36 +376,45 @@ function NeoWS() {
 
         {(loading ||
           (!error && objects.length > 0)) && (
-          <section
-            className="neows-page__list-panel"
-            aria-label="Lista de objetos próximos da Terra"
-            aria-busy={loading}
-          >
-            <div className="neows-page__grid">
-              {loading &&
-                Array.from({ length: 6 }).map(
-                  (_, index) => (
-                    <NeoSkeleton key={index} />
-                  )
-                )}
+            <section
+              className="neows-page__list-panel"
+              aria-label="Lista de objetos próximos da Terra"
+              aria-busy={loading}
+            >
+              <div className="neows-page__grid">
+                {loading &&
+                  Array.from({ length: 6 }).map(
+                    (_, index) => (
+                      <NeoSkeleton key={index} />
+                    )
+                  )}
 
-              {!loading &&
-                !error &&
-                paginatedObjects.map((neo) => (
-                  <NeoCard
-                    key={neo.id}
-                    neo={neo}
-                    isFavorite={favoriteKeys.has(
-                      neo.id
-                    )}
-                    onToggleFavorite={
-                      handleToggleFavorite
-                    }
-                  />
-                ))}
-            </div>
-          </section>
-        )}
+                {!loading &&
+                  !error &&
+                  paginatedObjects.map((neo) => {
+                    const favoriteId = String(neo.id);
+
+                    return (
+                      <NeoCard
+                        key={neo.id}
+                        neo={neo}
+                        isFavorite={favoriteKeys.has(
+                          favoriteId
+                        )}
+                        isFavoriteLoading={
+                          favoriteLoadingKeys.has(
+                            favoriteId
+                          )
+                        }
+                        onToggleFavorite={
+                          handleToggleFavorite
+                        }
+                      />
+                    );
+                  })}
+              </div>
+            </section>
+          )}
 
         {!loading &&
           !error &&

@@ -1,16 +1,15 @@
 import { Outlet } from "react-router-dom";
-import Navbar from "../../components/layout/NavBar/Navbar";
+import Navbar from "../../components/layout/Navbar/Navbar";
 
+import "./LoginLayout.css";
 
-import "./MainLayout.css";
-
-function MainLayout() {
+function LoginLayout() {
   return (
-    <div className="main-layout">
+    <div className="login-layout">
       <Navbar />
       <Outlet />
     </div>
   );
 }
 
-export default MainLayout; 
+export default LoginLayout;

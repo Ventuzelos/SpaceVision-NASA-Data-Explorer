@@ -38,7 +38,12 @@ function formatDiameterRange(min, max) {
   return `${formatSingleDiameter(min)} – ${formatSingleDiameter(max)}`;
 }
 
-function NeoCard({ neo, isFavorite, onToggleFavorite }) {
+function NeoCard({
+  neo,
+  isFavorite,
+  isFavoriteLoading,
+  onToggleFavorite,
+}) {
   const riskLabel = neo.isHazardous ? "Risco: Alto" : "Risco: Baixo";
 
   return (
@@ -108,17 +113,19 @@ function NeoCard({ neo, isFavorite, onToggleFavorite }) {
       <div className="neo-card__side">
         <FavoriteButton
           active={isFavorite}
+          disabled={isFavoriteLoading}
           onClick={() => onToggleFavorite(neo)}
           size={16}
           ariaLabel={
-            isFavorite ? "Remover dos favoritos" : "Adicionar aos favoritos"
+            isFavorite
+              ? "Remover dos favoritos"
+              : "Adicionar aos favoritos"
           }
         />
 
         <span
-          className={`neo-card__risk ${
-            neo.isHazardous ? "neo-card__risk--high" : "neo-card__risk--low"
-          }`}
+          className={`neo-card__risk ${neo.isHazardous ? "neo-card__risk--high" : "neo-card__risk--low"
+            }`}
         >
           {riskLabel}
         </span>
