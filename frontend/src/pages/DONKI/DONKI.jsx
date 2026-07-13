@@ -9,6 +9,7 @@ import DONKISkeleton from "../../components/DONKI/DONKISkeleton/DONKISkeleton";
 import Pagination from "../../components/common/Pagination/Pagination";
 import ErrorState from "../../components/common/ErrorState/ErrorState";
 import Breadcrumb from "../../components/common/Breadcrumb/Breadcrumb";
+import Toast from "../../components/common/Toast/Toast";
 
 import {
   donkiEventTypes,
@@ -61,6 +62,7 @@ function getEventFavoriteId(event) {
 
 function DONKI() {
   const [dateRange] = useState(() => getDefaultDateRange(7));
+  const [toastMessage, setToastMessage] = useState("");
 
   const [activeType, setActiveType] = useState("FLR");
 
@@ -75,6 +77,7 @@ function DONKI() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
   const [validationError, setValidationError] =
     useState("");
 
@@ -92,6 +95,14 @@ function DONKI() {
     setPage,
     shouldShowPagination,
   } = usePagination(events, EVENTS_PER_PAGE);
+
+  function showToast(message) {
+    setToastMessage(message);
+
+    window.setTimeout(() => {
+      setToastMessage("");
+    }, 2500);
+  }
 
   const loadEvents = useCallback(
     async (type, start, end) => {
@@ -219,7 +230,7 @@ function DONKI() {
     const favoriteId = getEventFavoriteId(event);
 
     try {
-      await toggleFavorite({
+      const result = await toggleFavorite({
         nasa_type: SOURCE,
         nasa_id: favoriteId,
         title: event.title || "Evento DONKI",
@@ -235,19 +246,35 @@ function DONKI() {
       setFavoriteKeys((currentKeys) => {
         const updatedKeys = new Set(currentKeys);
 
-        if (updatedKeys.has(favoriteId)) {
-          updatedKeys.delete(favoriteId);
-        } else {
+        if (result.isFavorite) {
           updatedKeys.add(favoriteId);
+        } else {
+          updatedKeys.delete(favoriteId);
         }
 
         return updatedKeys;
       });
+
+      showToast(
+        result.isFavorite
+          ? "Adicionado aos favoritos"
+          : "Removido dos favoritos"
+      );
     } catch (requestError) {
       console.error(
         "Erro ao atualizar favorito DONKI:",
         requestError
       );
+
+      if (requestError.response?.status === 401) {
+        showToast(
+          "Precisas de iniciar sessão para guardar favoritos"
+        );
+      } else {
+        showToast(
+          "Não foi possível atualizar o favorito"
+        );
+      }
     }
   }
 
@@ -407,6 +434,8 @@ function DONKI() {
           </section>
         )}
       </Container>
+
+      <Toast message={toastMessage} />
     </main>
   );
 }
