@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\NasaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\FavoriteController;
+use App\Http\Controllers\AdminController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -32,3 +33,11 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
         ]);
     });
 });
+
+Route::prefix('admin')
+    ->middleware(['auth:sanctum', 'is_admin'])
+    ->group(function () {
+
+        Route::get('/users/count', [AdminController::class, 'usersCount']);
+
+    });
