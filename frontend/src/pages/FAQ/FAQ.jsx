@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import Container from "../../components/common/Container/Container";
 import Icon from "../../components/common/Icon/Icon";
-
+import Breadcrumb from "../../components/common/Breadcrumb/Breadcrumb";
 import "./FAQ.css";
 
 const CATEGORIES = ["Todas", "APIs NASA", "Dados", "Conta"];
@@ -145,6 +145,7 @@ function FAQ() {
   return (
     <section className="faq-page">
       <Container>
+        <Breadcrumb title="FAQ" />
         <header className="faq-hero">
           <span className="faq-hero__eyebrow">Perguntas Frequentes</span>
           <h1>Tudo o que precisas de saber</h1>
