@@ -4,6 +4,7 @@ import { Navigate } from "react-router-dom";
 import Container from "../../components/common/Container/Container";
 import { getCurrentUser, getRegisteredUsersCount } from "../../services/authService";
 import { getContactMessages } from "../../services/messagesService";
+import Breadcrumb from "../../components/common/Breadcrumb/Breadcrumb";
 
 import "./Admin.css";
 
@@ -26,6 +27,7 @@ function Admin() {
   return (
     <section className="admin-page">
       <Container>
+        <Breadcrumb title="Administração" />
         <header className="admin-page__header">
           <p className="admin-page__label">Área reservada</p>
           <h1>Painel de administração</h1>
