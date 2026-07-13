@@ -1,7 +1,7 @@
 import Button from "../common/Button/Button";
 import "./FavoriteCard.css";
 
-function FavoriteCard({ favorite, onRemove }) {
+function FavoriteCard({ favorite, onRemove, onView }) {
   const favoriteData = favorite?.data || {};
 
   const rawDate =
@@ -18,45 +18,40 @@ function FavoriteCard({ favorite, onRemove }) {
       })
     : "Data não disponível";
 
-  const imageUrl =
-    favorite.image_url ||
-    favoriteData.image_url ||
-    favoriteData.imageUrl ||
-    "";
-
-  const favoriteType =
+  const favoriteType = String(
     favorite.nasa_type ||
-    favorite.type ||
-    "NASA";
+      favorite.source ||
+      favorite.type ||
+      "NASA"
+  ).toUpperCase();
 
   return (
     <article className="favorite-card">
-      {imageUrl ? (
-        <img
-          src={imageUrl}
-          alt={favorite.title || "Conteúdo favorito da NASA"}
-        />
-      ) : (
-        <div className="favorite-card__image-placeholder">
-          Imagem não disponível
-        </div>
-      )}
-
       <div className="favorite-card__content">
         <span className="favorite-card__type">
-          {String(favoriteType).toUpperCase()}
+          {favoriteType}
         </span>
 
         <h2>{favorite.title || "Conteúdo sem título"}</h2>
 
         <p>{formattedDate}</p>
 
-        <Button
-          variant="secondary"
-          onClick={() => onRemove(favorite.id)}
-        >
-          Remover
-        </Button>
+        <div className="favorite-card__actions">
+          <Button
+            type="button"
+            onClick={() => onView(favorite)}
+          >
+            Ver
+          </Button>
+
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() => onRemove(favorite.id)}
+          >
+            Remover
+          </Button>
+        </div>
       </div>
     </article>
   );
