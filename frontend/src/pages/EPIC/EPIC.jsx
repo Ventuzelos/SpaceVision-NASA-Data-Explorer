@@ -9,7 +9,6 @@ import EpicTimelineSection from "../../components/EPIC/EpicTimelineSection/EpicT
 import EpicPipeline from "../../components/EPIC/EpicPipeline/EpicPipeline";
 import EpicSectionHead from "../../components/EPIC/EpicSectionHead/EpicSectionHead";
 import EpicLightbox from "../../components/EPIC/EpicLightbox/EpicLightbox";
-import EpicBackToTop from "../../components/EPIC/EpicBackToTop/EpicBackToTop";
 import Toast from "../../components/common/Toast/Toast";
 
 import "./EPIC.css";
@@ -178,8 +177,6 @@ export default function EPIC() {
         photo={lightbox}
         onClose={() => setLightbox(null)}
       />
-
-      <EpicBackToTop />
 
       <Toast message={toastMessage} />
     </main>
