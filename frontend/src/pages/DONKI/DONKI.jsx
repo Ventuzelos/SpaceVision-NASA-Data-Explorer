@@ -8,6 +8,7 @@ import EventDetails from "../../components/DONKI/EventDetails/EventDetails";
 import DONKISkeleton from "../../components/DONKI/DONKISkeleton/DONKISkeleton";
 import Pagination from "../../components/common/Pagination/Pagination";
 import ErrorState from "../../components/common/ErrorState/ErrorState";
+import Breadcrumb from "../../components/common/Breadcrumb/Breadcrumb";
 
 import {
   donkiEventTypes,
@@ -257,6 +258,7 @@ function DONKI() {
   return (
     <main className="donki-page">
       <Container>
+         <Breadcrumb title="DONKI" />
         <header className="donki-page__header">
           <span className="donki-page__eyebrow">
             DONKI · Space Weather Database

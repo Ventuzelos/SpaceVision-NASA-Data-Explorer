@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 
-import { useEpicPhotos } from "../../hooks/useEpicPhotos";
-import EpicPanel from "./EpicPanel/EpicPanel";
-import EpicDetail from "./EpicDetail/EpicDetail";
-import EpicDateControls from "./EpicDateControls/EpicDateControls";
-import EpicHero from "../../components/EPIC/EpicHero/EpicHero";
-import EpicTimelineSection from "../../components/EPIC/EpicTimelineSection/EpicTimelineSection";
-import EpicPipeline from "../../components/EPIC/EpicPipeline/EpicPipeline";
-import EpicSectionHead from "../../components/EPIC/EpicSectionHead/EpicSectionHead";
-import EpicLightbox from "../../components/EPIC/EpicLightbox/EpicLightbox";
-import EpicBackToTop from "../../components/EPIC/EpicBackToTop/EpicBackToTop";
+import { useEpicPhotos } from '../../hooks/useEpicPhotos';
+import EpicPanel from './EpicPanel/EpicPanel';
+import EpicDetail from './EpicDetail/EpicDetail';
+import EpicDateControls from './EpicDateControls/EpicDateControls';
+import EpicHero from '../../components/EPIC/EpicHero/EpicHero';
+import EpicTimelineSection from '../../components/EPIC/EpicTimelineSection/EpicTimelineSection';
+import EpicPipeline from '../../components/EPIC/EpicPipeline/EpicPipeline';
+import EpicSectionHead from '../../components/EPIC/EpicSectionHead/EpicSectionHead';
+import EpicLightbox from '../../components/EPIC/EpicLightbox/EpicLightbox';
+import EpicBackToTop from '../../components/EPIC/EpicBackToTop/EpicBackToTop';
+import Breadcrumb from "../../components/common/Breadcrumb/Breadcrumb";
 
 import "./EPIC.css";
 
@@ -72,6 +73,7 @@ export default function EPIC() {
 
   return (
     <main className="epic-page">
+
       <EpicHero />
 
       <EpicTimelineSection />

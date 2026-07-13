@@ -1,5 +1,6 @@
 import Container from "../../components/common/Container/Container";
 import ContactForm from "../../components/common/ContactForm/ContactForm";
+import Breadcrumb from "../../components/common/Breadcrumb/Breadcrumb";
 import { teamMembers } from "../../data/team";
 
 import "./About.css";
@@ -8,6 +9,7 @@ function About() {
   return (
     <section className="about-page">
       <Container>
+        <Breadcrumb title="Sobre nós" />
         <header className="about-page__header">
           <h1>Sobre nós</h1>
           <p>
