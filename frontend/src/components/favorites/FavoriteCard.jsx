@@ -18,12 +18,6 @@ function FavoriteCard({ favorite, onRemove }) {
       })
     : "Data não disponível";
 
-  const imageUrl =
-    favorite.image_url ||
-    favoriteData.image_url ||
-    favoriteData.imageUrl ||
-    "";
-
   const favoriteType =
     favorite.nasa_type ||
     favorite.type ||
@@ -31,17 +25,6 @@ function FavoriteCard({ favorite, onRemove }) {
 
   return (
     <article className="favorite-card">
-      {imageUrl ? (
-        <img
-          src={imageUrl}
-          alt={favorite.title || "Conteúdo favorito da NASA"}
-        />
-      ) : (
-        <div className="favorite-card__image-placeholder">
-          Imagem não disponível
-        </div>
-      )}
-
       <div className="favorite-card__content">
         <span className="favorite-card__type">
           {String(favoriteType).toUpperCase()}

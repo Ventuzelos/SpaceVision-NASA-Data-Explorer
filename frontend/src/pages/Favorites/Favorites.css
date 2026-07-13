@@ -7,11 +7,11 @@
 }
 
 .favorites-hero__label {
+  margin-bottom: 16px;
   color: var(--color-accent);
   font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: 0.08em;
-  margin-bottom: 16px;
   text-transform: uppercase;
 }
 
@@ -38,45 +38,77 @@
 }
 
 .favorites-empty p {
-  color: var(--color-text-secondary);
   margin-top: 12px;
+  color: var(--color-text-secondary);
+}
+
+.favorites-filters {
+  margin-bottom: 40px;
+  padding: 28px 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.favorites-filters__title {
+  margin: 0 0 18px;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.favorites-filters__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.favorites-filter-button {
+  min-height: 40px;
+  padding: 8px 18px;
+  color: var(--color-text);
+  font-family: var(--font-family);
+  font-size: 0.9rem;
+  font-weight: 600;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.favorites-filter-button:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+.favorites-filter-button--active {
+  color: #ffffff;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.favorites-filter-button:focus-visible {
+  outline: 3px solid rgba(79, 70, 229, 0.35);
+  outline-offset: 3px;
+}
+
+@media (max-width: 480px) {
+  .favorites-filters__buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .favorites-filter-button {
+    width: 100%;
+  }
 }
 
 .favorites-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 24px;
-}
-
-.favorite-card {
-  overflow: hidden;
-  border: 1px solid var(--color-border);
-  border-radius: 24px;
-  background: var(--color-surface);
-}
-
-.favorite-card img {
-  width: 100%;
-  height: 220px;
-  object-fit: cover;
-}
-
-.favorite-card__content {
-  padding: 24px;
-}
-
-.favorite-card__content span {
-  color: var(--color-accent);
-  font-size: 0.8rem;
-  font-weight: 700;
-}
-
-.favorite-card__content h2 {
-  margin: 12px 0;
-  font-size: 1.25rem;
-}
-
-.favorite-card__content p {
-  color: var(--color-text-secondary);
-  margin-bottom: 20px;
+  align-items: stretch;
 }
