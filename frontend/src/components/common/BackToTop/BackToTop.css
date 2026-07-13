@@ -1,0 +1,41 @@
+.back-to-top {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 40;
+
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-accent);
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+
+  transition: var(--transition-fast);
+}
+
+.back-to-top:hover {
+  border-color: var(--color-accent);
+  background: var(--color-surface-light);
+  transform: translateY(-3px);
+}
+
+.back-to-top:active {
+  transform: scale(0.96);
+}
+
+@media (max-width: 520px) {
+  .back-to-top {
+    bottom: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+  }
+}
