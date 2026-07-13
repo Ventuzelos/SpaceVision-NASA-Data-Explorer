@@ -1,15 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import { useEpicPhotos } from '../../hooks/useEpicPhotos';
-import EpicPanel from './EpicPanel/EpicPanel';
-import EpicDetail from './EpicDetail/EpicDetail';
-import EpicDateControls from './EpicDateControls/EpicDateControls';
-import EpicHero from '../../components/EPIC/EpicHero/EpicHero';
-import EpicTimelineSection from '../../components/EPIC/EpicTimelineSection/EpicTimelineSection';
-import EpicPipeline from '../../components/EPIC/EpicPipeline/EpicPipeline';
-import EpicSectionHead from '../../components/EPIC/EpicSectionHead/EpicSectionHead';
-import EpicLightbox from '../../components/EPIC/EpicLightbox/EpicLightbox';
-import EpicBackToTop from '../../components/EPIC/EpicBackToTop/EpicBackToTop';
+import { useEpicPhotos } from "../../hooks/useEpicPhotos";
+import EpicPanel from "./EpicPanel/EpicPanel";
+import EpicDetail from "./EpicDetail/EpicDetail";
+import EpicDateControls from "./EpicDateControls/EpicDateControls";
+import EpicHero from "../../components/EPIC/EpicHero/EpicHero";
+import EpicTimelineSection from "../../components/EPIC/EpicTimelineSection/EpicTimelineSection";
+import EpicPipeline from "../../components/EPIC/EpicPipeline/EpicPipeline";
+import EpicSectionHead from "../../components/EPIC/EpicSectionHead/EpicSectionHead";
+import EpicLightbox from "../../components/EPIC/EpicLightbox/EpicLightbox";
+import EpicBackToTop from "../../components/EPIC/EpicBackToTop/EpicBackToTop";
+import Toast from "../../components/common/Toast/Toast";
 
 import "./EPIC.css";
 
@@ -17,6 +18,9 @@ export default function EPIC() {
   const [lightbox, setLightbox] = useState(null);
   const [pendingDate, setPendingDate] = useState("");
   const [dateError, setDateError] = useState("");
+  const [toastMessage, setToastMessage] = useState("");
+
+  const toastTimeoutRef = useRef(null);
 
   const {
     photos,
@@ -34,9 +38,64 @@ export default function EPIC() {
   const displayedDate = pendingDate || date || "";
 
   useEffect(() => {
-
     loadLatest();
   }, [loadLatest]);
+
+  useEffect(() => {
+    function showToast(message) {
+      setToastMessage(message);
+
+      if (toastTimeoutRef.current) {
+        window.clearTimeout(toastTimeoutRef.current);
+      }
+
+      toastTimeoutRef.current = window.setTimeout(() => {
+        setToastMessage("");
+      }, 2500);
+    }
+
+    function handleFavoriteUpdated(event) {
+      showToast(
+        event.detail?.isFavorite
+          ? "Adicionado aos favoritos"
+          : "Removido dos favoritos"
+      );
+    }
+
+    function handleFavoriteError(event) {
+      showToast(
+        event.detail?.status === 401
+          ? "Precisas de iniciar sessão para guardar favoritos"
+          : "Não foi possível atualizar o favorito"
+      );
+    }
+
+    window.addEventListener(
+      "epicFavoriteUpdated",
+      handleFavoriteUpdated
+    );
+
+    window.addEventListener(
+      "epicFavoriteError",
+      handleFavoriteError
+    );
+
+    return () => {
+      window.removeEventListener(
+        "epicFavoriteUpdated",
+        handleFavoriteUpdated
+      );
+
+      window.removeEventListener(
+        "epicFavoriteError",
+        handleFavoriteError
+      );
+
+      if (toastTimeoutRef.current) {
+        window.clearTimeout(toastTimeoutRef.current);
+      }
+    };
+  }, []);
 
   function handleDateChange(value) {
     setPendingDate(value);
@@ -65,14 +124,12 @@ export default function EPIC() {
 
   function handleLoadLatest() {
     setDateError("");
-
     setPendingDate("");
     loadLatest();
   }
 
   return (
     <main className="epic-page">
-
       <EpicHero />
 
       <EpicTimelineSection />
@@ -123,6 +180,8 @@ export default function EPIC() {
       />
 
       <EpicBackToTop />
+
+      <Toast message={toastMessage} />
     </main>
   );
 }
