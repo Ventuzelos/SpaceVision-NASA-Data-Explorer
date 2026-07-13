@@ -134,7 +134,7 @@ function DiscovrGallery() {
   const currentPhoto = carouselPhotos[carouselIndex];
 
   return (
-    <section className="discovr-section">
+    <section id="galeria" className="discovr-section">
       <h2 className="discovr-section__title">
         <Icon name="Image" size={22} />
         Galeria aleatória da NASA

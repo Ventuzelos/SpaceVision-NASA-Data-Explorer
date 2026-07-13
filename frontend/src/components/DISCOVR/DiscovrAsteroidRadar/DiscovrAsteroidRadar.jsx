@@ -30,6 +30,17 @@ function formatDiameter(minKm, maxKm) {
   return `${minM.toLocaleString("pt-PT")} – ${maxM.toLocaleString("pt-PT")} m`;
 }
 
+// Quanto mais perto do mínimo do grupo, mais cheia a barra fica — a
+// distância em si já é mostrada em texto, a barra só torna a comparação
+// entre os 5 objetos instantânea, sem precisar de ler todos os números.
+function getClosenessPercent(km, min, max) {
+  if (km == null || min == null || max == null) return 0;
+  if (max === min) return 100;
+
+  const closeness = 1 - (km - min) / (max - min);
+  return Math.round(18 + closeness * 82);
+}
+
 function DiscovrAsteroidRadar() {
   const [asteroids, setAsteroids] = useState([]);
   const [asteroidsLoading, setAsteroidsLoading] = useState(true);
@@ -68,8 +79,12 @@ function DiscovrAsteroidRadar() {
     }
   }
 
+  const missDistances = asteroids.map((neo) => neo.missDistanceKm);
+  const minDistance = asteroids.length ? Math.min(...missDistances) : null;
+  const maxDistance = asteroids.length ? Math.max(...missDistances) : null;
+
   return (
-    <section className="discovr-section">
+    <section id="radar" className="discovr-section">
       <h2 className="discovr-section__title">
         <Icon name="Radar" size={22} />
         Radar de asteroides
@@ -147,8 +162,8 @@ function DiscovrAsteroidRadar() {
                   )}
                 </div>
 
-                <div className="discovr-asteroid-card__stats">
-                  <div className="discovr-asteroid-card__stat">
+                <div className="discovr-asteroid-card__distance">
+                  <div className="discovr-asteroid-card__distance-labels">
                     <span className="discovr-asteroid-card__stat-label">
                       Distância da Terra
                     </span>
@@ -157,6 +172,29 @@ function DiscovrAsteroidRadar() {
                     </span>
                   </div>
 
+                  <div
+                    className="discovr-asteroid-card__distance-track"
+                    role="img"
+                    aria-label={`Proximidade relativa aos outros objetos listados: ${getClosenessPercent(
+                      neo.missDistanceKm,
+                      minDistance,
+                      maxDistance
+                    )}%`}
+                  >
+                    <div
+                      className="discovr-asteroid-card__distance-fill"
+                      style={{
+                        width: `${getClosenessPercent(
+                          neo.missDistanceKm,
+                          minDistance,
+                          maxDistance
+                        )}%`,
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <div className="discovr-asteroid-card__stats">
                   <div className="discovr-asteroid-card__stat">
                     <span className="discovr-asteroid-card__stat-label">
                       Diâmetro estimado

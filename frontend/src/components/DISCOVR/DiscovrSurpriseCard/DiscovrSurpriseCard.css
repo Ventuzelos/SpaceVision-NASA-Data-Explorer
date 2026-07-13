@@ -1,48 +1,58 @@
-.discovr-surprise__card {
+/* ---- "Surpreenda-me": gatilho compacto + revelação inline ----
+   Antes era um cartão de vidro grande, sempre visível, competindo com o
+   título principal do Hero por espaço vertical. Agora é só um botão até
+   ser acionado — o facto aparece por baixo, sem empurrar o resto do
+   conteúdo com um bloco pesado. */
+.discovr-surprise {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--space-4);
-  max-width: 600px;
-  margin: 0 auto;
-  padding: var(--space-7);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  background: var(--color-surface);
-  text-align: center;
 }
 
-/* Glassmorphism: usado quando o cartão fica sobre a imagem da hero,
-   em vez do fundo sólido usado no resto da página. */
-.discovr-surprise__card--glass {
-  margin: 0;
-  max-width: none;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  box-shadow: var(--shadow-lg);
+.discovr-surprise__reveal {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  max-width: 480px;
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  animation: discovr-fade-in 0.3s ease;
 }
 
 .discovr-surprise__icon {
+  flex-shrink: 0;
+  margin-top: 2px;
   color: var(--color-accent);
 }
 
-.discovr-surprise__card h2 {
-  font-size: 1.4rem;
+.discovr-surprise__fact {
+  flex: 1;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.6;
   margin: 0;
 }
 
-.discovr-surprise__fact {
+.discovr-surprise__close {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  border: none;
+  background: transparent;
   color: var(--color-text-secondary);
-  line-height: 1.7;
-  min-height: 3.4em;
-  animation: discovr-fade-in 0.4s ease;
+  cursor: pointer;
+  transition: var(--transition-fast);
 }
 
-.discovr-surprise__card .btn {
-  margin-top: var(--space-4);
-  box-shadow: var(--shadow-md);
+.discovr-surprise__close:hover {
+  color: var(--color-text);
 }
 
 @keyframes discovr-fade-in {

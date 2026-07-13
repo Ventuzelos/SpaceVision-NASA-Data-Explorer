@@ -43,7 +43,7 @@ const MISSION_STATUS = [
 
 function DiscovrMissionStatus() {
   return (
-    <section className="discovr-section">
+    <section id="missoes" className="discovr-section">
       <h2 className="discovr-section__title">
         <Icon name="Satellite" size={22} />
         Status das missões
