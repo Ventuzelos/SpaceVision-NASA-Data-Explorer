@@ -13,10 +13,10 @@ import NotFound from "./pages/NotFound/NotFound";
 import About from "./pages/About/About";
 import FAQ from "./pages/FAQ/FAQ";
 
-
 import NeoWS from "./pages/NEOWATCH/NeoWS";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
+import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
 
 import Profile from "./pages/Profile/Profile";
 import Admin from "./pages/Admin/Admin";
@@ -47,6 +47,8 @@ function App() {
         <Route element={<LoginLayout />}>
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />}
+          />
         </Route>
 
       </Routes>
