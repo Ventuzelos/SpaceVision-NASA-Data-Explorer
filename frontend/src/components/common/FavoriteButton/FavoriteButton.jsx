@@ -4,6 +4,7 @@ import "./FavoriteButton.css";
 
 function FavoriteButton({
   active = false,
+  disabled = false,
   onClick,
   size = 18,
   ariaLabel,
@@ -15,6 +16,7 @@ function FavoriteButton({
         active ? "favorite-button--active" : ""
       }`}
       onClick={onClick}
+      disabled={disabled}
       aria-label={ariaLabel}
       aria-pressed={active}
     >

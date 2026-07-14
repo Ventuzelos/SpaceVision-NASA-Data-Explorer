@@ -8,6 +8,7 @@ use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use RuntimeException;
 
 class NasaController extends Controller
 {
@@ -128,6 +129,10 @@ class NasaController extends Controller
             return response()->json([
                 'message' => 'Não foi possível estabelecer ligação à NASA.',
             ], 503);
+        } catch (RuntimeException $exception) {
+            return response()->json([
+                'message' => $exception->getMessage(),
+            ], 502);
         }
     }
 }
