@@ -8,9 +8,11 @@ import Icon from "../../components/common/Icon/Icon";
 import useAuth from "../../hooks/useAuth";
 
 import {
-  getUsersCount,
+  deleteMessage,
   getFavoritesStats,
   getMessagesStats,
+  getUsersCount,
+  markMessageAsRead,
 } from "../../services/adminService";
 
 import "./Admin.css";
@@ -26,7 +28,7 @@ function formatDate(value) {
 }
 
 function formatCount(value) {
-   if (value === null || value === undefined || isNaN(Number(value))) {
+  if (value === null || value === undefined || isNaN(Number(value))) {
     return "0";
   }
   return new Intl.NumberFormat("pt-PT").format(value);
@@ -46,6 +48,7 @@ function Admin() {
   const [usersCount, setUsersCount] = useState(null);
   const [messagesStats, setMessagesStats] = useState({
     total: 0,
+    unread: 0,
     messages: [],
   });
   const [favoritesStats, setFavoritesStats] = useState({
@@ -64,24 +67,17 @@ function Admin() {
       setIsLoading(true);
       setError("");
 
-      const [users, favorites] = await Promise.all([
+      const [users, favorites, messages] = await Promise.all([
         getUsersCount(),
         getFavoritesStats(),
+        getMessagesStats(),
       ]);
-       
-      console.log(users);
 
       setUsersCount(users);
       setFavoritesStats(favorites);
-      setMessagesStats(getMessagesStats());
+      setMessagesStats(messages);
 
-      /*const favorites = await getFavoritesStats();
 
-      setUsersCount(null);
-      setFavoritesStats(favorites);
-      setMessagesStats(getMessagesStats());*/
-
-      
     } catch (err) {
       console.error(
         "Erro ao carregar o painel de administração:",
@@ -92,6 +88,57 @@ function Admin() {
       );
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function handleMarkAsRead(messageId) {
+    try {
+      await markMessageAsRead(messageId);
+
+      setMessagesStats((currentStats) => ({
+        ...currentStats,
+        unread: Math.max(currentStats.unread - 1, 0),
+        messages: currentStats.messages.map((message) =>
+          message.id === messageId
+            ? { ...message, is_read: true }
+            : message
+        ),
+      }));
+    } catch (err) {
+      console.error("Erro ao marcar mensagem como lida:", err);
+      setError("Não foi possível atualizar a mensagem.");
+    }
+  }
+
+  async function handleDeleteMessage(messageId) {
+    const confirmed = window.confirm(
+      "Tens a certeza de que queres eliminar esta mensagem?"
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await deleteMessage(messageId);
+
+      setMessagesStats((currentStats) => {
+        const deletedMessage = currentStats.messages.find(
+          (message) => message.id === messageId
+        );
+
+        return {
+          total: Math.max(currentStats.total - 1, 0),
+          unread:
+            deletedMessage && !deletedMessage.is_read
+              ? Math.max(currentStats.unread - 1, 0)
+              : currentStats.unread,
+          messages: currentStats.messages.filter(
+            (message) => message.id !== messageId
+          ),
+        };
+      });
+    } catch (err) {
+      console.error("Erro ao eliminar mensagem:", err);
+      setError("Não foi possível eliminar a mensagem.");
     }
   }
 
@@ -119,12 +166,12 @@ function Admin() {
         <Breadcrumb title="Administração" />
 
         <header className="admin-page__header">
-          
+
 
           <h1>Painel de administração</h1>
 
-              <p className="admin-page__subtitle">
-            Bem-vinda, {user?.name}! 
+          <p className="admin-page__subtitle">
+            Bem-vinda, {user?.name}!
           </p>
           <p className="admin-page__subtitle">
             Aqui tens um resumo da
@@ -202,10 +249,10 @@ function Admin() {
                   {favoritesStats.byCategory.map((category) => {
                     const percentage = favoritesStats.total
                       ? Math.round(
-                          (category.count /
-                            favoritesStats.total) *
-                            100
-                        )
+                        (category.count /
+                          favoritesStats.total) *
+                        100
+                      )
                       : 0;
 
                     return (
@@ -235,9 +282,15 @@ function Admin() {
               className="admin-section"
               aria-label="Mensagens de contacto"
             >
-              <h2 className="admin-page__section-title">
-                Mensagens de contacto
-              </h2>
+              <div className="admin-section__header">
+                <h2 className="admin-page__section-title">
+                  Mensagens de contacto
+                </h2>
+
+                <span className="admin-messages__counter">
+                  {formatCount(messagesStats.unread)} por ler
+                </span>
+              </div>
 
               {messagesStats.messages.length === 0 ? (
                 <p className="admin-page__empty">
@@ -248,22 +301,65 @@ function Admin() {
                   {messagesStats.messages.map((message) => (
                     <article
                       key={message.id}
-                      className="admin-message-card"
+                      className={`admin-message-card ${message.is_read
+                          ? "admin-message-card--read"
+                          : "admin-message-card--unread"
+                        }`}
                     >
                       <div className="admin-message-card__head">
                         <div className="admin-message-card__author">
-                          <strong>{message.name}</strong>
-                          <span>{message.email}</span>
+                          <div className="admin-message-card__name-row">
+                            <strong>{message.name}</strong>
+
+                            <span
+                              className={`admin-message-card__status ${message.is_read
+                                  ? "admin-message-card__status--read"
+                                  : "admin-message-card__status--unread"
+                                }`}
+                            >
+                              {message.is_read ? "Lida" : "Por ler"}
+                            </span>
+                          </div>
+
+                          <a href={`mailto:${message.email}`}>
+                            {message.email}
+                          </a>
                         </div>
 
-                        <time dateTime={message.createdAt}>
-                          {formatDate(message.createdAt)}
+                        <time dateTime={message.created_at}>
+                          {formatDate(message.created_at)}
                         </time>
                       </div>
 
-                      <p className="admin-message-card__body">
-                        {message.message}
-                      </p>
+                      <div className="admin-message-card__content">
+                        <h3>{message.subject}</h3>
+
+                        <p className="admin-message-card__body">
+                          {message.message}
+                        </p>
+                      </div>
+
+                      <div className="admin-message-card__actions">
+                        {!message.is_read && (
+                          <button
+                            type="button"
+                            className="admin-message-card__button"
+                            onClick={() => handleMarkAsRead(message.id)}
+                          >
+                            <Icon name="Check" size={16} />
+                            Marcar como lida
+                          </button>
+                        )}
+
+                        <button
+                          type="button"
+                          className="admin-message-card__button admin-message-card__button--danger"
+                          onClick={() => handleDeleteMessage(message.id)}
+                        >
+                          <Icon name="Trash2" size={16} />
+                          Eliminar
+                        </button>
+                      </div>
                     </article>
                   ))}
                 </div>
