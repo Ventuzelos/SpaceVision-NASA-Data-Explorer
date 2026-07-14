@@ -25,7 +25,13 @@ class FavoriteController extends Controller
             'data' => ['nullable', 'array'],
         ]);
 
-        $favorite = $request->user()->favorites()->create($validated);
+        $favorite = $request->user()->favorites()->firstOrCreate(
+            [
+                'nasa_type' => $validated['nasa_type'],
+                'nasa_id' => $validated['nasa_id'] ?? null,
+            ],
+            $validated
+        );
 
         return response()->json($favorite, 201);
     }

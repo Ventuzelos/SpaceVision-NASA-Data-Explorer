@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import useAuth from "../../hooks/useAuth";
 
@@ -9,6 +9,7 @@ import "./Login.css";
 
 function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
 
   const [formData, setFormData] = useState({
@@ -40,7 +41,7 @@ function Login() {
       if (user.role === "admin") {
         navigate("/admin");
       } else {
-        navigate("/");
+        navigate(location.state?.from || "/");
       }
     } catch (requestError) {
       const message =
@@ -120,7 +121,7 @@ function Login() {
             </div>
 
             {error && (
-              <p className="auth-error">
+              <p className="auth-error" role="alert">
                 {error}
               </p>
             )}
