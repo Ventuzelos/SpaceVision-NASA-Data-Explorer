@@ -7,8 +7,11 @@ use App\Http\Controllers\Api\FavoriteController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Api\ContactMessageController;
 
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+Route::middleware('throttle:auth')->group(function () {
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login', [AuthController::class, 'login']);
+});
+
 Route::post('/contact', [ContactMessageController::class, 'store'])
     ->middleware('throttle:5,1');
 
@@ -21,7 +24,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/favorites/{favorite}', [FavoriteController::class, 'destroy']);
 });
 
-Route::prefix('nasa')->group(function () {
+Route::prefix('nasa')->middleware('throttle:60,1')->group(function () {
     Route::get('/apod', [NasaController::class, 'apod']);
     Route::get('/epic', [NasaController::class, 'epic']);
     Route::get('/epic/{date}', [NasaController::class, 'epicByDate']);

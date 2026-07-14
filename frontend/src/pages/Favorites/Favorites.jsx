@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import Container from "../../components/common/Container/Container";
 import {
+  addFavorite,
   getFavorites,
   removeFavorite,
 } from "../../services/favoritesService";
 import FavoriteCard from "../../components/favorites/FavoriteCard";
 import Breadcrumb from "../../components/common/Breadcrumb/Breadcrumb";
 import Pagination from "../../components/common/Pagination/Pagination";
+import Button from "../../components/common/Button/Button";
 import { usePagination } from "../../hooks/usePagination";
 import useAuth from "../../hooks/useAuth";
 import "./Favorites.css";
@@ -16,6 +18,7 @@ import Toast from "../../components/common/Toast/Toast";
 
 
 const FAVORITES_PER_PAGE = 8;
+const UNDO_TIMEOUT_MS = 5000;
 
 const FAVORITE_FILTERS = [
   { value: "all", label: "Todos" },
@@ -34,6 +37,15 @@ function Favorites() {
   const [activeFilter, setActiveFilter] = useState("all");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [undoState, setUndoState] = useState(null);
+
+  useEffect(() => {
+    return () => {
+      if (undoState?.timerId) {
+        window.clearTimeout(undoState.timerId);
+      }
+    };
+  }, [undoState]);
 
   const filteredFavorites = useMemo(() => {
     if (activeFilter === "all") {
@@ -96,8 +108,9 @@ function Favorites() {
 }
 
   async function handleRemoveFavorite(id) {
-  try {
-    await removeFavorite(id);
+    const removedFavorite = favorites.find(
+      (favorite) => favorite.id === id
+    );
 
     setFavorites((currentFavorites) =>
       currentFavorites.filter(
@@ -109,15 +122,62 @@ function Favorites() {
       setSelectedFavorite(null);
     }
 
-    showToast("Removido dos favoritos");
-  } catch (err) {
-    console.error("Erro ao remover favorito:", err);
+    try {
+      await removeFavorite(id);
+    } catch (err) {
+      console.error("Erro ao remover favorito:", err);
 
-    showToast(
-      "Não foi possível remover o favorito"
-    );
+      showToast(
+        "Não foi possível remover o favorito"
+      );
+
+      if (removedFavorite) {
+        setFavorites((currentFavorites) => [
+          removedFavorite,
+          ...currentFavorites,
+        ]);
+      }
+
+      return;
+    }
+
+    if (removedFavorite) {
+      const timerId = window.setTimeout(() => {
+        setUndoState(null);
+      }, UNDO_TIMEOUT_MS);
+
+      setUndoState({
+        favorite: removedFavorite,
+        timerId,
+      });
+    }
   }
-}
+
+  async function handleUndoRemove() {
+    if (!undoState) return;
+
+    window.clearTimeout(undoState.timerId);
+    const { favorite } = undoState;
+    setUndoState(null);
+
+    try {
+      const restored = await addFavorite(favorite);
+
+      setFavorites((currentFavorites) => [
+        restored,
+        ...currentFavorites,
+      ]);
+    } catch (err) {
+      console.error(
+        "Erro ao restaurar favorito:",
+        err
+      );
+
+      showToast(
+        "Não foi possível restaurar o favorito"
+      );
+    }
+  }
 
   function handleFilterChange(filter) {
     setActiveFilter(filter);
@@ -157,6 +217,23 @@ function Favorites() {
 
       <section className="favorites-content">
         <Container>
+          {undoState && (
+            <div
+              className="favorites-undo"
+              role="status"
+              aria-live="polite"
+            >
+              <span>Favorito removido.</span>
+
+              <Button
+                variant="secondary"
+                onClick={handleUndoRemove}
+              >
+                Desfazer
+              </Button>
+            </div>
+          )}
+
           {!isLoading && !error && favorites.length > 0 && (
             <div className="favorites-filters">
               <h2 className="favorites-filters__title">
