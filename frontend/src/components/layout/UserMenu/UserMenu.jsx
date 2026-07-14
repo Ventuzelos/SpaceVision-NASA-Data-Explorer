@@ -89,7 +89,6 @@ function UserMenu() {
             setIsAccountMenuOpen((current) => !current)
           }
           aria-expanded={isAccountMenuOpen}
-          aria-haspopup="menu"
           aria-controls="account-dropdown"
         >
           <span className="account-menu-trigger__text">
@@ -112,7 +111,6 @@ function UserMenu() {
           <div
             id="account-dropdown"
             className="account-dropdown"
-            role="menu"
           >
             <div className="account-dropdown__header">
               <span className="account-dropdown__avatar">
@@ -131,7 +129,7 @@ function UserMenu() {
               <Link
                 to="/admin"
                 className="account-dropdown__item"
-                role="menuitem" onClick={() => setIsAccountMenuOpen(false)}
+                onClick={() => setIsAccountMenuOpen(false)}
               >
                 <Shield size={18} aria-hidden="true" />
                 Painel Admin
@@ -141,7 +139,7 @@ function UserMenu() {
             <Link
               to="/profile"
               className="account-dropdown__item"
-              role="menuitem" onClick={() => setIsAccountMenuOpen(false)}
+              onClick={() => setIsAccountMenuOpen(false)}
             >
               <User size={18} aria-hidden="true" />
               Perfil
@@ -150,7 +148,7 @@ function UserMenu() {
             <Link
               to="/favorites"
               className="account-dropdown__item"
-              role="menuitem" onClick={() => setIsAccountMenuOpen(false)}
+              onClick={() => setIsAccountMenuOpen(false)}
             >
               <Heart size={18} aria-hidden="true" />
               Favoritos
@@ -162,7 +160,6 @@ function UserMenu() {
               type="button"
               className="account-dropdown__item account-dropdown__item--logout"
               onClick={handleLogout}
-              role="menuitem"
             >
               <LogOut size={18} aria-hidden="true" />
               Terminar sessão

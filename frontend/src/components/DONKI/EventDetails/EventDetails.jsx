@@ -1,5 +1,6 @@
 import FavoriteButton from "../../common/FavoriteButton/FavoriteButton";
 import Icon from "../../common/Icon/Icon";
+import isSafeUrl from "../../../utils/isSafeUrl";
 
 import "./EventDetails.css";
 
@@ -19,7 +20,13 @@ function formatFullDate(value) {
   });
 }
 
-function EventDetails({ event, isFavorite, onToggleFavorite, onBack }) {
+function EventDetails({
+  event,
+  isFavorite,
+  isFavoriteLoading,
+  onToggleFavorite,
+  onBack,
+}) {
   return (
     <div className="event-details">
       <button
@@ -50,6 +57,7 @@ function EventDetails({ event, isFavorite, onToggleFavorite, onBack }) {
 
             <FavoriteButton
               active={isFavorite}
+              disabled={isFavoriteLoading}
               onClick={() => onToggleFavorite(event)}
               ariaLabel={
                 isFavorite
@@ -78,7 +86,7 @@ function EventDetails({ event, isFavorite, onToggleFavorite, onBack }) {
           </p>
         )}
 
-        {event.link && (
+        {isSafeUrl(event.link) && (
           <div className="event-details__actions">
             <a
               href={event.link}

@@ -5,12 +5,12 @@ import CTASection from "../../components/home/CTASection/CTASection";
 
 function Home() {
   return (
-    <>
+    <main>
       <Hero />
       <ApiSection />
       <FeaturedSection />
       <CTASection />
-    </>
+    </main>
   );
 }
 

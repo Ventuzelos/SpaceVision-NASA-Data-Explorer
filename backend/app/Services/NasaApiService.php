@@ -62,7 +62,15 @@ class NasaApiService
                     )
                     ->throw();
 
-                return $response->json();
+                $decoded = $response->json();
+
+                if (!is_array($decoded)) {
+                    throw new RuntimeException(
+                        'A NASA devolveu uma resposta inválida.'
+                    );
+                }
+
+                return $decoded;
             }
         );
     }

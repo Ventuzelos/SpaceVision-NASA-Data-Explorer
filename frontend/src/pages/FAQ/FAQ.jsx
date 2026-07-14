@@ -109,10 +109,16 @@ const FAQ_ITEMS = [
   },
 ];
 
-function FAQItem({ item, isOpen, onToggle }) {
+function FAQItem({ item, panelId, isOpen, onToggle }) {
   return (
     <div className={`faq-item${isOpen ? " faq-item--active" : ""}`}>
-      <button type="button" className="faq-item__trigger" onClick={onToggle}>
+      <button
+        type="button"
+        className="faq-item__trigger"
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        aria-controls={panelId}
+      >
         <span className="faq-item__question">
           <Icon name={item.icon} size={20} className="faq-item__icon" />
           <span>{item.question}</span>
@@ -120,7 +126,7 @@ function FAQItem({ item, isOpen, onToggle }) {
         <Icon name="ChevronDown" size={18} className="faq-item__chevron" />
       </button>
 
-      <div className="faq-item__content">
+      <div className="faq-item__content" id={panelId}>
         <div className="faq-item__answer">{item.answer}</div>
       </div>
     </div>
@@ -145,7 +151,7 @@ function FAQ() {
   }
 
   return (
-    <section className="faq-page">
+    <main className="faq-page">
       <Container>
         <Breadcrumb title="FAQ" />
         <header className="faq-hero">
@@ -185,6 +191,7 @@ function FAQ() {
               <FAQItem
                 key={item.question}
                 item={item}
+                panelId={`faq-panel-${index}`}
                 isOpen={openIndex === index}
                 onToggle={() => handleToggle(index)}
               />
@@ -200,7 +207,7 @@ function FAQ() {
           </div>
         )}
       </Container>
-    </section>
+    </main>
   );
 }
 

@@ -662,22 +662,34 @@ function Profile() {
                   )}
 
                   {isEditing && (
-                    <div className="profile-form__actions">
-                      <Button
-                        type="submit"
-                        variant="primary"
+                    <>
+                      <p
+                        className="profile-notice"
+                        role="status"
                       >
-                        Guardar alterações
-                      </Button>
+                        A edição de dados ainda não
+                        está ligada ao backend —
+                        disponível brevemente.
+                      </p>
 
-                      <Button
-                        type="button"
-                        variant="secondary"
-                        onClick={handleCancelEdit}
-                      >
-                        Cancelar
-                      </Button>
-                    </div>
+                      <div className="profile-form__actions">
+                        <Button
+                          type="submit"
+                          variant="primary"
+                          disabled
+                        >
+                          Guardar alterações
+                        </Button>
+
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          onClick={handleCancelEdit}
+                        >
+                          Cancelar
+                        </Button>
+                      </div>
+                    </>
                   )}
                 </form>
               </article>
@@ -790,9 +802,19 @@ function Profile() {
                         </p>
                       )}
 
+                      <p
+                        className="profile-notice"
+                        role="status"
+                      >
+                        A eliminação de conta ainda
+                        não está ligada ao backend —
+                        disponível brevemente.
+                      </p>
+
                       <Button
                         type="submit"
                         variant="danger"
+                        disabled
                       >
                         <Trash2
                           size={17}

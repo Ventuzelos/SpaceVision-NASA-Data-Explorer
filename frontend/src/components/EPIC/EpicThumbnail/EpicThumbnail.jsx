@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Clock } from "lucide-react";
 
 import "./EpicThumbnail.css";
@@ -10,15 +10,13 @@ import {
 
 import FavoriteButton from "../../common/FavoriteButton/FavoriteButton";
 
-import {
-  isFavorite,
-  toggleFavorite,
-} from "../../../services/favoritesService";
-
 export default function EpicThumbnail({
   photo,
   date,
   onSelect,
+  isFavorite: favorite,
+  isFavoriteLoading,
+  onToggleFavorite,
 }) {
   const thumbUrl = buildThumbUrl(photo, date);
   const fullUrl = buildImageUrl(photo, date);
@@ -29,11 +27,10 @@ export default function EpicThumbnail({
 
   const favoriteId = `epic-${photo.image}`;
 
-  const [favorite, setFavorite] = useState(false);
-
-  const [isFavoriteLoading, setIsFavoriteLoading] =
-    useState(false);
-
+  /*
+   * Guardamos o URL da imagem que falhou.
+   * Primeiro tenta thumbnail; se falhar, tenta imagem completa.
+   */
   const [failedThumbUrl, setFailedThumbUrl] =
     useState("");
 
@@ -48,38 +45,6 @@ export default function EpicThumbnail({
     : thumbUrl;
 
   const imageError = thumbFailed && fullFailed;
-
-  useEffect(() => {
-    let isMounted = true;
-
-    async function checkFavorite() {
-      try {
-        const result = await isFavorite(
-          favoriteId,
-          "epic"
-        );
-
-        if (isMounted) {
-          setFavorite(result);
-        }
-      } catch (error) {
-        console.error(
-          "Erro ao verificar favorito EPIC:",
-          error
-        );
-
-        if (isMounted) {
-          setFavorite(false);
-        }
-      }
-    }
-
-    checkFavorite();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [favoriteId]);
 
   function handleSelect() {
     if (imageError) {
@@ -111,89 +76,49 @@ export default function EpicThumbnail({
     });
   }
 
-  async function handleFavoriteClick(event) {
+  function handleFavoriteClick(event) {
     event.stopPropagation();
 
-    if (isFavoriteLoading) {
-      return;
-    }
+    const latitude =
+      photo.centroid_coordinates?.lat?.toFixed(1) ||
+      "";
 
-    try {
-      setIsFavoriteLoading(true);
+    const longitude =
+      photo.centroid_coordinates?.lon?.toFixed(1) ||
+      "";
 
-      const latitude =
-        photo.centroid_coordinates?.lat?.toFixed(
-          1
-        ) || "";
-
-      const longitude =
-        photo.centroid_coordinates?.lon?.toFixed(
-          1
-        ) || "";
-
-      const result = await toggleFavorite({
-        id: favoriteId,
-        nasa_id: favoriteId,
-        source: "epic",
-        type: "epic",
-        nasa_type: "epic",
-
-        title: `EPIC · Terra${
-          time ? ` (${time} UTC)` : ""
-        }`,
-
+    onToggleFavorite(favoriteId, {
+      id: favoriteId,
+      nasa_id: favoriteId,
+      source: "epic",
+      type: "epic",
+      nasa_type: "epic",
+      title: `EPIC · Terra${
+        time ? ` (${time} UTC)` : ""
+      }`,
+      date,
+      imageUrl: fullUrl,
+      image_url: fullUrl,
+      hdUrl: fullUrl,
+      description: photo.caption || "",
+      data: {
+        ...photo,
         date,
-
-        imageUrl: fullUrl,
+        time,
+        caption: photo.caption || "",
+        image: photo.image,
         image_url: fullUrl,
+        url: fullUrl,
+        hd_url: fullUrl,
+        latitude,
+        longitude,
 
-        hdUrl: fullUrl,
-        description: photo.caption || "",
-
-        data: {
-          ...photo,
-          date,
-          time,
-          caption: photo.caption || "",
-          image: photo.image,
-          image_url: fullUrl,
-          url: fullUrl,
-          hd_url: fullUrl,
-          latitude,
-          longitude,
-
-          centroid_coordinates: {
-            lat: latitude,
-            lon: longitude,
-          },
+        centroid_coordinates: {
+          lat: latitude,
+          lon: longitude,
         },
-      });
-
-      setFavorite(result.isFavorite);
-
-      window.dispatchEvent(
-        new CustomEvent("epicFavoriteUpdated", {
-          detail: {
-            isFavorite: result.isFavorite,
-          },
-        })
-      );
-    } catch (error) {
-      console.error(
-        "Erro ao atualizar favorito EPIC:",
-        error
-      );
-
-      window.dispatchEvent(
-        new CustomEvent("epicFavoriteError", {
-          detail: {
-            status: error.response?.status,
-          },
-        })
-      );
-    } finally {
-      setIsFavoriteLoading(false);
-    }
+      },
+    });
   }
 
   function handleKeyDown(event) {

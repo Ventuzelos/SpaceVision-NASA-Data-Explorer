@@ -1,6 +1,7 @@
 import {
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from "react";
 
@@ -128,8 +129,12 @@ function NeoWS() {
     }, 2500);
   }
 
+  const requestIdRef = useRef(0);
+
   const loadFeed = useCallback(
     async (start, end) => {
+      const requestId = ++requestIdRef.current;
+
       setLoading(true);
       setError("");
       setObjects([]);
@@ -138,10 +143,14 @@ function NeoWS() {
         const { objects: results } =
           await fetchNeoFeed(start, end);
 
+        if (requestIdRef.current !== requestId) return;
+
         setObjects(
           Array.isArray(results) ? results : []
         );
       } catch (requestError) {
+        if (requestIdRef.current !== requestId) return;
+
         console.error(
           "Erro ao carregar objetos NeoWS:",
           requestError
@@ -154,13 +163,16 @@ function NeoWS() {
           )
         );
       } finally {
-        setLoading(false);
+        if (requestIdRef.current === requestId) {
+          setLoading(false);
+        }
       }
     },
     []
   );
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadFeed(
       dateRange.startDate,
       dateRange.endDate
