@@ -1,41 +1,28 @@
-const MESSAGES_KEY = "spacevision_messages";
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api";
 
-function getStoredMessages() {
-  const data = localStorage.getItem(MESSAGES_KEY);
-  return data ? JSON.parse(data) : [];
-}
+export async function saveContactMessage(contactData) {
+  const response = await fetch(`${API_BASE_URL}/contact`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(contactData),
+  });
 
-function saveStoredMessages(messages) {
-  localStorage.setItem(MESSAGES_KEY, JSON.stringify(messages));
-}
+  const data = await response.json();
 
-export function saveContactMessage({ name, email, message }) {
-  const messages = getStoredMessages();
+  if (!response.ok) {
+    const error = new Error(
+      data.message || "Não foi possível enviar a mensagem."
+    );
 
-  const newMessage = {
-    id: Date.now().toString(),
-    name,
-    email,
-    message,
-    createdAt: new Date().toISOString(),
-  };
+    error.status = response.status;
+    error.validationErrors = data.errors || {};
 
-  messages.unshift(newMessage);
-  saveStoredMessages(messages);
+    throw error;
+  }
 
-  return newMessage;
-}
-
-export function getContactMessages() {
-  return getStoredMessages();
-}
-
-export function getContactMessagesCount() {
-  return getStoredMessages().length;
-}
-
-export function getContactMessagesByEmail(email) {
-  return getStoredMessages().filter(
-    (msg) => msg.email.toLowerCase() === email.toLowerCase()
-  );
+  return data;
 }
