@@ -8,14 +8,23 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Api\ContactMessageController;
 
 Route::middleware('throttle:auth')->group(function () {
-    Route::post('/register', [AuthController::class, 'register'])
-        ->middleware('throttle:5,1');
-    Route::post('/login', [AuthController::class, 'login'])
-        ->middleware('throttle:5,1');
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login', [AuthController::class, 'login']);
+
+    Route::post(
+        '/forgot-password',
+        [AuthController::class, 'forgotPassword']
+    );
+
+    Route::post(
+        '/reset-password',
+        [AuthController::class, 'resetPassword']
+    );
 });
 
 Route::post('/contact', [ContactMessageController::class, 'store'])
     ->middleware('throttle:5,1');
+
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -25,6 +34,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/favorites', [FavoriteController::class, 'store']);
     Route::delete('/favorites/{favorite}', [FavoriteController::class, 'destroy']);
 });
+
 
 Route::prefix('nasa')->middleware('throttle:60,1')->group(function () {
     Route::get('/apod', [NasaController::class, 'apod']);

@@ -118,6 +118,11 @@ function Login() {
                 autoComplete="current-password"
                 required
               />
+              <div className="login-forgot-password">
+                <Link to="/forgot-password">
+                  Esqueceste-te da palavra-passe?
+                </Link>
+              </div>
             </div>
 
             {error && (
