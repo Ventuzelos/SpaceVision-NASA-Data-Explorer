@@ -31,6 +31,7 @@ import {
   Radar,
   X,
   ArrowUp,
+  Orbit,
 } from "lucide-react";
 
 export const Icons = {
@@ -66,4 +67,5 @@ export const Icons = {
   Radar,
   X,
   ArrowUp,
+  Orbit,
 };
