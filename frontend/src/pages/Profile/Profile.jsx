@@ -17,7 +17,6 @@ import Button from "../../components/common/Button/Button";
 import Toast from "../../components/common/Toast/Toast";
 import Breadcrumb from "../../components/common/Breadcrumb/Breadcrumb";
 import { getFavorites } from "../../services/favoritesService";
-import { getContactMessagesByEmail } from "../../services/messagesService";
 import useAuth from "../../hooks/useAuth";
 
 import "./Profile.css";
@@ -111,7 +110,6 @@ function Profile() {
 
   const [deleteConfirm, setDeleteConfirm] = useState("");
   const [deleteError, setDeleteError] = useState("");
-
 
   useEffect(() => {
     if (!isAuthenticated || !user) {
@@ -272,28 +270,7 @@ function Profile() {
     try {
       setIsDownloading(true);
 
-      const updatedFavorites =
-        await getFavorites();
-
-      let contactMessages = [];
-
-      try {
-        const messagesResult =
-          await getContactMessagesByEmail(
-            user.email
-          );
-
-        contactMessages = Array.isArray(
-          messagesResult
-        )
-          ? messagesResult
-          : [];
-      } catch (messagesError) {
-        console.error(
-          "Não foi possível obter as mensagens:",
-          messagesError
-        );
-      }
+      const updatedFavorites = await getFavorites();
 
       const exportData = {
         exportedAt: new Date().toISOString(),
@@ -306,13 +283,9 @@ function Profile() {
           createdAt: user.created_at || null,
         },
 
-        favorites: Array.isArray(
-          updatedFavorites
-        )
+        favorites: Array.isArray(updatedFavorites)
           ? updatedFavorites
           : [],
-
-        contactMessages,
       };
 
       const blob = new Blob(
@@ -528,7 +501,7 @@ function Profile() {
             </div>
 
             {TABS.map((tab) => {
-              const Icon = tab.icon;
+              const TabIcon = tab.icon;
 
               return (
                 <button
@@ -554,7 +527,7 @@ function Profile() {
                       : undefined
                   }
                 >
-                  <Icon
+                  <TabIcon
                     size={18}
                     aria-hidden="true"
                   />
@@ -700,9 +673,7 @@ function Profile() {
                       <Button
                         type="button"
                         variant="secondary"
-                        onClick={
-                          handleCancelEdit
-                        }
+                        onClick={handleCancelEdit}
                       >
                         Cancelar
                       </Button>
@@ -733,17 +704,13 @@ function Profile() {
 
                     <p className="profile-card__intro">
                       Cria uma cópia em formato JSON
-                      com os dados da conta,
-                      favoritos e mensagens de
-                      contacto associadas ao teu
-                      email.
+                      com os dados da conta e os
+                      favoritos guardados.
                     </p>
 
                     <Button
                       variant="primary"
-                      onClick={
-                        handleDownloadData
-                      }
+                      onClick={handleDownloadData}
                       disabled={isDownloading}
                     >
                       <Download
@@ -788,9 +755,7 @@ function Profile() {
 
                     <form
                       className="profile-form"
-                      onSubmit={
-                        handleDeleteAccount
-                      }
+                      onSubmit={handleDeleteAccount}
                     >
                       <div className="profile-form__field">
                         <label htmlFor="deleteConfirm">
