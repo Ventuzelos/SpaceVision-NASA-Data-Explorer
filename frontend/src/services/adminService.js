@@ -1,9 +1,5 @@
 import backendApi from "./backendApi";
 import { getFavorites } from "./favoritesService";
-import {
-  getContactMessages,
-  getContactMessagesCount,
-} from "./messagesService";
 
 
 export async function getUsersCount() {
@@ -69,9 +65,30 @@ export async function getFavoritesStats() {
  * quando existir endpoint de contacto no backend, basta trocar
  * a implementação aqui.
  */
-export function getMessagesStats() {
+export async function getMessagesStats() {
+  const response = await backendApi.get("/admin/messages");
+
   return {
-    total: getContactMessagesCount(),
-    messages: getContactMessages(),
+    total: response.data?.total ?? 0,
+    unread: response.data?.unread ?? 0,
+    messages: Array.isArray(response.data?.messages)
+      ? response.data.messages
+      : [],
   };
+}
+
+export async function markMessageAsRead(messageId) {
+  const response = await backendApi.patch(
+    `/admin/messages/${messageId}/read`
+  );
+
+  return response.data;
+}
+
+export async function deleteMessage(messageId) {
+  const response = await backendApi.delete(
+    `/admin/messages/${messageId}`
+  );
+
+  return response.data;
 }
