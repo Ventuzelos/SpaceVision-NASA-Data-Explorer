@@ -16,7 +16,13 @@ function formatShortDate(value) {
   });
 }
 
-function EventCard({ event, isFavorite, onToggleFavorite, onViewDetails }) {
+function EventCard({
+  event,
+  isFavorite,
+  isFavoriteLoading,
+  onToggleFavorite,
+  onViewDetails,
+}) {
   return (
     <article className="event-card">
       <div className="event-card__header">
@@ -31,6 +37,7 @@ function EventCard({ event, isFavorite, onToggleFavorite, onViewDetails }) {
 
         <FavoriteButton
           active={isFavorite}
+          disabled={isFavoriteLoading}
           onClick={() => onToggleFavorite(event)}
           ariaLabel={
             isFavorite

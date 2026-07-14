@@ -1,4 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 import Container from "../../components/common/Container/Container";
 import EventTypeSelector from "../../components/DONKI/EventTypeSelector/EventTypeSelector";
@@ -88,6 +93,9 @@ function DONKI() {
     () => new Set()
   );
 
+  const [favoriteLoadingKeys, setFavoriteLoadingKeys] =
+    useState(() => new Set());
+
   const {
     paginatedItems: paginatedEvents,
     currentPage,
@@ -104,8 +112,12 @@ function DONKI() {
     }, 2500);
   }
 
+  const requestIdRef = useRef(0);
+
   const loadEvents = useCallback(
     async (type, start, end) => {
+      const requestId = ++requestIdRef.current;
+
       setLoading(true);
       setError("");
       setSelectedEvent(null);
@@ -117,8 +129,12 @@ function DONKI() {
           end
         );
 
+        if (requestIdRef.current !== requestId) return;
+
         setEvents(Array.isArray(results) ? results : []);
       } catch (requestError) {
+        if (requestIdRef.current !== requestId) return;
+
         console.error(
           "Erro ao carregar eventos DONKI:",
           requestError
@@ -133,13 +149,16 @@ function DONKI() {
 
         setEvents([]);
       } finally {
-        setLoading(false);
+        if (requestIdRef.current === requestId) {
+          setLoading(false);
+        }
       }
     },
     []
   );
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadEvents(
       "FLR",
       dateRange.startDate,
@@ -229,6 +248,16 @@ function DONKI() {
   async function handleToggleFavorite(event) {
     const favoriteId = getEventFavoriteId(event);
 
+    if (favoriteLoadingKeys.has(favoriteId)) {
+      return;
+    }
+
+    setFavoriteLoadingKeys((currentKeys) => {
+      const nextKeys = new Set(currentKeys);
+      nextKeys.add(favoriteId);
+      return nextKeys;
+    });
+
     try {
       const result = await toggleFavorite({
         nasa_type: SOURCE,
@@ -275,6 +304,12 @@ function DONKI() {
           "Não foi possível atualizar o favorito"
         );
       }
+    } finally {
+      setFavoriteLoadingKeys((currentKeys) => {
+        const nextKeys = new Set(currentKeys);
+        nextKeys.delete(favoriteId);
+        return nextKeys;
+      });
     }
   }
 
@@ -336,6 +371,9 @@ function DONKI() {
           <EventDetails
             event={selectedEvent}
             isFavorite={favoriteKeys.has(
+              getEventFavoriteId(selectedEvent)
+            )}
+            isFavoriteLoading={favoriteLoadingKeys.has(
               getEventFavoriteId(selectedEvent)
             )}
             onToggleFavorite={handleToggleFavorite}
@@ -411,6 +449,9 @@ function DONKI() {
                       key={favoriteId}
                       event={event}
                       isFavorite={favoriteKeys.has(
+                        favoriteId
+                      )}
+                      isFavoriteLoading={favoriteLoadingKeys.has(
                         favoriteId
                       )}
                       onToggleFavorite={
