@@ -8,8 +8,10 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Api\ContactMessageController;
 
 Route::middleware('throttle:auth')->group(function () {
-    Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/register', [AuthController::class, 'register'])
+        ->middleware('throttle:5,1');
+    Route::post('/login', [AuthController::class, 'login'])
+        ->middleware('throttle:5,1');
 });
 
 Route::post('/contact', [ContactMessageController::class, 'store'])
@@ -41,9 +43,25 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
 });
 
 Route::prefix('admin')
-    ->middleware(['auth:sanctum', 'is_admin'])
+    ->middleware(['auth:sanctum', 'admin'])
     ->group(function () {
+        Route::get(
+            '/users/count',
+            [AdminController::class, 'usersCount']
+        );
 
-        Route::get('/users/count', [AdminController::class, 'usersCount']);
+        Route::get(
+            '/messages',
+            [AdminController::class, 'contactMessages']
+        );
 
+        Route::patch(
+            '/messages/{message}/read',
+            [AdminController::class, 'markContactMessageAsRead']
+        );
+
+        Route::delete(
+            '/messages/{message}',
+            [AdminController::class, 'destroyContactMessage']
+        );
     });
