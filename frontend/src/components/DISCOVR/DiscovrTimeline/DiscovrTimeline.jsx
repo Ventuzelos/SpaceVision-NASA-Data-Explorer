@@ -6,8 +6,6 @@ import sceneImage from "../../../assets/hero1.jpg";
 
 import "./DiscovrTimeline.css";
 
-// Marcos alternam acima/abaixo da linha; ao clicar num ponto, o cartão
-// de informação abre desse mesmo lado, sobre a fotografia de fundo.
 const MISSION_TIMELINE = [
   {
     year: "1969",
@@ -62,9 +60,26 @@ const MISSION_TIMELINE = [
 
 function DiscovrTimeline() {
   const [openIndex, setOpenIndex] = useState(null);
+  const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [isMobile, setIsMobile] = useState(false); // NOVO: Estado para verificar tamanho do ecrã
   const sceneRef = useRef(null);
+  const pathRef = useRef(null);
+
+  // Estados locais controlados para o arrasto do rato
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeftState, setScrollLeftState] = useState(0);
+  const [mouseMoved, setMouseMoved] = useState(false);
 
   useEffect(() => {
+    // Deteta se a largura do ecrã é mobile (igual ao @media do CSS: 900px)
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 900);
+    };
+
+    checkMobile(); // Executa ao carregar a página
+    window.addEventListener("resize", checkMobile);
+
     function handleKeyDown(event) {
       if (event.key === "Escape") setOpenIndex(null);
     }
@@ -79,14 +94,52 @@ function DiscovrTimeline() {
     document.addEventListener("pointerdown", handlePointerDown);
 
     return () => {
+      window.removeEventListener("resize", checkMobile);
       document.removeEventListener("keydown", handleKeyDown);
       document.removeEventListener("pointerdown", handlePointerDown);
     };
   }, []);
 
+  const handleMouseDown = (e) => {
+    if (isMobile) return; // Desativa arrasto no mobile já que a lista passa a ser vertical pura
+    const slider = pathRef.current;
+    if (!slider) return;
+
+    setIsDragging(true);
+    setMouseMoved(false);
+    setStartX(e.pageX - slider.offsetLeft);
+    setScrollLeftState(slider.scrollLeft);
+  };
+
+  const handleMouseLeaveOrUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging || isMobile) return;
+    const slider = pathRef.current;
+    if (!slider) return;
+
+    const x = e.pageX - slider.offsetLeft;
+    const currentDistance = Math.abs(x - startX);
+
+    if (currentDistance > 5) {
+      setMouseMoved(true);
+    }
+
+    e.preventDefault();
+    const walk = (x - startX) * 1.5;
+    slider.scrollLeft = scrollLeftState - walk;
+  };
+
   const stepX = 100 / (MISSION_TIMELINE.length - 1);
 
   function handleToggle(index) {
+    if (isMobile) return; // Desativa cliques de fechar/abrir no mobile
+    if (mouseMoved) {
+      setMouseMoved(false);
+      return;
+    }
     setOpenIndex((current) => (current === index ? null : index));
   }
 
@@ -98,7 +151,7 @@ function DiscovrTimeline() {
       </h2>
 
       <p className="discovr-section__subtitle">
-        Clica num ano da linha para veres a missão correspondente.
+        {isMobile ? "Desliza para baixo para explorares as missões." : "Clica num ano da linha para veres a missão correspondente."}
       </p>
 
       <div className="discovr-timeline-scene" ref={sceneRef}>
@@ -108,69 +161,85 @@ function DiscovrTimeline() {
         />
         <div className="discovr-timeline-scene__overlay" />
 
-        <div className="discovr-timeline-scene__path">
+        <div 
+          className={`discovr-timeline-scene__path ${isDragging ? "grabbing" : ""}`}
+          ref={pathRef}
+          onMouseDown={handleMouseDown}
+          onMouseLeave={handleMouseLeaveOrUp}
+          onMouseUp={handleMouseLeaveOrUp}
+          onMouseMove={handleMouseMove}
+        >
           <div className="discovr-timeline-scene__track">
-          <div className="discovr-timeline-scene__rail" aria-hidden="true" />
+            <div className="discovr-timeline-scene__rail" aria-hidden="true" />
 
-          {MISSION_TIMELINE.map((mission, index) => {
-            const isOpen = openIndex === index;
-            const cardId = `discovr-timeline-card-${index}`;
+            {MISSION_TIMELINE.map((mission, index) => {
+              // MODIFICADO: Se for mobile, fica sempre aberto. Se for PC, depende do clique ou hover.
+              const isOpen = isMobile ? true : openIndex === index;
+              const isHovered = isMobile ? false : hoveredIndex === index;
+              const cardId = `discovr-timeline-card-${index}`;
 
-            let alignClass = "discovr-timeline-scene__info--center";
-            if (index === 0) alignClass = "discovr-timeline-scene__info--start";
-            if (index === MISSION_TIMELINE.length - 1) {
-              alignClass = "discovr-timeline-scene__info--end";
-            }
+              let alignClass = "discovr-timeline-scene__info--center";
+              if (index === 0) alignClass = "discovr-timeline-scene__info--start";
+              if (index === MISSION_TIMELINE.length - 1) {
+                alignClass = "discovr-timeline-scene__info--end";
+              }
 
-            return (
-              <div
-                className="discovr-timeline-scene__marker"
-                key={mission.year}
-                style={{ left: `${index * stepX}%` }}
-              >
-                <button
-                  type="button"
-                  className={`discovr-timeline-scene__dot${
-                    mission.active ? " discovr-timeline-scene__dot--active" : ""
-                  }${isOpen ? " discovr-timeline-scene__dot--open" : ""}`}
-                  onClick={() => handleToggle(index)}
-                  aria-expanded={isOpen}
-                  aria-controls={cardId}
-                  aria-label={`${mission.year} — ${mission.title}`}
-                />
-
+              return (
                 <div
-                  className={`discovr-timeline-scene__info discovr-timeline-scene__info--${mission.position} ${alignClass}`}
+                  className="discovr-timeline-scene__marker"
+                  key={mission.year}
+                  style={{ left: isMobile ? "auto" : `${index * stepX}%` }}
                 >
                   <button
                     type="button"
-                    className="discovr-timeline-scene__year"
+                    className={`discovr-timeline-scene__dot${
+                      mission.active ? " discovr-timeline-scene__dot--active" : ""
+                    }${isOpen || isHovered ? " discovr-timeline-scene__dot--open" : ""}`}
                     onClick={() => handleToggle(index)}
+                    disabled={isMobile} // Desativa interações do botão no mobile
                     aria-expanded={isOpen}
                     aria-controls={cardId}
+                    aria-label={`${mission.year} — ${mission.title}`}
+                  />
+
+                  <div
+                    className={`discovr-timeline-scene__info discovr-timeline-scene__info--${mission.position} ${alignClass}`}
                   >
-                    {mission.year}
-                  </button>
+                    <button
+                      type="button"
+                      className="discovr-timeline-scene__year"
+                      onClick={() => handleToggle(index)}
+                      onMouseEnter={() => setHoveredIndex(index)}
+                      onMouseLeave={() => setHoveredIndex(null)}
+                      disabled={isMobile} // Desativa interações do botão no mobile
+                      aria-expanded={isOpen}
+                      aria-controls={cardId}
+                    >
+                      {mission.year}
+                    </button>
 
-                  {isOpen && (
-                    <div id={cardId} className="discovr-timeline-scene__card">
-                      <button
-                        type="button"
-                        className="discovr-timeline-scene__card-close"
-                        onClick={() => setOpenIndex(null)}
-                        aria-label="Fechar"
-                      >
-                        <Icon name="X" size={14} />
-                      </button>
+                    {isOpen && (
+                      <div id={cardId} className="discovr-timeline-scene__card">
+                        {/* MODIFICADO: Esconde o botão 'X' de fechar no mobile, já que as cartas devem ficar sempre visíveis */}
+                        {!isMobile && (
+                          <button
+                            type="button"
+                            className="discovr-timeline-scene__card-close"
+                            onClick={() => setOpenIndex(null)}
+                            aria-label="Fechar"
+                          >
+                            <Icon name="X" size={14} />
+                          </button>
+                        )}
 
-                      <h4>{mission.title}</h4>
-                      <p>{mission.text}</p>
-                    </div>
-                  )}
+                        <h4>{mission.title}</h4>
+                        <p>{mission.text}</p>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
           </div>
         </div>
       </div>
