@@ -49,3 +49,27 @@ export function getToken() {
 export function removeToken() {
   sessionStorage.removeItem(TOKEN_KEY);
 }
+
+export async function requestPasswordReset(email) {
+  const response = await backendApi.post("/forgot-password", {
+    email,
+  });
+
+  return response.data;
+}
+
+export async function resetPassword({
+  token,
+  email,
+  password,
+  passwordConfirmation,
+}) {
+  const response = await backendApi.post("/reset-password", {
+    token,
+    email,
+    password,
+    password_confirmation: passwordConfirmation,
+  });
+
+  return response.data;
+}
