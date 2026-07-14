@@ -6,7 +6,11 @@ function Toast({ message, type = "success" }) {
   }
 
   return (
-    <div className={`toast toast--${type}`}>
+    <div
+      className={`toast toast--${type}`}
+      role={type === "error" ? "alert" : "status"}
+      aria-live={type === "error" ? "assertive" : "polite"}
+    >
       {message}
     </div>
   );

@@ -4,6 +4,7 @@ import Button from "../common/Button/Button";
 import Toast from "../common/Toast/Toast";
 import Icon from "../common/Icon/Icon";
 import FavoriteButton from "../common/FavoriteButton/FavoriteButton";
+import isSafeUrl from "../../utils/isSafeUrl";
 
 import {
   addFavorite,
@@ -194,7 +195,7 @@ function APODCard({ apod }) {
             {isExpanded ? "Mostrar menos" : "Ler mais"}
           </Button>
 
-          {apod.hdurl && (
+          {isSafeUrl(apod.hdurl) && (
             <a
               href={apod.hdurl}
               target="_blank"

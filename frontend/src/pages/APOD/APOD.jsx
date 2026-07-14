@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Container from "../../components/common/Container/Container";
 import APODCard from "../../components/apod/APODCard";
 import {
@@ -23,8 +23,11 @@ function APOD() {
   const [history, setHistory] = useState([]);
   const [historyError, setHistoryError] = useState("");
   const [activeHistory, setActiveHistory] = useState("");
+  const requestIdRef = useRef(0);
 
   async function loadApod(date = "") {
+    const requestId = ++requestIdRef.current;
+
     try {
       setIsLoading(true);
       setError("");
@@ -34,9 +37,13 @@ function APOD() {
         ? await getApodByDate(date)
         : await getApod();
 
+      if (requestIdRef.current !== requestId) return;
+
       setApod(data);
       setSelectedDate(data.date);
     } catch (err) {
+      if (requestIdRef.current !== requestId) return;
+
       setError(
         getApiErrorMessage(
           err,
@@ -44,7 +51,9 @@ function APOD() {
         )
       );
     } finally {
-      setIsLoading(false);
+      if (requestIdRef.current === requestId) {
+        setIsLoading(false);
+      }
     }
   }
 

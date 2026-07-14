@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 
 
@@ -8,8 +8,14 @@ import UserMenu from "../UserMenu/UserMenu";
 
 import "./Navbar.css";
 
+const FOCUSABLE_SELECTOR =
+  'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const toggleButtonRef = useRef(null);
+  const panelRef = useRef(null);
+  const isFirstRender = useRef(true);
 
   function toggleMenu() {
     setIsMenuOpen((currentValue) => !currentValue);
@@ -20,18 +26,61 @@ function Navbar() {
   }
 
   useEffect(() => {
-    function handleEscape(event) {
+    function handleKeydown(event) {
       if (event.key === "Escape") {
         closeMenu();
+        return;
+      }
+
+      if (event.key !== "Tab" || !isMenuOpen) return;
+
+      const panel = panelRef.current;
+      if (!panel) return;
+
+      const focusable = Array.from(
+        panel.querySelectorAll(FOCUSABLE_SELECTOR)
+      );
+
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (
+        !event.shiftKey &&
+        document.activeElement === last
+      ) {
+        event.preventDefault();
+        first.focus();
       }
     }
 
-    document.addEventListener("keydown", handleEscape);
+    document.addEventListener("keydown", handleKeydown);
 
     return () => {
-      document.removeEventListener("keydown", handleEscape);
+      document.removeEventListener("keydown", handleKeydown);
     };
-  }, []);
+  }, [isMenuOpen]);
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    if (isMenuOpen) {
+      const firstFocusable = panelRef.current?.querySelector(
+        FOCUSABLE_SELECTOR
+      );
+
+      firstFocusable?.focus();
+    } else {
+      toggleButtonRef.current?.focus();
+    }
+  }, [isMenuOpen]);
 
 
   useEffect(() => {
@@ -63,6 +112,7 @@ function Navbar() {
 
           <button
             type="button"
+            ref={toggleButtonRef}
             className="navbar__toggle"
             onClick={toggleMenu}
             aria-label={
@@ -93,6 +143,7 @@ function Navbar() {
 
           <aside
             id="mobile-navigation"
+            ref={panelRef}
             className="navbar__mobile-panel"
             aria-label="Menu móvel"
           >
