@@ -294,3 +294,18 @@
   }
 
 }
+.login-forgot-password {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}
+
+.login-forgot-password a {
+  color: var(--color-accent, #0ea5e9);
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.login-forgot-password a:hover {
+  text-decoration: underline;
+}
