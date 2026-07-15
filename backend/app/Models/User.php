@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Favorite;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -38,7 +39,7 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
-    public function favorites()
+public function favorites(): HasMany
 {
     return $this->hasMany(Favorite::class);
 }
