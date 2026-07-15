@@ -58,8 +58,7 @@ export default function EpicThumbnail({
 
       caption:
         photo.caption ||
-        `Vista completa da Terra captada pela EPIC${
-          time ? ` às ${time} UTC` : ""
+        `Vista completa da Terra captada pela EPIC${time ? ` às ${time} UTC` : ""
         }`,
 
       time,
@@ -93,9 +92,8 @@ export default function EpicThumbnail({
       source: "epic",
       type: "epic",
       nasa_type: "epic",
-      title: `EPIC · Terra${
-        time ? ` (${time} UTC)` : ""
-      }`,
+      title: `EPIC · Terra${time ? ` (${time} UTC)` : ""
+        }`,
       date,
       imageUrl: fullUrl,
       image_url: fullUrl,
@@ -142,9 +140,7 @@ export default function EpicThumbnail({
 
   return (
     <div
-      className={`thumb${
-        imageError ? " thumb--error" : ""
-      }`}
+      className="epic-thumbnail"
       title={photo.caption || ""}
       role="button"
       tabIndex={imageError ? -1 : 0}
@@ -153,15 +149,17 @@ export default function EpicThumbnail({
         imageError
           ? "Imagem EPIC indisponível"
           : photo.caption ||
-            `Imagem EPIC${
-              time ? ` às ${time} UTC` : ""
-            }`
+          `Imagem EPIC${time ? ` às ${time} UTC` : ""
+          }`
       }
       onClick={handleSelect}
       onKeyDown={handleKeyDown}
     >
       {imageError ? (
-        <div className="thumb__fallback">
+        <div className="epic-thumbnail__image"
+          src={imageSource}
+          alt=""
+          onError={handleImageError}>
           <span>Imagem indisponível</span>
         </div>
       ) : (
@@ -173,7 +171,7 @@ export default function EpicThumbnail({
       )}
 
       {time && (
-        <div className="thumb-badge">
+        <div className="epic-thumbnail__time">
           <Clock size={10} aria-hidden="true" />
           {time}
         </div>
