@@ -8,7 +8,10 @@ import "./NeoDateRangeFilter.css";
 const PRESETS = [
   { label: "Hoje", days: 0 },
   { label: "Próximos 3 dias", days: 3 },
-  { label: `Próximos ${MAX_RANGE_DAYS} dias`, days: MAX_RANGE_DAYS },
+  {
+    label: `Próximos ${MAX_RANGE_DAYS} dias`,
+    days: MAX_RANGE_DAYS,
+  },
 ];
 
 function toISODate(date) {
@@ -77,7 +80,9 @@ function NeoDateRangeFilter({
   return (
     <form className="neo-date-filter" onSubmit={handleSubmit}>
       <div className="neo-date-filter__left">
-        <span className="neo-date-filter__title">Período de aproximação</span>
+        <span className="neo-date-filter__title">
+          Período de aproximação
+        </span>
 
         <div className="neo-date-filter__presets">
           {PRESETS.map((preset) => (
