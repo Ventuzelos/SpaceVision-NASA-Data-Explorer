@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { AuthProvider } from "./context/AuthProvider";
 
 import MainLayout from "./layouts/MainLayout/MainLayout";
 import LoginLayout from "./layouts/MainLayout/LoginLayout";
@@ -21,38 +23,47 @@ import ResetPassword from "./pages/ResetPassword/ResetPassword";
 
 import Profile from "./pages/Profile/Profile";
 import Admin from "./pages/Admin/Admin";
-
+import Unauthorized from "./pages/Unauthorized/Unauthorized";
 
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route element={<MainLayout />}>
-          <Route index element={<Home />} />
-          <Route path="apod" element={<APOD />} />
-          <Route path="donki" element={<DONKI />} />
-          <Route path="epic" element={<EPIC />} />
-          <Route path="discover" element={<DISCOVR />} />
-          <Route path="neowatch" element={<NeoWS />} />
-          <Route path="favorites" element={<Favorites />} />
+      <AuthProvider>
+        <Routes>
+          <Route element={<MainLayout />}>
+            <Route index element={<Home />} />
+            <Route path="apod" element={<APOD />} />
+            <Route path="donki" element={<DONKI />} />
+            <Route path="epic" element={<EPIC />} />
+            <Route path="discover" element={<DISCOVR />} />
+            <Route path="neowatch" element={<NeoWS />} />
+            <Route path="favorites" element={<Favorites />} />
+            <Route path="nao-autorizado" element={<Unauthorized />} />
 
-          <Route path="about" element={<About />} />
-          <Route path="faq" element={<FAQ />} />
+            <Route path="about" element={<About />} />
+            <Route path="faq" element={<FAQ />} />
 
-          <Route path="profile" element={<Profile />} />
-          <Route path="admin" element={<Admin />} />
+            {/* Rotas protegidas — qualquer usuário autenticado */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="profile" element={<Profile />} />
+            </Route>
 
-          <Route path="*" element={<NotFound />} />
-        </Route>
+            {/* Rota protegida — apenas admin */}
+            <Route element={<ProtectedRoute adminOnly />}>
+              <Route path="admin" element={<Admin />} />
+            </Route>
 
-        <Route element={<LoginLayout />}>
-          <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
-          <Route path="/forgot-password" element={<ForgotPassword />}/>
-          <Route path="/reset-password" element={<ResetPassword />}/>
-        </Route>
+            <Route path="*" element={<NotFound />} />
+          </Route>
 
-      </Routes>
+          <Route element={<LoginLayout />}>
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+          </Route>
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   );
 }
