@@ -5,12 +5,6 @@ import { createSolarSystemScene, PLANETS } from "./solarSystemScene";
 
 import "./DiscovrSolarSystem.css";
 
-/**
- * Visualização orbital 3D e animada do sistema solar (Sol + 8 planetas),
- * inspirada no jsorrery (https://mgvez.github.io/jsorrery/). Câmara
- * controlável por arrasto/scroll, com controlos de reprodução, velocidade
- * e foco num planeta à escolha.
- */
 function DiscovrSolarSystem() {
   const mountRef = useRef(null);
   const sceneApiRef = useRef(null);
@@ -80,10 +74,15 @@ function DiscovrSolarSystem() {
             <button
               type="button"
               className="discovr-solar-system__play"
-              onClick={() => setPlaying((p) => !p)}
+              onClick={() => setPlaying((current) => !current)}
               aria-label={playing ? "Pausar simulação" : "Retomar simulação"}
+              aria-pressed={!playing}
             >
-              {playing ? "❚❚" : "►"}
+              <Icon
+                name={playing ? "Pause" : "Play"}
+                size={16}
+                aria-hidden="true"
+              />
             </button>
 
             <div className="discovr-solar-system__speed">
@@ -121,6 +120,7 @@ function DiscovrSolarSystem() {
             type="button"
             className={!focusId ? "is-active" : ""}
             onClick={() => setFocusId(null)}
+            aria-pressed={!focusId}
           >
             Visão geral
           </button>
@@ -131,6 +131,7 @@ function DiscovrSolarSystem() {
               type="button"
               className={focusId === planet.id ? "is-active" : ""}
               onClick={() => setFocusId(planet.id)}
+              aria-pressed={focusId === planet.id}
             >
               {planet.name}
             </button>
