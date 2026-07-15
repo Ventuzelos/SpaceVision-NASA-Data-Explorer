@@ -87,6 +87,8 @@ function Profile() {
     isAuthenticated,
     isAuthLoading,
     logout,
+    updateProfile,
+    deleteAccount,
   } = useAuth();
 
   const [activeTab, setActiveTab] = useState("profile");
@@ -98,6 +100,8 @@ function Profile() {
   });
 
   const [formError, setFormError] = useState("");
+  const [isSavingProfile, setIsSavingProfile] =
+    useState(false);
   const [toast, setToast] = useState("");
   const [toastType, setToastType] = useState("success");
 
@@ -109,7 +113,10 @@ function Profile() {
     useState(false);
 
   const [deleteConfirm, setDeleteConfirm] = useState("");
+  const [deletePassword, setDeletePassword] = useState("");
   const [deleteError, setDeleteError] = useState("");
+  const [isDeletingAccount, setIsDeletingAccount] =
+    useState(false);
 
   useEffect(() => {
     if (!isAuthenticated || !user) {
@@ -245,25 +252,56 @@ function Profile() {
     setIsEditing(false);
   }
 
-  function handleSaveProfile(event) {
+  async function handleSaveProfile(event) {
     event.preventDefault();
 
     setFormError("");
 
-    if (
-      !formData.name.trim() ||
-      !formData.email.trim()
-    ) {
-      setFormError(
-        "Preenche o nome e o email."
-      );
+    const name = formData.name.trim();
+    const email = formData.email.trim();
 
+    if (!name || !email) {
+      setFormError("Preenche o nome e o email.");
       return;
     }
 
-    setFormError(
-      "A atualização do perfil ainda não está ligada ao backend."
-    );
+    try {
+      setIsSavingProfile(true);
+
+      const response = await updateProfile({
+        name,
+        email,
+      });
+
+      setFormData({
+        name: response.user.name,
+        email: response.user.email,
+      });
+
+      setIsEditing(false);
+
+      showToast(
+        response.message ||
+        "Perfil atualizado com sucesso."
+      );
+    } catch (error) {
+      const validationErrors =
+        error.response?.data?.errors;
+
+      const firstValidationError =
+        validationErrors &&
+        Object.values(validationErrors)
+          .flat()
+          .find(Boolean);
+
+      setFormError(
+        firstValidationError ||
+        error.response?.data?.message ||
+        "Não foi possível atualizar o perfil."
+      );
+    } finally {
+      setIsSavingProfile(false);
+    }
   }
 
   async function handleDownloadData() {
@@ -323,25 +361,66 @@ function Profile() {
     }
   }
 
-  function handleDeleteAccount(event) {
+  async function handleDeleteAccount(event) {
     event.preventDefault();
 
     setDeleteError("");
 
-    if (
-      deleteConfirm.trim().toUpperCase() !==
-      "ELIMINAR"
-    ) {
+    if (deleteConfirm.trim() !== "ELIMINAR") {
       setDeleteError(
-        'Escreve "ELIMINAR" para confirmares.'
+        'Escreve "ELIMINAR" para confirmar a eliminação da conta.'
       );
-
       return;
     }
 
-    setDeleteError(
-      "A eliminação da conta ainda não está ligada ao backend."
+    if (!deletePassword.trim()) {
+      setDeleteError(
+        "Introduz a tua palavra-passe atual para confirmar."
+      );
+      return;
+    }
+
+    const confirmed = window.confirm(
+      "Tens a certeza de que pretendes eliminar permanentemente a tua conta? Esta ação não pode ser anulada."
     );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      setIsDeletingAccount(true);
+
+      const response = await deleteAccount(
+        deletePassword
+      );
+
+      navigate("/", {
+        replace: true,
+        state: {
+          message:
+            response.message ||
+            "Conta eliminada com sucesso.",
+        },
+      });
+    } catch (error) {
+      const validationErrors =
+        error.response?.data?.errors;
+
+      const firstValidationError =
+        validationErrors &&
+        Object.values(validationErrors)
+          .flat()
+          .find(Boolean);
+
+      setDeleteError(
+        firstValidationError ||
+        error.response?.data?.message ||
+        "Não foi possível eliminar a conta."
+      );
+    } finally {
+      setIsDeletingAccount(false);
+    }
   }
 
   async function handleLogout() {
@@ -357,6 +436,12 @@ function Profile() {
 
     setFormError("");
     setDeleteError("");
+
+    if (tab.id !== "delete") {
+      setDeleteConfirm("");
+      setDeletePassword("");
+    }
+
     setActiveTab(tab.id);
   }
 
@@ -663,28 +748,22 @@ function Profile() {
 
                   {isEditing && (
                     <>
-                      <p
-                        className="profile-notice"
-                        role="status"
-                      >
-                        A edição de dados ainda não
-                        está ligada ao backend —
-                        disponível brevemente.
-                      </p>
-
                       <div className="profile-form__actions">
                         <Button
                           type="submit"
                           variant="primary"
-                          disabled
+                          disabled={isSavingProfile}
                         >
-                          Guardar alterações
+                          {isSavingProfile
+                            ? "A guardar..."
+                            : "Guardar alterações"}
                         </Button>
 
                         <Button
                           type="button"
                           variant="secondary"
                           onClick={handleCancelEdit}
+                          disabled={isSavingProfile}
                         >
                           Cancelar
                         </Button>
@@ -772,9 +851,7 @@ function Profile() {
                       <div className="profile-form__field">
                         <label htmlFor="deleteConfirm">
                           Escreve{" "}
-                          <strong>
-                            ELIMINAR
-                          </strong>{" "}
+                          <strong>ELIMINAR</strong>{" "}
                           para confirmar
                         </label>
 
@@ -790,6 +867,28 @@ function Profile() {
                           }
                           placeholder="ELIMINAR"
                           autoComplete="off"
+                          disabled={isDeletingAccount}
+                        />
+                      </div>
+
+                      <div className="profile-form__field">
+                        <label htmlFor="deletePassword">
+                          Palavra-passe atual
+                        </label>
+
+                        <input
+                          id="deletePassword"
+                          name="deletePassword"
+                          type="password"
+                          value={deletePassword}
+                          onChange={(event) =>
+                            setDeletePassword(
+                              event.target.value
+                            )
+                          }
+                          placeholder="Introduz a tua palavra-passe"
+                          autoComplete="current-password"
+                          disabled={isDeletingAccount}
                         />
                       </div>
 
@@ -802,26 +901,19 @@ function Profile() {
                         </p>
                       )}
 
-                      <p
-                        className="profile-notice"
-                        role="status"
-                      >
-                        A eliminação de conta ainda
-                        não está ligada ao backend —
-                        disponível brevemente.
-                      </p>
-
                       <Button
                         type="submit"
                         variant="danger"
-                        disabled
+                        disabled={isDeletingAccount}
                       >
                         <Trash2
                           size={17}
                           aria-hidden="true"
                         />
 
-                        Eliminar permanentemente
+                        {isDeletingAccount
+                          ? "A eliminar conta..."
+                          : "Eliminar permanentemente"}
                       </Button>
                     </form>
                   </div>
