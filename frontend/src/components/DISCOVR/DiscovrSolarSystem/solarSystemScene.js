@@ -329,7 +329,13 @@ export function createSolarSystemScene(container, options = {}) {
 
     const mesh = new THREE.Mesh(
       new THREE.SphereGeometry(meta.radius, 32, 32),
-      new THREE.MeshStandardMaterial({ color: meta.color, roughness: 0.75, metalness: 0.05 })
+      new THREE.MeshStandardMaterial({
+        color: meta.color,
+        emissive: meta.color,
+        emissiveIntensity: 0.25,
+        roughness: 0.75,
+        metalness: 0.05,
+      })
     );
     positionGroup.add(mesh);
 
