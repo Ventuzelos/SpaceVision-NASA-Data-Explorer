@@ -11,7 +11,7 @@ import {
   deleteMessage,
   getFavoritesStats,
   getMessagesStats,
-  getUsersCount,
+  getUsersStats,
   markMessageAsRead,
 } from "../../services/adminService";
 
@@ -49,7 +49,12 @@ function Admin() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
-  const [usersCount, setUsersCount] = useState(null);
+
+  const [usersStats, setUsersStats] = useState({
+    total: null,
+    newLastMonth: 0,
+  });
+
 
   const [messagesStats, setMessagesStats] = useState({
     total: 0,
@@ -60,6 +65,7 @@ function Admin() {
   const [favoritesStats, setFavoritesStats] = useState({
     total: 0,
     byCategory: [],
+    topSaved: [],
   });
 
   const [messageSearch, setMessageSearch] = useState("");
@@ -134,12 +140,14 @@ function Admin() {
 
       const [users, favorites, messages] =
         await Promise.all([
-          getUsersCount(),
+          //getUsersCount(),
+          getUsersStats(),
           getFavoritesStats(),
           getMessagesStats(),
         ]);
 
-      setUsersCount(users);
+      //setUsersCount(users);
+      setUsersStats(users);
       setFavoritesStats(favorites);
       setMessagesStats(messages);
     } catch (err) {
@@ -304,13 +312,20 @@ function Admin() {
                 </span>
 
                 <strong>
-                  {formatCount(usersCount)}
+                  {formatCount(usersStats.total)}
                 </strong>
 
-                {usersCount === null && (
+                {usersStats.total === null ? (
                   <small className="admin-stats__hint">
                     Endpoint de utilizadores ainda
                     não disponível no backend.
+                  </small>
+
+                ): (
+                  <small className="admin-stats__hint">
+                    {formatCount(  usersStats.newLastMonth
+                    )}{" "}
+                    novos no último mês
                   </small>
                 )}
               </article>
@@ -400,6 +415,48 @@ function Admin() {
                         </li>
                       );
                     }
+                  )}
+                </ul>
+              )}
+            </section>
+
+            <section
+              className="admin-section"
+              aria-label="Conteúdos mais guardados"
+            >
+              <h2 className="admin-page__section-title">
+                Conteúdos mais guardados
+              </h2>
+
+              {favoritesStats.topSaved.length === 0 ? (
+                <p className="admin-page__empty">
+                  Ainda não há dados suficientes para
+                  destacar conteúdos.
+                </p>
+              ) : (
+                <ul className="admin-favorite-breakdown">
+                  {favoritesStats.topSaved.map(
+                    (item) => (
+                      <li
+                        key={`${item.nasaType}-${item.nasaId}`}
+                        className="admin-favorite-breakdown__item"
+                      >
+                        <div className="admin-favorite-breakdown__head">
+                          <span>
+                            {item.title}{" "}
+                            <small>
+                              (
+                              {item.nasaType?.toUpperCase()}
+                              )
+                            </small>
+                          </span>
+
+                          <strong>
+                            {item.saves}
+                          </strong>
+                        </div>
+                      </li>
+                    )
                   )}
                 </ul>
               )}
