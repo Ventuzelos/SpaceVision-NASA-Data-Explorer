@@ -2,9 +2,9 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 24px;
-  padding: 22px 0;
-  margin: 28px 0;
+  gap: var(--space-6);
+  margin-block: var(--space-6);
+  padding-block: var(--space-5);
   border-top: 1px solid var(--color-border);
   border-bottom: 1px solid var(--color-border);
 }
@@ -12,86 +12,120 @@
 .date-range-filter__left {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--space-3);
 }
 
 .date-range-filter__title {
+  margin: 0;
   color: var(--color-text);
-  font-size: 1.15rem;
-  font-weight: 700;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
 }
 
 .date-range-filter__presets {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: var(--space-2);
 }
 
 .date-range-filter__preset {
-  min-height: 34px;
-  padding: 0 14px;
+  min-height: 2.25rem;
+  padding-inline: var(--space-4);
   border: 1px solid var(--color-border);
   border-radius: 999px;
   background: transparent;
   color: var(--color-text-secondary);
-  font-size: 0.9rem;
-  font-weight: 700;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
   cursor: pointer;
-  transition: 0.2s ease;
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    opacity var(--transition-fast);
 }
 
 .date-range-filter__preset:hover {
-  border-color: var(--color-primary);
+  border-color: var(--color-link);
+  background: rgba(126, 71, 253, 0.14);
   color: var(--color-text);
-  background: rgba(79, 70, 229, 0.14);
+}
+
+.date-range-filter__preset:focus-visible {
+  border-color: var(--color-link);
+  outline: 2px solid var(--color-link);
+  outline-offset: 3px;
+  color: var(--color-text);
+}
+
+.date-range-filter__preset[aria-disabled="true"] {
+  cursor: wait;
+  opacity: 0.65;
 }
 
 .date-range-filter__right {
   display: flex;
   align-items: flex-end;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .date-range-filter__field {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .date-range-filter__field label {
   color: var(--color-text-secondary);
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
 }
 
 .date-range-filter__field input {
-  width: 170px;
-  height: 40px;
-  padding: 0 12px;
+  width: 10.625rem;
+  min-height: 2.5rem;
+  padding-inline: var(--space-3);
   border: 1px solid var(--color-border);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   background: rgba(15, 23, 42, 0.85);
   color: var(--color-text);
-  font-size: 0.9rem;
-  outline: none;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
-.date-range-filter__field input:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.18);
+.date-range-filter__field input:hover {
+  border-color: var(--color-link);
+}
+
+.date-range-filter__field input:focus-visible {
+  border-color: var(--color-link);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.2);
+}
+
+.date-range-filter__field input:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
 }
 
 .date-range-filter button[type="submit"] {
-  height: 40px;
-  padding: 0 18px;
-  border-radius: 10px;
-  white-space: nowrap;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-height: 2.5rem;
+  padding-inline: var(--space-4);
+  border-radius: var(--radius-md);
   line-height: 1;
+  white-space: nowrap;
 }
-@media (max-width: 900px) {
+
+@media (max-width: 1023px) {
   .date-range-filter {
     flex-direction: column;
     align-items: stretch;
@@ -102,7 +136,21 @@
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 600px) {
+  .date-range-filter {
+    gap: var(--space-5);
+    margin-block: var(--space-5);
+    padding-block: var(--space-4);
+  }
+
+  .date-range-filter__presets {
+    gap: var(--space-3);
+  }
+
+  .date-range-filter__preset {
+    min-height: 2.75rem;
+  }
+
   .date-range-filter__right {
     flex-direction: column;
     align-items: stretch;
@@ -111,5 +159,6 @@
   .date-range-filter__field input,
   .date-range-filter button[type="submit"] {
     width: 100%;
+    min-height: 2.75rem;
   }
 }
