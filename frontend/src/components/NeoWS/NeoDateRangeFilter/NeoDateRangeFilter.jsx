@@ -98,10 +98,6 @@ function NeoDateRangeFilter({
           ))}
         </div>
 
-        <p className="neo-date-filter__hint">
-          Máximo de {MAX_RANGE_DAYS} dias por pesquisa (limite da API).
-        </p>
-
         {rangeWarning && (
           <p className="neo-date-filter__warning" role="alert">
             {rangeWarning}
