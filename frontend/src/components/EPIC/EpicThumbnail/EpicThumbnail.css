@@ -1,52 +1,90 @@
-.epic-page .thumb {
-  position:relative;
-  aspect-ratio:1/1;
-  border-radius:10px;
-  overflow:hidden;
-  cursor:pointer;
-  border:1px solid var(--line-strong);
-  background:var(--panel-2);
-  transition:border-color .2s, transform .2s;
+.epic-page .epic-thumbnail {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-light);
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
 }
-.epic-page .thumb:hover {
-  border-color:var(--glow);
-  transform:translateY(-3px);
+
+.epic-page .epic-thumbnail:hover {
+  border-color: var(--color-link);
+  transform: translateY(-2px);
 }
-.epic-page .thumb--error { cursor:not-allowed; }
-.epic-page .thumb img {
-  width:100%;height:100%;
-  object-fit:cover;
-  display:block;
+
+.epic-page .epic-thumbnail:focus-visible {
+  border-color: var(--color-link);
+  outline: 2px solid var(--color-link);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.18);
 }
-.epic-page .thumb__fallback {
-  display:grid;
-  width:100%;height:100%;
-  place-items:center;
-  padding:1rem;
-  color:var(--text-dim);
-  font-size:0.75rem;
-  text-align:center;
+
+.epic-page .epic-thumbnail[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.7;
 }
-.epic-page .thumb-badge {
-  position:absolute;
-  top:8px;left:8px;
-  display:flex;align-items:center;gap:4px;
-  padding:3px 8px;
-  border-radius:999px;
-  background:rgba(4,7,14,0.65);
-  backdrop-filter:blur(2px);
-  font-family:var(--mono);
-  font-size:10px;
-  letter-spacing:0.03em;
-  color:var(--glow-soft);
-  z-index:2;
+
+.epic-page .epic-thumbnail__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
-.epic-page .thumb .favorite-button {
-  position:absolute;
-  top:6px;right:6px;
-  width:26px;height:26px;
-  background:rgba(4,7,14,0.65);
-  backdrop-filter:blur(2px);
-  border-color:transparent;
-  z-index:2;
+
+.epic-page .epic-thumbnail__fallback {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  padding: var(--space-4);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-normal);
+  text-align: center;
+}
+
+.epic-page .epic-thumbnail__time {
+  position: absolute;
+  top: var(--space-2);
+  left: var(--space-2);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 1.5rem;
+  padding-inline: var(--space-2);
+  border-radius: 999px;
+  background: rgba(4, 7, 14, 0.76);
+  color: var(--color-text);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-tight);
+  backdrop-filter: blur(2px);
+}
+
+.epic-page .epic-thumbnail .favorite-button {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  z-index: 2;
+  width: 1.875rem;
+  height: 1.875rem;
+  border-color: transparent;
+  background: rgba(4, 7, 14, 0.76);
+  backdrop-filter: blur(2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .epic-page .epic-thumbnail {
+    transition: none;
+  }
+
+  .epic-page .epic-thumbnail:hover {
+    transform: none;
+  }
 }

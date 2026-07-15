@@ -161,21 +161,21 @@ export default function EpicCard({
   }
 
   return (
-    <article className="card">
-      <div className="card-header">
-        <span className="card-title">
+    <article className="epic-card">
+      <div className="epic-card__header">
+        <h3 className="epic-card__title">
           Terra — Disco Completo
-        </span>
+        </h3>
 
-        <span className="card-label">
+        <span className="epic-card__time">
           {time ? `${time} UTC` : ""}
         </span>
       </div>
 
-      <div className="card-image-wrap">
+      <div className="epic-card__image-wrapper">
         {imageError ? (
           <div
-            className="epic-image-fallback"
+            className="epic-card__fallback"
             role="img"
             aria-label="A imagem EPIC não está disponível"
           >
@@ -188,7 +188,7 @@ export default function EpicCard({
           </div>
         ) : (
           <img
-            className="epic-detail-image"
+            className="epic-card__image"
             src={url}
             alt={caption}
             role="button"
