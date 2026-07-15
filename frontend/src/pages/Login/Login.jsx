@@ -47,7 +47,7 @@ function Login() {
       const message =
         requestError.response?.data?.errors?.email?.[0] ||
         requestError.response?.data?.message ||
-        "Não foi possível iniciar sessão.";
+        "Não foi possível iniciar sessão. Por favor, verifica as tuas credenciais e tenta novamente.";
 
       setError(message);
     } finally {
