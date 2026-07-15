@@ -30,6 +30,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'user']);
 
+    Route::patch(
+        '/user/profile',
+        [AuthController::class, 'updateProfile']
+    );
+    Route::delete(
+        '/user',
+        [AuthController::class, 'deleteAccount']
+    );
+
     Route::get('/favorites', [FavoriteController::class, 'index']);
     Route::post('/favorites', [FavoriteController::class, 'store']);
     Route::delete('/favorites/{favorite}', [FavoriteController::class, 'destroy']);

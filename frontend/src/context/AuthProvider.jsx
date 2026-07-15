@@ -1,4 +1,5 @@
 import {
+  useCallback,
   useEffect,
   useMemo,
   useState,
@@ -13,6 +14,8 @@ import {
   logoutUser,
   registerUser,
   removeToken,
+  deleteUserAccount,
+  updateUserProfile,
 } from "../services/authService";
 
 import {
@@ -55,25 +58,47 @@ export function AuthProvider({ children }) {
     loadUser();
   }, []);
 
-  async function login(credentials) {
+  const login = useCallback(async (credentials) => {
     const data = await loginUser(credentials);
 
     clearFavoritesCache();
     setUser(data.user);
 
     return data.user;
-  }
+  }, []);
 
-  async function register(userData) {
+  const register = useCallback(async (userData) => {
     const data = await registerUser(userData);
 
     clearFavoritesCache();
     setUser(data.user);
 
     return data.user;
-  }
+  }, []);
 
-  async function logout() {
+  const updateProfile = useCallback(
+    async (profileData) => {
+      const response =
+        await updateUserProfile(profileData);
+
+      setUser(response.user);
+
+      return response;
+    },
+    []
+  );
+
+  const deleteAccount = useCallback(async (password) => {
+    const response = await deleteUserAccount(password);
+
+    removeToken();
+    clearFavoritesCache();
+    setUser(null);
+
+    return response;
+  }, []);
+
+  const logout = useCallback(async () => {
     try {
       await logoutUser();
     } catch (error) {
@@ -86,19 +111,34 @@ export function AuthProvider({ children }) {
       clearFavoritesCache();
       setUser(null);
     }
-  }
+  }, []);
+
+  const isAuthenticated = Boolean(user);
+  const isAdmin = user?.role === "admin";
 
   const value = useMemo(
     () => ({
       user,
-      isAuthenticated: Boolean(user),
-      isAdmin: user?.role === "admin",
+      isAuthenticated,
+      isAdmin,
       isAuthLoading,
       login,
       register,
       logout,
+      updateProfile,
+      deleteAccount,
     }),
-    [user, isAuthLoading]
+    [
+      user,
+      isAuthenticated,
+      isAdmin,
+      isAuthLoading,
+      login,
+      register,
+      logout,
+      updateProfile,
+      deleteAccount,
+    ]
   );
 
   return (
