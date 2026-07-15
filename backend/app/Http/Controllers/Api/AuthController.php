@@ -10,6 +10,9 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
+
 
 class AuthController extends Controller
 {
@@ -105,6 +108,73 @@ class AuthController extends Controller
             'message' => 'Palavra-passe atualizada com sucesso.',
         ]);
     }
+
+    public function updateProfile(Request $request)
+    {
+        $user = $request->user();
+
+        $validated = $request->validate([
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+            'email' => [
+                'required',
+                'email',
+                'max:255',
+                Rule::unique('users', 'email')->ignore($user->id),
+            ],
+        ], [
+            'name.required' => 'O nome é obrigatório.',
+            'name.max' => 'O nome não pode ter mais de 255 caracteres.',
+            'email.required' => 'O email é obrigatório.',
+            'email.email' => 'Introduz um email válido.',
+            'email.unique' => 'Este email já está associado a outra conta.',
+        ]);
+
+        $user->update([
+            'name' => trim($validated['name']),
+            'email' => strtolower(trim($validated['email'])),
+        ]);
+
+        return response()->json([
+            'message' => 'Perfil atualizado com sucesso.',
+            'user' => $user->fresh(),
+        ]);
+    }
+
+    public function deleteAccount(Request $request)
+{
+    $validated = $request->validate([
+        'password' => [
+            'required',
+            'string',
+        ],
+    ], [
+        'password.required' =>
+            'Introduz a tua palavra-passe para eliminar a conta.',
+    ]);
+
+    $user = $request->user();
+
+    if (! Hash::check($validated['password'], $user->password)) {
+        throw ValidationException::withMessages([
+            'password' => [
+                'A palavra-passe está incorreta.',
+            ],
+        ]);
+    }
+
+    DB::transaction(function () use ($user) {
+        $user->tokens()->delete();
+        $user->delete();
+    });
+
+    return response()->json([
+        'message' => 'Conta eliminada com sucesso.',
+    ]);
+}
 
     public function logout(Request $request)
     {
