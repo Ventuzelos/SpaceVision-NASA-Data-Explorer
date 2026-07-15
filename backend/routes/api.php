@@ -61,6 +61,16 @@ Route::prefix('admin')
         );
 
         Route::get(
+            '/users/stats',
+            [AdminController::class, 'usersStats']
+        );
+
+        Route::get(
+            '/favorites/stats',
+            [AdminController::class, 'favoritesStats']
+        );
+
+        Route::get(
             '/messages',
             [AdminController::class, 'contactMessages']
         );
