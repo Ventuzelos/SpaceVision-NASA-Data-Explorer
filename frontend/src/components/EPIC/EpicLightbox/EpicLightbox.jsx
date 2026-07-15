@@ -1,36 +1,14 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
+import { useModalA11y } from '../../../hooks/UseModalA11y';
 import './EpicLightbox.css';
 
 export default function EpicLightbox({ photo, onClose }) {
   const closeButtonRef = useRef(null);
-  const lightboxRef = useRef(null);
-  const previousFocusRef = useRef(null);
-
-  useEffect(() => {
-    if (!photo) {
-      return undefined;
-    }
-
-    previousFocusRef.current = document.activeElement;
-    closeButtonRef.current?.focus();
-
-    function handleKeyDown(event) {
-      if (event.key === 'Escape') {
-        onClose();
-      }
-      if (event.key === 'Tab') {
-        event.preventDefault();
-        closeButtonRef.current?.focus();
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      previousFocusRef.current?.focus?.();
-    };
-  }, [photo, onClose]);
+  const containerRef = useModalA11y({
+    isOpen: Boolean(photo),
+    onClose,
+    initialFocusRef: closeButtonRef,
+  });
 
   if (!photo) return null;
 
@@ -42,7 +20,7 @@ export default function EpicLightbox({ photo, onClose }) {
       aria-labelledby="epic-lightbox-title"
       aria-describedby="epic-lightbox-description"
       onClick={onClose}
-      ref={lightboxRef}
+      ref={containerRef}
     >
       <div
         className="epic-lightbox__content"
