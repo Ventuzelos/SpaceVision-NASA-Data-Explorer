@@ -1,5 +1,7 @@
-import { useEffect } from "react";
+import { useRef } from "react";
 import { ExternalLink, X } from "lucide-react";
+
+import { useModalA11y } from "../../hooks/UseModalA11y";
 
 import "./FavoriteDetailsModal.css";
 
@@ -290,33 +292,13 @@ function getEstimatedDiameter(
   return "Não disponível";
 }
 
-function FavoriteDetailsModal({
-  favorite,
-  onClose,
-}) {
-  useEffect(() => {
-    function handleKeyDown(event) {
-      if (event.key === "Escape") {
-        onClose();
-      }
-    }
-
-    document.addEventListener(
-      "keydown",
-      handleKeyDown
-    );
-
-    document.body.style.overflow = "hidden";
-
-    return () => {
-      document.removeEventListener(
-        "keydown",
-        handleKeyDown
-      );
-
-      document.body.style.overflow = "";
-    };
-  }, [onClose]);
+function FavoriteDetailsModal({ favorite, onClose }) {
+  const closeButtonRef = useRef(null);
+  const containerRef = useModalA11y({
+    isOpen: Boolean(favorite),
+    onClose,
+    initialFocusRef: closeButtonRef,
+  });
 
   if (!favorite) {
     return null;
@@ -432,24 +414,21 @@ function FavoriteDetailsModal({
 
   return (
     <div
-      className="favorite-modal"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="favorite-modal-title"
+  className="favorite-modal"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="favorite-modal-title"
+  onClick={onClose}
+  ref={containerRef}
+>
+  <div className="favorite-modal__content" onClick={(event) => event.stopPropagation()}>
+    <button
+      ref={closeButtonRef}
+      type="button"
+      className="favorite-modal__close"
       onClick={onClose}
+      aria-label="Fechar detalhes"
     >
-      <div
-        className="favorite-modal__content"
-        onClick={(event) =>
-          event.stopPropagation()
-        }
-      >
-        <button
-          type="button"
-          className="favorite-modal__close"
-          onClick={onClose}
-          aria-label="Fechar detalhes"
-        >
           <X size={22} />
         </button>
 
