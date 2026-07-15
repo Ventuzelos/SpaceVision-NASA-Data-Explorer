@@ -1,8 +1,32 @@
 import backendApi from "./backendApi";
 import { getFavorites } from "./favoritesService";
 
+const FAVORITE_CATEGORIES = [
+  { value: "apod", label: "APOD" },
+  { value: "donki", label: "DONKI" },
+  { value: "epic", label: "EPIC" },
+  { value: "neows", label: "NeoWS" },
+];
 
-export async function getUsersCount() {
+export async function getUsersStats() {
+  try {
+    const response = await backendApi.get("/admin/users/stats");
+
+    return {
+      total: response.data?.total ?? null,
+      newLastMonth: response.data?.new_last_month ?? 0,
+    };
+  } catch (error) {
+    console.error(
+      "Não foi possível obter as estatísticas de utilizadores:",
+      error
+    );
+
+    return { total: null, newLastMonth: 0 };
+  }
+}
+
+/*export async function getUsersCount() {
   try {
     const response = await backendApi.get("/admin/users/count");
 
@@ -19,16 +43,14 @@ export async function getUsersCount() {
 
     return null;
   }
+}*/
+
+export async function getUsersCount() {
+  const { total } = await getUsersStats();
+  return total;
 }
 
-const FAVORITE_CATEGORIES = [
-  { value: "apod", label: "APOD" },
-  { value: "donki", label: "DONKI" },
-  { value: "epic", label: "EPIC" },
-  { value: "neows", label: "NeoWS" },
-];
-
-function getFavoriteType(favorite) {
+/*function getFavoriteType(favorite) {
   return String(
     favorite.nasa_type ||
       favorite.type ||
@@ -36,28 +58,38 @@ function getFavoriteType(favorite) {
       favorite.data?.type ||
       ""
   ).toLowerCase();
-}
+}*/
 
 /*
  * Estatísticas de favoritos agrupadas por categoria da NASA.
  * Usa o serviço de favoritos já ligado ao backend real.
  */
 export async function getFavoritesStats() {
-  const favorites = await getFavorites();
-  const list = Array.isArray(favorites) ? favorites : [];
+  const response = await backendApi.get("/admin/favorites/stats");
+  const data = response.data ?? {};
+  const byCategoryData = data.by_category ?? {};
 
   const byCategory = FAVORITE_CATEGORIES.map((category) => ({
     ...category,
-    count: list.filter(
-      (favorite) => getFavoriteType(favorite) === category.value
-    ).length,
+    count: Number(byCategoryData[category.value] ?? 0),
   }));
 
+  const topSaved = Array.isArray(data.top_saved)
+    ? data.top_saved.map((item) => ({
+        nasaType: item.nasa_type,
+        nasaId: item.nasa_id,
+        title: item.title || "Conteúdo NASA",
+        saves: Number(item.saves ?? 0),
+      }))
+    : [];
+
   return {
-    total: list.length,
+    total: Number(data.total ?? 0),
     byCategory,
+    topSaved,
   };
 }
+
 
 /*
  * Mensagens de contacto enviadas pelos utilizadores.
