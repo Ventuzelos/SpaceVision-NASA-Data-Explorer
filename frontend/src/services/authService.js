@@ -3,16 +3,19 @@ import backendApi from "./backendApi";
 const TOKEN_KEY = "spacevision_token";
 
 export async function loginUser(credentials) {
-  const response = await backendApi.post("/login", credentials);
+  const response = await backendApi.post(
+    "/login",
+    credentials
+  );
 
-  const { user, token } = response.data;
+  if (response.data.token) {
+    sessionStorage.setItem(
+      "spacevision_token",
+      response.data.token
+    );
+  }
 
-  sessionStorage.setItem(TOKEN_KEY, token);
-
-  return {
-    user,
-    token,
-  };
+  return response.data;
 }
 
 export async function registerUser(userData) {
@@ -27,12 +30,29 @@ export async function registerUser(userData) {
     token,
   };
 }
+export async function updateUserProfile(profileData) {
+  const response = await backendApi.patch("/user/profile", profileData);
+
+  return response.data;
+}
 
 export async function getAuthenticatedUser() {
   const response = await backendApi.get("/user");
 
   return response.data;
 }
+
+export async function deleteUserAccount(password) {
+  const response = await backendApi.delete("/user", {
+    data: {
+      password,
+    },
+  });
+
+  return response.data;
+}
+
+
 
 export async function logoutUser() {
   try {
