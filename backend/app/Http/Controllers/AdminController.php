@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ContactMessage;
+use App\Models\Favorite;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 
@@ -17,6 +18,55 @@ class AdminController extends Controller
             'count' => User::count(),
         ]);
     }
+
+     /**
+     * Total de utilizadores registados e novos utilizadores no último mês.
+     */
+    public function usersStats(): JsonResponse
+    {
+        return response()->json([
+            'total' => User::count(),
+            'new_last_month' => User::where('created_at', '>=', now()->subMonth())->count(),
+        ]);
+    }
+
+    /**
+     * Estatísticas de favoritos de TODA a plataforma (todos os utilizadores),
+     * agrupadas por categoria da NASA, e os conteúdos mais guardados.
+     */
+    public function favoritesStats(): JsonResponse
+    {
+        $categories = ['apod', 'donki', 'epic', 'neows'];
+
+        $countsByType = Favorite::query()
+            ->selectRaw('nasa_type, COUNT(*) as total')
+            ->groupBy('nasa_type')
+            ->pluck('total', 'nasa_type');
+
+        $byCategory = collect($categories)
+            ->mapWithKeys(fn ($category) => [$category => (int) ($countsByType[$category] ?? 0)])
+            ->toArray();
+
+        $topSaved = Favorite::query()
+            ->selectRaw('nasa_type, nasa_id, MAX(title) as title, COUNT(*) as saves')
+            ->groupBy('nasa_type', 'nasa_id')
+            ->orderByDesc('saves')
+            ->limit(5)
+            ->get()
+            ->map(fn ($row) => [
+                'nasa_type' => $row->nasa_type,
+                'nasa_id' => $row->nasa_id,
+                'title' => $row->title,
+                'saves' => (int) $row->saves,
+            ]);
+
+        return response()->json([
+            'total' => Favorite::count(),
+            'by_category' => $byCategory,
+            'top_saved' => $topSaved,
+        ]);
+    }
+
 
     /**
      * Lista todas as mensagens de contacto.
