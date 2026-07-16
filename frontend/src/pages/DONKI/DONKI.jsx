@@ -327,7 +327,7 @@ function DONKI() {
             DONKI · Space Weather Database
           </span>
 
-          <h1>Meteorologia espacial em tempo real</h1>
+          <h2>Meteorologia espacial em tempo real</h2>
 
           <p>
             Consulta erupções solares, ejeções de massa

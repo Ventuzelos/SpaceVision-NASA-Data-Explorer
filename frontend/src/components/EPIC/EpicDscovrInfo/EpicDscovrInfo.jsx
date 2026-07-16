@@ -31,14 +31,18 @@ export default function EpicDscovrInfo() {
       <button
         type="button"
         className="dscovr-info__tag"
-        onClick={() => setOpen((o) => !o)}
+        onClick={() => setOpen((current) => !current)}
         aria-expanded={open}
+        aria-controls="dscovr-info-popover"
       >
         DSCOVR · L1
         <Info size={14} className="dscovr-info__icon" />
       </button>
       {open && (
-        <div className="dscovr-info__popover" role="dialog" aria-label="Sobre o DSCOVR">
+        <div id="dscovr-info-popover"
+          className="dscovr-info__popover"
+          role="dialog"
+          aria-label="Sobre o discover">
           <p className="dscovr-info__title">Sobre o DSCOVR</p>
           <p>
             Satélite de meteorologia espacial da NOAA — monitoriza vento solar e ejeções de
