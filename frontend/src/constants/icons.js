@@ -32,6 +32,17 @@ import {
   X,
   ArrowUp,
   Orbit,
+  FileText,
+  Lock,
+  Mail,
+  Info,
+  Settings2,
+  Scale,
+  Eye,
+  RefreshCw,
+  Baby,
+  Share2,
+  Server,
 } from "lucide-react";
 
 export const Icons = {
@@ -68,4 +79,15 @@ export const Icons = {
   X,
   ArrowUp,
   Orbit,
+  FileText,
+  Lock,
+  Mail,
+  Info,
+  Settings2,
+  Scale,
+  Eye,
+  RefreshCw,
+  Baby,
+  Share2,
+  Server,
 };

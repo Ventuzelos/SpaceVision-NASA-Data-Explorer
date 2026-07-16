@@ -16,6 +16,8 @@ const routeNames = {
   cookies: "Política de Cookies",
   profile: "Perfil",
   admin: "Administração",
+  termos: "Termos e Condições",
+  privacidade: "Política de Privacidade",
 };
 
 function Breadcrumb({ title }) {
