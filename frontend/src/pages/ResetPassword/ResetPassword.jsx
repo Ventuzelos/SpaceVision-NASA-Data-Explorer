@@ -1,9 +1,17 @@
 import { useMemo, useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  ArrowLeft,
+  Eye,
+  EyeOff,
+} from "lucide-react";
+import {
+  Link,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 
+import AuthGalaxyLayout from "../../components/common/AuthGalaxyLayout/AuthGalaxyLayout";
 import { resetPassword } from "../../services/authService";
-
-import logo from "../../assets/logos/logo.svg";
 
 import "./ResetPassword.css";
 
@@ -27,9 +35,18 @@ function ResetPassword() {
     passwordConfirmation: "",
   });
 
+  const [showPassword, setShowPassword] =
+    useState(false);
+
+  const [
+    showPasswordConfirmation,
+    setShowPasswordConfirmation,
+  ] = useState(false);
+
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] =
+    useState(false);
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -47,12 +64,26 @@ function ResetPassword() {
     setError("");
 
     if (!token) {
-      setError("O link de reposição é inválido ou está incompleto.");
+      setError(
+        "O link de reposição é inválido ou está incompleto."
+      );
       return;
     }
 
-    if (formData.password !== formData.passwordConfirmation) {
-      setError("As palavras-passe não coincidem.");
+    if (formData.password.length < 8) {
+      setError(
+        "A nova palavra-passe deve ter pelo menos 8 caracteres."
+      );
+      return;
+    }
+
+    if (
+      formData.password !==
+      formData.passwordConfirmation
+    ) {
+      setError(
+        "As palavras-passe não coincidem."
+      );
       return;
     }
 
@@ -63,7 +94,8 @@ function ResetPassword() {
         token,
         email: formData.email,
         password: formData.password,
-        passwordConfirmation: formData.passwordConfirmation,
+        passwordConfirmation:
+          formData.passwordConfirmation,
       });
 
       setMessage(response.message);
@@ -89,123 +121,197 @@ function ResetPassword() {
   }
 
   return (
-    <main className="reset-password-page">
-      <section className="reset-password-left">
-        <div className="reset-password-info">
-          <img
-            src={logo}
-            alt="SpaceVision"
-            className="reset-password-logo"
-          />
+    <AuthGalaxyLayout
+      title="Define uma nova palavra-passe."
+      description="Escolhe uma palavra-passe segura para recuperares o acesso à tua conta e continuares a explorar o Universo."
+      sectionLabel="Definir uma nova palavra-passe"
+      status="A atualização será aplicada de forma segura à tua conta."
+    >
+      <div className="reset-card">
+        <div className="reset-card__header">
+          <p className="reset-card__eyebrow">
+            Segurança da conta
+          </p>
 
-          <h2>
-            Define uma nova
-            <br />
-            palavra-passe
-          </h2>
+          <h1 id="reset-password-title">
+            Repor palavra-passe
+          </h1>
 
-          <p>
-            Escolhe uma palavra-passe segura para voltares a aceder
-            à tua conta SpaceVision.
+          <p className="reset-card__description">
+            Confirma o teu email e introduz uma nova
+            palavra-passe.
           </p>
         </div>
 
-        <div className="reset-password-image-wrapper">
-          <img
-            src="https://images-assets.nasa.gov/image/art002e009289/art002e009289~large.jpg"
-            alt="A Terra observada do espaço"
-            className="reset-password-image"
-          />
-        </div>
-      </section>
+        <form
+          className="reset-form"
+          onSubmit={handleSubmit}
+        >
+          <div className="reset-field">
+            <label htmlFor="reset-email">
+              Email
+            </label>
 
-      <section className="reset-password-right">
-        <div className="auth-card">
-          <h1>Repor palavra-passe</h1>
+            <input
+              id="reset-email"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              autoComplete="email"
+              required
+            />
+          </div>
 
-          <p className="reset-password-description">
-            Introduz o teu email e escolhe uma nova palavra-passe.
-          </p>
+          <div className="reset-field">
+            <label htmlFor="reset-password">
+              Nova palavra-passe
+            </label>
 
-          <form className="auth-form" onSubmit={handleSubmit}>
-            <div className="auth-field">
-              <label htmlFor="email">Email</label>
-
+            <div className="reset-password">
               <input
-                id="email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                autoComplete="email"
-                required
-              />
-            </div>
-
-            <div className="auth-field">
-              <label htmlFor="password">
-                Nova palavra-passe
-              </label>
-
-              <input
-                id="password"
+                id="reset-password"
                 name="password"
-                type="password"
+                type={
+                  showPassword
+                    ? "text"
+                    : "password"
+                }
+                placeholder="Mínimo de 8 caracteres"
                 value={formData.password}
                 onChange={handleChange}
                 autoComplete="new-password"
                 minLength={8}
                 required
               />
+
+              <button
+                type="button"
+                className="reset-password__toggle"
+                onClick={() =>
+                  setShowPassword(
+                    (current) => !current
+                  )
+                }
+                aria-label={
+                  showPassword
+                    ? "Ocultar nova palavra-passe"
+                    : "Mostrar nova palavra-passe"
+                }
+                aria-pressed={showPassword}
+              >
+                {showPassword ? (
+                  <EyeOff
+                    size={20}
+                    aria-hidden="true"
+                  />
+                ) : (
+                  <Eye
+                    size={20}
+                    aria-hidden="true"
+                  />
+                )}
+              </button>
             </div>
+          </div>
 
-            <div className="auth-field">
-              <label htmlFor="passwordConfirmation">
-                Confirmar palavra-passe
-              </label>
+          <div className="reset-field">
+            <label htmlFor="reset-password-confirmation">
+              Confirmar palavra-passe
+            </label>
 
+            <div className="reset-password">
               <input
-                id="passwordConfirmation"
+                id="reset-password-confirmation"
                 name="passwordConfirmation"
-                type="password"
-                value={formData.passwordConfirmation}
+                type={
+                  showPasswordConfirmation
+                    ? "text"
+                    : "password"
+                }
+                placeholder="Repete a nova palavra-passe"
+                value={
+                  formData.passwordConfirmation
+                }
                 onChange={handleChange}
                 autoComplete="new-password"
                 minLength={8}
                 required
               />
+
+              <button
+                type="button"
+                className="reset-password__toggle"
+                onClick={() =>
+                  setShowPasswordConfirmation(
+                    (current) => !current
+                  )
+                }
+                aria-label={
+                  showPasswordConfirmation
+                    ? "Ocultar confirmação da nova palavra-passe"
+                    : "Mostrar confirmação da nova palavra-passe"
+                }
+                aria-pressed={
+                  showPasswordConfirmation
+                }
+              >
+                {showPasswordConfirmation ? (
+                  <EyeOff
+                    size={20}
+                    aria-hidden="true"
+                  />
+                ) : (
+                  <Eye
+                    size={20}
+                    aria-hidden="true"
+                  />
+                )}
+              </button>
             </div>
+          </div>
 
-            {error && (
-              <p className="auth-error" role="alert">
-                {error}
-              </p>
-            )}
-
-            {message && (
-              <p className="auth-success" role="status">
-                {message}
-              </p>
-            )}
-
-            <button
-              type="submit"
-              disabled={isSubmitting || !token}
+          {error && (
+            <p
+              className="reset-message reset-message--error"
+              role="alert"
             >
-              {isSubmitting
-                ? "A atualizar..."
-                : "Atualizar palavra-passe"}
-            </button>
-          </form>
+              {error}
+            </p>
+          )}
 
-          <p className="auth-switch">
-            <Link to="/login">
-              Voltar ao início de sessão
-            </Link>
-          </p>
-        </div>
-      </section>
-    </main>
+          {message && (
+            <p
+              className="reset-message reset-message--success"
+              role="status"
+              aria-live="polite"
+            >
+              {message}
+            </p>
+          )}
+
+          <button
+            className="reset-submit"
+            type="submit"
+            disabled={isSubmitting || !token}
+          >
+            {isSubmitting
+              ? "A atualizar..."
+              : "Atualizar palavra-passe"}
+          </button>
+        </form>
+
+        <p className="reset-switch">
+          <Link to="/login">
+            <ArrowLeft
+              size={17}
+              aria-hidden="true"
+            />
+            Voltar ao início de sessão
+          </Link>
+        </p>
+      </div>
+    </AuthGalaxyLayout>
   );
 }
 

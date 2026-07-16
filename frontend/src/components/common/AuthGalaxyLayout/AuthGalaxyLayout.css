@@ -1,0 +1,209 @@
+.auth-galaxy {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  min-height: calc(100vh - 74px);
+  overflow: hidden;
+  background: var(--color-background);
+}
+
+.auth-galaxy__background {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+}
+
+.auth-galaxy__overlay {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle at 22% 48%,
+      rgba(124, 58, 237, 0.16),
+      transparent 40%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(11, 16, 32, 0.32) 0%,
+      rgba(11, 16, 32, 0.4) 48%,
+      rgba(11, 16, 32, 0.78) 100%
+    );
+}
+
+.auth-galaxy__content {
+  position: relative;
+  z-index: 2;
+  min-height: calc(100dvh - 74px);
+}
+
+.auth-galaxy__layout {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1.1fr)
+    minmax(28rem, 0.9fr);
+  align-items: center;
+  min-height: calc(100dvh - 74px);
+  gap: clamp(3rem, 6vw, 6rem);
+}
+
+.auth-galaxy__intro {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  padding-block: clamp(2.5rem, 5vw, 4rem);
+}
+
+.auth-galaxy__intro-content {
+  width: min(100%, 40rem);
+}
+
+.auth-galaxy__logo {
+  display: block;
+  width: clamp(7.75rem, 10vw, 9.5rem);
+  max-width: 100%;
+  height: auto;
+  margin-bottom: clamp(2rem, 4vh, 3rem);
+}
+
+.auth-galaxy__eyebrow {
+  margin: 0 0 var(--space-3);
+  color: var(--color-link);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.auth-galaxy__title {
+  max-width: 38rem;
+  margin: 0;
+  color: var(--color-text);
+  font-size: clamp(2.75rem, 4.5vw, 4.4rem);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.03;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+
+.auth-galaxy__description {
+  max-width: 35rem;
+  margin: var(--space-5) 0 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-relaxed);
+}
+
+.auth-galaxy__status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-7);
+  padding:
+    var(--space-3)
+    var(--space-4);
+  border: 1px solid rgba(167, 139, 250, 0.16);
+  border-radius: var(--radius-full);
+  background: rgba(17, 24, 39, 0.35);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  backdrop-filter: blur(0.75rem);
+}
+
+.auth-galaxy__status-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--color-success);
+  box-shadow:
+    0 0 0.75rem
+    rgba(16, 185, 129, 0.7);
+}
+
+.auth-galaxy__panel {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 0;
+  padding-block: clamp(1.5rem, 3vw, 3rem);
+}
+
+@media (max-width: 1024px) {
+  .auth-galaxy__overlay {
+    background:
+      linear-gradient(
+        rgba(11, 16, 32, 0.22),
+        rgba(11, 16, 32, 0.78)
+      );
+  }
+
+  .auth-galaxy__layout {
+    grid-template-columns: 1fr;
+    gap: var(--space-7);
+    padding-block: var(--space-8);
+  }
+
+  .auth-galaxy__intro {
+    justify-content: center;
+    padding: 0;
+    text-align: center;
+  }
+
+  .auth-galaxy__intro-content {
+    width: min(100%, 42rem);
+  }
+
+  .auth-galaxy__logo {
+    margin-inline: auto;
+  }
+
+  .auth-galaxy__title,
+  .auth-galaxy__description {
+    margin-inline: auto;
+  }
+
+  .auth-galaxy__panel {
+    justify-content: center;
+    padding: 0 0 var(--space-7);
+  }
+}
+
+@media (max-width: 600px) {
+  .auth-galaxy,
+  .auth-galaxy__content,
+  .auth-galaxy__layout {
+    min-height: calc(100dvh - 74px);
+  }
+
+  .auth-galaxy__layout {
+    gap: var(--space-6);
+    padding-block:
+      var(--space-6)
+      var(--space-8);
+  }
+
+  .auth-galaxy__logo {
+    width: 8rem;
+    margin-bottom: var(--space-5);
+  }
+
+  .auth-galaxy__eyebrow {
+    margin-bottom: var(--space-2);
+  }
+
+  .auth-galaxy__title {
+    font-size: clamp(2.25rem, 11vw, 3.25rem);
+  }
+
+  .auth-galaxy__description,
+  .auth-galaxy__status {
+    display: none;
+  }
+
+  .auth-galaxy__panel {
+    padding: 0;
+  }
+}
