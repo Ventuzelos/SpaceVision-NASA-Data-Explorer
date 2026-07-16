@@ -138,24 +138,21 @@ function Footer() {
       </div>
 
       <div className="container footer__bottom">
-        <p>© 2026 SpaceVision. NASA Data Explorer.</p>
-        <div className="footer__legal">
-        <a href="/termos">Termos e Condições</a>
-        <span aria-hidden="true">·</span>
-        <a href="/privacidade">Política de Privacidade</a>
+  <p>© {currentYear} SpaceVision — NASA Data Explorer.</p>
+
+  
+
+  <div className="footer__legal">
+    <a href="/cookies">Política de Cookies</a>
+    <span aria-hidden="true">·</span>
+    <a href="/termos">Termos e Condições</a>
+    <span aria-hidden="true">·</span>
+    <a href="/privacidade">Política de Privacidade</a>
   </div>
-
-        <a href="/cookies" className="footer__legal-link">
-          Política de Cookies
-        </a>
-        <p>
-          © {currentYear} SpaceVision — NASA Data Explorer.
-        </p>
-
-        <p>
-          Dados e imagens fornecidos através de serviços oficiais da NASA.
-        </p>
-      </div>
+  <p className="footer__note">
+    Dados e imagens fornecidos através de serviços oficiais da NASA.
+  </p>
+</div>
     </footer>
   );
 }
