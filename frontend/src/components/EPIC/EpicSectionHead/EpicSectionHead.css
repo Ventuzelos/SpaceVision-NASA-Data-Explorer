@@ -1,4 +1,50 @@
-.epic-page .section-head { margin-bottom:34px;padding-top:70px; }
-.epic-page .section-eyebrow { font-family:var(--mono);font-size:11px;letter-spacing:0.14em;color:var(--glow-soft);text-transform:uppercase;margin-bottom:10px; }
-.epic-page .section-title { font-family:var(--disp);font-size:clamp(22px,2.6vw,30px);font-weight:600;color:var(--cloud); }
-.epic-page .section-sub { color:var(--text-dim);font-size:14px;margin-top:8px;max-width:60ch; }
+.epic-page .epic-section-head {
+  max-width: 48rem;
+  margin-bottom: var(--space-6);
+  padding-top: var(--space-8);
+}
+
+.epic-page .epic-section-head__eyebrow {
+  margin: 0 0 var(--space-2);
+  color: var(--color-link);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.epic-page .epic-section-head__title {
+  margin: 0;
+}
+
+.epic-page .epic-section-head__description {
+  max-width: 60ch;
+  margin-top: var(--space-3);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+}
+
+.epic-page .viewer-intro .epic-section-head {
+  padding-top: var(--space-7);
+}
+
+@media (max-width: 600px) {
+  .epic-page .epic-section-head {
+    margin-bottom: var(--space-5);
+    padding-top: var(--space-7);
+  }
+
+  .epic-page .epic-section-head__eyebrow {
+    font-size: var(--font-size-xs);
+  }
+
+  .epic-page .epic-section-head__description {
+    font-size: 0.9375rem;
+  }
+
+  .epic-page .viewer-intro .epic-section-head {
+    padding-top: var(--space-6);
+  }
+}
