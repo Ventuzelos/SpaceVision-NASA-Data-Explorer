@@ -138,6 +138,11 @@ function Footer() {
       </div>
 
       <div className="container footer__bottom">
+        <p>© 2026 SpaceVision. NASA Data Explorer.</p>
+
+        <a href="/cookies" className="footer__legal-link">
+          Política de Cookies
+        </a>
         <p>
           © {currentYear} SpaceVision — NASA Data Explorer.
         </p>

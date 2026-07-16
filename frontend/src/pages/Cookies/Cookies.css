@@ -1,0 +1,355 @@
+.cookies-page {
+  padding: var(--space-8) 0 clamp(4rem, 8vw, 6rem);
+  min-height: 70vh;
+}
+
+/* Eyebrow */
+
+.cookies-page__eyebrow {
+  margin-bottom: var(--space-3);
+  color: var(--color-accent);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Hero */
+
+.cookies-hero {
+  max-width: 680px;
+  margin-bottom: var(--space-6);
+}
+
+.cookies-hero h1 {
+  font-size: clamp(1.75rem, 4.5vw, 2.5rem);
+}
+
+.cookies-hero__description {
+  margin-top: var(--space-4);
+  color: var(--color-text);
+  font-size: 1.05rem;
+  line-height: var(--line-height-relaxed);
+}
+
+.cookies-hero__meta {
+  margin-top: var(--space-3);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+/* Summary callout */
+
+.cookies-summary {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+
+  max-width: 900px;
+  margin-bottom: var(--space-7);
+  padding: var(--space-5);
+
+  border: 1px solid rgba(79, 141, 240, 0.3);
+  border-radius: var(--radius-lg);
+
+  background:
+    linear-gradient(135deg, rgba(126, 71, 253, 0.12), rgba(79, 141, 240, 0.08)),
+    var(--color-surface);
+
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
+}
+
+.cookies-summary svg {
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+  color: var(--color-accent);
+}
+
+.cookies-summary strong {
+  color: var(--color-text);
+}
+
+/* Mobile / tablet horizontal TOC */
+
+.cookies-toc {
+  display: none;
+}
+
+/* Layout: sticky rail + content */
+
+.cookies-layout {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: start;
+}
+
+.cookies-rail {
+  position: sticky;
+  top: var(--space-6);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+
+  padding: var(--space-2);
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+
+  background: var(--color-surface);
+}
+
+.cookies-rail__link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+
+  padding: var(--space-3) var(--space-3);
+
+  border-radius: var(--radius-md);
+
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  line-height: 1.3;
+  text-decoration: none;
+
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.cookies-rail__link svg {
+  flex-shrink: 0;
+  color: var(--color-text-secondary);
+  transition: color var(--transition-fast);
+}
+
+.cookies-rail__link:hover {
+  color: var(--color-text);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.cookies-rail__link--active {
+  color: var(--color-text);
+  background: rgba(79, 70, 229, 0.14);
+  font-weight: var(--font-weight-semibold);
+}
+
+.cookies-rail__link--active svg {
+  color: var(--color-accent);
+}
+
+/* Content */
+
+.cookies-content {
+  min-width: 0;
+}
+
+.cookies-section {
+  position: relative;
+
+  max-width: 720px;
+  margin-bottom: clamp(3rem, 6vw, 4rem);
+  padding-top: var(--space-2);
+  scroll-margin-top: var(--space-6);
+}
+
+.cookies-section:last-child {
+  margin-bottom: 0;
+}
+
+.cookies-section__index {
+  display: block;
+  margin-bottom: var(--space-2);
+  color: var(--color-border);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.cookies-section h2 {
+  margin-bottom: var(--space-4);
+  font-size: 1.4rem;
+}
+
+.cookies-section p {
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
+}
+
+.cookies-section p + p {
+  margin-top: var(--space-4);
+}
+
+.cookies-section a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.cookies-section a:hover {
+  color: var(--color-text);
+}
+
+.cookies-section code {
+  padding: 0.15em 0.4em;
+  border-radius: 0.35em;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--color-text);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85em;
+}
+
+.cookies-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+
+  margin-top: var(--space-4);
+  padding-left: var(--space-5);
+
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
+}
+
+.cookies-note {
+  margin-top: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+
+  border-left: 3px solid var(--color-warning);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+
+  background: rgba(250, 204, 21, 0.08);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+/* Storage table */
+
+.cookies-table-wrap {
+  margin-top: var(--space-5);
+  overflow-x: auto;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.cookies-table {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+
+.cookies-table th,
+.cookies-table td {
+  padding: var(--space-4);
+  text-align: left;
+  vertical-align: top;
+}
+
+.cookies-table thead th {
+  border-bottom: 1px solid var(--color-border);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--color-text);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.cookies-table tbody tr + tr td {
+  border-top: 1px solid var(--color-border);
+}
+
+.cookies-table tbody td:first-child {
+  color: var(--color-text);
+  font-weight: var(--font-weight-semibold);
+}
+
+.cookies-table tbody td {
+  color: var(--color-text-secondary);
+}
+
+/* Tablet */
+
+@media (max-width: 1024px) {
+  .cookies-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .cookies-rail {
+    display: none;
+  }
+
+  .cookies-toc {
+    display: flex;
+    gap: var(--space-2);
+    overflow-x: auto;
+
+    margin-bottom: var(--space-7);
+    padding-bottom: var(--space-2);
+
+    scrollbar-width: none;
+  }
+
+  .cookies-toc::-webkit-scrollbar {
+    display: none;
+  }
+
+  .cookies-toc__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-shrink: 0;
+
+    padding: var(--space-2) var(--space-4);
+
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+
+    transition: var(--transition-fast);
+  }
+
+  .cookies-toc__link svg {
+    color: inherit;
+  }
+
+  .cookies-toc__link:hover {
+    border-color: var(--color-primary);
+    color: var(--color-text);
+  }
+
+  .cookies-toc__link--active {
+    border-color: var(--color-primary);
+    background: rgba(79, 70, 229, 0.15);
+    color: var(--color-text);
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 640px) {
+  .cookies-page {
+    padding-top: var(--space-5);
+  }
+
+  .cookies-summary {
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .cookies-table td,
+  .cookies-table th {
+    padding: var(--space-3);
+  }
+}
