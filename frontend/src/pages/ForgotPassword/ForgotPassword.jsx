@@ -1,9 +1,9 @@
 import { useState } from "react";
+import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 
+import AuthGalaxyLayout from "../../components/common/AuthGalaxyLayout/AuthGalaxyLayout";
 import { requestPasswordReset } from "../../services/authService";
-
-import logo from "../../assets/logos/logo.svg";
 
 import "./ForgotPassword.css";
 
@@ -11,7 +11,8 @@ function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] =
+    useState(false);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -21,13 +22,15 @@ function ForgotPassword() {
     setIsSubmitting(true);
 
     try {
-      const response = await requestPasswordReset(email);
+      const response =
+        await requestPasswordReset(email);
 
       setMessage(response.message);
       setEmail("");
     } catch (requestError) {
       const errorMessage =
-        requestError.response?.data?.errors?.email?.[0] ||
+        requestError.response?.data?.errors
+          ?.email?.[0] ||
         requestError.response?.data?.message ||
         "Não foi possível enviar o link de reposição.";
 
@@ -38,90 +41,92 @@ function ForgotPassword() {
   }
 
   return (
-    <main className="forgot-password-page">
-      <section className="forgot-password-left">
-        <div className="forgot-password-info">
-          <img
-            src={logo}
-            alt="SpaceVision"
-            className="forgot-password-logo"
-          />
+    <AuthGalaxyLayout
+      title="Recupera o acesso à tua exploração."
+      description="Enviaremos as instruções necessárias para definires uma nova palavra-passe e voltares à tua conta SpaceVision."
+      sectionLabel="Recuperar o acesso à conta"
+      status="A tua conta e os teus favoritos continuam seguros."
+    >
+      <div className="forgot-card">
+        <div className="forgot-card__header">
+          <p className="forgot-card__eyebrow">
+            Recuperação de conta
+          </p>
 
-          <h2>
-            Recupera o acesso
-            <br />
-            à tua conta
-          </h2>
+          <h1 id="forgot-password-title">
+            Esqueceste-te da palavra-passe?
+          </h1>
 
-          <p>
-            Introduz o email associado à tua conta e enviaremos
-            um link para definires uma nova palavra-passe.
+          <p className="forgot-card__description">
+            Introduz o email associado à tua conta para
+            receberes as instruções de reposição.
           </p>
         </div>
 
-        <div className="forgot-password-image-wrapper">
-          <img
-            src="https://images-assets.nasa.gov/image/art002e009289/art002e009289~large.jpg"
-            alt="A Terra vista do espaço numa missão Artemis da NASA"
-            className="forgot-password-image"
-          />
-        </div>
-      </section>
+        <form
+          className="forgot-form"
+          onSubmit={handleSubmit}
+        >
+          <div className="forgot-field">
+            <label htmlFor="forgot-email">
+              Email
+            </label>
 
-      <section className="forgot-password-right">
-        <div className="auth-card">
-          <h1>Esqueceste-te da palavra-passe?</h1>
+            <input
+              id="forgot-email"
+              name="email"
+              type="email"
+              placeholder="o-teu-email@exemplo.com"
+              value={email}
+              onChange={(event) =>
+                setEmail(event.target.value)
+              }
+              autoComplete="email"
+              required
+            />
+          </div>
 
-          <p className="forgot-password-description">
-            Indica o teu email para receberes as instruções de reposição.
-          </p>
-
-          <form className="auth-form" onSubmit={handleSubmit}>
-            <div className="auth-field">
-              <label htmlFor="email">Email</label>
-
-              <input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="o-teu-email@exemplo.com"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                autoComplete="email"
-                required
-              />
-            </div>
-
-            {error && (
-              <p className="auth-error" role="alert">
-                {error}
-              </p>
-            )}
-
-            {message && (
-              <p className="auth-success" role="status">
-                {message}
-              </p>
-            )}
-
-            <button
-              type="submit"
-              disabled={isSubmitting}
+          {error && (
+            <p
+              className="forgot-message forgot-message--error"
+              role="alert"
             >
-              {isSubmitting
-                ? "A enviar..."
-                : "Enviar link de reposição"}
-            </button>
-          </form>
+              {error}
+            </p>
+          )}
 
-          <p className="auth-switch">
-            <Link to="/login">
-              Voltar ao início de sessão
-            </Link>
-          </p>
-        </div>
-      </section>
-    </main>
+          {message && (
+            <p
+              className="forgot-message forgot-message--success"
+              role="status"
+              aria-live="polite"
+            >
+              {message}
+            </p>
+          )}
+
+          <button
+            className="forgot-submit"
+            type="submit"
+            disabled={isSubmitting}
+          >
+            {isSubmitting
+              ? "A enviar..."
+              : "Enviar link de reposição"}
+          </button>
+        </form>
+
+        <p className="forgot-switch">
+          <Link to="/login">
+            <ArrowLeft
+              size={17}
+              aria-hidden="true"
+            />
+            Voltar ao início de sessão
+          </Link>
+        </p>
+      </div>
+    </AuthGalaxyLayout>
   );
 }
 
