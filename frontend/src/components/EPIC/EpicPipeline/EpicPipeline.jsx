@@ -1,47 +1,66 @@
-import './EpicPipeline.css';
-import EpicSectionHead from '../EpicSectionHead/EpicSectionHead';
+import "./EpicPipeline.css";
+import EpicSectionHead from "../EpicSectionHead/EpicSectionHead";
 
 const PIPELINE_STEPS = [
   {
-    n: '01',
-    title: 'Captura',
-    text: 'A EPIC regista o disco solar da Terra em 10 bandas espectrais, do ultravioleta ao infravermelho próximo.',
+    number: "01",
+    title: "Captura",
+    text: "A EPIC regista o disco solar da Terra em 10 bandas espectrais, do ultravioleta ao infravermelho próximo.",
   },
   {
-    n: '02',
-    title: 'Downlink',
-    text: 'Os dados são transmitidos do L1 para estações terrestres da NOAA, a cerca de 1,5 milhões de quilómetros de distância.',
+    number: "02",
+    title: "Downlink",
+    text: "Os dados são transmitidos do L1 para estações terrestres da NOAA, a cerca de 1,5 milhões de quilómetros de distância.",
   },
   {
-    n: '03',
-    title: 'Processamento',
-    text: 'Os canais são calibrados e combinados num composto de cor natural, com coordenadas e hora associadas.',
+    number: "03",
+    title: "Processamento",
+    text: "Os canais são calibrados e combinados num composto de cor natural, com coordenadas e hora associadas.",
   },
   {
-    n: '04',
-    title: 'Publicação',
-    text: 'A EPIC API expõe cada captura como registo JSON, com ligação direta à imagem em alta resolução.',
+    number: "04",
+    title: "Publicação",
+    text: "A EPIC API expõe cada captura como registo JSON, com ligação direta à imagem em alta resolução.",
   },
 ];
 
 export default function EpicPipeline() {
   return (
-    <section id="pipeline-wrap">
+    <section
+      id="pipeline"
+      className="epic-pipeline-section"
+      aria-labelledby="epic-pipeline-title"
+    >
       <EpicSectionHead
+        id="epic-pipeline-title"
         eyebrow="Do espaço ao ecrã"
         title="Como uma imagem chega até aqui"
         sub="Quatro etapas reais entre a captura em órbita e o pixel que vês no visualizador abaixo."
-        style={{ paddingTop: 10 }}
       />
-      <div className="pipeline">
+
+      <ol className="epic-pipeline">
         {PIPELINE_STEPS.map((step) => (
-          <div className="step" key={step.n}>
-            <div className="n">{step.n}</div>
-            <h4>{step.title}</h4>
-            <p>{step.text}</p>
-          </div>
+          <li
+            className="epic-pipeline__step"
+            key={step.number}
+          >
+            <span
+              className="epic-pipeline__number"
+              aria-hidden="true"
+            >
+              {step.number}
+            </span>
+
+            <h3 className="epic-pipeline__title">
+              {step.title}
+            </h3>
+
+            <p className="epic-pipeline__description">
+              {step.text}
+            </p>
+          </li>
         ))}
-      </div>
+      </ol>
     </section>
   );
 }

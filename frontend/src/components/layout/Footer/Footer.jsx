@@ -1,8 +1,12 @@
+import { Link } from "react-router-dom";
+
 import Logo from "../Logo/Logo";
 
 import "./Footer.css";
 
 function Footer() {
+  const currentYear = new Date().getFullYear();
+
   return (
     <footer className="footer">
       <div className="container footer__container">
@@ -10,41 +14,147 @@ function Footer() {
           <Logo />
 
           <p className="footer__description">
-            Explora imagens, missões e dados reais da NASA através de uma
-            experiência digital simples, educativa e interativa.
+            Explora imagens, eventos espaciais e dados reais da NASA através
+            de uma experiência digital simples, educativa e interativa.
+          </p>
+
+          <p className="footer__disclaimer">
+            Projeto académico desenvolvido para fins educativos. O SpaceVision
+            não é um website oficial da NASA e não representa nem está afiliado
+            à NASA.
           </p>
         </div>
 
-        <div className="footer__links">
-          <div className="footer__group">
-            <h4>Explorar</h4>
-            <a href="/apod">APOD</a>
-            <a href="/donki">DONKI</a>
-            <a href="/epic">EPIC</a>
-            <a href="/favorites">Favoritos</a>
-          </div>
+        <nav
+          className="footer__links"
+          aria-label="Navegação do rodapé"
+        >
+          <section
+            className="footer__group"
+            aria-labelledby="footer-explore-title"
+          >
+            <h2 id="footer-explore-title">
+              Explorar
+            </h2>
 
-          <div className="footer__group">
-            <h4>Recursos</h4>
-            <a href="https://api.nasa.gov/" target="_blank" rel="noreferrer">
+            <Link to="/apod">
+              Imagem do dia
+            </Link>
+
+            <Link to="/donki">
+              Eventos espaciais
+            </Link>
+
+            <Link to="/epic">
+              Terra
+            </Link>
+
+            <Link to="/neowatch">
+              Asteroides
+            </Link>
+
+            <Link to="/favorites">
+              Favoritos
+            </Link>
+          </section>
+
+          <section
+            className="footer__group"
+            aria-labelledby="footer-information-title"
+          >
+            <h2 id="footer-information-title">
+              Informação
+            </h2>
+
+            <Link to="/about">
+              Sobre o projeto
+            </Link>
+
+            <Link to="/faq">
+              Perguntas frequentes
+            </Link>
+
+            <Link to="/about#contact">
+              Contacto
+            </Link>
+
+            <Link to="/accessibility">
+              Acessibilidade
+            </Link>
+          </section>
+
+          <section
+            className="footer__group"
+            aria-labelledby="footer-legal-title"
+          >
+            <h2 id="footer-legal-title">
+              Legal
+            </h2>
+
+            <Link to="/privacy">
+              Política de Privacidade
+            </Link>
+
+            <Link to="/cookies">
+              Política de Cookies
+            </Link>
+
+            <Link to="/terms">
+              Termos de Utilização
+            </Link>
+          </section>
+
+          <section
+            className="footer__group"
+            aria-labelledby="footer-resources-title"
+          >
+            <h2 id="footer-resources-title">
+              Fontes oficiais
+            </h2>
+
+            <a
+              href="https://api.nasa.gov/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               NASA Open APIs
+              <span className="sr-only">
+                {" "}— abre numa nova janela
+              </span>
             </a>
-            <a href="https://www.nasa.gov/" target="_blank" rel="noreferrer">
+
+            <a
+              href="https://www.nasa.gov/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               NASA
+              <span className="sr-only">
+                {" "}— abre numa nova janela
+              </span>
             </a>
-          </div>
-        </div>
+          </section>
+        </nav>
       </div>
 
       <div className="container footer__bottom">
         <p>© 2026 SpaceVision. NASA Data Explorer.</p>
         <div className="footer__legal">
-       <a href="/cookies">Cookies</a>
-        <span aria-hidden="true">·</span>
         <a href="/termos">Termos e Condições</a>
         <span aria-hidden="true">·</span>
         <a href="/privacidade">Política de Privacidade</a>
   </div>
+
+        <a href="/cookies" className="footer__legal-link">
+          Política de Cookies
+        </a>
+        <p>
+          © {currentYear} SpaceVision — NASA Data Explorer.
+        </p>
+
+        <p>
+          Dados e imagens fornecidos através de serviços oficiais da NASA.
+        </p>
       </div>
     </footer>
   );

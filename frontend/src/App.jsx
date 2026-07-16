@@ -14,6 +14,7 @@ import Favorites from "./pages/Favorites/Favorites";
 import NotFound from "./pages/NotFound/NotFound";
 import About from "./pages/About/About";
 import FAQ from "./pages/FAQ/FAQ";
+import Cookies from "./pages/Cookies/Cookies";
 
 import NeoWS from "./pages/NEOWATCH/NeoWS";
 import Login from "./pages/Login/Login";
@@ -47,6 +48,7 @@ function App() {
             <Route path="faq" element={<FAQ />} />
             <Route path="termos" element={<Terms />} />
             <Route path="privacidade" element={<Privacy />} />
+            <Route path="cookies" element={<Cookies />} />
 
             {/* Rotas protegidas — qualquer usuário autenticado */}
             <Route element={<ProtectedRoute />}>
