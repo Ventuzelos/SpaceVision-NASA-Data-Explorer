@@ -15,6 +15,8 @@ const routeNames = {
   faq: "FAQ",
   profile: "Perfil",
   admin: "Administração",
+  termos: "Termos e Condições",
+  privacidade: "Política de Privacidade",
 };
 
 function Breadcrumb({ title }) {

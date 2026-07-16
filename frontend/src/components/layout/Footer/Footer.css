@@ -51,6 +51,26 @@
   font-size: 0.9rem;
 }
 
+.footer__legal {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.footer__legal a {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: var(--transition-fast);
+}
+
+.footer__legal a:hover {
+  color: var(--color-primary);
+}
+
+.footer__legal span {
+  color: var(--color-border);
+}
+
 @media (max-width: 768px) {
   .footer__container {
     flex-direction: column;
@@ -60,4 +80,9 @@
     flex-direction: column;
     gap: var(--space-6);
   }
+
+  .footer__bottom {
+  flex-direction: column;
+  align-items: flex-start;
+}
 }

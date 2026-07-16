@@ -25,6 +25,9 @@ import Profile from "./pages/Profile/Profile";
 import Admin from "./pages/Admin/Admin";
 import Unauthorized from "./pages/Unauthorized/Unauthorized";
 
+import Terms from "./pages/Legal/Terms/Terms";
+import Privacy from "./pages/Legal/Privacy/Privacy";
+
 function App() {
   return (
     <BrowserRouter>
@@ -42,6 +45,8 @@ function App() {
 
             <Route path="about" element={<About />} />
             <Route path="faq" element={<FAQ />} />
+            <Route path="termos" element={<Terms />} />
+            <Route path="privacidade" element={<Privacy />} />
 
             {/* Rotas protegidas — qualquer usuário autenticado */}
             <Route element={<ProtectedRoute />}>
