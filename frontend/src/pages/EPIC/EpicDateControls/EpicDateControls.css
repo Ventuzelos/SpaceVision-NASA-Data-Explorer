@@ -1,16 +1,118 @@
-.epic-page .date-controls { display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap; }
-.epic-page .date-controls__field { display:flex;flex-direction:column; }
-.epic-page .date-controls__error {
-  max-width:260px;
-  margin-top:0.5rem;
-  color:var(--color-error);
-  font-size:0.8rem;
+.epic-page .epic-date-controls {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: var(--space-3);
 }
-.epic-page .field-label { font-family:var(--mono);font-size:10px;letter-spacing:0.1em;color:var(--text-faint);text-transform:uppercase;margin-bottom:6px; }
-.epic-page input[type=date] { font-family:var(--mono);font-size:13px;color:var(--text);
-    background:var(--panel-2);border:1px solid var(--line-strong);border-radius:6px;
-    padding:9px 12px;outline:none;transition:border-color .2s; }
-.epic-page input[type=date]:focus { border-color:var(--glow); }
-.epic-page input::-webkit-calendar-picker-indicator { filter:invert(0.8);cursor:pointer; }
-.epic-page .date-controls button:disabled,
-.epic-page input[type="date"]:disabled { cursor:not-allowed;opacity:0.65; }
+
+.epic-page .epic-date-controls__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.epic-page .epic-date-controls__label {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+}
+
+.epic-page .epic-date-controls__field input {
+  width: 10.625rem;
+  min-height: 2.5rem;
+  padding-inline: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: rgba(15, 23, 42, 0.85);
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    opacity var(--transition-fast);
+}
+
+.epic-page .epic-date-controls__field input:hover:not(:disabled) {
+  border-color: var(--color-link);
+}
+
+.epic-page .epic-date-controls__field input:focus-visible {
+  border-color: var(--color-link);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.2);
+}
+
+.epic-page
+  .epic-date-controls__field
+  input::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(0.85);
+}
+
+.epic-page .epic-date-controls__error {
+  max-width: 16.25rem;
+  margin-top: var(--space-1);
+  color: var(--color-error);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-normal);
+}
+
+.epic-page .epic-date-controls__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.5rem;
+  padding-inline: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    background-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    opacity var(--transition-fast);
+}
+
+.epic-page
+  .epic-date-controls__button:hover:not(:disabled) {
+  border-color: var(--color-link);
+  background: var(--color-surface-light);
+}
+
+.epic-page .epic-date-controls__button:focus-visible {
+  border-color: var(--color-link);
+  outline: 2px solid var(--color-link);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.18);
+}
+
+.epic-page .epic-date-controls__button:disabled,
+.epic-page .epic-date-controls__field input:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+@media (max-width: 600px) {
+  .epic-page .epic-date-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .epic-page .epic-date-controls__field input,
+  .epic-page .epic-date-controls__button {
+    width: 100%;
+    min-height: 2.75rem;
+  }
+
+  .epic-page .epic-date-controls__error {
+    max-width: none;
+  }
+}

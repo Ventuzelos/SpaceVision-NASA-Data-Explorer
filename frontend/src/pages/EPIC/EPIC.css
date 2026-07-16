@@ -1,53 +1,112 @@
-/* Tokens da EPIC apontam para os tokens genéricos do site (styles/variables.css)
-   em vez de valores próprios — qualquer alteração ao tema global propaga-se aqui. */
-.epic-page { --void:var(--color-background);
-    --panel:var(--color-surface);
-    --panel-2:var(--color-surface-light);
-    --line:color-mix(in srgb, var(--color-border) 45%, transparent);
-    --line-strong:var(--color-border);
-    --cloud:var(--color-text);
-    --glow:var(--color-accent);
-    --glow-soft:var(--color-accent);
-    --glow-dim:color-mix(in srgb, var(--color-accent) 35%, transparent);
-    --violet:var(--color-secondary);
-    --violet-soft:var(--color-secondary);
-    --text:var(--color-text);
-    --text-dim:var(--color-text-secondary);
-    --text-faint:var(--color-text-secondary);
-    --red:var(--color-error);
-    --green:var(--color-success);
-    --disp:var(--font-family);
-    --body:var(--font-family);
-    --mono:var(--font-family); }
-.epic-page { color:var(--text);
-    font-family:var(--body);
-    line-height:1.5;
-    -webkit-font-smoothing:antialiased; }
-.epic-page a { color:inherit; }
-.epic-page::selection, .epic-page *::selection { background:var(--glow-dim);color:var(--cloud); }
-
-/* ============ SECTION SHELL (layout genérico partilhado por todas as secções) ============ */
-.epic-page section { position:relative;z-index:1;padding:0 clamp(20px,5vw,64px);max-width:var(--container-width);margin:0 auto; }
-
-/* ============ VIEWER: encaixe entre EpicDateControls, EpicDetail e EpicPanel ============ */
-.epic-page .viewer-intro {
-  display:flex;flex-direction:column;gap:22px;
-  margin-bottom:34px;
+.epic-page {
+  min-height: 100%;
+  color: var(--color-text);
+  font-family: var(--font-family);
+  line-height: var(--line-height-normal);
+  -webkit-font-smoothing: antialiased;
 }
-.epic-page .viewer-intro .section-head { margin-bottom:0; }
+
+.epic-page::selection,
+.epic-page *::selection {
+  background: rgba(126, 71, 253, 0.35);
+  color: var(--color-text);
+}
+
+.epic-page section {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: var(--container-width);
+  margin-inline: auto;
+  padding-inline: clamp(var(--space-5),
+      5vw,
+      var(--space-8));
+}
+
+.epic-page .bottom-glow {
+  position: relative;
+  padding-bottom: var(--space-8);
+}
+
+.epic-page .bottom-glow::before {
+  content: "";
+  position: absolute;
+  right: 10%;
+  bottom: 0;
+  width: 22rem;
+  height: 22rem;
+  border-radius: 50%;
+  background: rgba(126, 71, 253, 0.08);
+  filter: blur(5rem);
+  pointer-events: none;
+}
+
+.epic-page #viewer {
+  scroll-margin-top: var(--space-7);
+}
+
+.epic-page .viewer-intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  margin-bottom: var(--space-6);
+}
+
+.epic-page .viewer-intro .epic-section-head {
+  margin-bottom: 0;
+}
 
 .epic-page .viewer-layout {
-  display:grid;
-  grid-template-columns:360px 1fr;
-  gap:24px;
-  align-items:start;
+  display: grid;
+  grid-template-columns: minmax(17.5rem, 22.5rem) minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-5);
 }
-.epic-page .viewer-layout .card { order:2; }
-.epic-page .viewer-layout .thumb-panel { order:1; }
-.epic-page .viewer-layout .thumb-grid {
-  grid-template-columns:repeat(auto-fill, minmax(110px, 1fr));
+
+.epic-page .viewer-layout .epic-card {
+  order: 2;
 }
-@media(max-width:900px) {
-  .epic-page .viewer-layout { grid-template-columns:1fr; }
-  .epic-page .viewer-layout .grid-wrap { max-height:none;overflow-y:visible; }
+
+.epic-page .viewer-layout .epic-panel {
+  order: 1;
+}
+
+.epic-page .viewer-layout .epic-panel__grid {
+  grid-template-columns: repeat(auto-fill,
+      minmax(6.875rem, 1fr));
+}
+
+@media (max-width: 1023px) {
+  .epic-page .viewer-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .epic-page .viewer-layout .epic-card,
+  .epic-page .viewer-layout .epic-panel {
+    order: initial;
+  }
+
+  .epic-page .viewer-layout .epic-panel__content {
+    max-height: none;
+    overflow-y: visible;
+  }
+}
+
+@media (max-width: 600px) {
+  .epic-page section {
+    padding-inline: var(--space-5);
+  }
+
+  .epic-page .bottom-glow {
+    padding-bottom: var(--space-7);
+  }
+
+  .epic-page .viewer-intro {
+    gap: var(--space-4);
+    margin-bottom: var(--space-5);
+  }
+
+  .epic-page .viewer-layout {
+    gap: var(--space-4);
+  }
 }

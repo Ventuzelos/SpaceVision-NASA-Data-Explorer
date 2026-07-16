@@ -1,32 +1,65 @@
-import './EpicHero.css';
-import EpicHeroVideo from '../EpicHeroVideo/EpicHeroVideo';
+import "./EpicHero.css";
+
+import EpicHeroVideo from "../EpicHeroVideo/EpicHeroVideo";
 import Breadcrumb from "../../common/Breadcrumb/Breadcrumb";
 
 export default function EpicHero() {
   return (
-    <section className="hero" id="hero">
-      <div>
+    <section
+      className="epic-hero"
+      aria-labelledby="epic-page-title"
+    >
+      <div className="epic-hero__content">
         <Breadcrumb title="Earth" />
-        <div className="eyebrow">EPIC · Earth Polychromatic Imaging Camera</div>
-        <h1 className="headline">
+
+        <p className="epic-hero__eyebrow">
+          EPIC · Earth Polychromatic Imaging Camera
+        </p>
+
+        <h1
+          id="epic-page-title"
+          className="epic-hero__title"
+        >
           O nosso planeta. Visto de longe, em tempo real.
         </h1>
-        <p className="lede">
-          Descubra a Terra como nunca a viu. Através dos olhos da câmara EPIC, a bordo do
-          satélite DSCOVR no ponto de Lagrange L1, aceda a imagens atualizadas a cada duas
-          horas que capturam a totalidade do disco terrestre totalmente iluminado pelo Sol.
+
+        <p className="epic-hero__description">
+          Descobre a Terra como nunca a viste. Através dos
+          olhos da câmara EPIC, a bordo do satélite DSCOVR
+          no ponto de Lagrange L1, acede a imagens
+          atualizadas a cada duas horas que capturam a
+          totalidade do disco terrestre iluminado pelo Sol.
         </p>
-        <div className="hero-cta">
-          <a href="#viewer" className="btn btn-primary">Ver imagens do dia →</a>
+
+        <div className="epic-hero__actions">
+          <a
+            href="#viewer"
+            className="epic-hero__button"
+          >
+            Ver imagens do dia
+            <span aria-hidden="true">→</span>
+          </a>
         </div>
-        <div className="readout">
-          <div><div className="val">1.5M km</div><div className="lab">Distância à Terra</div></div>
-          <div><div className="val">10</div><div className="lab">Canais espectrais</div></div>
-          <div><div className="val">2015→</div><div className="lab">Em operação desde</div></div>
-        </div>
+
+        <dl className="epic-hero__readout">
+          <div className="epic-hero__readout-item">
+            <dt>Distância à Terra</dt>
+            <dd>1,5 milhões km</dd>
+          </div>
+
+          <div className="epic-hero__readout-item">
+            <dt>Canais espectrais</dt>
+            <dd>10</dd>
+          </div>
+
+          <div className="epic-hero__readout-item">
+            <dt>Em operação desde</dt>
+            <dd>2015</dd>
+          </div>
+        </dl>
       </div>
 
-      <div className="hero-video-panel">
+      <div className="epic-hero__media">
         <EpicHeroVideo />
       </div>
     </section>

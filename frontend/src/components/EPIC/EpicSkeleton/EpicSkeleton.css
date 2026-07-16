@@ -1,50 +1,53 @@
-.epic-skeleton__meta {
+.epic-page .epic-skeleton__meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  padding: 18px 22px 0;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-5) 0;
 }
 
-.epic-skeleton__tag {
+.epic-page .epic-skeleton__tag {
   display: block;
-  width: 96px;
-  height: 24px;
+  width: 6rem;
+  height: 1.5rem;
   border-radius: 999px;
 }
 
-.epic-skeleton__grid {
+.epic-page .epic-skeleton__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 14px;
-  padding: 18px 22px 22px;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(9.375rem, 1fr)
+  );
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5) var(--space-5);
 }
 
-.epic-skeleton__thumb {
+.epic-page .epic-skeleton__thumb {
   position: relative;
-  aspect-ratio: 1 / 1;
-  border-radius: 10px;
+  aspect-ratio: 1;
   overflow: hidden;
-  border: 1px solid var(--line-strong, rgba(255, 255, 255, 0.15));
-  background: var(--panel-2, #101d3c);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-light);
 }
 
-.epic-skeleton__time {
+.epic-page .epic-skeleton__time {
   position: absolute;
-  bottom: 8px;
-  right: 8px;
-  width: 40px;
-  height: 8px;
+  right: var(--space-2);
+  bottom: var(--space-2);
+  width: 2.5rem;
+  height: 0.5rem;
   border-radius: 999px;
 }
 
-.epic-skeleton__tag,
-.epic-skeleton__thumb,
-.epic-skeleton__time {
+.epic-page .epic-skeleton__tag,
+.epic-page .epic-skeleton__thumb,
+.epic-page .epic-skeleton__time {
   background-image: linear-gradient(
     90deg,
-    var(--panel-2, #101d3c),
+    var(--color-surface-light),
     rgba(255, 255, 255, 0.08),
-    var(--panel-2, #101d3c)
+    var(--color-surface-light)
   );
   background-size: 200% 100%;
   animation: epic-skeleton-loading 1.4s ease-in-out infinite;
@@ -54,15 +57,27 @@
   0% {
     background-position: 200% 0;
   }
+
   100% {
     background-position: -200% 0;
   }
 }
 
+@media (max-width: 600px) {
+  .epic-page .epic-skeleton__meta {
+    padding: var(--space-4) var(--space-4) 0;
+  }
+
+  .epic-page .epic-skeleton__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: var(--space-4);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .epic-skeleton__tag,
-  .epic-skeleton__thumb,
-  .epic-skeleton__time {
+  .epic-page .epic-skeleton__tag,
+  .epic-page .epic-skeleton__thumb,
+  .epic-page .epic-skeleton__time {
     animation: none;
   }
 }

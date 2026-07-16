@@ -37,6 +37,10 @@ function DateRangeFilter({
   };
 
   const handlePresetClick = (days) => {
+    if (loading) {
+      return;
+    }
+
     const range = getDateRange(days);
 
     onStartDateChange(range.startDate);
@@ -47,16 +51,25 @@ function DateRangeFilter({
   return (
     <form className="date-range-filter" onSubmit={handleSubmit}>
       <div className="date-range-filter__left">
-        <span className="date-range-filter__title">Período</span>
+        <p
+          id="date-range-filter-title"
+          className="date-range-filter__title"
+        >
+          Período
+        </p>
 
-        <div className="date-range-filter__presets">
+        <div
+          className="date-range-filter__presets"
+          role="group"
+          aria-labelledby="date-range-filter-title"
+        >
           {DATE_PRESETS.map((preset) => (
             <button
               key={preset.days}
               type="button"
               className="date-range-filter__preset"
               onClick={() => handlePresetClick(preset.days)}
-              disabled={loading}
+              aria-disabled={loading}
             >
               {preset.label}
             </button>

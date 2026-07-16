@@ -13,6 +13,7 @@ const routeNames = {
   favorites: "Favoritos",
   about: "Sobre nós",
   faq: "FAQ",
+  cookies: "Política de Cookies",
   profile: "Perfil",
   admin: "Administração",
   termos: "Termos e Condições",
