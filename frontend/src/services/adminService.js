@@ -1,5 +1,5 @@
 import backendApi from "./backendApi";
-import { getFavorites } from "./favoritesService";
+
 
 const FAVORITE_CATEGORIES = [
   { value: "apod", label: "APOD" },

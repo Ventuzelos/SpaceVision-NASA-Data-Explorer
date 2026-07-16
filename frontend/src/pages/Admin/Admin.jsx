@@ -55,7 +55,6 @@ function Admin() {
     newLastMonth: 0,
   });
 
-
   const [messagesStats, setMessagesStats] = useState({
     total: 0,
     unread: 0,
@@ -140,20 +139,18 @@ function Admin() {
 
       const [users, favorites, messages] =
         await Promise.all([
-          //getUsersCount(),
           getUsersStats(),
           getFavoritesStats(),
           getMessagesStats(),
         ]);
 
-      //setUsersCount(users);
       setUsersStats(users);
       setFavoritesStats(favorites);
       setMessagesStats(messages);
-    } catch (err) {
+    } catch (requestError) {
       console.error(
         "Erro ao carregar o painel de administração:",
-        err
+        requestError
       );
 
       setError(
@@ -184,10 +181,10 @@ function Admin() {
               : message
         ),
       }));
-    } catch (err) {
+    } catch (requestError) {
       console.error(
         "Erro ao marcar mensagem como lida:",
-        err
+        requestError
       );
 
       setError(
@@ -235,10 +232,10 @@ function Admin() {
             ),
         };
       });
-    } catch (err) {
+    } catch (requestError) {
       console.error(
         "Erro ao eliminar mensagem:",
-        err
+        requestError
       );
 
       setError(
@@ -251,7 +248,12 @@ function Admin() {
     return (
       <main className="admin-page">
         <Container>
-          <p>A carregar painel...</p>
+          <p
+            className="admin-page__empty"
+            role="status"
+          >
+            A carregar painel...
+          </p>
         </Container>
       </main>
     );
@@ -284,7 +286,11 @@ function Admin() {
         </header>
 
         {isLoading && (
-          <p className="admin-page__empty">
+          <p
+            className="admin-page__empty"
+            role="status"
+            aria-live="polite"
+          >
             A carregar dados...
           </p>
         )}
@@ -300,13 +306,21 @@ function Admin() {
           <>
             <section
               className="admin-stats"
-              aria-label="Estatísticas gerais"
+              aria-labelledby="admin-stats-title"
             >
+              <h2
+                id="admin-stats-title"
+                className="sr-only"
+              >
+                Estatísticas gerais
+              </h2>
+
               <article className="admin-stats__card">
-                <span>
+                <span className="admin-stats__label">
                   <Icon
                     name="Users"
                     size={16}
+                    aria-hidden="true"
                   />
                   Utilizadores registados
                 </span>
@@ -317,13 +331,13 @@ function Admin() {
 
                 {usersStats.total === null ? (
                   <small className="admin-stats__hint">
-                    Endpoint de utilizadores ainda
-                    não disponível no backend.
+                    Endpoint de utilizadores ainda não
+                    disponível no backend.
                   </small>
-
-                ): (
+                ) : (
                   <small className="admin-stats__hint">
-                    {formatCount(  usersStats.newLastMonth
+                    {formatCount(
+                      usersStats.newLastMonth
                     )}{" "}
                     novos no último mês
                   </small>
@@ -331,10 +345,11 @@ function Admin() {
               </article>
 
               <article className="admin-stats__card">
-                <span>
+                <span className="admin-stats__label">
                   <Icon
                     name="Mail"
                     size={16}
+                    aria-hidden="true"
                   />
                   Mensagens de contacto
                 </span>
@@ -347,10 +362,11 @@ function Admin() {
               </article>
 
               <article className="admin-stats__card">
-                <span>
+                <span className="admin-stats__label">
                   <Icon
                     name="Heart"
                     size={16}
+                    aria-hidden="true"
                   />
                   Favoritos guardados
                 </span>
@@ -365,9 +381,12 @@ function Admin() {
 
             <section
               className="admin-section"
-              aria-label="Favoritos por categoria"
+              aria-labelledby="favorites-category-title"
             >
-              <h2 className="admin-page__section-title">
+              <h2
+                id="favorites-category-title"
+                className="admin-page__section-title"
+              >
                 Favoritos por categoria
               </h2>
 
@@ -404,7 +423,18 @@ function Admin() {
                             </strong>
                           </div>
 
-                          <div className="admin-favorite-breakdown__bar">
+                          <div
+                            className="admin-favorite-breakdown__bar"
+                            role="progressbar"
+                            aria-label={`${category.label}: ${category.count} favoritos`}
+                            aria-valuemin="0"
+                            aria-valuemax={
+                              favoritesStats.total
+                            }
+                            aria-valuenow={
+                              category.count
+                            }
+                          >
                             <div
                               className="admin-favorite-breakdown__bar-fill"
                               style={{
@@ -422,9 +452,12 @@ function Admin() {
 
             <section
               className="admin-section"
-              aria-label="Conteúdos mais guardados"
+              aria-labelledby="top-saved-title"
             >
-              <h2 className="admin-page__section-title">
+              <h2
+                id="top-saved-title"
+                className="admin-page__section-title"
+              >
                 Conteúdos mais guardados
               </h2>
 
@@ -464,10 +497,13 @@ function Admin() {
 
             <section
               className="admin-section"
-              aria-label="Mensagens de contacto"
+              aria-labelledby="contact-messages-title"
             >
               <div className="admin-section__header">
-                <h2 className="admin-page__section-title">
+                <h2
+                  id="contact-messages-title"
+                  className="admin-page__section-title"
+                >
                   Mensagens de contacto
                 </h2>
 
@@ -487,6 +523,7 @@ function Admin() {
                   <Icon
                     name="Search"
                     size={17}
+                    aria-hidden="true"
                   />
 
                   <input
@@ -515,13 +552,14 @@ function Admin() {
                         : "admin-message-filter-tab"
                     }
                     onClick={() =>
-                      setMessageStatusFilter(
-                        "all"
-                      )
+                      setMessageStatusFilter("all")
+                    }
+                    aria-pressed={
+                      messageStatusFilter === "all"
                     }
                   >
                     Todas
-                    <span>
+                    <span aria-hidden="true">
                       {messagesStats.total}
                     </span>
                   </button>
@@ -539,9 +577,13 @@ function Admin() {
                         "unread"
                       )
                     }
+                    aria-pressed={
+                      messageStatusFilter ===
+                      "unread"
+                    }
                   >
                     Por ler
-                    <span>
+                    <span aria-hidden="true">
                       {messagesStats.unread}
                     </span>
                   </button>
@@ -549,19 +591,19 @@ function Admin() {
                   <button
                     type="button"
                     className={
-                      messageStatusFilter ===
-                      "read"
+                      messageStatusFilter === "read"
                         ? "admin-message-filter-tab admin-message-filter-tab--active"
                         : "admin-message-filter-tab"
                     }
                     onClick={() =>
-                      setMessageStatusFilter(
-                        "read"
-                      )
+                      setMessageStatusFilter("read")
+                    }
+                    aria-pressed={
+                      messageStatusFilter === "read"
                     }
                   >
                     Lidas
-                    <span>
+                    <span aria-hidden="true">
                       {Math.max(
                         messagesStats.total -
                           messagesStats.unread,
@@ -595,13 +637,15 @@ function Admin() {
 
               {filteredMessages.length === 0 ? (
                 <p className="admin-page__empty">
-                  {messagesStats.messages
-                    .length === 0
+                  {messagesStats.messages.length === 0
                     ? "Ainda não foram enviadas mensagens de contacto."
                     : "Não foram encontradas mensagens com estes filtros."}
                 </p>
               ) : (
-                <div className="admin-messages">
+                <div
+                  className="admin-messages"
+                  aria-live="polite"
+                >
                   {filteredMessages.map(
                     (message) => (
                       <article
@@ -674,6 +718,7 @@ function Admin() {
                               <Icon
                                 name="Check"
                                 size={16}
+                                aria-hidden="true"
                               />
                               Marcar como lida
                             </button>
@@ -691,6 +736,7 @@ function Admin() {
                             <Icon
                               name="Trash2"
                               size={16}
+                              aria-hidden="true"
                             />
                             Eliminar
                           </button>
