@@ -1,0 +1,146 @@
+Página: Homepage
+URL: /
+Pontuação inicial: 94
+Pontuação final: 100
+
+Problemas corrigidos:
+- Contraste insuficiente nos links dos cards e na data do destaque.
+- Hierarquia incorreta de headings no footer.
+- Footer melhorado com estrutura semântica, foco visível e navegação acessível.
+
+Teste manual por teclado:
+- Aprovado
+
+
+Página: Login
+URL: /login
+Lighthouse: 100/100
+
+
+Resultado:
+- Sem problemas automáticos detetados.
+- Labels dos campos corretos.
+- Botão com nome acessível.
+- Links com texto identificável.
+- Contraste aprovado.
+- Estrutura semântica aprovada.
+
+Teste manual por teclado:
+- Ordem de foco lógica: aprovado
+- Foco visível: aprovado
+- Navegação com Tab e Shift + Tab: aprovado
+- Ativação com Enter: aprovado
+- Sem bloqueios de foco: aprovado
+
+
+
+Página: Registo
+URL: /register
+Lighthouse: 100/100
+
+Resultado:
+- Campos com labels associados.
+- Contraste aprovado.
+- Botão com nome acessível.
+- Estrutura semântica aprovada.
+- Sem erros automáticos de ARIA.
+
+Teste manual por teclado:
+- Ordem de foco lógica: aprovado
+- Foco visível: aprovado
+- Tab e Shift + Tab: aprovado
+- Ativação com Enter: aprovado
+- Sem bloqueios de foco: aprovado
+
+
+
+
+Página: APOD
+URL: /apod
+Pontuação inicial: 96
+Pontuação final: 100
+
+Problema corrigido:
+- Contraste insuficiente no texto `.section__eyebrow`.
+
+Correção aplicada:
+- Substituição da cor primária por uma cor de link acessível em fundo escuro.
+
+Teste manual por teclado:
+- Ordem de foco lógica: aprovado
+- Foco visível: aprovado
+- Botões ativáveis com Enter: aprovado
+- Campo de data utilizável por teclado: aprovado
+- Sem bloqueios de foco: aprovado
+
+
+Página: DONKI
+URL: /donki
+Lighthouse: 100/100
+
+Resultado:
+- Contraste aprovado
+- Estrutura semântica aprovada
+- Botões e controlos com nomes acessíveis
+- ARIA sem erros automáticos
+- Alvos clicáveis com dimensão adequada
+
+Correções manuais:
+- Filtros rápidos passaram a ser totalmente navegáveis por teclado.
+- Botões mantêm foco durante o carregamento com `aria-disabled`.
+- Grupo de períodos identificado semanticamente.
+- Foco visível melhorado.
+- Tipografia e espaçamentos alinhados com os tokens globais.
+- Eyebrow uniformizada com as restantes páginas.
+
+
+
+a EPIC está a usar um pequeno “design system dentro do design system”, com aliases como --panel, --cloud, --glow, --text-dim, além dos tokens globais. Isso torna o CSS mais difícil de manter e cria diferenças em relação à APOD e à DONKI.
+
+
+
+Os principais problemas são:
+
+tokens duplicados dentro de .epic-page, como --panel, --glow, --cloud e --text-dim;
+classes demasiado genéricas: .btn, .card, .tag, .step, .thumb;
+muitos valores soltos em píxeis;
+breakpoints inconsistentes;
+títulos com <div> e <h4>, causando a falha de hierarquia;
+estilos inline em EpicSectionHead;
+layout mobile da timeline altera a ordem visual com CSS, mas não a ordem semântica do DOM;
+vídeo decorativo sem identificação acessível;
+estilos do vídeo duplicados entre EpicHero.css e EpicHeroVideo.css;
+inputs de data estilizados através do seletor global .epic-page input[type=date], em vez da classe do componente;
+EpicSectionHead não cria um verdadeiro título de secção;
+EpicPipeline e EpicTimeline usam <h4> sem existir necessariamente um <h3> anterior.
+
+EPIC.css
+→ apenas layout geral da página e visualizador
+
+EpicHero.css
+→ apenas o hero
+
+EpicHeroVideo.css
+→ apenas o vídeo
+
+EpicSectionHead.css
+→ cabeçalhos comuns das secções
+
+EpicPipeline.css
+→ pipeline
+
+EpicCard.css
+→ imagem detalhada
+
+EpicThumbnail.css
+→ miniaturas
+
+EpicLightbox.css
+→ modal
+
+Cada ficheiro:
+→ tokens globais
+→ nomes BEM específicos
+→ sem regras duplicadas
+→ sem aliases próprios
+→ acessibilidade e responsividade
