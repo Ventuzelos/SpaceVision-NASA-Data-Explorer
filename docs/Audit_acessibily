@@ -1,0 +1,625 @@
+Relatório Final de Auditoria de Acessibilidade
+SpaceVision – NASA Data Explorer
+
+Objetivo
+
+A auditoria teve como objetivo avaliar e melhorar a acessibilidade das principais páginas do SpaceVision, seguindo as verificações automáticas do Lighthouse e testes manuais de navegação por teclado.
+
+Foram analisados, entre outros aspetos:
+
+contraste entre texto e fundo;
+hierarquia de títulos;
+estrutura semântica;
+nomes acessíveis de botões e links;
+associação entre labels e campos;
+estados ARIA;
+foco visível;
+ordem de tabulação;
+utilização por teclado;
+suporte à preferência por movimento reduzido;
+consistência com o design system global.
+
+
+
+-----------------------------------
+Página: Homepage
+
+URL: /
+Pontuação inicial: 94/100
+Pontuação final: 100/100
+
+Problemas corrigidos
+Contraste insuficiente nos links dos cards.
+Contraste insuficiente na data do conteúdo em destaque.
+Hierarquia incorreta de headings no footer.
+Links com textos iguais, mas destinos diferentes, sem contexto acessível suficiente.
+Estados de foco pouco visíveis em alguns elementos interativos.
+Correções aplicadas
+Substituição de cores com contraste insuficiente por tokens acessíveis.
+Utilização dos tokens globais --color-link e --color-link-hover.
+Reorganização da hierarquia dos títulos no footer.
+Melhoria da estrutura semântica do footer.
+Adição de nomes acessíveis mais específicos aos links.
+Melhoria dos estados :focus-visible.
+Uniformização de tipografia, espaçamentos e cores com o design system.
+
+
+Teste manual por teclado
+
+Ordem de foco lógica: aprovado.
+Foco visível: aprovado.
+Navegação com Tab e Shift + Tab: aprovado.
+Ativação de links e botões com Enter: aprovado.
+Ausência de bloqueios de foco: aprovado.
+
+
+-----------------------------------
+Página: Login
+
+URL: /login
+Pontuação final: 100/100
+
+Resultado
+Sem problemas automáticos detetados.
+Labels corretamente associados aos campos.
+Botão de submissão com nome acessível.
+Links com texto identificável.
+Contraste aprovado.
+Estrutura semântica aprovada.
+Estados de erro apresentados de forma compreensível.
+
+
+Teste manual por teclado
+
+Ordem de foco lógica: aprovado.
+Foco visível: aprovado.
+Navegação com Tab e Shift + Tab: aprovado.
+Submissão com Enter: aprovado.
+Sem bloqueios de foco: aprovado.
+
+
+-----------------------------------
+Página: Registo
+
+URL: /register
+Pontuação final: 100/100
+
+Resultado
+Campos com labels associados.
+Contraste aprovado.
+Botão com nome acessível.
+Estrutura semântica aprovada.
+Sem erros automáticos de ARIA.
+Mensagens de validação compreensíveis.
+
+
+Teste manual por teclado
+
+Ordem de foco lógica: aprovado.
+Foco visível: aprovado.
+Navegação com Tab e Shift + Tab: aprovado.
+Submissão com Enter: aprovado.
+Sem bloqueios de foco: aprovado.
+
+
+-----------------------------------
+Página: APOD
+
+URL: /apod
+Pontuação inicial: 96/100
+Pontuação final: 100/100
+
+Problema corrigido
+Contraste insuficiente no texto com a classe .section__eyebrow.
+Correção aplicada
+Substituição da cor inicial por uma cor de link acessível em fundo escuro.
+Utilização dos tokens globais de cor.
+Uniformização dos estados de foco e dos elementos de navegação.
+Revisão da estrutura semântica dos conteúdos.
+
+
+Teste manual por teclado
+
+Ordem de foco lógica: aprovado.
+Foco visível: aprovado.
+Botões ativáveis com Enter: aprovado.
+Campo de data utilizável por teclado: aprovado.
+Navegação pelos conteúdos históricos: aprovado.
+Sem bloqueios de foco: aprovado.
+
+
+-----------------------------------
+Página: DONKI
+
+URL: /donki
+Pontuação final: 100/100
+
+Resultado automático
+Contraste aprovado.
+Estrutura semântica aprovada.
+Botões e controlos com nomes acessíveis.
+Sem erros automáticos de ARIA.
+Alvos interativos com dimensão adequada.
+Correções manuais
+Filtros rápidos tornados totalmente navegáveis por teclado.
+Substituição do atributo nativo disabled por aria-disabled durante o carregamento.
+Manutenção dos botões na ordem de tabulação enquanto os dados carregam.
+Grupo de períodos identificado semanticamente.
+Foco visível melhorado.
+Tipografia e espaçamentos alinhados com os tokens globais.
+Eyebrow uniformizada com as restantes páginas.
+Estados de carregamento e erro melhorados.
+
+
+Teste manual por teclado
+
+Filtros por tipo de evento: aprovado.
+Seleção de períodos rápidos: aprovado.
+Campos de data: aprovado.
+Paginação: aprovada.
+Abertura e fecho dos detalhes: aprovado.
+Sem bloqueios de foco: aprovado.
+
+
+-----------------------------------
+Página: EPIC
+
+URL: /epic
+Pontuação inicial: 95/100
+Pontuação final: 100/100
+
+Problemas identificados
+
+A página EPIC utilizava um pequeno design system interno, com aliases próprios como:
+
+--panel;
+--cloud;
+--glow;
+--text-dim.
+
+Esta abordagem criava diferenças visuais e técnicas em relação às páginas APOD, DONKI e restantes áreas do website.
+
+Foram também identificados:
+
+tokens duplicados dentro de .epic-page;
+classes demasiado genéricas, como .btn, .card, .tag, .step e .thumb;
+vários valores fixos em píxeis;
+breakpoints inconsistentes;
+títulos criados com elementos semânticos inadequados;
+utilização de h4 sem existência de um h3 anterior;
+estilos inline no cabeçalho das secções;
+alteração apenas visual da ordem da timeline em mobile;
+vídeo decorativo sem tratamento acessível;
+estilos do vídeo duplicados;
+seletor global para inputs de data;
+cabeçalhos de secção sem títulos semânticos reais;
+falta de suporte adequado a movimento reduzido.
+Reorganização dos ficheiros
+
+A estrutura CSS foi separada por responsabilidade:
+
+EPIC.css — layout geral da página e visualizador;
+EpicHero.css — hero da página;
+EpicHeroVideo.css — vídeo decorativo;
+EpicSectionHead.css — cabeçalhos comuns das secções;
+EpicPipeline.css — pipeline;
+EpicCard.css — imagem detalhada;
+EpicThumbnail.css — miniaturas;
+EpicLightbox.css — modal;
+EpicTimeline.css — timeline;
+EpicPanel.css — painel de seleção;
+EpicDateControls.css — controlos de data.
+Correções aplicadas
+Remoção dos aliases internos.
+Utilização exclusiva dos tokens globais.
+Adoção de nomes BEM específicos.
+Eliminação de regras duplicadas.
+Correção da hierarquia de headings.
+Utilização de h2 nos títulos das secções e h3 nos conteúdos.
+Reorganização semântica da timeline.
+Vídeo marcado como decorativo com aria-hidden e tabIndex={-1}.
+Adição de uma faixa de legendas para validação automática.
+Melhoria do lightbox com controlo de foco.
+Fecho do modal através da tecla Escape.
+Adição de suporte a prefers-reduced-motion.
+Uniformização do hero, cards, miniaturas e controlos.
+
+
+Teste manual por teclado
+
+Navegação pelas datas: aprovada.
+Miniaturas: aprovadas.
+Abertura do lightbox: aprovada.
+Contenção do foco no modal: aprovada.
+Fecho através de Escape: aprovado.
+Regresso do foco ao elemento anterior: aprovado.
+Popover de informação: aprovado.
+Sem bloqueios de foco: aprovado.
+
+
+-----------------------------------
+Página: NeoWatch
+
+URL: /neowatch
+Pontuação final: 100/100
+
+Correções aplicadas
+Inclusão de um título de secção oculto para organizar corretamente os cards.
+Correção da sequência de headings.
+Utilização de article para cada objeto próximo da Terra.
+Associação de cada card ao respetivo título.
+Conversão das estatísticas para estruturas semânticas com dl, dt e dd.
+Links com nomes acessíveis específicos para cada objeto.
+Botões de favoritos com labels que incluem o nome do asteroide.
+Indicação acessível de links externos.
+Foco visível nos controlos.
+Alinhamento do CSS com os tokens globais.
+Uniformização dos cards, filtros e paginação.
+
+
+Teste manual por teclado
+
+Filtros: aprovados.
+Ordenação: aprovada.
+Paginação: aprovada.
+Links externos: aprovados.
+Botões de favoritos: aprovados.
+Visualização 3D: aprovada.
+Sem bloqueios de foco: aprovado.
+Observação técnica
+
+Foi identificado um aviso de descontinuação relacionado com THREE.Clock. Este aviso não afeta a acessibilidade, mas deverá ser resolvido numa futura fase de manutenção técnica.
+
+
+-----------------------------------
+Página: Discover
+
+URL: /discover
+Pontuação inicial: 96/100
+Pontuação final: 100/100
+
+Problemas corrigidos
+Contraste insuficiente em títulos e links.
+Contraste insuficiente no badge “Em preparação”.
+Vídeo sem faixa de legendas.
+Falta de tratamento acessível para vídeo decorativo.
+Falta de foco visível em alguns controlos.
+Estados ativos dependentes apenas da cor.
+Inconsistências entre os vários ficheiros CSS da página.
+Animações sem alternativa para utilizadores com preferência por movimento reduzido.
+Correções aplicadas
+Substituição de --color-accent por --color-link e --color-link-hover em textos.
+Correção do badge de estado das missões.
+Vídeo marcado como decorativo.
+Adição de <track kind="captions">.
+Reformulação do hero.
+Uniformização dos estilos da galeria.
+Melhoria dos controlos do carrossel.
+Uniformização do radar de asteroides.
+Reformulação dos controlos do sistema solar.
+Inclusão de aria-pressed nos estados ativos.
+Substituição dos símbolos de reprodução por ícones acessíveis.
+Correção da hierarquia da timeline.
+Utilização de h3 nos cartões da timeline.
+Adição de regiões com aria-labelledby.
+Melhoria dos estados :focus-visible.
+Suporte a prefers-reduced-motion.
+Alinhamento geral com o design system global.
+
+
+Teste manual por teclado
+
+Botão “Surpreenda-me”: aprovado.
+Fecho do facto apresentado: aprovado.
+Controlos do carrossel: aprovados.
+Indicadores do carrossel: aprovados.
+Pausar e retomar simulação: aprovado.
+Slider de velocidade: aprovado.
+Checkbox das órbitas: aprovado.
+Seleção de planetas: aprovada.
+Timeline interativa: aprovada.
+Fecho de detalhes com Escape: aprovado.
+Sem bloqueios de foco: aprovado.
+Observações técnicas
+
+A página apresenta vários pedidos simultâneos à API APOD, podendo originar respostas 429 Too Many Requests. Esta situação afeta o desempenho, mas não a acessibilidade.
+
+
+-----------------------------------
+Página: Favoritos
+
+URL: /favorites
+Pontuação final: 100/100
+
+Resultado
+Estrutura semântica aprovada.
+Contraste aprovado.
+Cards e filtros acessíveis.
+Botões de visualização e remoção com nomes identificáveis.
+Modal de detalhes acessível.
+Estados vazios corretamente apresentados.
+Paginação acessível.
+Favoritos organizados por origem.
+
+
+Teste manual por teclado
+
+Filtros por fonte: aprovados.
+Navegação pelos cards: aprovada.
+Abertura do modal: aprovada.
+Fecho através de botão e tecla Escape: aprovado.
+Remoção de favoritos: aprovada.
+Paginação: aprovada.
+Sem bloqueios de foco: aprovado.
+
+
+-----------------------------------
+Página: Sobre nós
+
+URL: /about
+Pontuação final: 100/100
+
+Correções aplicadas
+Uniformização das eyebrows com --color-link.
+Utilização dos tokens globais de tipografia e espaçamento.
+Melhoria da estrutura semântica das secções.
+Associação das secções aos respetivos títulos através de aria-labelledby.
+Inclusão de um título oculto na área de estatísticas.
+Ícones decorativos marcados com aria-hidden.
+Links externos com labels específicos.
+Indicação de abertura numa nova janela.
+Adição de rel="noopener noreferrer".
+Foco visível nos links externos.
+Cards alinhados com o design system.
+Suporte a prefers-reduced-motion.
+Melhoria da apresentação mobile.
+
+
+Teste manual por teclado
+
+Links GitHub e LinkedIn: aprovados.
+Formulário de contacto: aprovado.
+Ordem de foco: aprovada.
+Foco visível: aprovado.
+Sem bloqueios de foco: aprovado.
+
+
+-----------------------------------
+Página: FAQ
+
+URL: /faq
+Pontuação final: 100/100
+
+Correções aplicadas
+Filtros com aria-pressed.
+Grupo de filtros identificado semanticamente.
+Acordeões estruturados com títulos h2.
+Botões associados aos respetivos painéis.
+Utilização de aria-expanded, aria-controls e aria-labelledby.
+Painéis identificados como regiões.
+Conteúdo fechado removido da árvore de acessibilidade através de hidden.
+Ícones decorativos com aria-hidden.
+Melhoria dos estados de foco.
+Substituição de cores com contraste insuficiente.
+Remoção de white-space: nowrap do título.
+Melhoria da pesquisa.
+Atualização da informação relativa aos favoritos.
+Suporte a prefers-reduced-motion.
+
+
+Teste manual por teclado
+
+Campo de pesquisa: aprovado.
+Filtros: aprovados.
+Abertura e fecho das perguntas com Enter: aprovado.
+Abertura e fecho com Espaço: aprovado.
+Manutenção do foco no botão do acordeão: aprovada.
+Sem bloqueios de foco: aprovado.
+
+
+-----------------------------------
+Página: Perfil
+
+URL: /profile
+Pontuação final: 100/100
+
+Resultado
+Estrutura semântica aprovada.
+Contraste aprovado.
+Navegação lateral acessível.
+Botões com nomes acessíveis.
+Estados de foco visíveis.
+Formulários com labels associados.
+Ações críticas identificadas corretamente.
+
+
+Teste manual por teclado
+
+Menu “Minha conta”: aprovado.
+Navegação lateral: aprovada.
+Botão de edição: aprovado.
+Download de dados: aprovado.
+Eliminação da conta: aprovada.
+Terminar sessão: aprovado.
+Modais e confirmações: aprovados.
+Sem bloqueios de foco: aprovado.
+
+
+-----------------------------------
+Página: Administração
+
+URL: /admin
+Pontuação inicial: 92/100
+Pontuação final: 100/100
+
+Problemas corrigidos
+Contraste insuficiente em vários elementos.
+Opacidade aplicada ao cartão inteiro das mensagens lidas.
+Falta de estados acessíveis nos filtros.
+Foco pouco visível em alguns controlos.
+Estrutura semântica incompleta.
+Ícones decorativos sem identificação adequada.
+Valores e barras de progresso sem semântica explícita.
+Estilos desalinhados com o restante website.
+Correções aplicadas
+Contraste corrigido.
+Remoção da opacidade global dos cartões lidos.
+Filtros com aria-pressed.
+Campo de pesquisa e ordenação com foco visível.
+Secções associadas aos respetivos títulos.
+Inclusão de um título oculto na área das estatísticas.
+Barras de favoritos com role="progressbar".
+Ícones decorativos marcados com aria-hidden.
+Links de email com contraste e foco adequados.
+Estados de mensagens lidas e por ler visualmente distinguíveis.
+Botões de marcar como lida e eliminar com foco visível.
+Cartões e filtros alinhados com o design system.
+Suporte a prefers-reduced-motion.
+Erro de lint no adminService.js resolvido.
+Build concluído sem erros.
+
+
+Teste manual por teclado
+
+Campo de pesquisa: aprovado.
+Filtros “Todas”, “Por ler” e “Lidas”: aprovados.
+Ordenação: aprovada.
+Links de email: aprovados.
+Botão “Marcar como lida”: aprovado.
+Botão “Eliminar”: aprovado.
+Confirmação de eliminação: aprovada.
+Menu da conta: aprovado.
+Sem bloqueios de foco: aprovado.
+
+
+-----------------------------------
+Página: Recuperação da palavra-passe
+
+URL: /forgot-password
+Pontuação final: 100/100
+
+Resultado
+Campo de email com label associado.
+Botão com nome acessível.
+Mensagens de erro e sucesso compreensíveis.
+Contraste aprovado.
+Estrutura semântica aprovada.
+Link de regresso ao login acessível.
+
+
+Teste manual por teclado
+
+Ordem de foco: aprovada.
+Campo de email: aprovado.
+Submissão com Enter: aprovada.
+Mensagens de erro: aprovadas.
+Link de regresso: aprovado.
+Sem bloqueios de foco: aprovado.
+Página: Redefinição da palavra-passe
+
+URL: /reset-password
+Pontuação final: 100/100
+
+Resultado
+Campos corretamente identificados.
+Labels associados.
+Botão de submissão acessível.
+Contraste aprovado.
+Mensagens de validação compreensíveis.
+Estrutura semântica aprovada.
+
+
+
+
+Teste manual por teclado
+
+
+Ordem de foco: aprovada.
+Navegação com Tab e Shift + Tab: aprovada.
+Submissão com Enter: aprovada.
+Mensagens de erro e sucesso: aprovadas.
+Sem bloqueios de foco: aprovado.
+
+-----------------------------------
+Página: Erro 404
+
+URL: rota inexistente
+Pontuação inicial: 98/100
+Pontuação final: 100/100
+
+#Problema corrigido
+Ausência de um landmark principal no documento.
+Correções aplicadas
+Substituição do elemento exterior <section> por <main>.
+Melhoria do nome acessível da ilustração SVG.
+Ícone do botão de regresso marcado como decorativo.
+Eyebrow alinhada com os tokens globais.
+Adição de foco visível aos links.
+Remoção da repetição desnecessária do número 404 no texto descritivo.
+
+
+
+
+Teste manual por teclado
+
+
+Link “Voltar ao início”: aprovado.
+Link “Ver FAQ”: aprovado.
+Foco visível: aprovado.
+Ordem de foco: aprovada.
+Sem bloqueios de foco: aprovado.
+Validação técnica
+
+Após as alterações, foram executados os seguintes comandos:
+
+npm run lint
+npm run build
+
+##Resultado
+ESLint concluído sem erros.
+Build de produção concluído sem erros.
+Todas as páginas principais atingiram 100/100 no Lighthouse Accessibility.
+
+
+#Resultado final
+
+A auditoria de acessibilidade das principais páginas do SpaceVision foi concluída com sucesso.
+
+#Páginas com 100/100
+Homepage
+Login
+Registo
+APOD
+DONKI
+EPIC
+NeoWatch
+Discover
+Favoritos
+Sobre nós
+FAQ
+Perfil
+Administração
+Recuperação da palavra-passe
+Redefinição da palavra-passe
+Erro 404
+
+#Melhorias globais alcançadas
+Contraste de cores adequado.
+Hierarquia de headings consistente.
+Landmarks semânticos corretamente utilizados.
+Botões e links com nomes acessíveis.
+Foco visível em elementos interativos.
+Estados ativos comunicados para além da cor.
+Navegação completa por teclado.
+Modais e conteúdos expansíveis acessíveis.
+Ícones decorativos ocultados dos leitores de ecrã.
+Suporte a prefers-reduced-motion.
+Utilização consistente dos tokens globais.
+CSS reorganizado e mais fácil de manter.
+Design visual mais uniforme entre páginas.
+Lint e build concluídos sem erros.
+Conclusão
+
+O SpaceVision apresenta agora uma experiência mais acessível, consistente e robusta. As principais funcionalidades podem ser utilizadas com teclado, os conteúdos possuem uma estrutura semântica clara e os componentes seguem padrões visuais e técnicos comuns.
+
+A auditoria automática foi complementada por testes manuais, garantindo que a pontuação do Lighthouse corresponde também a uma utilização prática adequada.
