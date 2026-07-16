@@ -1,13 +1,32 @@
-.epic-page #timeline { padding-bottom:60px; }
-.epic-page .timeline-spacer { height:40px; }
-.epic-page .timeline-card {
-  background:var(--panel);
-  border:1px solid var(--line-strong);
-  border-radius:20px;
-  padding:40px clamp(20px, 4vw, 48px) 32px;
-  box-shadow:var(--shadow-md);
+.epic-page #timeline {
+  padding-bottom: var(--space-8);
 }
-@media(max-width:900px) {
-  .epic-page .timeline-spacer { height:24px; }
-  .epic-page .timeline-card { padding:28px 22px 24px; }
+
+.epic-page .timeline-spacer {
+  height: var(--space-5);
+}
+
+.epic-page .timeline-card {
+  padding:
+    var(--space-6)
+    clamp(var(--space-5), 4vw, var(--space-7));
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-md);
+}
+
+@media (max-width: 600px) {
+  .epic-page #timeline {
+    padding-bottom: var(--space-7);
+  }
+
+  .epic-page .timeline-spacer {
+    height: var(--space-4);
+  }
+
+  .epic-page .timeline-card {
+    padding: var(--space-5);
+    border-radius: var(--radius-lg);
+  }
 }

@@ -1,57 +1,111 @@
-.epic-page .card {
-  background:var(--panel);
-  border:1px solid var(--line-strong);
-  border-radius:16px;
-  padding:20px;
+.epic-page .epic-card {
+  min-width: 0;
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
 }
-.epic-page .card-header {
-  display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:16px;
+
+.epic-page .epic-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
 }
-.epic-page .card-title { font-family:var(--disp);font-size:16px;font-weight:600;color:var(--cloud); }
-.epic-page .card-label { font-family:var(--mono);font-size:12px;color:var(--text-dim); }
-.epic-page .card-image-wrap {
-  position:relative;
-  margin:0 auto;
+
+.epic-page .epic-card__title {
+  color: var(--color-text);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
 }
-.epic-page .card .favorite-button {
-  position:absolute;
-  top:12px;right:12px;
-  background:rgba(4,7,14,0.65);
-  backdrop-filter:blur(2px);
-  border-color:transparent;
+
+.epic-page .epic-card__time {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
 }
-.epic-page .epic-detail-image {
-  display:block;
-  width:100%;
-  border-radius:var(--radius-md);
-  cursor:zoom-in;
+
+.epic-page .epic-card__image-wrapper {
+  position: relative;
+  margin-inline: auto;
 }
-.epic-page .epic-detail-image:focus-visible {
-  outline:3px solid var(--glow);
-  outline-offset:4px;
+
+.epic-page .epic-card__image {
+  display: block;
+  width: 100%;
+  border-radius: var(--radius-md);
+  cursor: zoom-in;
 }
-.epic-page .epic-image-fallback {
-  display:flex;
-  min-height:360px;
-  align-items:center;justify-content:center;flex-direction:column;
-  gap:0.5rem;
-  padding:2rem;
-  border:1px dashed var(--line-strong);
-  border-radius:var(--radius-md);
-  background:var(--panel-2);
-  color:var(--text-dim);
-  text-align:center;
+
+.epic-page .epic-card__image:hover {
+  opacity: 0.96;
 }
-.epic-page .epic-image-fallback strong { color:var(--cloud); }
+
+.epic-page .epic-card__image:focus-visible {
+  outline: 3px solid var(--color-link);
+  outline-offset: 4px;
+}
+
+.epic-page .epic-card__image-wrapper .favorite-button {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  border-color: transparent;
+  background: rgba(4, 7, 14, 0.72);
+  backdrop-filter: blur(2px);
+}
+
+.epic-page .epic-card__fallback {
+  display: flex;
+  min-height: 22.5rem;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-6);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-light);
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+.epic-page .epic-card__fallback strong {
+  color: var(--color-text);
+  font-weight: var(--font-weight-semibold);
+}
+
 .epic-page .epic-card__metadata {
-  margin-top:0.75rem;
-  color:var(--color-text-secondary);
-  font-size:0.75rem;
-  text-align:center;
+  margin-top: var(--space-3);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-normal);
+  text-align: center;
 }
-.epic-page .epic-card__metadata p { margin:0.35rem 0 0; }
-.epic-page .epic-card__caption { margin-bottom:0.5rem; }
-@media(max-width:600px) {
-  .epic-page .epic-image-fallback { min-height:240px; }
+
+.epic-page .epic-card__metadata p {
+  margin: var(--space-1) 0 0;
+}
+
+.epic-page .epic-card__caption {
+  margin-bottom: var(--space-2);
+}
+
+@media (max-width: 600px) {
+  .epic-page .epic-card {
+    padding: var(--space-4);
+  }
+
+  .epic-page .epic-card__header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .epic-page .epic-card__fallback {
+    min-height: 15rem;
+    padding: var(--space-5);
+  }
 }

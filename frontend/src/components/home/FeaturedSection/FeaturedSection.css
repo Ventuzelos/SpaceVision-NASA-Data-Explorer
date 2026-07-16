@@ -7,3 +7,14 @@
   flex-direction: column;
   gap: var(--space-6);
 }
+.featured-card__date {
+  color: var(--color-link);
+}
+
+.featured-card__link {
+  color: var(--color-link);
+}
+
+.featured-card__link:hover {
+  color: var(--color-link-hover);
+}

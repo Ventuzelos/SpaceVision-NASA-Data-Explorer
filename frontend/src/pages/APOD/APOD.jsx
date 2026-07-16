@@ -8,7 +8,6 @@ import {
 import APODSkeleton from "../../components/apod/APODSkeleton/APODSkeleton";
 import Breadcrumb from "../../components/common/Breadcrumb/Breadcrumb";
 import Section from "../../components/common/Section/Section";
-import Button from "../../components/common/Button/Button";
 import Carousel from "../../components/common/Carousel/Carousel";
 import APODHistoryCard from "../../components/apod/APODHistoryCard/APODHistoryCard";
 import ErrorState from "../../components/common/ErrorState/ErrorState";
@@ -86,21 +85,6 @@ function APOD() {
     }
   }
 
-  function loadTodayApod() {
-    setActiveHistory("");
-    loadApod();
-  }
-
-  function handleDateSubmit(event) {
-    event.preventDefault();
-
-    if (!selectedDate) {
-      return;
-    }
-
-    setActiveHistory("");
-    loadApod(selectedDate);
-  }
 
   function handleHistorySelect(selectedItem) {
     setApod(selectedItem);
@@ -177,63 +161,6 @@ useEffect(() => {
         </Section>
       </Container>
 
-      <section className="apod-archive">
-        <Container>
-          <div className="apod-archive__box">
-            <div>
-              <p className="apod-archive__label">
-                Arquivo APOD
-              </p>
-
-              <h2>Explora imagens de outros dias</h2>
-
-              <p>
-                Escolhe uma data e descobre qual foi a imagem
-                astronómica publicada pela NASA nesse dia.
-              </p>
-            </div>
-
-            <form
-              className="apod-archive__form"
-              onSubmit={handleDateSubmit}
-            >
-              <div className="apod-archive__field">
-                <label htmlFor="apod-date">
-                  Data da imagem
-                </label>
-
-                <input
-                  id="apod-date"
-                  type="date"
-                  value={selectedDate}
-                  max={new Date().toISOString().split("T")[0]}
-                  disabled={isLoading}
-                  onChange={(event) =>
-                    setSelectedDate(event.target.value)
-                  }
-                />
-              </div>
-
-              <Button
-                type="submit"
-                disabled={isLoading || !selectedDate}
-              >
-                {isLoading ? "A carregar..." : "Pesquisar"}
-              </Button>
-
-              <Button
-                type="button"
-                variant="secondary"
-                disabled={isLoading}
-                onClick={loadTodayApod}
-              >
-                Hoje
-              </Button>
-            </form>
-          </div>
-        </Container>
-      </section>
-      
     </main>
   );
 }

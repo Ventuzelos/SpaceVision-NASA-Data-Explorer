@@ -221,8 +221,8 @@ function DiscovrGallery() {
                 href={currentPhoto.url}
                 download
                 target="_blank"
-                rel="noreferrer"
-                aria-label="Descarregar imagem"
+                rel="noopener noreferrer"
+                aria-label={`Descarregar a imagem ${currentPhoto.title}, abre numa nova janela`}
               >
                 <Icon name="Download" size={18} />
               </a>
@@ -232,9 +232,10 @@ function DiscovrGallery() {
                 href={buildApodPageUrl(currentPhoto.date)}
                 target="_blank"
                 rel="noreferrer"
+                aria-label={`Ver a imagem completa ${currentPhoto.title} no site APOD da NASA, abre numa nova janela`}
               >
                 Ver imagem completa
-                <Icon name="ArrowRight" size={14} />
+                <Icon name="ArrowRight" size={14} aria-hidden="true"/>
               </a>
             </div>
           </div>
