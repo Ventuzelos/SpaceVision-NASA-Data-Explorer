@@ -1,8 +1,8 @@
 import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
-import Container from "../../components/common/Container/Container";
-import Button from "../../components/common/Button/Button";
+import AuthGalaxyLayout from "../../components/common/AuthGalaxyLayout/AuthGalaxyLayout";
 import useAuth from "../../hooks/useAuth";
 
 import "./Register.css";
@@ -18,8 +18,17 @@ function Register() {
     passwordConfirmation: "",
   });
 
+  const [showPassword, setShowPassword] =
+    useState(false);
+
+  const [
+    showPasswordConfirmation,
+    setShowPasswordConfirmation,
+  ] = useState(false);
+
   const [error, setError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] =
+    useState(false);
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -36,12 +45,19 @@ function Register() {
     setError("");
 
     if (formData.password.length < 8) {
-      setError("A palavra-passe deve ter pelo menos 8 caracteres.");
+      setError(
+        "A palavra-passe deve ter pelo menos 8 caracteres."
+      );
       return;
     }
 
-    if (formData.password !== formData.passwordConfirmation) {
-      setError("As palavras-passe não coincidem.");
+    if (
+      formData.password !==
+      formData.passwordConfirmation
+    ) {
+      setError(
+        "As palavras-passe não coincidem."
+      );
       return;
     }
 
@@ -52,12 +68,16 @@ function Register() {
         name: formData.name.trim(),
         email: formData.email.trim(),
         password: formData.password,
-        password_confirmation: formData.passwordConfirmation,
+        password_confirmation:
+          formData.passwordConfirmation,
       });
 
       navigate("/");
     } catch (requestError) {
-      console.error("Erro no registo:", requestError);
+      console.error(
+        "Erro no registo:",
+        requestError
+      );
 
       const validationErrors =
         requestError.response?.data?.errors;
@@ -76,127 +96,202 @@ function Register() {
   }
 
   return (
-    <main className="auth-page">
-      <section className="auth-hero">
-        <Container>
-          <p className="auth-hero__label">
-            Junta-te a nós
+    <AuthGalaxyLayout
+      title="Começa a tua exploração do Universo."
+      description="Cria uma conta para guardares conteúdos, acompanhares descobertas e personalizares a tua experiência SpaceVision."
+      sectionLabel="Criar uma conta SpaceVision"
+    >
+      <div className="register-card">
+        <div className="register-card__header">
+          <p className="register-card__eyebrow">
+            Junta-te ao SpaceVision
           </p>
 
-          <h1>Cria a tua conta</h1>
+          <h1 id="register-title">
+            Criar conta
+          </h1>
 
-          <p className="auth-hero__text">
-            Regista-te para guardares os teus conteúdos favoritos e
-            personalizares a tua experiência SpaceVision.
+          <p className="register-card__description">
+            Guarda os teus favoritos e continua a tua
+            exploração em qualquer momento.
           </p>
-        </Container>
-      </section>
+        </div>
 
-      <section className="auth-content">
-        <Container>
-          <div className="auth-card">
-            <form
-              className="auth-form"
-              onSubmit={handleSubmit}
-              noValidate
-            >
-              <div className="auth-field">
-                <label htmlFor="name">
-                  Nome
-                </label>
+        <form
+          className="register-form"
+          onSubmit={handleSubmit}
+          noValidate
+        >
+          <div className="register-field">
+            <label htmlFor="name">
+              Nome
+            </label>
 
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  autoComplete="name"
-                  placeholder="O teu nome"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div className="auth-field">
-                <label htmlFor="email">
-                  Email
-                </label>
-
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  placeholder="o-teu-email@exemplo.com"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div className="auth-field">
-                <label htmlFor="password">
-                  Palavra-passe
-                </label>
-
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="new-password"
-                  placeholder="Mínimo de 8 caracteres"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                  minLength={8}
-                />
-              </div>
-
-              <div className="auth-field">
-                <label htmlFor="passwordConfirmation">
-                  Confirmar palavra-passe
-                </label>
-
-                <input
-                  id="passwordConfirmation"
-                  name="passwordConfirmation"
-                  type="password"
-                  autoComplete="new-password"
-                  placeholder="Repete a palavra-passe"
-                  value={formData.passwordConfirmation}
-                  onChange={handleChange}
-                  required
-                  minLength={8}
-                />
-              </div>
-
-              {error && (
-                <p className="auth-error" role="alert">
-                  {error}
-                </p>
-              )}
-
-              <Button
-                type="submit"
-                variant="primary"
-                disabled={isSubmitting}
-              >
-                {isSubmitting
-                  ? "A criar conta..."
-                  : "Criar conta"}
-              </Button>
-            </form>
-
-            <p className="auth-switch">
-              Já tens conta?{" "}
-              <Link to="/login">
-                Entrar
-              </Link>
-            </p>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              autoComplete="name"
+              placeholder="O teu nome"
+              value={formData.name}
+              onChange={handleChange}
+              required
+            />
           </div>
-        </Container>
-      </section>
-    </main>
+
+          <div className="register-field">
+            <label htmlFor="email">
+              Email
+            </label>
+
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              placeholder="o-teu-email@exemplo.com"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="register-field">
+            <label htmlFor="password">
+              Palavra-passe
+            </label>
+
+            <div className="register-password">
+              <input
+                id="password"
+                name="password"
+                type={
+                  showPassword
+                    ? "text"
+                    : "password"
+                }
+                autoComplete="new-password"
+                placeholder="Mínimo de 8 caracteres"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                minLength={8}
+              />
+
+              <button
+                type="button"
+                className="register-password__toggle"
+                onClick={() =>
+                  setShowPassword(
+                    (current) => !current
+                  )
+                }
+                aria-label={
+                  showPassword
+                    ? "Ocultar palavra-passe"
+                    : "Mostrar palavra-passe"
+                }
+                aria-pressed={showPassword}
+              >
+                {showPassword ? (
+                  <EyeOff
+                    size={20}
+                    aria-hidden="true"
+                  />
+                ) : (
+                  <Eye
+                    size={20}
+                    aria-hidden="true"
+                  />
+                )}
+              </button>
+            </div>
+          </div>
+
+          <div className="register-field">
+            <label htmlFor="passwordConfirmation">
+              Confirmar palavra-passe
+            </label>
+
+            <div className="register-password">
+              <input
+                id="passwordConfirmation"
+                name="passwordConfirmation"
+                type={
+                  showPasswordConfirmation
+                    ? "text"
+                    : "password"
+                }
+                autoComplete="new-password"
+                placeholder="Repete a palavra-passe"
+                value={
+                  formData.passwordConfirmation
+                }
+                onChange={handleChange}
+                required
+                minLength={8}
+              />
+
+              <button
+                type="button"
+                className="register-password__toggle"
+                onClick={() =>
+                  setShowPasswordConfirmation(
+                    (current) => !current
+                  )
+                }
+                aria-label={
+                  showPasswordConfirmation
+                    ? "Ocultar confirmação da palavra-passe"
+                    : "Mostrar confirmação da palavra-passe"
+                }
+                aria-pressed={
+                  showPasswordConfirmation
+                }
+              >
+                {showPasswordConfirmation ? (
+                  <EyeOff
+                    size={20}
+                    aria-hidden="true"
+                  />
+                ) : (
+                  <Eye
+                    size={20}
+                    aria-hidden="true"
+                  />
+                )}
+              </button>
+            </div>
+          </div>
+
+          {error && (
+            <p
+              className="register-error"
+              role="alert"
+            >
+              {error}
+            </p>
+          )}
+
+          <button
+            className="register-submit"
+            type="submit"
+            disabled={isSubmitting}
+          >
+            {isSubmitting
+              ? "A criar conta..."
+              : "Criar conta"}
+          </button>
+        </form>
+
+        <p className="register-switch">
+          Já fazes parte do SpaceVision?{" "}
+          <Link to="/login">
+            Entrar
+          </Link>
+        </p>
+      </div>
+    </AuthGalaxyLayout>
   );
 }
 
