@@ -15,12 +15,12 @@ export default function EpicDateControls({
 
   return (
     <form
-      className="date-controls"
+      className="epic-date-controls"
       onSubmit={handleSubmit}
     >
-      <div className="date-controls__field">
+      <div className="epic-date-controls__field">
         <label
-          className="field-label"
+          className="epic-date-controls__label"
           htmlFor="epic-date"
         >
           Data
@@ -46,7 +46,7 @@ export default function EpicDateControls({
         {validationError && (
           <span
             id="epic-date-error"
-            className="date-controls__error"
+            className="epic-date-controls__error"
             role="alert"
           >
             {validationError}
@@ -55,15 +55,15 @@ export default function EpicDateControls({
       </div>
 
       <button
-        className="btn"
+        className="epic-date-controls__button"
         type="submit"
         disabled={loading}
       >
-        {loading ? 'A carregar...' : 'Carregar'}
+        {loading ? "A carregar..." : "Carregar"}
       </button>
 
       <button
-        className="btn"
+        className="epic-date-controls__button"
         type="button"
         disabled={loading}
         onClick={onLatest}

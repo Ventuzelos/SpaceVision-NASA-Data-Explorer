@@ -158,10 +158,11 @@ function DiscovrTimeline() {
         <div
           className="discovr-timeline-scene__bg"
           style={{ backgroundImage: `url(${sceneImage})` }}
+          aria-hidden="true"
         />
-        <div className="discovr-timeline-scene__overlay" />
+        <div className="discovr-timeline-scene__overlay" aria-hidden="true" />
 
-        <div 
+        <div
           className={`discovr-timeline-scene__path ${isDragging ? "grabbing" : ""}`}
           ref={pathRef}
           onMouseDown={handleMouseDown}
@@ -192,12 +193,12 @@ function DiscovrTimeline() {
                 >
                   <button
                     type="button"
-                    className={`discovr-timeline-scene__dot${
-                      mission.active ? " discovr-timeline-scene__dot--active" : ""
-                    }${isOpen || isHovered ? " discovr-timeline-scene__dot--open" : ""}`}
+                    className={`discovr-timeline-scene__dot${mission.active ? " discovr-timeline-scene__dot--active" : ""
+                      }${isOpen || isHovered ? " discovr-timeline-scene__dot--open" : ""}`}
                     onClick={() => handleToggle(index)}
                     disabled={isMobile} // Desativa interações do botão no mobile
                     aria-expanded={isOpen}
+                    aria-pressed={isOpen}
                     aria-controls={cardId}
                     aria-label={`${mission.year} — ${mission.title}`}
                   />
@@ -211,28 +212,36 @@ function DiscovrTimeline() {
                       onClick={() => handleToggle(index)}
                       onMouseEnter={() => setHoveredIndex(index)}
                       onMouseLeave={() => setHoveredIndex(null)}
-                      disabled={isMobile} // Desativa interações do botão no mobile
+                      disabled={isMobile}
                       aria-expanded={isOpen}
+                      aria-pressed={isOpen}
                       aria-controls={cardId}
                     >
                       {mission.year}
                     </button>
 
                     {isOpen && (
-                      <div id={cardId} className="discovr-timeline-scene__card">
-                        {/* MODIFICADO: Esconde o botão 'X' de fechar no mobile, já que as cartas devem ficar sempre visíveis */}
+                      <div
+                        id={cardId}
+                        className="discovr-timeline-scene__card"
+                        role="region"
+                        aria-labelledby={`${cardId}-title`}
+                      >
                         {!isMobile && (
                           <button
                             type="button"
                             className="discovr-timeline-scene__card-close"
                             onClick={() => setOpenIndex(null)}
-                            aria-label="Fechar"
+                            aria-label={`Fechar detalhes de ${mission.title}`}
                           >
-                            <Icon name="X" size={14} />
+                            <Icon name="X" size={14} aria-hidden="true" />
                           </button>
                         )}
 
-                        <h4>{mission.title}</h4>
+                        <h3 id={`${cardId}-title`}>
+                          {mission.title}
+                        </h3>
+
                         <p>{mission.text}</p>
                       </div>
                     )}

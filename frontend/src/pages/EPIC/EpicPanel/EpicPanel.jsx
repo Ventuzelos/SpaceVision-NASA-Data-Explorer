@@ -126,7 +126,7 @@ export default function EpicPanel({
   if (loading) {
     return (
       <div
-        className="thumb-panel"
+        className="epic-panel"
         aria-busy="true"
         aria-label="A carregar imagens EPIC"
       >
@@ -137,7 +137,7 @@ export default function EpicPanel({
 
   if (error) {
     return (
-      <div className="thumb-panel">
+      <div className="epic-panel">
         <ErrorState
           title="Não foi possível carregar as imagens"
           message={error}
@@ -149,7 +149,7 @@ export default function EpicPanel({
 
   if (!photos?.length) {
     return (
-      <div className="thumb-panel">
+      <div className="epic-panel">
         <div className="epic-empty-state" role="status">
           <h3>Nenhuma imagem disponível</h3>
 
@@ -163,19 +163,19 @@ export default function EpicPanel({
   }
 
   return (
-    <div className="thumb-panel">
-      <div className="meta-row">
-        <span className="tag tag-glow">
+    <div className="epic-panel">
+      <div className="epic-panel__meta">
+        <span className="epic-panel__tag epic-panel__tag--highlight">
           {photos.length} CAPTURAS
         </span>
 
         <EpicDscovrInfo />
 
-        <span className="tag">{date}</span>
+        <span className="epic-panel__tag">{date}</span>
       </div>
 
-      <div className="grid-wrap">
-        <div className="thumb-grid">
+      <div className="epic-panel__content">
+        <div className="epic-panel__grid">
           {paginatedItems.map((photo, index) => (
             <EpicThumbnail
               key={`${photo.image}-${index}`}

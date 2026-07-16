@@ -18,7 +18,7 @@ import { teamMembers } from "../../data/team";
 
 import "./About.css";
 
-const projectStats = [
+const PROJECT_STATS = [
   {
     value: "4",
     label: "Elementos na equipa",
@@ -41,7 +41,7 @@ const projectStats = [
   },
 ];
 
-const technologies = [
+const TECHNOLOGIES = [
   {
     name: "React",
     description:
@@ -68,13 +68,16 @@ function About() {
       <Container>
         <Breadcrumb title="Sobre nós" />
 
-        <section className="about-hero">
+        <section
+          className="about-hero"
+          aria-labelledby="about-page-title"
+        >
           <div className="about-hero__content">
             <p className="about-page__eyebrow">
               O projeto por detrás da exploração
             </p>
 
-            <h1>
+            <h1 id="about-page-title">
               Tornamos os dados da NASA mais próximos de todos.
             </h1>
 
@@ -90,7 +93,10 @@ function About() {
             </p>
           </div>
 
-          <div className="about-hero__visual" aria-hidden="true">
+          <div
+            className="about-hero__visual"
+            aria-hidden="true"
+          >
             <div className="about-orbit about-orbit--outer">
               <div className="about-orbit__planet" />
             </div>
@@ -102,7 +108,7 @@ function About() {
             </div>
 
             <div className="about-hero__core">
-              { <Sparkles size={42} /> /*adicionar imagem aqui */}
+              <Sparkles size={42} />
               <span>SpaceVision</span>
             </div>
           </div>
@@ -110,30 +116,50 @@ function About() {
 
         <section
           className="about-stats"
-          aria-label="Informação geral do projeto"
+          aria-labelledby="about-stats-title"
         >
-          {projectStats.map(({ value, label, icon: Icon }) => (
-            <article key={label} className="about-stat">
-              <div className="about-stat__icon">
-                <Icon size={20} aria-hidden="true" />
-              </div>
+          <h2
+            id="about-stats-title"
+            className="sr-only"
+          >
+            Informação geral do projeto
+          </h2>
 
-              <div>
-                <strong>{value}</strong>
-                <span>{label}</span>
-              </div>
-            </article>
-          ))}
+          {PROJECT_STATS.map(
+            ({ value, label, icon: StatIcon }) => (
+              <article
+                key={label}
+                className="about-stat"
+              >
+                <div
+                  className="about-stat__icon"
+                  aria-hidden="true"
+                >
+                  <StatIcon size={20} />
+                </div>
+
+                <div className="about-stat__content">
+                  <strong>{value}</strong>
+                  <span>{label}</span>
+                </div>
+              </article>
+            )
+          )}
         </section>
 
-        <section className="about-section">
+        <section
+          className="about-section"
+          aria-labelledby="about-mission-title"
+        >
           <div className="about-section__heading">
             <div>
               <p className="about-page__eyebrow">
                 A nossa missão
               </p>
 
-              <h2>Do dado científico à descoberta</h2>
+              <h2 id="about-mission-title">
+                Do dado científico à descoberta
+              </h2>
             </div>
 
             <p>
@@ -179,14 +205,19 @@ function About() {
           </div>
         </section>
 
-        <section className="about-section">
+        <section
+          className="about-section"
+          aria-labelledby="about-technology-title"
+        >
           <div className="about-section__heading">
             <div>
               <p className="about-page__eyebrow">
                 Tecnologia
               </p>
 
-              <h2>Construído como um produto digital real</h2>
+              <h2 id="about-technology-title">
+                Construído como um produto digital real
+              </h2>
             </div>
 
             <p>
@@ -196,14 +227,21 @@ function About() {
           </div>
 
           <div className="about-technologies">
-            {technologies.map(
-              ({ name, description, icon: Icon }) => (
+            {TECHNOLOGIES.map(
+              ({
+                name,
+                description,
+                icon: TechnologyIcon,
+              }) => (
                 <article
                   key={name}
                   className="about-technology-card"
                 >
-                  <div className="about-technology-card__icon">
-                    <Icon size={24} aria-hidden="true" />
+                  <div
+                    className="about-technology-card__icon"
+                    aria-hidden="true"
+                  >
+                    <TechnologyIcon size={24} />
                   </div>
 
                   <div>
@@ -216,19 +254,25 @@ function About() {
           </div>
         </section>
 
-        <section className="about-section">
+        <section
+          className="about-section"
+          aria-labelledby="about-team-title"
+        >
           <div className="about-section__heading">
             <div>
               <p className="about-page__eyebrow">
                 A equipa
               </p>
 
-              <h2>Quatro pessoas, uma missão</h2>
+              <h2 id="about-team-title">
+                Quatro pessoas, uma missão
+              </h2>
             </div>
 
             <p>
-              Cada elemento ficou responsável pela integração de uma API principal,
-              participando também no desenvolvimento frontend e backend da plataforma.
+              Cada elemento ficou responsável pela integração de uma API
+              principal, participando também no desenvolvimento frontend e
+              backend da plataforma.
             </p>
           </div>
 
@@ -246,8 +290,11 @@ function About() {
                     {member.name.charAt(0).toUpperCase()}
                   </div>
 
-                  <span className="about-team-card__number">
-                    0{index + 1}
+                  <span
+                    className="about-team-card__number"
+                    aria-hidden="true"
+                  >
+                    {String(index + 1).padStart(2, "0")}
                   </span>
                 </div>
 
@@ -257,6 +304,7 @@ function About() {
                   <p className="about-team-card__role">
                     {member.role}
                   </p>
+
                   {member.api && (
                     <p className="about-team-card__api">
                       API principal: {member.api}
@@ -270,15 +318,22 @@ function About() {
                 </div>
 
                 {(member.github || member.linkedin) && (
-                  <div className="about-team-card__links">
+                  <div
+                    className="about-team-card__links"
+                    aria-label={`Perfis profissionais de ${member.name}`}
+                  >
                     {member.github && (
                       <a
                         href={member.github}
                         target="_blank"
-                        rel="noreferrer"
-                        aria-label={`GitHub de ${member.name}`}
+                        rel="noopener noreferrer"
+                        aria-label={`Abrir o GitHub de ${member.name} numa nova janela`}
+                        title={`GitHub de ${member.name}`}
                       >
-                        <ExternalLink size={18} />
+                        <ExternalLink
+                          size={18}
+                          aria-hidden="true"
+                        />
                       </a>
                     )}
 
@@ -286,10 +341,14 @@ function About() {
                       <a
                         href={member.linkedin}
                         target="_blank"
-                        rel="noreferrer"
-                        aria-label={`LinkedIn de ${member.name}`}
+                        rel="noopener noreferrer"
+                        aria-label={`Abrir o LinkedIn de ${member.name} numa nova janela`}
+                        title={`LinkedIn de ${member.name}`}
                       >
-                        <ExternalLink size={18} />
+                        <ExternalLink
+                          size={18}
+                          aria-hidden="true"
+                        />
                       </a>
                     )}
                   </div>
@@ -299,13 +358,18 @@ function About() {
           </div>
         </section>
 
-        <section className="about-contact">
+        <section
+          className="about-contact"
+          aria-labelledby="about-contact-title"
+        >
           <div className="about-contact__intro">
             <p className="about-page__eyebrow">
               Contacto
             </p>
 
-            <h2>Vamos falar sobre o Universo?</h2>
+            <h2 id="about-contact-title">
+              Vamos falar sobre o Universo?
+            </h2>
 
             <p>
               Encontraste um problema, tens uma sugestão ou queres saber mais
@@ -323,7 +387,10 @@ function About() {
               </div>
 
               <div>
-                <ExternalLink size={19} aria-hidden="true" />
+                <ExternalLink
+                  size={19}
+                  aria-hidden="true"
+                />
 
                 <span>
                   Os dados científicos pertencem às respetivas fontes e

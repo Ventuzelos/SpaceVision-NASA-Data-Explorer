@@ -8,21 +8,20 @@
 }
 
 .donki-page__eyebrow {
-  display: inline-block;
-  color: var(--color-accent);
+  margin: 0 0 .5rem;
+  color: var(--color-link);
+  font-size: .875rem;
   font-weight: 600;
-  font-size: 0.85rem;
-  letter-spacing: 0.05em;
   text-transform: uppercase;
-  margin-bottom: var(--space-3);
+  letter-spacing: .08em;
 }
 
-.donki-page__header h1 {
-  margin-bottom: var(--space-4);
-}
 
 .donki-page__header p {
+  max-width: 720px;
+  margin-top: .75rem;
   color: var(--color-text-secondary);
+  line-height: 1.7;
 }
 
 .donki-page__results {

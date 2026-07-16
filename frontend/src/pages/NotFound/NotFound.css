@@ -17,6 +17,12 @@
   backdrop-filter: blur(12px);
 }
 
+.notfound__btn:focus-visible {
+  outline: 2px solid var(--color-link);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.18);
+}
+
 .notfound__image {
   display: flex;
   justify-content: center;
@@ -30,12 +36,12 @@
 
 .notfound__eyebrow {
   display: inline-block;
-  color: var(--color-accent);
-  font-weight: 600;
-  font-size: 0.8rem;
+  margin-bottom: var(--space-3);
+  color: var(--color-link);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  margin-bottom: var(--space-3);
 }
 
 .notfound__title {

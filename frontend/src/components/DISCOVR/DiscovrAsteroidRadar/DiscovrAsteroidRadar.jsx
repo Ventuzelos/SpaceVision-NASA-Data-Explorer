@@ -86,7 +86,7 @@ function DiscovrAsteroidRadar() {
   return (
     <section id="radar" className="discovr-section">
       <h2 className="discovr-section__title">
-        <Icon name="Radar" size={22} />
+        <Icon name="Radar" size={22} aria-hidden="true"/>
         Radar de asteroides
       </h2>
 
@@ -119,6 +119,7 @@ function DiscovrAsteroidRadar() {
             name="Radar"
             size={28}
             className="discovr-error-card__icon"
+            aria-hidden="true"
           />
 
           <h3>Radar offline</h3>
@@ -132,7 +133,7 @@ function DiscovrAsteroidRadar() {
 
       {!asteroidsLoading && !asteroidsError && asteroids.length === 0 && (
         <div className="discovr-empty">
-          <Icon name="Radar" size={28} />
+          <Icon name="Radar" size={28} aria-hidden="true" />
           <p>Sem objetos próximos detetados nesta janela temporal.</p>
         </div>
       )}
@@ -156,7 +157,7 @@ function DiscovrAsteroidRadar() {
 
                   {neo.isHazardous && (
                     <span className="discovr-asteroid-card__hazard-badge">
-                      <Icon name="AlertCircle" size={12} />
+                      <Icon name="AlertCircle" size={12} aria-hidden="true" />
                       Potencialmente perigoso
                     </span>
                   )}
@@ -215,7 +216,7 @@ function DiscovrAsteroidRadar() {
         className="discovr-link discovr-asteroid-list__link"
       >
         Ver todos os asteroides
-        <Icon name="ArrowRight" size={16} />
+        <Icon name="ArrowRight" size={16} aria-hidden="true" />
       </Link>
     </section>
   );
