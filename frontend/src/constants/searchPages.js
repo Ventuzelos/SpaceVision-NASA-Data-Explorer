@@ -1,11 +1,5 @@
 export const searchablePages = [
-  {
-    title: "Daily Image",
-    subtitle: "Imagem astronómica do dia",
-    path: "/apod",
-    icon: "image",
-    keywords: ["apod", "picture", "image", "daily", "nasa", "foto", "imagem"],
-  },
+ 
   {
     title: "Space Weather",
     subtitle: "Eventos solares e clima espacial",

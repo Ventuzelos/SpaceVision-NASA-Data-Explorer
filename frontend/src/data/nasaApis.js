@@ -5,11 +5,11 @@ import neowsImage from "../assets/api-cards/neows.jpg";
 
 export const nasaApis = [
   {
-    title: "APOD",
-    description: "Astronomy Picture of the Day",
-    image: apodImage,
-    link: "/apod",
-  },
+  title: "APOD",
+  description: "Astronomy Picture of the Day",
+  image: apodImage,
+  link: "/",
+},
   {
     title: "DONKI",
     description: "Data Overview for the Last 24 Hours",

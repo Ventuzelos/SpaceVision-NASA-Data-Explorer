@@ -6,7 +6,6 @@ import MainLayout from "./layouts/MainLayout/MainLayout";
 import LoginLayout from "./layouts/MainLayout/LoginLayout";
 
 import Home from "./pages/Home/Home";
-import APOD from "./pages/APOD/APOD";
 import DONKI from "./pages/DONKI/DONKI";
 import Epic from "./pages/Epic/Epic";
 import DISCOVR from "./pages/DISCOVR/DISCOVR";
@@ -31,6 +30,17 @@ import Privacy from "./pages/Legal/Privacy/Privacy";
 
 function App() {
   return (
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          <Route element={<MainLayout />}>
+            <Route index element={<Home />} />
+            <Route path="donki" element={<DONKI />} />
+            <Route path="epic" element={<EPIC />} />
+            <Route path="discover" element={<DISCOVR />} />
+            <Route path="neowatch" element={<NeoWS />} />
+            <Route path="favorites" element={<Favorites />} />
+            <Route path="nao-autorizado" element={<Unauthorized />} />
     <Routes>
       <Route element={<MainLayout />}>
         <Route index element={<Home />} />

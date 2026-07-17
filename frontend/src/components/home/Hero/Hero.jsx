@@ -86,10 +86,6 @@ function Hero() {
             </div>
 
             <div className="hero__actions">
-              <Link to="/apod">
-                <Button>Explorar APOD</Button>
-              </Link>
-
               <Link to="/donki">
                 <Button variant="secondary">DONKI</Button>
               </Link>
