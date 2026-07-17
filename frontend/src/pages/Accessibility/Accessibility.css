@@ -1,0 +1,209 @@
+.accessibility-page {
+  min-height: 100vh;
+  padding: var(--space-12, 3rem) 0 var(--space-16, 4rem);
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(126, 71, 253, 0.1),
+      transparent 32%
+    ),
+    var(--color-background);
+}
+
+.accessibility-page__header {
+  max-width: 760px;
+  margin-bottom: var(--space-12, 3rem);
+}
+
+.accessibility-page__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: var(--space-3, 0.75rem);
+
+  color: var(--color-accent);
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.accessibility-page__header h1 {
+  margin: 0 0 var(--space-5, 1.25rem);
+
+  color: var(--color-text);
+  font-size: clamp(2.25rem, 5vw, 4rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.accessibility-page__header p {
+  margin: 0;
+
+  color: var(--color-text-secondary);
+  font-size: clamp(1rem, 1.6vw, 1.125rem);
+  line-height: 1.75;
+}
+
+.accessibility-page section {
+  max-width: 900px;
+  margin-bottom: var(--space-6, 1.5rem);
+  padding: var(--space-6, 1.5rem);
+
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: rgba(17, 24, 39, 0.82);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+
+  backdrop-filter: blur(12px);
+}
+
+.accessibility-page section:last-child {
+  margin-bottom: 0;
+}
+
+.accessibility-page section h2 {
+  margin: 0 0 var(--space-4, 1rem);
+
+  color: var(--color-text);
+  font-size: clamp(1.25rem, 2vw, 1.625rem);
+  line-height: 1.25;
+}
+
+.accessibility-page section p {
+  margin: 0 0 var(--space-4, 1rem);
+
+  color: var(--color-text-secondary);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.accessibility-page section p:last-child {
+  margin-bottom: 0;
+}
+
+.accessibility-page ul {
+  display: grid;
+  gap: var(--space-3, 0.75rem);
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.accessibility-page li {
+  position: relative;
+
+  padding-left: 1.75rem;
+
+  color: var(--color-text-secondary);
+  line-height: 1.65;
+}
+
+.accessibility-page li::before {
+  position: absolute;
+  top: 0.65em;
+  left: 0;
+
+  width: 0.55rem;
+  height: 0.55rem;
+
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    var(--color-primary),
+    var(--color-accent)
+  );
+
+  content: "";
+}
+
+.accessibility-page a {
+  color: var(--color-accent);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.accessibility-page a:hover {
+  color: var(--color-text);
+}
+
+.accessibility-page a:focus-visible,
+.accessibility-page button:focus-visible,
+.accessibility-page input:focus-visible,
+.accessibility-page textarea:focus-visible,
+.accessibility-page select:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+@media (hover: hover) {
+  .accessibility-page section {
+    transition:
+      transform 180ms ease,
+      border-color 180ms ease,
+      box-shadow 180ms ease;
+  }
+
+  .accessibility-page section:hover {
+    transform: translateY(-2px);
+    border-color: rgba(79, 141, 240, 0.5);
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.24);
+  }
+}
+
+@media (max-width: 768px) {
+  .accessibility-page {
+    padding: var(--space-8, 2rem) 0 var(--space-12, 3rem);
+  }
+
+  .accessibility-page__header {
+    margin-bottom: var(--space-8, 2rem);
+  }
+
+  .accessibility-page section {
+    padding: var(--space-5, 1.25rem);
+    border-radius: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .accessibility-page {
+    padding-top: var(--space-6, 1.5rem);
+  }
+
+  .accessibility-page section {
+    padding: var(--space-4, 1rem);
+  }
+
+  .accessibility-page li {
+    padding-left: 1.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .accessibility-page *,
+  .accessibility-page *::before,
+  .accessibility-page *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+@media (prefers-contrast: more) {
+  .accessibility-page section {
+    border-width: 2px;
+    background: var(--color-surface);
+  }
+
+  .accessibility-page__header p,
+  .accessibility-page section p,
+  .accessibility-page li {
+    color: var(--color-text);
+  }
+}
