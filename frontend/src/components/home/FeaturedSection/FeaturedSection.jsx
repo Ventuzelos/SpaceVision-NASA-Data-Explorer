@@ -16,7 +16,7 @@ function FeaturedSection() {
           title="Astronomy Picture of the Day"
           description="Descobre uma imagem selecionada pela NASA e conhece a história por detrás desta observação do Universo."
           date="05 Jul 2026"
-          link="/apod"
+          link="/"
         />
       </div>
     </section>

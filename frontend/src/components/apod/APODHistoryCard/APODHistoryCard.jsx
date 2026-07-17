@@ -24,11 +24,10 @@ function APODHistoryCard({ item, active, onSelect }) {
         )}
       </div>
 
-      <div className="apod-history-card__content">
-        <span>{formattedDate}</span>
-
-        <h3>{item.title}</h3>
-      </div>
+       <div className="apod-history-card__overlay">
+          <span className="apod-history-card__date">{formattedDate}</span>
+          <h3 className="apod-history-card__title">{item.title}</h3>
+        </div>
     </button>
   );
 }

@@ -4,11 +4,7 @@ export const publicNavigation = [
     label: "Home",
     path: "/",
   },
-  {
-    id: 2,
-    label: "APOD",
-    path: "/apod",
-  },
+
   {
     id: 3,
     label: "DONKI",
