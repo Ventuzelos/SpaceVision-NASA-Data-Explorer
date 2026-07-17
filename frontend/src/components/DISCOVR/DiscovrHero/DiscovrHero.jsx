@@ -1,6 +1,6 @@
 import Container from "../../common/Container/Container";
 import Breadcrumb from "../../common/Breadcrumb/Breadcrumb";
-import DiscovrSurpriseCard from "../DiscovrSurpriseCard/DiscovrSurpriseCard";
+import SurpriseCard from "../../common/SurpriseCard/SurpriseCard";
 
 import heroImage from "../../../assets/hero.webp";
 import astronautVideo from "../../../assets/videos/astronaut-float.mp4";
@@ -43,7 +43,7 @@ function DiscovrHero() {
               expandir os limites do conhecimento humano.
             </p>
 
-            <DiscovrSurpriseCard />
+            <SurpriseCard />
           </div>
 
           <div
