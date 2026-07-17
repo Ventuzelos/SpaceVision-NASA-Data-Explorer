@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import Icon from "../../common/Icon/Icon";
-import Button from "../../common/Button/Button";
+import ErrorState from "../../common/ErrorState/ErrorState";
 
 import { useParallax } from "../../../hooks/useParallax";
 import { getApodByDate } from "../../../services/apodService";
@@ -173,20 +173,11 @@ function DiscovrGallery() {
       )}
 
       {!carouselLoading && carouselError && (
-        <div className="discovr-error-card">
-          <Icon
-            name="WifiOff"
-            size={28}
-            className="discovr-error-card__icon"
-          />
-
-          <h3>Sinal perdido</h3>
-          <p>{carouselError}</p>
-
-          <Button variant="secondary" onClick={loadCarouselPhotos}>
-            Tentar novamente
-          </Button>
-        </div>
+        <ErrorState
+          title="Sinal perdido"
+          message={carouselError}
+          onRetry={loadCarouselPhotos}
+        />
       )}
 
       {!carouselLoading && !carouselError && currentPhoto && (

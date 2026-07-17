@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import Icon from "../../common/Icon/Icon";
-import Button from "../../common/Button/Button";
+import ErrorState from "../../common/ErrorState/ErrorState";
+
+
 
 import {
   fetchNeoFeed,
@@ -33,6 +35,8 @@ function formatDiameter(minKm, maxKm) {
 // Quanto mais perto do mínimo do grupo, mais cheia a barra fica — a
 // distância em si já é mostrada em texto, a barra só torna a comparação
 // entre os 5 objetos instantânea, sem precisar de ler todos os números.
+
+
 function getClosenessPercent(km, min, max) {
   if (km == null || min == null || max == null) return 0;
   if (max === min) return 100;
@@ -114,21 +118,11 @@ function DiscovrAsteroidRadar() {
       )}
 
       {!asteroidsLoading && asteroidsError && (
-        <div className="discovr-error-card">
-          <Icon
-            name="Radar"
-            size={28}
-            className="discovr-error-card__icon"
-            aria-hidden="true"
-          />
-
-          <h3>Radar offline</h3>
-          <p>{asteroidsError}</p>
-
-          <Button variant="secondary" onClick={loadAsteroids}>
-            Tentar novamente
-          </Button>
-        </div>
+        <ErrorState
+          title="Radar offline"
+          message={asteroidsError}
+          onRetry={loadAsteroids}
+        />
       )}
 
       {!asteroidsLoading && !asteroidsError && asteroids.length === 0 && (

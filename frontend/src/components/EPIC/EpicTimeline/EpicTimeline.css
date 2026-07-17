@@ -2,6 +2,7 @@
   position: relative;
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-rows: auto auto auto;
   gap: var(--space-4);
   margin: 0;
   padding: 0;
@@ -10,20 +11,44 @@
 
 .epic-page .epic-timeline::before {
   content: "";
-  position: absolute;
-  top: 1.375rem;
-  right: 0;
-  left: 0;
+  grid-row: 2;
+  grid-column: 1 / -1;
+  align-self: center;
   height: 1px;
   background: var(--color-border);
 }
 
 .epic-page .epic-timeline__item {
   position: relative;
+  display: grid;
+  grid-row: 1 / span 3;
+  grid-template-rows: subgrid;
   min-width: 0;
 }
 
+.epic-page .epic-timeline__item:nth-child(1) {
+  grid-column: 1;
+}
+
+.epic-page .epic-timeline__item:nth-child(2) {
+  grid-column: 2;
+}
+
+.epic-page .epic-timeline__item:nth-child(3) {
+  grid-column: 3;
+}
+
+.epic-page .epic-timeline__item:nth-child(4) {
+  grid-column: 4;
+}
+
+.epic-page .epic-timeline__item:nth-child(5) {
+  grid-column: 5;
+}
+
 .epic-page .epic-timeline__marker {
+  grid-row: 2;
+  align-self: center;
   position: relative;
   z-index: 1;
   display: flex;
@@ -56,8 +81,17 @@
 }
 
 .epic-page .epic-timeline__content {
+  grid-row: 3;
+  align-self: start;
   margin-top: var(--space-4);
   text-align: center;
+}
+
+.epic-page .epic-timeline__item:nth-child(even) .epic-timeline__content {
+  grid-row: 1;
+  align-self: end;
+  margin-top: 0;
+  margin-bottom: var(--space-4);
 }
 
 .epic-page .epic-timeline__title {
@@ -79,6 +113,7 @@
   }
 
   .epic-page .epic-timeline::before {
+    position: absolute;
     top: 0;
     bottom: 0;
     left: 0.375rem;
@@ -89,6 +124,8 @@
   .epic-page .epic-timeline__item {
     display: grid;
     grid-template-columns: 1.5rem minmax(0, 1fr);
+    grid-template-rows: none;
+    grid-row: auto;
     gap: var(--space-3);
     padding-bottom: var(--space-5);
   }
@@ -98,6 +135,8 @@
   }
 
   .epic-page .epic-timeline__marker {
+    grid-row: auto;
+    align-self: stretch;
     align-items: flex-start;
     gap: var(--space-2);
   }
@@ -108,9 +147,13 @@
     text-align: left;
   }
 
-  .epic-page .epic-timeline__content {
+  .epic-page .epic-timeline__content,
+  .epic-page .epic-timeline__item:nth-child(even) .epic-timeline__content {
+    grid-row: auto;
     grid-column: 2;
+    align-self: auto;
     margin-top: var(--space-5);
+    margin-bottom: 0;
     text-align: left;
   }
 }
