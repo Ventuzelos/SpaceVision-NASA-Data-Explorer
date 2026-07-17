@@ -23,19 +23,22 @@ vi.mock("../../hooks/useAuth", () => ({
 }));
 
 vi.mock("../../services/adminService", () => ({
-  getAdminDashboard: vi.fn().mockResolvedValue({
-    message: "Painel carregado.",
-  }),
-  getUsersCount: vi.fn().mockResolvedValue({
+  getUsersStats: vi.fn().mockResolvedValue({
     total: 0,
+    newLastMonth: 0,
   }),
-  getContactMessages: vi.fn().mockResolvedValue({
+  getFavoritesStats: vi.fn().mockResolvedValue({
+    total: 0,
+    byCategory: [],
+    topSaved: [],
+  }),
+  getMessagesStats: vi.fn().mockResolvedValue({
     total: 0,
     unread: 0,
     messages: [],
   }),
-  markContactMessageAsRead: vi.fn(),
-  deleteContactMessage: vi.fn(),
+  markMessageAsRead: vi.fn(),
+  deleteMessage: vi.fn(),
 }));
 
 function renderAdmin() {

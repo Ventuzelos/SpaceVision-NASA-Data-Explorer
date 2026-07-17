@@ -1,17 +1,14 @@
 /* ---- "Surpreenda-me": gatilho compacto + revelação inline ----
-   Antes era um cartão de vidro grande, sempre visível, competindo com o
-   título principal do Hero por espaço vertical. Agora é só um botão até
-   ser acionado — o facto aparece por baixo, sem empurrar o resto do
-   conteúdo com um bloco pesado. */
-.discovr-surprise {
+   É só um botão até ser acionado — o facto aparece por baixo, sem
+   empurrar o resto do conteúdo com um bloco pesado. */
+.surprise-card {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: var(--space-4);
-  margin-top: var(--space-6);
 }
 
-.discovr-surprise__reveal {
+.surprise-card__reveal {
   display: flex;
   align-items: flex-start;
   gap: var(--space-3);
@@ -22,16 +19,16 @@
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  animation: discovr-fade-in 0.3s ease;
+  animation: surprise-card-fade-in 0.3s ease;
 }
 
-.discovr-surprise__icon {
+.surprise-card__icon {
   flex-shrink: 0;
   margin-top: 2px;
   color: var(--color-accent);
 }
 
-.discovr-surprise__fact {
+.surprise-card__fact {
   flex: 1;
   color: var(--color-text-secondary);
   font-size: 0.9rem;
@@ -39,7 +36,7 @@
   margin: 0;
 }
 
-.discovr-surprise__close {
+.surprise-card__close {
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -52,11 +49,11 @@
   transition: var(--transition-fast);
 }
 
-.discovr-surprise__close:hover {
+.surprise-card__close:hover {
   color: var(--color-text);
 }
 
-@keyframes discovr-fade-in {
+@keyframes surprise-card-fade-in {
   from {
     opacity: 0;
     transform: translateY(6px);
