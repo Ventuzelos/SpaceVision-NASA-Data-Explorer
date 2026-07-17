@@ -53,8 +53,8 @@ function Footer() {
               Asteroides
             </Link>
 
-            <Link to="/favorites">
-              Favoritos
+            <Link to="/discover">
+              Discover
             </Link>
           </section>
 
@@ -83,26 +83,7 @@ function Footer() {
             </Link>
           </section>
 
-          <section
-            className="footer__group"
-            aria-labelledby="footer-legal-title"
-          >
-            <h2 id="footer-legal-title">
-              Legal
-            </h2>
-
-            <Link to="/privacy">
-              Política de Privacidade
-            </Link>
-
-            <Link to="/cookies">
-              Política de Cookies
-            </Link>
-
-            <Link to="/terms">
-              Termos de Utilização
-            </Link>
-          </section>
+      
 
           <section
             className="footer__group"
