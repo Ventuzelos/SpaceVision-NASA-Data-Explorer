@@ -8,6 +8,7 @@ function Icon({
   strokeWidth = 2,
   className = "",
   color,
+  ...rest
 }) {
   const LucideIcon = Icons[name];
 
@@ -19,6 +20,7 @@ function Icon({
       strokeWidth={strokeWidth}
       color={color}
       className={`icon ${className}`}
+      {...rest}
     />
   );
 }

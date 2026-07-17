@@ -2,7 +2,11 @@ import "./APODSkeleton.css";
 
 function APODSkeleton() {
   return (
-    <article className="apod-skeleton">
+    <article
+      className="apod-skeleton"
+      aria-busy="true"
+      aria-label="A carregar imagem astronómica do dia"
+    >
       <div className="apod-skeleton__image"></div>
 
       <div className="apod-skeleton__content">
