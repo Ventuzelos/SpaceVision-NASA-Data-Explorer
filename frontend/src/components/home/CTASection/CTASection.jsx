@@ -10,12 +10,12 @@ function CTASection() {
         <h2>Pronto para explorar o Universo?</h2>
 
         <p>
-          Começa pela imagem astronómica do dia ou navega pelas nossas APIs.
+          Começa pela imagem astronómica do dia e navega pelas nossas APIs.
         </p>
 
         <div className="cta-section__actions">
-          <Link to="/apod">
-            <Button>Explorar APOD</Button>
+          <Link to="/discover">
+            <Button>Explorar Discover</Button>
           </Link>
 
           <Link to="/donki">

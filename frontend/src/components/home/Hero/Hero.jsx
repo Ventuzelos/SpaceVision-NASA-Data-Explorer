@@ -1,8 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { Icons } from "../../../constants/icons";
-
-import Button from "../../common/Button/Button";
 import SearchInput from "../../common/SearchInput/SearchInput";
 import heroImage from "../../../assets/hero.webp";
 import { searchablePages } from "../../../constants/searchPages";
@@ -83,12 +80,6 @@ function Hero() {
                   })}
                 </div>
               )}
-            </div>
-
-            <div className="hero__actions">
-              <Link to="/donki">
-                <Button variant="secondary">DONKI</Button>
-              </Link>
             </div>
           </div>
         </div>
