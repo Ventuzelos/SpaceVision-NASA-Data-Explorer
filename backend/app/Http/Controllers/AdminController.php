@@ -19,7 +19,7 @@ class AdminController extends Controller
         ]);
     }
 
-     /**
+    /**
      * Total de utilizadores registados e novos utilizadores no último mês.
      */
     public function usersStats(): JsonResponse
@@ -66,7 +66,6 @@ class AdminController extends Controller
             'top_saved' => $topSaved,
         ]);
     }
-
 
     /**
      * Lista todas as mensagens de contacto.

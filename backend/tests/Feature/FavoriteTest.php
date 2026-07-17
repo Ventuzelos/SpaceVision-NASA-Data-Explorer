@@ -187,8 +187,7 @@ class FavoriteTest extends TestCase
         $response
             ->assertForbidden()
             ->assertJson([
-                'message' =>
-                    'Não tens permissão para apagar este favorito.',
+                'message' => 'Não tens permissão para apagar este favorito.',
             ]);
 
         $this->assertDatabaseHas('favorites', [

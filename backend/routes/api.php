@@ -1,11 +1,11 @@
 <?php
 
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ContactMessageController;
+use App\Http\Controllers\Api\FavoriteController;
 use App\Http\Controllers\Api\NasaController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\FavoriteController;
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\Api\ContactMessageController;
 
 Route::middleware('throttle:auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
@@ -25,7 +25,6 @@ Route::middleware('throttle:auth')->group(function () {
 Route::post('/contact', [ContactMessageController::class, 'store'])
     ->middleware('throttle:5,1');
 
-
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'user']);
@@ -43,7 +42,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/favorites', [FavoriteController::class, 'store']);
     Route::delete('/favorites/{favorite}', [FavoriteController::class, 'destroy']);
 });
-
 
 Route::prefix('nasa')->middleware('throttle:60,1')->group(function () {
     Route::get('/apod', [NasaController::class, 'apod']);
