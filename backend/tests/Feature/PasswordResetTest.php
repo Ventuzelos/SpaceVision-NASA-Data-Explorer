@@ -49,23 +49,22 @@ class PasswordResetTest extends TestCase
             ->assertJsonValidationErrors('email');
     }
 
-   public function test_password_reset_request_does_not_reveal_unknown_email(): void
-{
-    Notification::fake();
+    public function test_password_reset_request_does_not_reveal_unknown_email(): void
+    {
+        Notification::fake();
 
-    $response = $this->postJson('/api/forgot-password', [
-        'email' => 'naoexiste@example.com',
-    ]);
-
-    $response
-        ->assertOk()
-        ->assertJson([
-            'message' =>
-                'Se existir uma conta com esse email, será enviado um link para repor a palavra-passe.',
+        $response = $this->postJson('/api/forgot-password', [
+            'email' => 'naoexiste@example.com',
         ]);
 
-    Notification::assertNothingSent();
-}
+        $response
+            ->assertOk()
+            ->assertJson([
+                'message' => 'Se existir uma conta com esse email, será enviado um link para repor a palavra-passe.',
+            ]);
+
+        Notification::assertNothingSent();
+    }
 
     public function test_user_can_reset_password_with_valid_token(): void
     {

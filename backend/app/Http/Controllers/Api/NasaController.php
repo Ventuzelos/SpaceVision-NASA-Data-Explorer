@@ -14,8 +14,7 @@ class NasaController extends Controller
 {
     public function __construct(
         private readonly NasaApiService $nasaApiService
-    ) {
-    }
+    ) {}
 
     public function apod(Request $request): JsonResponse
     {
@@ -81,7 +80,7 @@ class NasaController extends Controller
             'notifications',
         ];
 
-        if (!in_array($type, $allowedTypes, true)) {
+        if (! in_array($type, $allowedTypes, true)) {
             return response()->json([
                 'message' => 'Tipo DONKI inválido.',
             ], 400);
