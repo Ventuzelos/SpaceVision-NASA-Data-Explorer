@@ -1,9 +1,9 @@
 import { useState } from "react";
 
-import Icon from "../../common/Icon/Icon";
-import Button from "../../common/Button/Button";
+import Icon from "../Icon/Icon";
+import Button from "../Button/Button";
 
-import "./DiscovrSurpriseCard.css";
+import "./SurpriseCard.css";
 
 const SPACE_FACTS = [
   "Um dia em Vénus é mais longo do que um ano em Vénus.",
@@ -32,7 +32,7 @@ function pickRandomFactIndex(currentIndex) {
   return nextIndex;
 }
 
-function DiscovrSurpriseCard() {
+function SurpriseCard() {
   const [factIndex, setFactIndex] = useState(0);
   const [hasRevealedFact, setHasRevealedFact] = useState(false);
 
@@ -42,20 +42,20 @@ function DiscovrSurpriseCard() {
   }
 
   return (
-    <div className="discovr-surprise">
+    <div className="surprise-card">
       <Button onClick={handleSurpriseMe}>
         {hasRevealedFact ? "Outro facto" : "Surpreenda-me"}
       </Button>
 
       {hasRevealedFact && (
-        <div className="discovr-surprise__reveal" key={factIndex}>
-          <Icon name="Sparkles" size={16} className="discovr-surprise__icon" />
+        <div className="surprise-card__reveal" key={factIndex}>
+          <Icon name="Sparkles" size={16} className="surprise-card__icon" />
 
-          <p className="discovr-surprise__fact">{SPACE_FACTS[factIndex]}</p>
+          <p className="surprise-card__fact">{SPACE_FACTS[factIndex]}</p>
 
           <button
             type="button"
-            className="discovr-surprise__close"
+            className="surprise-card__close"
             onClick={() => setHasRevealedFact(false)}
             aria-label="Fechar facto"
           >
@@ -67,4 +67,4 @@ function DiscovrSurpriseCard() {
   );
 }
 
-export default DiscovrSurpriseCard;
+export default SurpriseCard;
