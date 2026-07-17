@@ -7,7 +7,7 @@ import LoginLayout from "./layouts/MainLayout/LoginLayout";
 
 import Home from "./pages/Home/Home";
 import DONKI from "./pages/DONKI/DONKI";
-import Epic from "./pages/Epic/Epic";
+import EPIC from "./pages/EPIC/EPIC";
 import DISCOVR from "./pages/DISCOVR/DISCOVR";
 import Favorites from "./pages/Favorites/Favorites";
 import NotFound from "./pages/NotFound/NotFound";
@@ -27,26 +27,15 @@ import Unauthorized from "./pages/Unauthorized/Unauthorized";
 
 import Terms from "./pages/Legal/Terms/Terms";
 import Privacy from "./pages/Legal/Privacy/Privacy";
+import Accessibility from "./pages/Accessibility/Accessibility";
 
 function App() {
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <Routes>
-          <Route element={<MainLayout />}>
-            <Route index element={<Home />} />
-            <Route path="donki" element={<DONKI />} />
-            <Route path="epic" element={<EPIC />} />
-            <Route path="discover" element={<DISCOVR />} />
-            <Route path="neowatch" element={<NeoWS />} />
-            <Route path="favorites" element={<Favorites />} />
-            <Route path="nao-autorizado" element={<Unauthorized />} />
     <Routes>
       <Route element={<MainLayout />}>
         <Route index element={<Home />} />
-        <Route path="apod" element={<APOD />} />
         <Route path="donki" element={<DONKI />} />
-        <Route path="epic" element={<Epic />} />
+        <Route path="epic" element={<EPIC />} />
         <Route path="discover" element={<DISCOVR />} />
         <Route path="neowatch" element={<NeoWS />} />
         <Route path="favorites" element={<Favorites />} />
@@ -63,6 +52,10 @@ function App() {
           element={<Privacy />}
         />
         <Route path="cookies" element={<Cookies />} />
+        <Route
+          path="accessibility"
+          element={<Accessibility />}
+        />
 
         <Route element={<ProtectedRoute />}>
           <Route path="profile" element={<Profile />} />
