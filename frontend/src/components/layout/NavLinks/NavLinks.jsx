@@ -6,7 +6,6 @@ function NavLinks() {
   return (
     <div className="nav-links">
       <NavLink to="/">Home</NavLink>
-      <NavLink to="/apod">APOD</NavLink>
       <NavLink to="/donki">DONKI</NavLink>
       <NavLink to="/epic">Earth</NavLink>
       <NavLink to="/neowatch">NeoWatch</NavLink>

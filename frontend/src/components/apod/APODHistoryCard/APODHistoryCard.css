@@ -1,4 +1,5 @@
 .apod-history-card {
+  position: relative;
   width: 100%;
   padding: 0;
   border: 1px solid var(--color-border);
@@ -21,7 +22,8 @@
 }
 
 .apod-history-card__media {
-  height: 170px;
+  position: relative;
+  height: 220px;
   overflow: hidden;
   background: var(--color-surface-light);
 }
@@ -47,24 +49,38 @@
   color: var(--color-text-secondary);
 }
 
-.apod-history-card__content {
-  padding: 1rem;
+.apod-history-card__overlay {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 2rem 1.1rem 1rem;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, .9) 0%,
+    rgba(0, 0, 0, .5) 65%,
+    transparent 100%
+  );
+  pointer-events: none;
 }
 
-.apod-history-card__content span {
+.apod-history-card__date {
   display: inline-block;
-  margin-bottom: .5rem;
+  margin-bottom: .4rem;
   color: var(--color-accent);
-  font-size: .8rem;
+  font-size: .7rem;
   font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
 }
 
-.apod-history-card__content h3 {
+.apod-history-card__title {
   margin: 0;
-  font-size: .95rem;
-  line-height: 1.4;
+  color: #fff;
+  font-size: .8rem;
+  font-weight: 600;
+  line-height: 1.35;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
