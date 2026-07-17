@@ -69,6 +69,7 @@ function DateRangeFilter({
               type="button"
               className="date-range-filter__preset"
               onClick={() => handlePresetClick(preset.days)}
+              disabled={loading}
               aria-disabled={loading}
             >
               {preset.label}

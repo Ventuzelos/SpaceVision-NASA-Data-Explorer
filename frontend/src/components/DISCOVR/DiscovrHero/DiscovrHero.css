@@ -85,6 +85,10 @@
   line-height: var(--line-height-relaxed);
 }
 
+.discovr-hero__content .surprise-card {
+  margin-top: var(--space-6);
+}
+
 .discovr-hero__media {
   position: relative;
   width: 100%;
