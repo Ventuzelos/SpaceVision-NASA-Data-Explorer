@@ -4,15 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\DB;
-
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -145,36 +144,35 @@ class AuthController extends Controller
     }
 
     public function deleteAccount(Request $request)
-{
-    $validated = $request->validate([
-        'password' => [
-            'required',
-            'string',
-        ],
-    ], [
-        'password.required' =>
-            'Introduz a tua palavra-passe para eliminar a conta.',
-    ]);
-
-    $user = $request->user();
-
-    if (! Hash::check($validated['password'], $user->password)) {
-        throw ValidationException::withMessages([
+    {
+        $validated = $request->validate([
             'password' => [
-                'A palavra-passe está incorreta.',
+                'required',
+                'string',
             ],
+        ], [
+            'password.required' => 'Introduz a tua palavra-passe para eliminar a conta.',
+        ]);
+
+        $user = $request->user();
+
+        if (! Hash::check($validated['password'], $user->password)) {
+            throw ValidationException::withMessages([
+                'password' => [
+                    'A palavra-passe está incorreta.',
+                ],
+            ]);
+        }
+
+        DB::transaction(function () use ($user) {
+            $user->tokens()->delete();
+            $user->delete();
+        });
+
+        return response()->json([
+            'message' => 'Conta eliminada com sucesso.',
         ]);
     }
-
-    DB::transaction(function () use ($user) {
-        $user->tokens()->delete();
-        $user->delete();
-    });
-
-    return response()->json([
-        'message' => 'Conta eliminada com sucesso.',
-    ]);
-}
 
     public function logout(Request $request)
     {

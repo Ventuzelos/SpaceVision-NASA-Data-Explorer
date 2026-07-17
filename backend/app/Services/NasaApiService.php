@@ -9,7 +9,9 @@ use RuntimeException;
 class NasaApiService
 {
     private readonly string $apiKey;
+
     private readonly string $baseUrl;
+
     private readonly int $cacheTtl;
 
     public function __construct()
@@ -39,8 +41,8 @@ class NasaApiService
         // a mesma chave de cache.
         ksort($query);
 
-        $cacheKey = 'nasa:' . sha1(
-            $endpoint . '|' . json_encode(
+        $cacheKey = 'nasa:'.sha1(
+            $endpoint.'|'.json_encode(
                 $query,
                 JSON_THROW_ON_ERROR
             )
@@ -64,7 +66,7 @@ class NasaApiService
 
                 $decoded = $response->json();
 
-                if (!is_array($decoded)) {
+                if (! is_array($decoded)) {
                     throw new RuntimeException(
                         'A NASA devolveu uma resposta inválida.'
                     );

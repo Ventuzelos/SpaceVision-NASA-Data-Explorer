@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-       Schema::create('favorites', function (Blueprint $table) {
-    $table->id();
-    $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-    $table->string('nasa_type');
-    $table->string('nasa_id')->nullable();
-    $table->string('title')->nullable();
-    $table->text('image_url')->nullable();
-    $table->json('data')->nullable();
-    $table->timestamps();
-});
+        Schema::create('favorites', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->string('nasa_type');
+            $table->string('nasa_id')->nullable();
+            $table->string('title')->nullable();
+            $table->text('image_url')->nullable();
+            $table->json('data')->nullable();
+            $table->timestamps();
+        });
     }
 
     /**
