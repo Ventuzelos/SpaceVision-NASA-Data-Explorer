@@ -4,16 +4,16 @@ import { useEpicPhotos } from "../../hooks/useEpicPhotos";
 import EpicPanel from "./EpicPanel/EpicPanel";
 import EpicDetail from "./EpicDetail/EpicDetail";
 import EpicDateControls from "./EpicDateControls/EpicDateControls";
-import EpicHero from "../../components/EPIC/EpicHero/EpicHero";
-import EpicTimelineSection from "../../components/EPIC/EpicTimelineSection/EpicTimelineSection";
-import EpicPipeline from "../../components/EPIC/EpicPipeline/EpicPipeline";
-import EpicSectionHead from "../../components/EPIC/EpicSectionHead/EpicSectionHead";
-import EpicLightbox from "../../components/EPIC/EpicLightbox/EpicLightbox";
+import EpicHero from "../../components/epic/EpicHero/EpicHero";
+import EpicTimelineSection from "../../components/epic/EpicTimelineSection/EpicTimelineSection";
+import EpicPipeline from "../../components/epic/EpicPipeline/EpicPipeline";
+import EpicSectionHead from "../../components/epic/EpicSectionHead/EpicSectionHead";
+import EpicLightbox from "../../components/epic/EpicLightbox/EpicLightbox";
 import Toast from "../../components/common/Toast/Toast";
 
-import "./EPIC.css";
+import "./Epic.css";
 
-export default function EPIC() {
+export default function Epic() {
   const [lightbox, setLightbox] = useState(null);
   const [pendingDate, setPendingDate] = useState("");
   const [dateError, setDateError] = useState("");

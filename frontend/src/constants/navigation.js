@@ -16,7 +16,7 @@ export const publicNavigation = [
   },
   {
     id: 4,
-    label: "Earth",
+    label: "EPIC",
     path: "/epic",
   },
    {

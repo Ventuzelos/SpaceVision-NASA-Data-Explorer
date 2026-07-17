@@ -6,7 +6,7 @@ import "./Breadcrumb.css";
 const routeNames = {
   apod: "APOD",
   donki: "DONKI",
-  epic: "Earth",
+  epic: "EPIC",
   neowatch: "NeoWatch",
   gallery: "Discover",
   discover: "Discover",
