@@ -8,7 +8,7 @@ import LoginLayout from "./layouts/MainLayout/LoginLayout";
 import Home from "./pages/Home/Home";
 import APOD from "./pages/APOD/APOD";
 import DONKI from "./pages/DONKI/DONKI";
-import EPIC from "./pages/EPIC/EPIC";
+import Epic from "./pages/Epic/Epic";
 import DISCOVR from "./pages/DISCOVR/DISCOVR";
 import Favorites from "./pages/Favorites/Favorites";
 import NotFound from "./pages/NotFound/NotFound";
@@ -36,7 +36,7 @@ function App() {
         <Route index element={<Home />} />
         <Route path="apod" element={<APOD />} />
         <Route path="donki" element={<DONKI />} />
-        <Route path="epic" element={<EPIC />} />
+        <Route path="epic" element={<Epic />} />
         <Route path="discover" element={<DISCOVR />} />
         <Route path="neowatch" element={<NeoWS />} />
         <Route path="favorites" element={<Favorites />} />
