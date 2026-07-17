@@ -1,18 +1,20 @@
 import { useEffect, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
-  Link,
-  useNavigate,
-} from "react-router-dom";
-import { ChevronDown, Heart, LogOut, Shield, User } from "lucide-react";
+  ChevronDown,
+  Heart,
+  LogOut,
+  Shield,
+  User,
+} from "lucide-react";
 
 import Button from "../../common/Button/Button";
 import useAuth from "../../../hooks/useAuth";
 
 import "./UserMenu.css";
 
-function UserMenu() {
+function UserMenu({ onMobileNavigate }) {
   const navigate = useNavigate();
-
 
   const {
     user,
@@ -58,22 +60,33 @@ function UserMenu() {
     };
   }, []);
 
+  function handleMobileNavigation() {
+    setIsAccountMenuOpen(false);
+    onMobileNavigate?.();
+  }
+
+  async function handleLogout() {
+    await logout();
+
+    setIsAccountMenuOpen(false);
+    onMobileNavigate?.();
+
+    navigate("/");
+  }
+
   if (!isAuthenticated) {
     return (
       <div className="user-menu">
-        <Link to="/login">
+        <Link
+          to="/login"
+          onClick={handleMobileNavigation}
+        >
           <Button variant="primary">
             Entrar
           </Button>
         </Link>
       </div>
     );
-  }
-
-  async function handleLogout() {
-    await logout();
-    setIsAccountMenuOpen(false);
-    navigate("/");
   }
 
   const firstName =
@@ -129,7 +142,9 @@ function UserMenu() {
               <Link
                 to="/admin"
                 className="account-dropdown__item"
-                onClick={() => setIsAccountMenuOpen(false)}
+                onClick={() =>
+                  setIsAccountMenuOpen(false)
+                }
               >
                 <Shield size={18} aria-hidden="true" />
                 Painel Admin
@@ -139,7 +154,9 @@ function UserMenu() {
             <Link
               to="/profile"
               className="account-dropdown__item"
-              onClick={() => setIsAccountMenuOpen(false)}
+              onClick={() =>
+                setIsAccountMenuOpen(false)
+              }
             >
               <User size={18} aria-hidden="true" />
               Perfil
@@ -148,7 +165,9 @@ function UserMenu() {
             <Link
               to="/favorites"
               className="account-dropdown__item"
-              onClick={() => setIsAccountMenuOpen(false)}
+              onClick={() =>
+                setIsAccountMenuOpen(false)
+              }
             >
               <Heart size={18} aria-hidden="true" />
               Favoritos
@@ -170,20 +189,29 @@ function UserMenu() {
 
       <div className="user-menu__mobile">
         {isAdmin && (
-          <Link to="/admin">
+          <Link
+            to="/admin"
+            onClick={handleMobileNavigation}
+          >
             <Button variant="secondary">
               Painel Admin
             </Button>
           </Link>
         )}
 
-        <Link to="/profile">
+        <Link
+          to="/profile"
+          onClick={handleMobileNavigation}
+        >
           <Button variant="secondary">
             Perfil
           </Button>
         </Link>
 
-        <Link to="/favorites">
+        <Link
+          to="/favorites"
+          onClick={handleMobileNavigation}
+        >
           <Button variant="secondary">
             Favoritos
           </Button>

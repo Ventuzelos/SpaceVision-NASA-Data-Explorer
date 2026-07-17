@@ -158,7 +158,7 @@ function Navbar() {
               <div className="navbar__mobile-divider" />
 
               <div className="navbar__mobile-actions">
-                <UserMenu />
+                <UserMenu onMobileNavigate={closeMenu}/>
               </div>
             </div>
           </aside>
