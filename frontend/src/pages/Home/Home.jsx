@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import Hero from "../../components/home/Hero/Hero";
 import ApiSection from "../../components/home/ApiSection/ApiSection";
-import FeaturedSection from "../../components/home/FeaturedSection/FeaturedSection";
 import CTASection from "../../components/home/CTASection/CTASection";
 
 import Container from "../../components/common/Container/Container";
@@ -128,7 +127,10 @@ function Home() {
 
           {apod && !isLoading && !error && <APODCard apod={apod} />}
         </Section>
+</div>
+        <div className="home-apod-section">
 
+ 
         <Section
           title="Imagens anteriores"
           description="Explora as imagens astronómicas publicadas nos últimos dias."
@@ -152,11 +154,10 @@ function Home() {
             </Carousel>
           )}
         </Section>
-  </div>      
+       </div>
       </Container>
 
       <ApiSection />
-      <FeaturedSection />
       <CTASection />
     </main>
   );
