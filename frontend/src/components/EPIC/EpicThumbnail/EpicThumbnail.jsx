@@ -142,30 +142,29 @@ export default function EpicThumbnail({
     <div
       className="epic-thumbnail"
       title={photo.caption || ""}
-      role="button"
-      tabIndex={imageError ? -1 : 0}
       aria-disabled={imageError}
-      aria-label={
-        imageError
-          ? "Imagem EPIC indisponível"
-          : photo.caption ||
-          `Imagem EPIC${time ? ` às ${time} UTC` : ""
-          }`
-      }
-      onClick={handleSelect}
-      onKeyDown={handleKeyDown}
     >
       {imageError ? (
-        <div className="epic-thumbnail__image"
-          src={imageSource}
-          alt=""
-          onError={handleImageError}>
+        <div
+          className="epic-thumbnail__fallback"
+          role="img"
+          aria-label="Imagem EPIC indisponível"
+        >
           <span>Imagem indisponível</span>
         </div>
       ) : (
         <img
+          className="epic-thumbnail__image"
           src={imageSource}
           alt=""
+          role="button"
+          tabIndex={0}
+          aria-label={
+            photo.caption ||
+            `Imagem EPIC${time ? ` às ${time} UTC` : ""}`
+          }
+          onClick={handleSelect}
+          onKeyDown={handleKeyDown}
           onError={handleImageError}
         />
       )}
