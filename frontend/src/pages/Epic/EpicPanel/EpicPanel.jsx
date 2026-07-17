@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import './EpicPanel.css';
-import EpicSkeleton from '../../../components/EPIC/EpicSkeleton/EpicSkeleton';
-import EpicThumbnail from '../../../components/EPIC/EpicThumbnail/EpicThumbnail';
-import EpicDscovrInfo from '../../../components/EPIC/EpicDscovrInfo/EpicDscovrInfo';
+import EpicSkeleton from '../../../components/epic/EpicSkeleton/EpicSkeleton';
+import EpicThumbnail from '../../../components/epic/EpicThumbnail/EpicThumbnail';
+import EpicDscovrInfo from '../../../components/epic/EpicDscovrInfo/EpicDscovrInfo';
 import ErrorState from '../../../components/common/ErrorState/ErrorState';
 import Pagination from '../../../components/common/Pagination/Pagination';
 import { usePagination } from '../../../hooks/usePagination';
