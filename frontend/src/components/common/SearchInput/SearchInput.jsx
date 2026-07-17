@@ -22,6 +22,7 @@ function SearchInput({
         className="search-input__field"
         type="text"
         placeholder={placeholder}
+        aria-label={placeholder}
         value={value}
         onChange={onChange}
       />
