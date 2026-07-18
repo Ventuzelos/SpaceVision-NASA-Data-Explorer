@@ -2,28 +2,6 @@
   padding-block: var(--space-8);
 }
 
-.donki-page__header {
-  max-width: 720px;
-  margin-bottom: var(--space-7);
-}
-
-.donki-page__eyebrow {
-  margin: 0 0 .5rem;
-  color: var(--color-link);
-  font-size: .875rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-}
-
-
-.donki-page__header p {
-  max-width: 720px;
-  margin-top: .75rem;
-  color: var(--color-text-secondary);
-  line-height: 1.7;
-}
-
 .donki-page__results {
   margin-top: var(--space-7);
 }
@@ -95,9 +73,9 @@
 
 .donki-page__stats {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 18px;
-  margin: 32px 0;
+  margin-bottom: var(--space-5);
 }
 
 .donki-page__stat {

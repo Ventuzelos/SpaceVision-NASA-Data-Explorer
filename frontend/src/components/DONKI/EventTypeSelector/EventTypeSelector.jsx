@@ -12,7 +12,7 @@ const donkiIcons = {
   bell: Icons.Bell,
 };
 
-function EventTypeSelector({ activeType, onSelect }) {
+function EventTypeSelector({ activeType, onSelect, notificationsCount }) {
   return (
     <div
       className="event-type-selector"
@@ -21,6 +21,9 @@ function EventTypeSelector({ activeType, onSelect }) {
     >
       {donkiEventTypes.map((type) => {
         const Icon = donkiIcons[type.icon];
+        const showBadge =
+          type.id === "NOTIFICATIONS" &&
+          typeof notificationsCount === "number";
 
         return (
           <button
@@ -29,6 +32,10 @@ function EventTypeSelector({ activeType, onSelect }) {
             role="tab"
             aria-selected={activeType === type.id}
             className={`event-type-card ${
+              type.id === "NOTIFICATIONS"
+                ? "event-type-card--feed"
+                : ""
+            } ${
               activeType === type.id ? "event-type-card--active" : ""
             }`}
             style={{ "--type-color": type.color }}
@@ -36,6 +43,12 @@ function EventTypeSelector({ activeType, onSelect }) {
           >
             <span className="event-type-card__icon" aria-hidden="true">
               {Icon && <Icon size={24} strokeWidth={2} />}
+
+              {showBadge && (
+                <span className="event-type-card__badge">
+                  {notificationsCount}
+                </span>
+              )}
             </span>
 
             <span className="event-type-card__label">{type.shortLabel}</span>

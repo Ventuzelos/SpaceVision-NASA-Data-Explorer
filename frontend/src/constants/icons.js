@@ -43,6 +43,7 @@ import {
   Baby,
   Share2,
   Server,
+  Lightbulb,
 } from "lucide-react";
 
 export const Icons = {
@@ -90,4 +91,5 @@ export const Icons = {
   Baby,
   Share2,
   Server,
+  Lightbulb,
 };

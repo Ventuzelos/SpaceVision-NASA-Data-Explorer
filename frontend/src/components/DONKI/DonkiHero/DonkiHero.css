@@ -1,0 +1,142 @@
+.donki-hero {
+  margin-bottom: var(--space-7);
+}
+
+.donki-hero__grid {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    minmax(24rem, 0.85fr);
+  grid-template-rows: auto auto auto;
+  gap: var(--space-7);
+  padding-top: var(--space-6);
+}
+
+.donki-hero__content {
+  display: contents;
+}
+
+.donki-hero__eyebrow {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: start;
+
+  display: inline-block;
+  margin: 0 0 var(--space-3);
+  color: var(--color-link);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.donki-hero__title {
+  grid-column: 1;
+  grid-row: 2;
+  align-self: start;
+
+  max-width: 16ch;
+  margin: 0;
+}
+
+.donki-hero__description {
+  grid-column: 1;
+  grid-row: 3;
+  align-self: start;
+
+  max-width: 48ch;
+  margin-top: var(--space-4);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+}
+
+/* Spans the title + description rows only (not the eyebrow),
+   so the media box height always matches that text block. */
+.donki-hero__media {
+  position: relative;
+  grid-column: 2;
+  grid-row: 2 / 4;
+  align-self: stretch;
+
+  width: 100%;
+  max-width: 34rem;
+  height: 100%;
+  margin-inline: auto;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: #000;
+  box-shadow: var(--shadow-lg);
+}
+
+@media (max-width: 1023px) {
+  .donki-hero__grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto auto;
+    gap: var(--space-6);
+  }
+
+  .donki-hero__eyebrow {
+    grid-row: 1;
+  }
+
+  .donki-hero__title {
+    grid-row: 2;
+  }
+
+  .donki-hero__description {
+    grid-row: 3;
+  }
+
+  .donki-hero__media {
+    grid-column: 1;
+    grid-row: 4;
+    align-self: auto;
+
+    max-width: 30rem;
+    height: auto;
+    aspect-ratio: 16 / 10;
+  }
+}
+
+@media (max-width: 600px) {
+  .donki-hero {
+    margin-bottom: var(--space-6);
+  }
+
+  .donki-hero__grid {
+    gap: var(--space-5);
+    padding-top: var(--space-5);
+  }
+
+  .donki-hero__eyebrow {
+    font-size: var(--font-size-xs);
+  }
+
+  .donki-hero__title {
+    max-width: none;
+  }
+
+  .donki-hero__description {
+    margin-top: var(--space-3);
+    font-size: 0.9375rem;
+    line-height: var(--line-height-normal);
+  }
+
+  .donki-hero__media {
+    border-radius: var(--radius-lg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .donki-hero__media {
+    background:
+      linear-gradient(
+        rgba(11, 16, 32, 0.15),
+        rgba(11, 16, 32, 0.15)
+      ),
+      #000;
+  }
+}
