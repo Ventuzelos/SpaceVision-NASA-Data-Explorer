@@ -11,9 +11,10 @@ import DateRangeFilter from "../../components/DONKI/DateRangeFilter/DateRangeFil
 import EventCard from "../../components/DONKI/EventCard/EventCard";
 import EventDetails from "../../components/DONKI/EventDetails/EventDetails";
 import DONKISkeleton from "../../components/DONKI/DONKISkeleton/DONKISkeleton";
+import DonkiInsights from "../../components/DONKI/DonkiInsights/DonkiInsights";
+import DonkiHero from "../../components/DONKI/DonkiHero/DonkiHero";
 import Pagination from "../../components/common/Pagination/Pagination";
 import ErrorState from "../../components/common/ErrorState/ErrorState";
-import Breadcrumb from "../../components/common/Breadcrumb/Breadcrumb";
 import Toast from "../../components/common/Toast/Toast";
 
 import {
@@ -29,11 +30,25 @@ import {
 
 import { usePagination } from "../../hooks/usePagination";
 import getApiErrorMessage from "../../utils/getApiErrorMessage";
+import { getEventStats } from "../../utils/donkiStats";
 
 import "./DONKI.css";
 
 const SOURCE = "donki";
 const EVENTS_PER_PAGE = 8;
+
+function formatStatDate(value) {
+  if (!value) return "N/D";
+
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return "N/D";
+
+  return parsed.toLocaleDateString("pt-PT", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
 
 function validateDateRange(startDate, endDate) {
   if (!startDate || !endDate) {
@@ -317,30 +332,22 @@ function DONKI() {
     (type) => type.id === activeType
   );
 
+  const eventStats = getEventStats(events, activeType);
+
+  const notificationsCount =
+    activeType === "NOTIFICATIONS" && !loading && !error
+      ? events.length
+      : undefined;
+
   return (
     <main className="donki-page">
       <Container>
-        <Breadcrumb title="DONKI" />
-
-        <header className="donki-page__header">
-          <span className="donki-page__eyebrow">
-            DONKI · Space Weather Database
-          </span>
-
-          <h1>Meteorologia espacial em tempo real</h1>
-
-          <p>
-            Consulta erupções solares, ejeções de massa
-            coronal, tempestades geomagnéticas e outros
-            fenómenos monitorizados pela NASA para
-            perceber o que está a acontecer à volta do
-            Sol e da Terra.
-          </p>
-        </header>
+        <DonkiHero />
 
         <EventTypeSelector
           activeType={activeType}
           onSelect={handleSelectType}
+          notificationsCount={notificationsCount}
         />
 
         <DateRangeFilter
@@ -357,6 +364,15 @@ function DONKI() {
           onSearch={handleSearch}
           loading={loading}
         />
+
+        {!selectedEvent && (
+          <DonkiInsights
+            type={activeType}
+            events={events}
+            loading={loading}
+            error={Boolean(error)}
+          />
+        )}
 
         {validationError && (
           <p
@@ -386,7 +402,7 @@ function DONKI() {
           >
             <div className="donki-page__results-header">
               <h2 id="donki-results-title">
-                {activeTypeConfig?.label}
+                {activeTypeConfig?.shortLabel}
               </h2>
 
               <span
@@ -426,6 +442,29 @@ function DONKI() {
                   </p>
                 </div>
               )}
+
+            {!loading && !error && events.length > 0 && (
+              <div className="donki-page__stats">
+                <div className="donki-page__stat">
+                  <span>Eventos neste período</span>
+                  <strong>{events.length}</strong>
+                </div>
+
+                {eventStats.mostIntense && (
+                  <div className="donki-page__stat">
+                    <span>Mais intenso</span>
+                    <strong>{eventStats.mostIntense}</strong>
+                  </div>
+                )}
+
+                <div className="donki-page__stat">
+                  <span>Mais recente</span>
+                  <strong>
+                    {formatStatDate(eventStats.latestDate)}
+                  </strong>
+                </div>
+              </div>
+            )}
 
             <div
               className="donki-page__grid"
