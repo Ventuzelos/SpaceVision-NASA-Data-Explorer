@@ -139,7 +139,7 @@ function normalizeEvent(type, event) {
       return {
         id: event.flrID,
         type,
-        title: `Solar Flare ${event.classType ?? ""}`.trim(),
+        title: `Erupção Solar ${event.classType ?? ""}`.trim(),
         date: event.peakTime || event.beginTime,
         badge: event.classType || null,
         meta: [
@@ -161,7 +161,7 @@ function normalizeEvent(type, event) {
       return {
         id: event.activityID,
         type,
-        title: "Coronal Mass Ejection",
+        title: "Ejeção de Massa Coronal",
         date: event.startTime,
         badge: analysis?.type || null,
         meta: [
@@ -187,7 +187,7 @@ function normalizeEvent(type, event) {
       return {
         id: event.gstID,
         type,
-        title: "Geomagnetic Storm",
+        title: "Tempestade Geomagnética",
         date: event.startTime,
         badge: maxKp ? `Kp ${maxKp.kpIndex}` : null,
         meta: [
@@ -210,7 +210,7 @@ function normalizeEvent(type, event) {
       return {
         id: event.sepID,
         type,
-        title: "Solar Energetic Particle Event",
+        title: "Evento de Partículas Energéticas Solares",
         date: event.eventTime,
         badge: null,
         meta: [
@@ -229,7 +229,7 @@ function normalizeEvent(type, event) {
       return {
         id: event.hssID,
         type,
-        title: "High Speed Stream",
+        title: "Fluxo de Vento Solar de Alta Velocidade",
         date: event.eventTime,
         badge: null,
         meta: [

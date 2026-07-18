@@ -1,0 +1,52 @@
+.donki-insights {
+  margin-bottom: var(--space-6);
+}
+
+.donki-insights__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.donki-insights__tab {
+  padding: var(--space-2) var(--space-4);
+
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+
+  color: var(--color-text-secondary);
+  font-family: var(--font-family);
+  font-size: 0.85rem;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.donki-insights__tab:hover {
+  border-color: var(--color-accent);
+  color: var(--color-text);
+}
+
+.donki-insights__tab--active {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-text);
+}
+
+/* The nested panels keep their own card styling; only reset
+   their own bottom margin since this container owns the spacing. */
+.donki-insights__panel .curiosity-card,
+.donki-insights__panel .event-explainer,
+.donki-insights__panel .daily-status-panel {
+  margin-bottom: 0;
+}
+
+@media (max-width: 480px) {
+  .donki-insights__tab {
+    flex: 1;
+    text-align: center;
+  }
+}
