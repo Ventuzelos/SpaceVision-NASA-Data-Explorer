@@ -26,13 +26,13 @@
 }
 
 .donki-insights__tab:hover {
-  border-color: var(--color-accent);
+  border-color: var(--color-link);
   color: var(--color-text);
 }
 
 .donki-insights__tab--active {
-  background: var(--color-accent);
-  border-color: var(--color-accent);
+  background: var(--color-link);
+  border-color: var(--color-link);
   color: var(--color-text);
 }
 

@@ -8,7 +8,7 @@
 
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-left: 3px solid var(--color-accent);
+  border-left: 3px solid var(--color-link);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
 }
@@ -22,7 +22,7 @@
   width: 40px;
   height: 40px;
 
-  background: var(--color-primary);
+  background: var(--color-link);
   border-radius: var(--radius-md);
   color: var(--color-text);
 }
@@ -36,7 +36,7 @@
   display: block;
   margin-bottom: var(--space-1);
 
-  color: var(--color-accent);
+  color: var(--color-link);
   font-weight: 600;
   font-size: 0.8rem;
   letter-spacing: 0.03em;
@@ -68,8 +68,8 @@
 }
 
 .curiosity-card__next:hover {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
+  border-color: var(--color-link);
+  color: var(--color-link);
   transform: rotate(90deg);
 }
 
