@@ -9,6 +9,7 @@ import Home from "./pages/Home/Home";
 import DONKI from "./pages/DONKI/DONKI";
 import Epic from "./pages/Epic/Epic";
 import DISCOVR from "./pages/DISCOVR/DISCOVR";
+import Quiz from "./pages/Quiz/Quiz";
 import Favorites from "./pages/Favorites/Favorites";
 import NotFound from "./pages/NotFound/NotFound";
 import About from "./pages/About/About";
@@ -37,6 +38,7 @@ function App() {
         <Route path="donki" element={<DONKI />} />
         <Route path="epic" element={<Epic />} />
         <Route path="discover" element={<DISCOVR />} />
+        <Route path="quiz" element={<Quiz />} />
         <Route path="neowatch" element={<NeoWS />} />
         <Route path="favorites" element={<Favorites />} />
         <Route

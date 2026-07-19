@@ -10,6 +10,7 @@ function NavLinks() {
       <NavLink to="/epic">EPIC</NavLink>
       <NavLink to="/neowatch">NeoWatch</NavLink>
       <NavLink to="/discover">Discover</NavLink>
+      <NavLink to="/quiz">Quiz</NavLink>
       <NavLink to="/about">Sobre nós</NavLink>
       <NavLink to="/faq">FAQ</NavLink>
     </div>
