@@ -18,9 +18,45 @@ class NasaController extends Controller
 
     public function apod(Request $request): JsonResponse
     {
-        $validated = $request->validate([
-            'date' => ['sometimes', 'date_format:Y-m-d'],
-        ]);
+        $validator = validator(
+            $request->all(),
+            [
+                'date' => [
+                    'sometimes',
+                    'date_format:Y-m-d',
+                ],
+                'start_date' => [
+                    'sometimes',
+                    'required_with:end_date',
+                    'date_format:Y-m-d',
+                ],
+                'end_date' => [
+                    'sometimes',
+                    'required_with:start_date',
+                    'date_format:Y-m-d',
+                    'after_or_equal:start_date',
+                ],
+            ]
+        );
+
+        $validator->after(
+            function ($validator) use ($request): void {
+                $hasDate = $request->filled('date');
+
+                $hasDateRange =
+                    $request->filled('start_date')
+                    || $request->filled('end_date');
+
+                if ($hasDate && $hasDateRange) {
+                    $validator->errors()->add(
+                        'date',
+                        'Não é possível usar date juntamente com start_date ou end_date.'
+                    );
+                }
+            }
+        );
+
+        $validated = $validator->validate();
 
         return $this->getNasaResponse(
             'planetary/apod',
