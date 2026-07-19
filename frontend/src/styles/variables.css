@@ -20,14 +20,6 @@
   --color-warning: #facc15;
   --color-error: #fb7185;
 
-  /* DONKI Colors */
-  --color-donki-flr: var(--color-warning);
-  --color-donki-cme: var(--color-accent);
-  --color-donki-gst: var(--color-secondary);
-  --color-donki-sep: var(--color-error);
-  --color-donki-hss: var(--color-success);
-  --color-donki-notifications: var(--color-primary);
-
   /* Neutral Colors */
   --color-background: #0b1020;
   --color-surface: #111827;

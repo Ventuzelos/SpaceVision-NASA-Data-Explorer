@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Icons } from "../../../constants/icons";
 import SearchInput from "../../common/SearchInput/SearchInput";
 import heroImage from "../../../assets/hero.webp";

@@ -23,7 +23,8 @@ function EventTypeSelector({ activeType, onSelect, notificationsCount }) {
         const Icon = donkiIcons[type.icon];
         const showBadge =
           type.id === "NOTIFICATIONS" &&
-          typeof notificationsCount === "number";
+          typeof notificationsCount === "number" &&
+          notificationsCount > 0;
 
         return (
           <button
