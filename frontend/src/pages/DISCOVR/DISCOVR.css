@@ -1,5 +1,5 @@
 .discovr-page {
-  padding-bottom: var(--space-8);
+  padding-block: var(--space-8);
 }
 
 /* Secções */
@@ -130,7 +130,7 @@
 
 @media (max-width: 600px) {
   .discovr-page {
-    padding-bottom: var(--space-7);
+    padding-block: var(--space-7);
   }
 
   .discovr-section {
