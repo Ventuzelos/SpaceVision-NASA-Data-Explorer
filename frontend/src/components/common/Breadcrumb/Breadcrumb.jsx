@@ -10,6 +10,7 @@ const routeNames = {
   neowatch: "NeoWatch",
   gallery: "Discover",
   discover: "Discover",
+  quiz: "Quiz",
   favorites: "Favoritos",
   about: "Sobre nós",
   faq: "FAQ",
