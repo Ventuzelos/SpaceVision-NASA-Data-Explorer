@@ -6,7 +6,7 @@
 }
 
 .event-type-card {
-  --type-color: var(--color-primary);
+  --type-color: var(--color-link);
 
   display: flex;
   flex-direction: column;
@@ -95,33 +95,17 @@
   line-height: 1;
 }
 
-/* Below this width the auto-fit grid collapses to a single
-   column, stacking 6 tall cards. A horizontally scrollable
-   strip keeps the same cards but in a fraction of the height. */
+/* Below this width the auto-fit grid would collapse to a single
+   column, stacking 6 tall cards. A fixed 2-column grid keeps all
+   cards visible without requiring horizontal scrolling. */
 @media (max-width: 640px) {
   .event-type-selector {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
+    grid-template-columns: repeat(2, 1fr);
     gap: var(--space-3);
-    padding-bottom: var(--space-2);
     margin-bottom: var(--space-5);
   }
 
-  .event-type-selector::-webkit-scrollbar {
-    height: 6px;
-  }
-
-  .event-type-selector::-webkit-scrollbar-thumb {
-    background: var(--color-border);
-    border-radius: 999px;
-  }
-
   .event-type-card {
-    flex: 0 0 auto;
-    width: 9.5rem;
-    scroll-snap-align: start;
     padding: var(--space-4);
   }
 
@@ -130,5 +114,11 @@
     overflow: hidden;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+  }
+}
+
+@media (max-width: 380px) {
+  .event-type-selector {
+    grid-template-columns: 1fr;
   }
 }

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { Icons } from "../../../constants/icons";
 import {
@@ -29,13 +29,8 @@ function CuriosityCard({ type, className = "" }) {
     [type]
   );
 
-  const [factIndex, setFactIndex] = useState(() =>
-    pickRandomIndex(facts.length)
-  );
-
-  useEffect(() => {
-    setFactIndex(pickRandomIndex(facts.length));
-  }, [facts]);
+  // Inicializa o estado com base na lista de factos computada
+  const [factIndex, setFactIndex] = useState(() => pickRandomIndex(facts.length));
 
   function handleNextFact() {
     setFactIndex((current) =>
@@ -51,7 +46,7 @@ function CuriosityCard({ type, className = "" }) {
 
       <div className="curiosity-card__content">
         <h2 className="curiosity-card__label">Sabias que...</h2>
-        <p className="curiosity-card__text">{facts[factIndex]}</p>
+        <p className="curiosity-card__text">{facts[factIndex] ?? facts[0]}</p>
       </div>
 
       {facts.length > 1 && (

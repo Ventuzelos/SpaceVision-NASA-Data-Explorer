@@ -1,5 +1,5 @@
 .event-explainer {
-  --type-color: var(--color-primary);
+  --type-color: var(--color-link);
 
   padding: var(--space-5);
   margin-bottom: var(--space-6);

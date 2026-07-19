@@ -17,7 +17,7 @@ export const donkiEventTypes = [
     description:
       "Explosões de radiação intensa na superfície do Sol.",
     icon: "sun",
-    color: "var(--color-donki-flr)",
+    color: "var(--color-link)",
   },
   {
     id: "CME",
@@ -26,7 +26,7 @@ export const donkiEventTypes = [
     description:
       "Grandes libertações de plasma e campo magnético solar.",
     icon: "waves",
-    color: "var(--color-donki-cme)",
+    color: "var(--color-link)",
   },
   {
     id: "GST",
@@ -35,7 +35,7 @@ export const donkiEventTypes = [
     description:
       "Perturbações no campo magnético da Terra.",
     icon: "magnet",
-    color: "var(--color-donki-gst)",
+    color: "var(--color-link)",
   },
   {
     id: "SEP",
@@ -44,7 +44,7 @@ export const donkiEventTypes = [
     description:
       "Partículas de alta energia ejetadas pelo Sol.",
     icon: "sparkles",
-    color: "var(--color-donki-sep)",
+    color: "var(--color-link)",
   },
   {
     id: "HSS",
@@ -53,7 +53,7 @@ export const donkiEventTypes = [
     description:
       "Correntes rápidas de vento solar vindas de buracos coronais.",
     icon: "wind",
-    color: "var(--color-donki-hss)",
+    color: "var(--color-link)",
   },
   {
     id: "NOTIFICATIONS",
@@ -62,7 +62,7 @@ export const donkiEventTypes = [
     description:
       "Alertas e relatórios oficiais do serviço DONKI.",
     icon: "bell",
-    color: "var(--color-donki-notifications)",
+    color: "var(--color-link)",
   },
 ];
 

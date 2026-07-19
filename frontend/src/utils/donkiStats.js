@@ -113,7 +113,7 @@ function classifySeverityLevel(events, type) {
 
     if (maxSpeed >= 1000) return "critical";
     if (maxSpeed >= 500) return "moderate";
-    return maxSpeed > 0 ? "normal" : "moderate";
+    return "normal";
   }
 
   const thresholds = ACTIVITY_COUNT_THRESHOLDS[type] || {
