@@ -56,6 +56,10 @@ function Footer() {
             <Link to="/discover">
               Discover
             </Link>
+
+            <Link to="/quiz">
+              Quiz
+            </Link>
           </section>
 
           <section
