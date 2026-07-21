@@ -19,6 +19,9 @@ import Breadcrumb from "../../components/common/Breadcrumb/Breadcrumb";
 import Toast from "../../components/common/Toast/Toast";
 import PageMeta from "../../components/common/PageMeta/PageMeta";
 
+import useAuth from "../../hooks/useAuth";
+import { usePagination } from "../../hooks/usePagination";
+
 import {
   computeStats,
   fetchNeoFeed,
@@ -32,7 +35,6 @@ import {
   toggleFavorite,
 } from "../../services/favoritesService";
 
-import { usePagination } from "../../hooks/usePagination";
 import getApiErrorMessage from "../../utils/getApiErrorMessage";
 
 import "./NeoWS.css";
@@ -78,6 +80,11 @@ function validateDateRange(startDate, endDate) {
 }
 
 function NeoWS() {
+  const {
+    isAuthenticated,
+    isAuthLoading,
+  } = useAuth();
+
   const [dateRange] = useState(() =>
     getDefaultDateRange()
   );
@@ -200,6 +207,10 @@ function NeoWS() {
   useEffect(() => {
     let isMounted = true;
 
+    if (isAuthLoading || !isAuthenticated) {
+      return undefined;
+    }
+
     async function loadFavoriteKeys() {
       try {
         const favorites = await getFavorites(
@@ -210,7 +221,7 @@ function NeoWS() {
         const keys = favorites.map((favorite) =>
           String(
             favorite.nasa_id ||
-            favorite.id
+              favorite.id
           )
         );
 
@@ -218,10 +229,14 @@ function NeoWS() {
           setFavoriteKeys(new Set(keys));
         }
       } catch (requestError) {
-        console.error(
-          "Erro ao carregar favoritos NeoWatch:",
-          requestError
-        );
+        if (
+          requestError.response?.status !== 401
+        ) {
+          console.error(
+            "Erro ao carregar favoritos NeoWatch:",
+            requestError
+          );
+        }
 
         if (isMounted) {
           setFavoriteKeys(new Set());
@@ -234,7 +249,7 @@ function NeoWS() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [isAuthenticated, isAuthLoading]);
 
   function handleSearch(
     newStartDate = startDate,
@@ -256,6 +271,14 @@ function NeoWS() {
   }
 
   async function handleToggleFavorite(neo) {
+    if (!isAuthenticated) {
+      showToast(
+        "Precisas de iniciar sessão para guardar favoritos"
+      );
+
+      return;
+    }
+
     const favoriteId = String(neo.id);
 
     if (favoriteLoadingKeys.has(favoriteId)) {
@@ -272,7 +295,7 @@ function NeoWS() {
     try {
       const rawNeo =
         neo.raw &&
-          typeof neo.raw === "object"
+        typeof neo.raw === "object"
           ? neo.raw
           : neo;
 
@@ -416,8 +439,7 @@ function NeoWS() {
 
           estimated_diameter:
             rawNeo.estimated_diameter ||
-            neo.estimated_diameter ||
-            {
+            neo.estimated_diameter || {
               kilometers: {
                 estimated_diameter_min:
                   diameterMinKm,
@@ -492,7 +514,7 @@ function NeoWS() {
     }
   }
 
-   return (
+  return (
     <main className="neows-page">
       <PageMeta
         title="NeoWatch"
@@ -639,9 +661,12 @@ function NeoWS() {
                       <NeoCard
                         key={neo.id}
                         neo={neo}
-                        isFavorite={favoriteKeys.has(
-                          favoriteId
-                        )}
+                        isFavorite={
+                          isAuthenticated &&
+                          favoriteKeys.has(
+                            favoriteId
+                          )
+                        }
                         isFavoriteLoading={
                           favoriteLoadingKeys.has(
                             favoriteId

@@ -18,6 +18,9 @@ import ErrorState from "../../components/common/ErrorState/ErrorState";
 import Toast from "../../components/common/Toast/Toast";
 import PageMeta from "../../components/common/PageMeta/PageMeta";
 
+import useAuth from "../../hooks/useAuth";
+import { usePagination } from "../../hooks/usePagination";
+
 import {
   donkiEventTypes,
   fetchDonkiEvents,
@@ -29,7 +32,6 @@ import {
   toggleFavorite,
 } from "../../services/favoritesService";
 
-import { usePagination } from "../../hooks/usePagination";
 import getApiErrorMessage from "../../utils/getApiErrorMessage";
 import { getEventStats } from "../../utils/donkiStats";
 
@@ -39,10 +41,15 @@ const SOURCE = "donki";
 const EVENTS_PER_PAGE = 8;
 
 function formatStatDate(value) {
-  if (!value) return "N/D";
+  if (!value) {
+    return "N/D";
+  }
 
   const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) return "N/D";
+
+  if (Number.isNaN(parsed.getTime())) {
+    return "N/D";
+  }
 
   return parsed.toLocaleDateString("pt-PT", {
     day: "2-digit",
@@ -82,10 +89,20 @@ function getEventFavoriteId(event) {
 }
 
 function DONKI() {
-  const [dateRange] = useState(() => getDefaultDateRange(7));
-  const [toastMessage, setToastMessage] = useState("");
+  const {
+    isAuthenticated,
+    isAuthLoading,
+  } = useAuth();
 
-  const [activeType, setActiveType] = useState("FLR");
+  const [dateRange] = useState(() =>
+    getDefaultDateRange(7)
+  );
+
+  const [toastMessage, setToastMessage] =
+    useState("");
+
+  const [activeType, setActiveType] =
+    useState("FLR");
 
   const [startDate, setStartDate] = useState(
     dateRange.startDate
@@ -109,8 +126,10 @@ function DONKI() {
     () => new Set()
   );
 
-  const [favoriteLoadingKeys, setFavoriteLoadingKeys] =
-    useState(() => new Set());
+  const [
+    favoriteLoadingKeys,
+    setFavoriteLoadingKeys,
+  ] = useState(() => new Set());
 
   const {
     paginatedItems: paginatedEvents,
@@ -145,11 +164,17 @@ function DONKI() {
           end
         );
 
-        if (requestIdRef.current !== requestId) return;
+        if (requestIdRef.current !== requestId) {
+          return;
+        }
 
-        setEvents(Array.isArray(results) ? results : []);
+        setEvents(
+          Array.isArray(results) ? results : []
+        );
       } catch (requestError) {
-        if (requestIdRef.current !== requestId) return;
+        if (requestIdRef.current !== requestId) {
+          return;
+        }
 
         console.error(
           "Erro ao carregar eventos DONKI:",
@@ -189,22 +214,35 @@ function DONKI() {
   useEffect(() => {
     let isMounted = true;
 
+    if (isAuthLoading || !isAuthenticated) {
+      return undefined;
+    }
+
     async function loadFavoriteKeys() {
       try {
-        const favorites = await getFavorites(SOURCE);
+        const favorites = await getFavorites(
+          SOURCE
+        );
 
         const keys = favorites.map((favorite) =>
-          String(favorite.nasa_id || favorite.id)
+          String(
+            favorite.nasa_id ||
+              favorite.id
+          )
         );
 
         if (isMounted) {
           setFavoriteKeys(new Set(keys));
         }
       } catch (requestError) {
-        console.error(
-          "Erro ao carregar favoritos DONKI:",
-          requestError
-        );
+        if (
+          requestError.response?.status !== 401
+        ) {
+          console.error(
+            "Erro ao carregar favoritos DONKI:",
+            requestError
+          );
+        }
 
         if (isMounted) {
           setFavoriteKeys(new Set());
@@ -217,7 +255,7 @@ function DONKI() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [isAuthenticated, isAuthLoading]);
 
   function handleSelectType(type) {
     setActiveType(type);
@@ -262,6 +300,14 @@ function DONKI() {
   }
 
   async function handleToggleFavorite(event) {
+    if (!isAuthenticated) {
+      showToast(
+        "Precisas de iniciar sessão para guardar favoritos"
+      );
+
+      return;
+    }
+
     const favoriteId = getEventFavoriteId(event);
 
     if (favoriteLoadingKeys.has(favoriteId)) {
@@ -271,6 +317,7 @@ function DONKI() {
     setFavoriteLoadingKeys((currentKeys) => {
       const nextKeys = new Set(currentKeys);
       nextKeys.add(favoriteId);
+
       return nextKeys;
     });
 
@@ -284,12 +331,15 @@ function DONKI() {
         data: {
           ...event,
           event_date: event.date || null,
-          donki_type: event.type || activeType,
+          donki_type:
+            event.type || activeType,
         },
       });
 
       setFavoriteKeys((currentKeys) => {
-        const updatedKeys = new Set(currentKeys);
+        const updatedKeys = new Set(
+          currentKeys
+        );
 
         if (result.isFavorite) {
           updatedKeys.add(favoriteId);
@@ -311,7 +361,9 @@ function DONKI() {
         requestError
       );
 
-      if (requestError.response?.status === 401) {
+      if (
+        requestError.response?.status === 401
+      ) {
         showToast(
           "Precisas de iniciar sessão para guardar favoritos"
         );
@@ -324,6 +376,7 @@ function DONKI() {
       setFavoriteLoadingKeys((currentKeys) => {
         const nextKeys = new Set(currentKeys);
         nextKeys.delete(favoriteId);
+
         return nextKeys;
       });
     }
@@ -333,198 +386,249 @@ function DONKI() {
     (type) => type.id === activeType
   );
 
-  const eventStats = getEventStats(events, activeType);
+  const eventStats = getEventStats(
+    events,
+    activeType
+  );
 
   const notificationsCount =
-    activeType === "NOTIFICATIONS" && !loading && !error
+    activeType === "NOTIFICATIONS" &&
+    !loading &&
+    !error
       ? events.length
       : undefined;
 
   return (
-  <>
+    <>
       <PageMeta
         title="Meteorologia Espacial — SpaceVision"
         description="Consulta erupções solares, ejeções de massa coronal, tempestades geomagnéticas e outros eventos espaciais através de dados DONKI da NASA."
       />
 
       <main className="donki-page">
-      <Container>
-        <DonkiHero />
+        <Container>
+          <DonkiHero />
 
-        <EventTypeSelector
-          activeType={activeType}
-          onSelect={handleSelectType}
-          notificationsCount={notificationsCount}
-        />
+          <EventTypeSelector
+            activeType={activeType}
+            onSelect={handleSelectType}
+            notificationsCount={
+              notificationsCount
+            }
+          />
 
-        <DateRangeFilter
-          startDate={startDate}
-          endDate={endDate}
-          onStartDateChange={(value) => {
-            setStartDate(value);
-            setValidationError("");
-          }}
-          onEndDateChange={(value) => {
-            setEndDate(value);
-            setValidationError("");
-          }}
-          onSearch={handleSearch}
-          loading={loading}
-        />
-
-        {!selectedEvent && (
-          <DonkiInsights
-            type={activeType}
-            events={events}
+          <DateRangeFilter
+            startDate={startDate}
+            endDate={endDate}
+            onStartDateChange={(value) => {
+              setStartDate(value);
+              setValidationError("");
+            }}
+            onEndDateChange={(value) => {
+              setEndDate(value);
+              setValidationError("");
+            }}
+            onSearch={handleSearch}
             loading={loading}
-            error={Boolean(error)}
           />
-        )}
 
-        {validationError && (
-          <p
-            className="donki-page__validation-error"
-            role="alert"
-          >
-            {validationError}
-          </p>
-        )}
+          {!selectedEvent && (
+            <DonkiInsights
+              type={activeType}
+              events={events}
+              loading={loading}
+              error={Boolean(error)}
+            />
+          )}
 
-        {selectedEvent ? (
-          <EventDetails
-            event={selectedEvent}
-            isFavorite={favoriteKeys.has(
-              getEventFavoriteId(selectedEvent)
-            )}
-            isFavoriteLoading={favoriteLoadingKeys.has(
-              getEventFavoriteId(selectedEvent)
-            )}
-            onToggleFavorite={handleToggleFavorite}
-            onBack={() => setSelectedEvent(null)}
-          />
-        ) : (
-          <section
-            className="donki-page__results"
-            aria-labelledby="donki-results-title"
-          >
-            <div className="donki-page__results-header">
-              <h2 id="donki-results-title">
-                {activeTypeConfig?.shortLabel}
-              </h2>
+          {validationError && (
+            <p
+              className="donki-page__validation-error"
+              role="alert"
+            >
+              {validationError}
+            </p>
+          )}
 
-              <span
-                className="donki-page__results-count"
-                aria-live="polite"
-              >
-                {loading
-                  ? "A carregar..."
-                  : `${events.length} evento(s)`}
-              </span>
-            </div>
+          {selectedEvent ? (
+            <EventDetails
+              event={selectedEvent}
+              isFavorite={
+                isAuthenticated &&
+                favoriteKeys.has(
+                  getEventFavoriteId(
+                    selectedEvent
+                  )
+                )
+              }
+              isFavoriteLoading={
+                favoriteLoadingKeys.has(
+                  getEventFavoriteId(
+                    selectedEvent
+                  )
+                )
+              }
+              onToggleFavorite={
+                handleToggleFavorite
+              }
+              onBack={() =>
+                setSelectedEvent(null)
+              }
+            />
+          ) : (
+            <section
+              className="donki-page__results"
+              aria-labelledby="donki-results-title"
+            >
+              <div className="donki-page__results-header">
+                <h2 id="donki-results-title">
+                  {activeTypeConfig?.shortLabel}
+                </h2>
 
-            {error && !loading && (
-              <ErrorState
-                title="Não foi possível carregar os eventos"
-                message={error}
-                onRetry={() =>
-                  handleSearch(startDate, endDate)
-                }
-              />
-            )}
-
-            {!loading &&
-              !error &&
-              events.length === 0 && (
-                <div
-                  className="donki-page__empty"
-                  role="status"
+                <span
+                  className="donki-page__results-count"
+                  aria-live="polite"
                 >
-                  <h3>Nenhum evento encontrado</h3>
+                  {loading
+                    ? "A carregar..."
+                    : `${events.length} evento(s)`}
+                </span>
+              </div>
 
-                  <p>
-                    Não foram encontrados eventos para
-                    este período. Experimenta alargar o
-                    intervalo de datas ou selecionar
-                    outro tipo de evento.
-                  </p>
-                </div>
+              {error && !loading && (
+                <ErrorState
+                  title="Não foi possível carregar os eventos"
+                  message={error}
+                  onRetry={() =>
+                    handleSearch(
+                      startDate,
+                      endDate
+                    )
+                  }
+                />
               )}
 
-            {!loading && !error && events.length > 0 && (
-              <div className="donki-page__stats">
-                <div className="donki-page__stat">
-                  <span>Eventos neste período</span>
-                  <strong>{events.length}</strong>
-                </div>
+              {!loading &&
+                !error &&
+                events.length === 0 && (
+                  <div
+                    className="donki-page__empty"
+                    role="status"
+                  >
+                    <h3>
+                      Nenhum evento encontrado
+                    </h3>
 
-                {eventStats.mostIntense && (
-                  <div className="donki-page__stat">
-                    <span>Mais intenso</span>
-                    <strong>{eventStats.mostIntense}</strong>
+                    <p>
+                      Não foram encontrados eventos
+                      para este período. Experimenta
+                      alargar o intervalo de datas ou
+                      selecionar outro tipo de evento.
+                    </p>
                   </div>
-                )}
-
-                <div className="donki-page__stat">
-                  <span>Mais recente</span>
-                  <strong>
-                    {formatStatDate(eventStats.latestDate)}
-                  </strong>
-                </div>
-              </div>
-            )}
-
-            <div
-              className="donki-page__grid"
-              aria-busy={loading}
-            >
-              {loading &&
-                Array.from({ length: 6 }).map(
-                  (_, index) => (
-                    <DONKISkeleton key={index} />
-                  )
                 )}
 
               {!loading &&
                 !error &&
-                paginatedEvents.map((event) => {
-                  const favoriteId =
-                    getEventFavoriteId(event);
+                events.length > 0 && (
+                  <div className="donki-page__stats">
+                    <div className="donki-page__stat">
+                      <span>
+                        Eventos neste período
+                      </span>
 
-                  return (
-                    <EventCard
-                      key={favoriteId}
-                      event={event}
-                      isFavorite={favoriteKeys.has(
-                        favoriteId
-                      )}
-                      isFavoriteLoading={favoriteLoadingKeys.has(
-                        favoriteId
-                      )}
-                      onToggleFavorite={
-                        handleToggleFavorite
-                      }
-                      onViewDetails={setSelectedEvent}
-                    />
-                  );
-                })}
-            </div>
+                      <strong>
+                        {events.length}
+                      </strong>
+                    </div>
 
-            {!loading &&
-              !error &&
-              shouldShowPagination && (
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  onPageChange={setPage}
-                />
-              )}
-          </section>
-        )}
-      </Container>
+                    {eventStats.mostIntense && (
+                      <div className="donki-page__stat">
+                        <span>Mais intenso</span>
 
-      <Toast message={toastMessage} />
-    </main>
-  </>
+                        <strong>
+                          {eventStats.mostIntense}
+                        </strong>
+                      </div>
+                    )}
+
+                    <div className="donki-page__stat">
+                      <span>Mais recente</span>
+
+                      <strong>
+                        {formatStatDate(
+                          eventStats.latestDate
+                        )}
+                      </strong>
+                    </div>
+                  </div>
+                )}
+
+              <div
+                className="donki-page__grid"
+                aria-busy={loading}
+              >
+                {loading &&
+                  Array.from({ length: 6 }).map(
+                    (_, index) => (
+                      <DONKISkeleton
+                        key={index}
+                      />
+                    )
+                  )}
+
+                {!loading &&
+                  !error &&
+                  paginatedEvents.map(
+                    (event) => {
+                      const favoriteId =
+                        getEventFavoriteId(
+                          event
+                        );
+
+                      return (
+                        <EventCard
+                          key={favoriteId}
+                          event={event}
+                          isFavorite={
+                            isAuthenticated &&
+                            favoriteKeys.has(
+                              favoriteId
+                            )
+                          }
+                          isFavoriteLoading={
+                            favoriteLoadingKeys.has(
+                              favoriteId
+                            )
+                          }
+                          onToggleFavorite={
+                            handleToggleFavorite
+                          }
+                          onViewDetails={
+                            setSelectedEvent
+                          }
+                        />
+                      );
+                    }
+                  )}
+              </div>
+
+              {!loading &&
+                !error &&
+                shouldShowPagination && (
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setPage}
+                  />
+                )}
+            </section>
+          )}
+        </Container>
+
+        <Toast message={toastMessage} />
+      </main>
+    </>
   );
 }
 

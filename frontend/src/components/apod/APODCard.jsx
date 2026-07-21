@@ -4,6 +4,8 @@ import Button from "../common/Button/Button";
 import Toast from "../common/Toast/Toast";
 import Icon from "../common/Icon/Icon";
 import FavoriteButton from "../common/FavoriteButton/FavoriteButton";
+
+import useAuth from "../../hooks/useAuth";
 import isSafeUrl from "../../utils/isSafeUrl";
 
 import {
@@ -15,33 +17,74 @@ import {
 import "./APODCard.css";
 
 function APODCard({ apod }) {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [favorite, setFavorite] = useState(false);
-  const [favoriteDatabaseId, setFavoriteDatabaseId] = useState(null);
-  const [isFavoriteLoading, setIsFavoriteLoading] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
+  const {
+    isAuthenticated,
+    isAuthLoading,
+  } = useAuth();
+
+  const [isExpanded, setIsExpanded] =
+    useState(false);
+
+  const [favorite, setFavorite] =
+    useState(false);
+
+  const [
+    favoriteDatabaseId,
+    setFavoriteDatabaseId,
+  ] = useState(null);
+
+  const [
+    isFavoriteLoading,
+    setIsFavoriteLoading,
+  ] = useState(false);
+
+  const [toastMessage, setToastMessage] =
+    useState("");
 
   const favoriteId = `apod-${apod.date}`;
 
   useEffect(() => {
     let isMounted = true;
 
+    if (isAuthLoading || !isAuthenticated) {
+      return undefined;
+    }
+
     async function checkFavorite() {
       try {
-        const favorites = await getFavorites("apod");
+        const favorites = await getFavorites(
+          "apod"
+        );
 
-        const existingFavorite = favorites.find((item) => {
-          const itemId = item.nasa_id || item.id;
+        const existingFavorite =
+          favorites.find((item) => {
+            const itemId =
+              item.nasa_id || item.id;
 
-          return String(itemId) === String(favoriteId);
-        });
+            return (
+              String(itemId) ===
+              String(favoriteId)
+            );
+          });
 
         if (isMounted) {
-          setFavorite(Boolean(existingFavorite));
-          setFavoriteDatabaseId(existingFavorite?.id || null);
+          setFavorite(
+            Boolean(existingFavorite)
+          );
+
+          setFavoriteDatabaseId(
+            existingFavorite?.id || null
+          );
         }
       } catch (error) {
-        console.error("Erro ao verificar favorito:", error);
+        if (
+          error.response?.status !== 401
+        ) {
+          console.error(
+            "Erro ao verificar favorito:",
+            error
+          );
+        }
 
         if (isMounted) {
           setFavorite(false);
@@ -55,9 +98,15 @@ function APODCard({ apod }) {
     return () => {
       isMounted = false;
     };
-  }, [favoriteId]);
+  }, [
+    favoriteId,
+    isAuthenticated,
+    isAuthLoading,
+  ]);
 
-  const formattedDate = new Date(apod.date).toLocaleDateString("pt-PT", {
+  const formattedDate = new Date(
+    apod.date
+  ).toLocaleDateString("pt-PT", {
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -72,6 +121,14 @@ function APODCard({ apod }) {
   }
 
   async function handleFavoriteClick() {
+    if (!isAuthenticated) {
+      showToast(
+        "Precisas de iniciar sessão para guardar favoritos"
+      );
+
+      return;
+    }
+
     if (isFavoriteLoading) {
       return;
     }
@@ -79,12 +136,21 @@ function APODCard({ apod }) {
     try {
       setIsFavoriteLoading(true);
 
-      if (favorite && favoriteDatabaseId) {
-        await removeFavorite(favoriteDatabaseId);
+      if (
+        favorite &&
+        favoriteDatabaseId
+      ) {
+        await removeFavorite(
+          favoriteDatabaseId
+        );
 
         setFavorite(false);
         setFavoriteDatabaseId(null);
-        showToast("Removido dos favoritos");
+
+        showToast(
+          "Removido dos favoritos"
+        );
+
         return;
       }
 
@@ -92,31 +158,54 @@ function APODCard({ apod }) {
         nasa_type: "apod",
         nasa_id: favoriteId,
         title: apod.title,
+
         image_url:
           apod.media_type === "image"
-            ? apod.hdurl || apod.url || null
+            ? apod.hdurl ||
+              apod.url ||
+              null
             : null,
+
         data: {
           ...apod,
+
           image_url:
             apod.media_type === "image"
-              ? apod.hdurl || apod.url || null
+              ? apod.hdurl ||
+                apod.url ||
+                null
               : null,
         },
       };
 
-      const createdFavorite = await addFavorite(favoriteItem);
+      const createdFavorite =
+        await addFavorite(favoriteItem);
 
       setFavorite(true);
-      setFavoriteDatabaseId(createdFavorite.id);
-      showToast("Adicionado aos favoritos");
-    } catch (error) {
-      console.error("Erro ao atualizar favorito:", error);
 
-      if (error.response?.status === 401) {
-        showToast("Inicia sessão para guardar favoritos");
+      setFavoriteDatabaseId(
+        createdFavorite.id
+      );
+
+      showToast(
+        "Adicionado aos favoritos"
+      );
+    } catch (error) {
+      console.error(
+        "Erro ao atualizar favorito:",
+        error
+      );
+
+      if (
+        error.response?.status === 401
+      ) {
+        showToast(
+          "Precisas de iniciar sessão para guardar favoritos"
+        );
       } else {
-        showToast("Não foi possível atualizar o favorito");
+        showToast(
+          "Não foi possível atualizar o favorito"
+        );
       }
     } finally {
       setIsFavoriteLoading(false);
@@ -127,35 +216,59 @@ function APODCard({ apod }) {
     <article className="apod-card">
       <div className="apod-card__media">
         {apod.media_type === "image" ? (
-          <img src={apod.url} alt={apod.title} />
+          <img
+            src={apod.url}
+            alt={apod.title}
+          />
         ) : (
-          <iframe src={apod.url} title={apod.title} allowFullScreen />
+          <iframe
+            src={apod.url}
+            title={apod.title}
+            allowFullScreen
+          />
         )}
       </div>
 
       <div className="apod-card__content">
         <div className="apod-card__badges">
           <span className="badge">
-            <Icon name="Calendar" size={16} />
+            <Icon
+              name="Calendar"
+              size={16}
+            />
+
             {formattedDate}
           </span>
 
           {apod.copyright && (
             <span className="badge">
-              <Icon name="Image" size={16} />
+              <Icon
+                name="Image"
+                size={16}
+              />
+
               {apod.copyright}
             </span>
           )}
 
           <span className="badge">
-            {apod.media_type === "image" ? (
+            {apod.media_type ===
+            "image" ? (
               <>
-                <Icon name="Image" size={16} />
+                <Icon
+                  name="Image"
+                  size={16}
+                />
+
                 Imagem
               </>
             ) : (
               <>
-                <Icon name="Video" size={16} />
+                <Icon
+                  name="Video"
+                  size={16}
+                />
+
                 Vídeo
               </>
             )}
@@ -166,9 +279,17 @@ function APODCard({ apod }) {
           <h2>{apod.title}</h2>
 
           <FavoriteButton
-            active={favorite}
-            onClick={handleFavoriteClick}
-            disabled={isFavoriteLoading}
+            active={
+              isAuthenticated &&
+              favorite
+            }
+            onClick={
+              handleFavoriteClick
+            }
+            disabled={
+              isFavoriteLoading ||
+              isAuthLoading
+            }
             ariaLabel={
               favorite
                 ? "Remover dos favoritos"
@@ -190,9 +311,15 @@ function APODCard({ apod }) {
         <div className="apod-card__actions">
           <Button
             variant="secondary"
-            onClick={() => setIsExpanded(!isExpanded)}
+            onClick={() =>
+              setIsExpanded(
+                (current) => !current
+              )
+            }
           >
-            {isExpanded ? "Mostrar menos" : "Ler mais"}
+            {isExpanded
+              ? "Mostrar menos"
+              : "Ler mais"}
           </Button>
 
           {isSafeUrl(apod.hdurl) && (
@@ -203,7 +330,11 @@ function APODCard({ apod }) {
             >
               <Button>
                 <>
-                  <Icon name="Download" size={16} />
+                  <Icon
+                    name="Download"
+                    size={16}
+                  />
+
                   {" Ver imagem HD"}
                 </>
               </Button>

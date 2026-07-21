@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
+
 import "./EpicCard.css";
 
 import FavoriteButton from "../../common/FavoriteButton/FavoriteButton";
+
+import useAuth from "../../../hooks/useAuth";
 
 import {
   isFavorite,
@@ -12,14 +15,22 @@ export default function EpicCard({
   detail,
   onImageClick,
 }) {
+  const {
+    isAuthenticated,
+    isAuthLoading,
+  } = useAuth();
+
   const favoriteId = detail?.image
     ? `epic-${detail.image}`
     : null;
 
-  const [favorite, setFavorite] = useState(false);
-
-  const [isFavoriteLoading, setIsFavoriteLoading] =
+  const [favorite, setFavorite] =
     useState(false);
+
+  const [
+    isFavoriteLoading,
+    setIsFavoriteLoading,
+  ] = useState(false);
 
   const [failedImageUrl, setFailedImageUrl] =
     useState("");
@@ -31,11 +42,15 @@ export default function EpicCard({
   useEffect(() => {
     let isMounted = true;
 
-    async function checkFavorite() {
-      if (!favoriteId) {
-        return;
-      }
+    if (
+      isAuthLoading ||
+      !isAuthenticated ||
+      !favoriteId
+    ) {
+      return undefined;
+    }
 
+    async function checkFavorite() {
       try {
         const result = await isFavorite(
           favoriteId,
@@ -46,10 +61,14 @@ export default function EpicCard({
           setFavorite(result);
         }
       } catch (error) {
-        console.error(
-          "Erro ao verificar favorito EPIC:",
-          error
-        );
+        if (
+          error.response?.status !== 401
+        ) {
+          console.error(
+            "Erro ao verificar favorito EPIC:",
+            error
+          );
+        }
 
         if (isMounted) {
           setFavorite(false);
@@ -62,7 +81,11 @@ export default function EpicCard({
     return () => {
       isMounted = false;
     };
-  }, [favoriteId]);
+  }, [
+    favoriteId,
+    isAuthenticated,
+    isAuthLoading,
+  ]);
 
   if (!detail) {
     return null;
@@ -78,7 +101,22 @@ export default function EpicCard({
   } = detail;
 
   async function handleFavoriteClick() {
-    if (!favoriteId || isFavoriteLoading) {
+    if (!isAuthenticated) {
+      window.dispatchEvent(
+        new CustomEvent("epicFavoriteError", {
+          detail: {
+            status: 401,
+          },
+        })
+      );
+
+      return;
+    }
+
+    if (
+      !favoriteId ||
+      isFavoriteLoading
+    ) {
       return;
     }
 
@@ -126,11 +164,15 @@ export default function EpicCard({
       setFavorite(result.isFavorite);
 
       window.dispatchEvent(
-        new CustomEvent("epicFavoriteUpdated", {
-          detail: {
-            isFavorite: result.isFavorite,
-          },
-        })
+        new CustomEvent(
+          "epicFavoriteUpdated",
+          {
+            detail: {
+              isFavorite:
+                result.isFavorite,
+            },
+          }
+        )
       );
     } catch (error) {
       console.error(
@@ -139,11 +181,15 @@ export default function EpicCard({
       );
 
       window.dispatchEvent(
-        new CustomEvent("epicFavoriteError", {
-          detail: {
-            status: error.response?.status,
-          },
-        })
+        new CustomEvent(
+          "epicFavoriteError",
+          {
+            detail: {
+              status:
+                error.response?.status,
+            },
+          }
+        )
       );
     } finally {
       setIsFavoriteLoading(false);
@@ -179,11 +225,13 @@ export default function EpicCard({
             role="img"
             aria-label="A imagem EPIC não está disponível"
           >
-            <strong>Imagem indisponível</strong>
+            <strong>
+              Imagem indisponível
+            </strong>
 
             <span>
-              Não foi possível carregar esta captura da
-              Terra.
+              Não foi possível carregar esta
+              captura da Terra.
             </span>
           </div>
         ) : (
@@ -196,12 +244,17 @@ export default function EpicCard({
             aria-label={`${caption}. Abrir imagem ampliada.`}
             onClick={onImageClick}
             onKeyDown={handleImageKeyDown}
-            onError={() => setFailedImageUrl(url)}
+            onError={() =>
+              setFailedImageUrl(url)
+            }
           />
         )}
 
         <FavoriteButton
-          active={favorite}
+          active={
+            isAuthenticated &&
+            favorite
+          }
           onClick={handleFavoriteClick}
           disabled={isFavoriteLoading}
           size={18}
@@ -222,7 +275,8 @@ export default function EpicCard({
 
         {lat && lon && (
           <p>
-            Centro visível: {lat}° lat · {lon}° lon
+            Centro visível: {lat}° lat ·{" "}
+            {lon}° lon
           </p>
         )}
 
