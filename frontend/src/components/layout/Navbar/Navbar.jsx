@@ -148,17 +148,14 @@ function Navbar() {
             aria-label="Menu móvel"
           >
             <div className="navbar__mobile-content">
-              <nav
-                aria-label="Navegação móvel"
-                onClick={closeMenu}
-              >
-                <NavLinks />
+              <nav aria-label="Navegação móvel">
+                <NavLinks onNavigate={closeMenu} />
               </nav>
 
               <div className="navbar__mobile-divider" />
 
               <div className="navbar__mobile-actions">
-                <UserMenu onMobileNavigate={closeMenu}/>
+                <UserMenu onMobileNavigate={closeMenu} />
               </div>
             </div>
           </aside>
