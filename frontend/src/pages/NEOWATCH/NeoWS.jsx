@@ -1,4 +1,6 @@
 import {
+  lazy,
+  Suspense,
   useCallback,
   useEffect,
   useRef,
@@ -7,7 +9,6 @@ import {
 
 import Container from "../../components/common/Container/Container";
 import ErrorState from "../../components/common/ErrorState/ErrorState";
-import BennuViewer from "../../components/NeoWS/BennuViewer/BennuViewer";
 import NeoDateRangeFilter from "../../components/NeoWS/NeoDateRangeFilter/NeoDateRangeFilter";
 import NeoStats from "../../components/NeoWS/NeoStats/NeoStats";
 import NeoSortControl from "../../components/NeoWS/NeoSortControl/NeoSortControl";
@@ -35,6 +36,12 @@ import { usePagination } from "../../hooks/usePagination";
 import getApiErrorMessage from "../../utils/getApiErrorMessage";
 
 import "./NeoWS.css";
+
+const BennuViewer = lazy(() =>
+  import(
+    "../../components/NeoWS/BennuViewer/BennuViewer"
+  )
+);
 
 const SOURCE = "neows";
 const OBJECTS_PER_PAGE = 8;
@@ -98,8 +105,10 @@ function NeoWS() {
     () => new Set()
   );
 
-  const [favoriteLoadingKeys, setFavoriteLoadingKeys] =
-    useState(() => new Set());
+  const [
+    favoriteLoadingKeys,
+    setFavoriteLoadingKeys,
+  ] = useState(() => new Set());
 
   const [toastMessage, setToastMessage] =
     useState("");
@@ -144,13 +153,17 @@ function NeoWS() {
         const { objects: results } =
           await fetchNeoFeed(start, end);
 
-        if (requestIdRef.current !== requestId) return;
+        if (requestIdRef.current !== requestId) {
+          return;
+        }
 
         setObjects(
           Array.isArray(results) ? results : []
         );
       } catch (requestError) {
-        if (requestIdRef.current !== requestId) return;
+        if (requestIdRef.current !== requestId) {
+          return;
+        }
 
         console.error(
           "Erro ao carregar objetos NeoWS:",
@@ -480,22 +493,99 @@ function NeoWS() {
   }
 
   return (
-    <>
-      <PageMeta
-        title="Asteroides Próximos da Terra — SpaceVision"
-        description="Consulta asteroides próximos da Terra, compara dimensões, distâncias e risco potencial através de dados NeoWs da NASA."
-      />
-      <main className="neows-page">
-        <Container>
-          <header className="neows-page__header">
-            <div className="neows-page__intro">
-              <Breadcrumb title="NeoWatch" />
+    <main className="neows-page">
+      <Container>
+        <header className="neows-page__header">
+          <div className="neows-page__intro">
+            <Breadcrumb title="NeoWatch" />
 
-              <span className="neows-page__eyebrow">
-                NeoWs · Near-Earth Objects
-              </span>
+            <span className="neows-page__eyebrow">
+              NeoWs · Near-Earth Objects
+            </span>
 
-              <h1>Objetos próximos da Terra</h1>
+            <h1>Objetos próximos da Terra</h1>
+
+            <p>
+              Consulta asteroides e cometas cuja órbita
+              os traz perto da Terra, com estatísticas
+              agregadas e destaque para os objetos
+              potencialmente perigosos monitorizados
+              pela NASA.
+            </p>
+          </div>
+
+          <div className="neows-page__viewer">
+            <Suspense
+              fallback={
+                <div
+                  className="bennu-viewer-loading"
+                  role="status"
+                  aria-live="polite"
+                  aria-busy="true"
+                >
+                  <div
+                    className="bennu-viewer-loading__spinner"
+                    aria-hidden="true"
+                  />
+
+                  <p>
+                    A carregar visualização 3D...
+                  </p>
+                </div>
+              }
+            >
+              <BennuViewer />
+            </Suspense>
+          </div>
+        </header>
+
+        <NeoDateRangeFilter
+          startDate={startDate}
+          endDate={endDate}
+          onStartDateChange={(value) => {
+            setStartDate(value);
+            setValidationError("");
+          }}
+          onEndDateChange={(value) => {
+            setEndDate(value);
+            setValidationError("");
+          }}
+          onSearch={handleSearch}
+          loading={loading}
+        />
+
+        {validationError && (
+          <p
+            className="neows-page__validation-error"
+            role="alert"
+          >
+            {validationError}
+          </p>
+        )}
+
+        <NeoStats
+          stats={stats}
+          loading={loading}
+        />
+
+        {error && !loading && (
+          <ErrorState
+            title="Não foi possível carregar os asteroides"
+            message={error}
+            onRetry={() =>
+              handleSearch(startDate, endDate)
+            }
+          />
+        )}
+
+        {!loading &&
+          !error &&
+          objects.length === 0 && (
+            <div
+              className="neows-page__empty"
+              role="status"
+            >
+              <h2>Nenhum objeto encontrado</h2>
 
               <p>
                 Consulta asteroides e cometas cuja órbita
