@@ -26,12 +26,18 @@ import Profile from "./pages/Profile/Profile";
 import Admin from "./pages/Admin/Admin";
 import Unauthorized from "./pages/Unauthorized/Unauthorized";
 
+
+import CookieConsent from "./components/common/CookieConsent/CookieConsent";
+
 import Terms from "./pages/Legal/Terms/Terms";
 import Privacy from "./pages/Legal/Privacy/Privacy";
 import Accessibility from "./pages/Accessibility/Accessibility";
 
 function App() {
   return (
+    <>
+      <CookieConsent />
+
     <Routes>
       <Route element={<MainLayout />}>
         <Route index element={<Home />} />
@@ -83,6 +89,8 @@ function App() {
         />
       </Route>
     </Routes>
+
+    </>
   );
 }
 
