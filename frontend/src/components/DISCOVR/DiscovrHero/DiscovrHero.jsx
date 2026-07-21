@@ -56,8 +56,10 @@ function DiscovrHero() {
               muted
               loop
               playsInline
+              preload="metadata"
               disablePictureInPicture
               disableRemotePlayback
+              aria-hidden="true"
               tabIndex={-1}
               poster={heroImage}
             >
