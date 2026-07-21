@@ -17,6 +17,7 @@ import NeoSkeleton from "../../components/NeoWS/NeoSkeleton/NeoSkeleton";
 import Pagination from "../../components/common/Pagination/Pagination";
 import Breadcrumb from "../../components/common/Breadcrumb/Breadcrumb";
 import Toast from "../../components/common/Toast/Toast";
+import PageMeta from "../../components/common/PageMeta/PageMeta";
 
 import {
   computeStats,
@@ -209,7 +210,7 @@ function NeoWS() {
         const keys = favorites.map((favorite) =>
           String(
             favorite.nasa_id ||
-              favorite.id
+            favorite.id
           )
         );
 
@@ -271,7 +272,7 @@ function NeoWS() {
     try {
       const rawNeo =
         neo.raw &&
-        typeof neo.raw === "object"
+          typeof neo.raw === "object"
           ? neo.raw
           : neo;
 
@@ -587,84 +588,147 @@ function NeoWS() {
               <h2>Nenhum objeto encontrado</h2>
 
               <p>
-                Não foram encontrados objetos próximos
-                da Terra para este período. Experimenta
-                selecionar outro intervalo de datas.
+                Consulta asteroides e cometas cuja órbita
+                os traz perto da Terra, com estatísticas
+                agregadas e destaque para os objetos
+                potencialmente perigosos monitorizados
+                pela NASA.
               </p>
             </div>
-          )}
 
-        {!loading &&
-          !error &&
-          objects.length > 0 && (
-            <NeoSortControl
-              direction={sortDirection}
-              onChange={(direction) => {
-                setSortDirection(direction);
-                setPage(1);
-              }}
-              count={objects.length}
-            />
-          )}
+            <div className="neows-page__viewer">
+              <BennuViewer />
+            </div>
+          </header>
 
-        {(loading ||
-          (!error && objects.length > 0)) && (
-            <section
-              className="neows-page__list-panel"
-              aria-label="Lista de objetos próximos da Terra"
-              aria-busy={loading}
+          <NeoDateRangeFilter
+            startDate={startDate}
+            endDate={endDate}
+            onStartDateChange={(value) => {
+              setStartDate(value);
+              setValidationError("");
+            }}
+            onEndDateChange={(value) => {
+              setEndDate(value);
+              setValidationError("");
+            }}
+            onSearch={handleSearch}
+            loading={loading}
+          />
+
+          {validationError && (
+            <p
+              className="neows-page__validation-error"
+              role="alert"
             >
-              <div className="neows-page__grid">
-                {loading &&
-                  Array.from({ length: 6 }).map(
-                    (_, index) => (
-                      <NeoSkeleton key={index} />
-                    )
-                  )}
-
-                {!loading &&
-                  !error &&
-                  paginatedObjects.map((neo) => {
-                    const favoriteId = String(
-                      neo.id
-                    );
-
-                    return (
-                      <NeoCard
-                        key={neo.id}
-                        neo={neo}
-                        isFavorite={favoriteKeys.has(
-                          favoriteId
-                        )}
-                        isFavoriteLoading={
-                          favoriteLoadingKeys.has(
-                            favoriteId
-                          )
-                        }
-                        onToggleFavorite={
-                          handleToggleFavorite
-                        }
-                      />
-                    );
-                  })}
-              </div>
-            </section>
+              {validationError}
+            </p>
           )}
 
-        {!loading &&
-          !error &&
-          shouldShowPagination && (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setPage}
+          <NeoStats
+            stats={stats}
+            loading={loading}
+          />
+
+          {error && !loading && (
+            <ErrorState
+              title="Não foi possível carregar os asteroides"
+              message={error}
+              onRetry={() =>
+                handleSearch(startDate, endDate)
+              }
             />
           )}
-      </Container>
 
-      <Toast message={toastMessage} />
-    </main>
-  );
+          {!loading &&
+            !error &&
+            objects.length === 0 && (
+              <div
+                className="neows-page__empty"
+                role="status"
+              >
+                <h2>Nenhum objeto encontrado</h2>
+
+                <p>
+                  Não foram encontrados objetos próximos
+                  da Terra para este período. Experimenta
+                  selecionar outro intervalo de datas.
+                </p>
+              </div>
+            )}
+
+          {!loading &&
+            !error &&
+            objects.length > 0 && (
+              <NeoSortControl
+                direction={sortDirection}
+                onChange={(direction) => {
+                  setSortDirection(direction);
+                  setPage(1);
+                }}
+                count={objects.length}
+              />
+            )}
+
+          {(loading ||
+            (!error && objects.length > 0)) && (
+              <section
+                className="neows-page__list-panel"
+                aria-label="Lista de objetos próximos da Terra"
+                aria-busy={loading}
+              >
+                <div className="neows-page__grid">
+                  {loading &&
+                    Array.from({ length: 6 }).map(
+                      (_, index) => (
+                        <NeoSkeleton key={index} />
+                      )
+                    )}
+
+                  {!loading &&
+                    !error &&
+                    paginatedObjects.map((neo) => {
+                      const favoriteId = String(
+                        neo.id
+                      );
+
+                      return (
+                        <NeoCard
+                          key={neo.id}
+                          neo={neo}
+                          isFavorite={favoriteKeys.has(
+                            favoriteId
+                          )}
+                          isFavoriteLoading={
+                            favoriteLoadingKeys.has(
+                              favoriteId
+                            )
+                          }
+                          onToggleFavorite={
+                            handleToggleFavorite
+                          }
+                        />
+                      );
+                    })}
+                </div>
+              </section>
+            )}
+
+          {!loading &&
+            !error &&
+            shouldShowPagination && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setPage}
+              />
+            )}
+        </Container>
+
+        <Toast message={toastMessage} />
+      </main>
+   </>
+);
 }
 
-export default NeoWS;
+      export default NeoWS;

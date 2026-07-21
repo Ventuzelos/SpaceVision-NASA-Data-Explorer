@@ -44,6 +44,7 @@ import {
   Share2,
   Server,
   Lightbulb,
+  Cookie,
 } from "lucide-react";
 
 export const Icons = {
@@ -92,4 +93,5 @@ export const Icons = {
   Share2,
   Server,
   Lightbulb,
+  Cookie,
 };

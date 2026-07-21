@@ -1,4 +1,4 @@
-import EpicCard from '../../../components/epic/EpicCard/EpicCard';
+import EpicCard from '../../../components/EPIC/EpicCard/EpicCard';
 
 // EpicPanel passa a foto selecionada (já no formato "detail":
 // { url, caption, time, lat, lon }) como prop `photo`.

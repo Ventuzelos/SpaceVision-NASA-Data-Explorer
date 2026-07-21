@@ -1,5 +1,6 @@
 import LegalLayout from "../../../components/common/LegalLayout/LegalLayout";
 import Icon from "../../../components/common/Icon/Icon";
+import PageMeta from "../../../components/common/PageMeta/PageMeta";
 
 const SECTIONS = [
   {
@@ -184,16 +185,23 @@ const SECTIONS = [
 
 function Privacy() {
   return (
-    <LegalLayout
-      icon="Lock"
-      eyebrow="Legal"
-      title="Política de Privacidade"
-      description="Que dados o SpaceVision guarda, para quê, e como podes controlá-los."
-      lastUpdated="16 de julho de 2026"
-      summary="guardamos o mínimo possível: sem conta, não recolhemos nada de pessoal. Com conta, só o essencial para autenticação e favoritos — nunca vendido nem partilhado com terceiros."
-      sections={SECTIONS}
-    />
-  );
+    <>
+
+      <PageMeta
+        title="Política de privacidade — SpaceVision"
+        description="Consulta como o SpaceVision trata os dados pessoais, favoritos, mensagens e informações da tua conta."
+      />
+      <LegalLayout
+        icon="Lock"
+        eyebrow="Legal"
+        title="Política de Privacidade"
+        description="Que dados o SpaceVision guarda, para quê, e como podes controlá-los."
+        lastUpdated="16 de julho de 2026"
+        summary="guardamos o mínimo possível: sem conta, não recolhemos nada de pessoal. Com conta, só o essencial para autenticação e favoritos — nunca vendido nem partilhado com terceiros."
+        sections={SECTIONS}
+      />
+      </>
+      );
 }
 
-export default Privacy;
+      export default Privacy;

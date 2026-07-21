@@ -16,6 +16,7 @@ import DonkiHero from "../../components/DONKI/DonkiHero/DonkiHero";
 import Pagination from "../../components/common/Pagination/Pagination";
 import ErrorState from "../../components/common/ErrorState/ErrorState";
 import Toast from "../../components/common/Toast/Toast";
+import PageMeta from "../../components/common/PageMeta/PageMeta";
 
 import {
   donkiEventTypes,
@@ -340,7 +341,13 @@ function DONKI() {
       : undefined;
 
   return (
-    <main className="donki-page">
+  <>
+      <PageMeta
+        title="Meteorologia Espacial — SpaceVision"
+        description="Consulta erupções solares, ejeções de massa coronal, tempestades geomagnéticas e outros eventos espaciais através de dados DONKI da NASA."
+      />
+
+      <main className="donki-page">
       <Container>
         <DonkiHero />
 
@@ -517,6 +524,7 @@ function DONKI() {
 
       <Toast message={toastMessage} />
     </main>
+  </>
   );
 }
 
