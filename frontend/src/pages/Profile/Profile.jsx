@@ -18,6 +18,7 @@ import Toast from "../../components/common/Toast/Toast";
 import Breadcrumb from "../../components/common/Breadcrumb/Breadcrumb";
 import { getFavorites } from "../../services/favoritesService";
 import useAuth from "../../hooks/useAuth";
+import PageMeta from "../../components/common/PageMeta/PageMeta";
 
 import "./Profile.css";
 
@@ -446,6 +447,11 @@ function Profile() {
   }
 
   return (
+     <>
+    <PageMeta
+      title="Perfil — SpaceVision"
+      description="Gere os teus dados pessoais, favoritos e preferências da conta no SpaceVision."
+    />
     <main className="profile-page">
       <Container>
         <Breadcrumb title="Perfil" />
@@ -924,6 +930,7 @@ function Profile() {
         </section>
       </Container>
     </main>
+    </>
   );
 }
 

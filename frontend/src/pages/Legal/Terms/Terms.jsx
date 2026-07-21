@@ -1,5 +1,6 @@
 import LegalLayout from "../../../components/common/LegalLayout/LegalLayout";
 import Icon from "../../../components/common/Icon/Icon";
+import PageMeta from "../../../components/common/PageMeta/PageMeta";
 
 const SECTIONS = [
   {
@@ -140,16 +141,22 @@ const SECTIONS = [
 
 function Terms() {
   return (
-    <LegalLayout
-      icon="Scale"
-      eyebrow="Legal"
-      title="Termos e Condições"
-      description="As regras simples que tornam o SpaceVision justo para todos — o que podes esperar do serviço e o que pedimos em troca."
-      lastUpdated="16 de julho de 2026"
-      summary="o SpaceVision é um projeto educativo gratuito, sem garantias comerciais. Não precisas de conta para explorar os dados da NASA — só se quiseres guardar favoritos ou gerir um perfil."
-      sections={SECTIONS}
-    />
-  );
+    <>
+      <PageMeta
+        title="Termos de utilização — SpaceVision"
+        description="Consulta os termos de utilização aplicáveis à plataforma SpaceVision."
+      />
+      <LegalLayout
+        icon="Scale"
+        eyebrow="Legal"
+        title="Termos e Condições"
+        description="As regras simples que tornam o SpaceVision justo para todos — o que podes esperar do serviço e o que pedimos em troca."
+        lastUpdated="16 de julho de 2026"
+        summary="o SpaceVision é um projeto educativo gratuito, sem garantias comerciais. Não precisas de conta para explorar os dados da NASA — só se quiseres guardar favoritos ou gerir um perfil."
+        sections={SECTIONS}
+      />
+      </>
+      );
 }
 
-export default Terms;
+      export default Terms;
