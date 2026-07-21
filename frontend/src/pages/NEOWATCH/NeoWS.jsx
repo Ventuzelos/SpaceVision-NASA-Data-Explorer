@@ -1,4 +1,6 @@
 import {
+  lazy,
+  Suspense,
   useCallback,
   useEffect,
   useRef,
@@ -7,7 +9,6 @@ import {
 
 import Container from "../../components/common/Container/Container";
 import ErrorState from "../../components/common/ErrorState/ErrorState";
-import BennuViewer from "../../components/NeoWS/BennuViewer/BennuViewer";
 import NeoDateRangeFilter from "../../components/NeoWS/NeoDateRangeFilter/NeoDateRangeFilter";
 import NeoStats from "../../components/NeoWS/NeoStats/NeoStats";
 import NeoSortControl from "../../components/NeoWS/NeoSortControl/NeoSortControl";
@@ -34,6 +35,12 @@ import { usePagination } from "../../hooks/usePagination";
 import getApiErrorMessage from "../../utils/getApiErrorMessage";
 
 import "./NeoWS.css";
+
+const BennuViewer = lazy(() =>
+  import(
+    "../../components/NeoWS/BennuViewer/BennuViewer"
+  )
+);
 
 const SOURCE = "neows";
 const OBJECTS_PER_PAGE = 8;
@@ -97,8 +104,10 @@ function NeoWS() {
     () => new Set()
   );
 
-  const [favoriteLoadingKeys, setFavoriteLoadingKeys] =
-    useState(() => new Set());
+  const [
+    favoriteLoadingKeys,
+    setFavoriteLoadingKeys,
+  ] = useState(() => new Set());
 
   const [toastMessage, setToastMessage] =
     useState("");
@@ -143,13 +152,17 @@ function NeoWS() {
         const { objects: results } =
           await fetchNeoFeed(start, end);
 
-        if (requestIdRef.current !== requestId) return;
+        if (requestIdRef.current !== requestId) {
+          return;
+        }
 
         setObjects(
           Array.isArray(results) ? results : []
         );
       } catch (requestError) {
-        if (requestIdRef.current !== requestId) return;
+        if (requestIdRef.current !== requestId) {
+          return;
+        }
 
         console.error(
           "Erro ao carregar objetos NeoWS:",
@@ -501,7 +514,27 @@ function NeoWS() {
           </div>
 
           <div className="neows-page__viewer">
-            <BennuViewer />
+            <Suspense
+              fallback={
+                <div
+                  className="bennu-viewer-loading"
+                  role="status"
+                  aria-live="polite"
+                  aria-busy="true"
+                >
+                  <div
+                    className="bennu-viewer-loading__spinner"
+                    aria-hidden="true"
+                  />
+
+                  <p>
+                    A carregar visualização 3D...
+                  </p>
+                </div>
+              }
+            >
+              <BennuViewer />
+            </Suspense>
           </div>
         </header>
 
