@@ -6,6 +6,18 @@
   padding-inline: var(--space-6);
 }
 
+@media (max-width: 480px) {
+  .container {
+    padding-inline: var(--space-4);
+  }
+}
+
+@media (max-width: 320px) {
+  .container {
+    padding-inline: var(--space-3);
+  }
+}
+
 .flex{
 
     display:flex;

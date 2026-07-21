@@ -33,7 +33,6 @@ export default function EpicPipeline() {
     >
       <EpicSectionHead
         id="epic-pipeline-title"
-        eyebrow="Do espaço ao ecrã"
         title="Como uma imagem chega até aqui"
         sub="Quatro etapas reais entre a captura em órbita e o pixel que vês no visualizador abaixo."
       />
