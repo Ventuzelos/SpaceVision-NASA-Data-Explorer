@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 
 import Icon from "../../common/Icon/Icon";
 
-import sceneImage from "../../../assets/hero1.jpg";
+import sceneImage from "../../../assets/hero1.webp";
 
 import "./DiscovrTimeline.css";
 
