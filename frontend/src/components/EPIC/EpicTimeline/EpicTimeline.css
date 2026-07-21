@@ -62,17 +62,17 @@
   height: 0.75rem;
   border: 2px solid var(--color-background);
   border-radius: 50%;
-  background: var(--timeline-color);
-  box-shadow: 0 0 0.625rem var(--timeline-color);
+  background: var(--color-link);
 }
 
 .epic-page .epic-timeline__dot--active {
   width: 1rem;
   height: 1rem;
+  background: var(--color-accent);
 }
 
 .epic-page .epic-timeline__year {
-  color: var(--timeline-color);
+  color: var(--color-text-secondary);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
   line-height: var(--line-height-tight);

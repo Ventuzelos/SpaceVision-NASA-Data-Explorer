@@ -7,11 +7,11 @@
 
 .about-page__eyebrow {
   margin: 0 0 var(--space-3);
-  color: var(--color-link);
+  color: var(--color-text-secondary);
   font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-medium);
   line-height: var(--line-height-tight);
-  letter-spacing: 0.12em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
