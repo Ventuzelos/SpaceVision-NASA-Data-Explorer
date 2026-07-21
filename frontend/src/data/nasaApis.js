@@ -1,6 +1,6 @@
 
 import donkiImage from "../assets/api-cards/donki.jpg";
-import epicImage from "../assets/api-cards/epic.jpg";
+import epicImage from "../assets/api-cards/epic.webp";
 import neowsImage from "../assets/api-cards/neows.jpg";
 
 export const nasaApis = [
