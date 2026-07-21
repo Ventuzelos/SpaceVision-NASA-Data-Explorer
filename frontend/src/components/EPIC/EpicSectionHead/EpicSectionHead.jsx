@@ -19,9 +19,11 @@ export default function EpicSectionHead({
     <header
       className={`epic-section-head ${className}`.trim()}
     >
-      <p className="epic-section-head__eyebrow">
-        {eyebrow}
-      </p>
+      {eyebrow && (
+        <p className="epic-section-head__eyebrow">
+          {eyebrow}
+        </p>
+      )}
 
       <h2
         id={titleId}
