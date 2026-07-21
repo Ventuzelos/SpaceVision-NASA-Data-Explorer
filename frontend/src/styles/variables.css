@@ -79,6 +79,20 @@
   --transition-normal: 0.3s ease;
 }
 
+/* Ajuste de tokens para ecrãs muito pequenos (ex: 250px) */
+@media (max-width: 360px) {
+  :root {
+    --space-4: 0.75rem;
+    --space-5: 1rem;
+    --space-6: 1.25rem;
+    --space-7: 1.75rem;
+    --space-8: 2.25rem;
+
+    --font-size-xl: 1.1rem;
+    --font-size-lg: 1.05rem;
+  }
+}
+
 /* Breakpoints (documentação) */
 /*
 Mobile: até 600px
