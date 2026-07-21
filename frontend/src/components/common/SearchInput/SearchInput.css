@@ -1,6 +1,7 @@
 .search-input {
   width: 100%;
   max-width: 600px;
+   min-width: 0;
 
   display: flex;
   align-items: center;
@@ -22,6 +23,7 @@
 
 .search-input__field {
   flex: 1;
+   min-width: 0;
 
   border: none;
   outline: none;
@@ -41,6 +43,7 @@
 .search-input__button {
   width: 48px;
   height: 48px;
+  flex-shrink: 0;
 
   border: none;
   background: transparent;
@@ -57,4 +60,16 @@
 
 .search-input__button:hover {
   color: var(--color-primary);
+}
+
+@media (max-width: 360px) {
+  .search-input__field {
+    padding: var(--space-3) var(--space-4);
+    font-size: 0.9rem;
+  }
+
+  .search-input__button {
+    width: 40px;
+    height: 40px;
+  }
 }

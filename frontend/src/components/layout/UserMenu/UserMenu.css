@@ -275,3 +275,12 @@
     height: auto;
   }
 }
+
+@media (max-width: 360px) {
+  .navbar__brand img,
+  .navbar__brand svg,
+  .navbar .logo img,
+  .navbar .logo svg {
+    max-width: 140px;
+  }
+}

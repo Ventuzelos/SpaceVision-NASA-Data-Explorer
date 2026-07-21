@@ -189,6 +189,25 @@
   }
 }
 
+@media (max-width: 360px) {
+  .navbar__container {
+    gap: var(--space-2);
+  }
+
+  .navbar__brand img,
+  .navbar__brand svg,
+  .navbar .logo img,
+  .navbar .logo svg {
+    max-width: 140px;
+  }
+
+  .navbar__toggle {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+  }
+}
+
 @keyframes mobile-menu-enter {
   from {
     opacity: 0;
