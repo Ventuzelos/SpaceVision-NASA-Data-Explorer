@@ -5,7 +5,7 @@
 
 .footer__container {
   display: grid;
-  grid-template-columns: minmax(260px, 1.2fr) 2fr;
+  grid-template-columns: minmax(min(260px, 100%), 1.2fr) 2fr;
   gap: var(--space-8);
   padding-block: var(--space-8);
 }
@@ -29,7 +29,7 @@
 
 .footer__links {
   display: grid;
-  grid-template-columns: repeat(4, minmax(130px, 1fr));
+  grid-template-columns: repeat(4, minmax(min(130px, 100%), 1fr));
   gap: var(--space-6);
 }
 
@@ -141,7 +141,7 @@
   }
 
   .footer__links {
-    grid-template-columns: repeat(2, minmax(180px, 1fr));
+    grid-template-columns: repeat(2, minmax(min(180px, 100%), 1fr));
   }
 }
 
