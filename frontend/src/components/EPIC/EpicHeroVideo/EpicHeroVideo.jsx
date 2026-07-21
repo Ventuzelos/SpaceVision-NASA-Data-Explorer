@@ -5,13 +5,20 @@ export default function EpicHeroVideo() {
   return (
     <video
       className="epic-hero-video"
-      src={epicBlueMarble}
       autoPlay
       muted
       loop
       playsInline
+      preload="metadata"
+      disablePictureInPicture
+      disableRemotePlayback
       aria-hidden="true"
       tabIndex={-1}
-    />
+    >
+      <source
+        src={epicBlueMarble}
+        type="video/mp4"
+      />
+    </video>
   );
 }
