@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import Icon from "../Icon/Icon";
 import Button from "../Button/Button";
@@ -10,17 +10,19 @@ import {
 
 import "./CookieConsent.css";
 
+function getInitialVisibility() {
+  const existingChoice = getCookieConsent();
+
+  return !existingChoice;
+}
+
 function CookieConsent() {
-  const [visible, setVisible] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
+  const [visible, setVisible] = useState(
+    getInitialVisibility
+  );
 
-  useEffect(() => {
-    const existingChoice = getCookieConsent();
-
-    if (!existingChoice) {
-      setVisible(true);
-    }
-  }, []);
+  const [showDetails, setShowDetails] =
+    useState(false);
 
   function handleChoice(status) {
     setCookieConsent(status);
@@ -38,7 +40,10 @@ function CookieConsent() {
         role="region"
         aria-label="Aviso de cookies"
       >
-        <div className="cookie-consent__icon" aria-hidden="true">
+        <div
+          className="cookie-consent__icon"
+          aria-hidden="true"
+        >
           <Icon name="Cookie" size={22} />
         </div>
 
@@ -48,40 +53,49 @@ function CookieConsent() {
           </p>
 
           <p className="cookie-consent__text">
-            Usamos armazenamento local para manter a tua sessão
-            e guardar os teus favoritos. Não usamos cookies de
-            publicidade nem de rastreio.
-            </p>
-            <button
-              type="button"
-              className="cookie-consent__link"
-              onClick={() => setShowDetails((prev) => !prev)}
-              aria-expanded={showDetails}
-            >
-              {showDetails ? "Saber menos" : "Saber mais"}
-            </button>
+            Usamos armazenamento local para manter a tua
+            sessão e guardar os teus favoritos. Não usamos
+            cookies de publicidade nem de rastreio.
+          </p>
 
-            {showDetails && (
-              <div className="cookie-consent__details">
-                <p>
-                  Não usamos cookies no sentido tradicional. Guardamos
-                  apenas dados essenciais no teu navegador:{" "}
-                  <strong>sessionStorage</strong> para manter a tua sessão
-                  ativa e <strong>localStorage</strong> para lembrar os
-                  teus favoritos. Nada disto é partilhado com redes de
-                  publicidade ou de rastreio de terceiros. Podes apagar
-                  estes dados a qualquer momento limpando os dados de
-                  navegação do teu browser.
-                </p>
-              </div>
-            )}
-          
+          <button
+            type="button"
+            className="cookie-consent__link"
+            onClick={() =>
+              setShowDetails((previous) => !previous)
+            }
+            aria-expanded={showDetails}
+          >
+            {showDetails
+              ? "Saber menos"
+              : "Saber mais"}
+          </button>
+
+          {showDetails && (
+            <div className="cookie-consent__details">
+              <p>
+                Não usamos cookies no sentido tradicional.
+                Guardamos apenas dados essenciais no teu
+                navegador:{" "}
+                <strong>sessionStorage</strong> para manter
+                a tua sessão ativa e{" "}
+                <strong>localStorage</strong> para lembrar
+                as tuas preferências. Nada disto é
+                partilhado com redes de publicidade ou de
+                rastreio de terceiros. Podes apagar estes
+                dados a qualquer momento limpando os dados
+                de navegação do teu browser.
+              </p>
+            </div>
+          )}
 
           <div className="cookie-consent__actions">
             <Button
               variant="secondary"
               className="cookie-consent__btn"
-              onClick={() => handleChoice("rejected")}
+              onClick={() =>
+                handleChoice("rejected")
+              }
             >
               Negar todos os cookies
             </Button>
@@ -89,7 +103,9 @@ function CookieConsent() {
             <Button
               variant="primary"
               className="cookie-consent__btn"
-              onClick={() => handleChoice("accepted")}
+              onClick={() =>
+                handleChoice("accepted")
+              }
             >
               Aceitar todos os cookies
             </Button>
@@ -99,6 +115,5 @@ function CookieConsent() {
     </div>
   );
 }
-
 
 export default CookieConsent;
