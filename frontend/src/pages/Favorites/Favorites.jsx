@@ -14,6 +14,7 @@ import useAuth from "../../hooks/useAuth";
 import "./Favorites.css";
 import FavoriteDetailsModal from "../../components/favorites/FavoriteDetailsModal";
 import Toast from "../../components/common/Toast/Toast";
+import PageMeta from "../../components/common/PageMeta/PageMeta";
 
 
 
@@ -194,6 +195,11 @@ function Favorites() {
   }
 
   return (
+    <>
+    <PageMeta
+      title="Favoritos — SpaceVision"
+      description="Consulta e organiza os conteúdos da NASA que guardaste como favoritos no SpaceVision."
+    />
     <main className="favorites-page">
       <section className="favorites-hero">
         <Container>
@@ -341,6 +347,7 @@ function Favorites() {
 
     <Toast message={toastMessage} />
   </main>
+  </>
 );
 }
 

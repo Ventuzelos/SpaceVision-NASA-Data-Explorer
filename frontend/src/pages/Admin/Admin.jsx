@@ -6,6 +6,7 @@ import Breadcrumb from "../../components/common/Breadcrumb/Breadcrumb";
 import ErrorState from "../../components/common/ErrorState/ErrorState";
 import Icon from "../../components/common/Icon/Icon";
 import useAuth from "../../hooks/useAuth";
+import PageMeta from "../../components/common/PageMeta/PageMeta";
 
 import {
   deleteMessage,
@@ -175,9 +176,9 @@ function Admin() {
           (message) =>
             message.id === messageId
               ? {
-                  ...message,
-                  is_read: true,
-                }
+                ...message,
+                is_read: true,
+              }
               : message
         ),
       }));
@@ -219,11 +220,11 @@ function Admin() {
           ),
           unread:
             deletedMessage &&
-            !deletedMessage.is_read
+              !deletedMessage.is_read
               ? Math.max(
-                  currentStats.unread - 1,
-                  0
-                )
+                currentStats.unread - 1,
+                0
+              )
               : currentStats.unread,
           messages:
             currentStats.messages.filter(
@@ -268,489 +269,493 @@ function Admin() {
   }
 
   return (
-    <main className="admin-page">
-      <Container>
-        <Breadcrumb title="Administração" />
+    <>
+      <PageMeta
+        title="Administração — SpaceVision"
+        description="Gere utilizadores, favoritos e mensagens recebidas através do painel de administração do SpaceVision."
+      />
+      <main className="admin-page">
+        <Container>
+          <Breadcrumb title="Administração" />
 
-        <header className="admin-page__header">
-          <h1>Painel de administração</h1>
+          <header className="admin-page__header">
+            <h1>Painel de administração</h1>
 
-          <p className="admin-page__subtitle">
-            Bem-vinda, {user?.name}!
-          </p>
+            <p className="admin-page__subtitle">
+              Bem-vinda, {user?.name}!
+            </p>
 
-          <p className="admin-page__subtitle">
-            Aqui tens um resumo da atividade da
-            plataforma.
-          </p>
-        </header>
+            <p className="admin-page__subtitle">
+              Aqui tens um resumo da atividade da
+              plataforma.
+            </p>
+          </header>
 
-        {isLoading && (
-          <p
-            className="admin-page__empty"
-            role="status"
-            aria-live="polite"
-          >
-            A carregar dados...
-          </p>
-        )}
-
-        {!isLoading && error && (
-          <ErrorState
-            message={error}
-            onRetry={loadDashboard}
-          />
-        )}
-
-        {!isLoading && !error && (
-          <>
-            <section
-              className="admin-stats"
-              aria-labelledby="admin-stats-title"
+          {isLoading && (
+            <p
+              className="admin-page__empty"
+              role="status"
+              aria-live="polite"
             >
-              <h2
-                id="admin-stats-title"
-                className="sr-only"
+              A carregar dados...
+            </p>
+          )}
+
+          {!isLoading && error && (
+            <ErrorState
+              message={error}
+              onRetry={loadDashboard}
+            />
+          )}
+
+          {!isLoading && !error && (
+            <>
+              <section
+                className="admin-stats"
+                aria-labelledby="admin-stats-title"
               >
-                Estatísticas gerais
-              </h2>
+                <h2
+                  id="admin-stats-title"
+                  className="sr-only"
+                >
+                  Estatísticas gerais
+                </h2>
 
-              <article className="admin-stats__card">
-                <span className="admin-stats__label">
-                  <Icon
-                    name="Users"
-                    size={16}
-                    aria-hidden="true"
-                  />
-                  Utilizadores registados
-                </span>
+                <article className="admin-stats__card">
+                  <span className="admin-stats__label">
+                    <Icon
+                      name="Users"
+                      size={16}
+                      aria-hidden="true"
+                    />
+                    Utilizadores registados
+                  </span>
 
-                <strong>
-                  {formatCount(usersStats.total)}
-                </strong>
+                  <strong>
+                    {formatCount(usersStats.total)}
+                  </strong>
 
-                {usersStats.total === null ? (
-                  <small className="admin-stats__hint">
-                    Endpoint de utilizadores ainda não
-                    disponível no backend.
-                  </small>
-                ) : (
-                  <small className="admin-stats__hint">
+                  {usersStats.total === null ? (
+                    <small className="admin-stats__hint">
+                      Endpoint de utilizadores ainda não
+                      disponível no backend.
+                    </small>
+                  ) : (
+                    <small className="admin-stats__hint">
+                      {formatCount(
+                        usersStats.newLastMonth
+                      )}{" "}
+                      novos no último mês
+                    </small>
+                  )}
+                </article>
+
+                <article className="admin-stats__card">
+                  <span className="admin-stats__label">
+                    <Icon
+                      name="Mail"
+                      size={16}
+                      aria-hidden="true"
+                    />
+                    Mensagens de contacto
+                  </span>
+
+                  <strong>
                     {formatCount(
-                      usersStats.newLastMonth
-                    )}{" "}
-                    novos no último mês
-                  </small>
-                )}
-              </article>
+                      messagesStats.total
+                    )}
+                  </strong>
+                </article>
 
-              <article className="admin-stats__card">
-                <span className="admin-stats__label">
-                  <Icon
-                    name="Mail"
-                    size={16}
-                    aria-hidden="true"
-                  />
-                  Mensagens de contacto
-                </span>
+                <article className="admin-stats__card">
+                  <span className="admin-stats__label">
+                    <Icon
+                      name="Heart"
+                      size={16}
+                      aria-hidden="true"
+                    />
+                    Favoritos guardados
+                  </span>
 
-                <strong>
-                  {formatCount(
-                    messagesStats.total
-                  )}
-                </strong>
-              </article>
+                  <strong>
+                    {formatCount(
+                      favoritesStats.total
+                    )}
+                  </strong>
+                </article>
+              </section>
 
-              <article className="admin-stats__card">
-                <span className="admin-stats__label">
-                  <Icon
-                    name="Heart"
-                    size={16}
-                    aria-hidden="true"
-                  />
-                  Favoritos guardados
-                </span>
-
-                <strong>
-                  {formatCount(
-                    favoritesStats.total
-                  )}
-                </strong>
-              </article>
-            </section>
-
-            <section
-              className="admin-section"
-              aria-labelledby="favorites-category-title"
-            >
-              <h2
-                id="favorites-category-title"
-                className="admin-page__section-title"
+              <section
+                className="admin-section"
+                aria-labelledby="favorites-category-title"
               >
-                Favoritos por categoria
-              </h2>
+                <h2
+                  id="favorites-category-title"
+                  className="admin-page__section-title"
+                >
+                  Favoritos por categoria
+                </h2>
 
-              {favoritesStats.total === 0 ? (
-                <p className="admin-page__empty">
-                  Ainda não existem favoritos
-                  guardados.
-                </p>
-              ) : (
-                <ul className="admin-favorite-breakdown">
-                  {favoritesStats.byCategory.map(
-                    (category) => {
-                      const percentage =
-                        favoritesStats.total
-                          ? Math.round(
+                {favoritesStats.total === 0 ? (
+                  <p className="admin-page__empty">
+                    Ainda não existem favoritos
+                    guardados.
+                  </p>
+                ) : (
+                  <ul className="admin-favorite-breakdown">
+                    {favoritesStats.byCategory.map(
+                      (category) => {
+                        const percentage =
+                          favoritesStats.total
+                            ? Math.round(
                               (category.count /
                                 favoritesStats.total) *
-                                100
+                              100
                             )
-                          : 0;
+                            : 0;
 
-                      return (
+                        return (
+                          <li
+                            key={category.value}
+                            className="admin-favorite-breakdown__item"
+                          >
+                            <div className="admin-favorite-breakdown__head">
+                              <span>
+                                {category.label}
+                              </span>
+
+                              <strong>
+                                {category.count}
+                              </strong>
+                            </div>
+
+                            <div
+                              className="admin-favorite-breakdown__bar"
+                              role="progressbar"
+                              aria-label={`${category.label}: ${category.count} favoritos`}
+                              aria-valuemin="0"
+                              aria-valuemax={
+                                favoritesStats.total
+                              }
+                              aria-valuenow={
+                                category.count
+                              }
+                            >
+                              <div
+                                className="admin-favorite-breakdown__bar-fill"
+                                style={{
+                                  width: `${percentage}%`,
+                                }}
+                              />
+                            </div>
+                          </li>
+                        );
+                      }
+                    )}
+                  </ul>
+                )}
+              </section>
+
+              <section
+                className="admin-section"
+                aria-labelledby="top-saved-title"
+              >
+                <h2
+                  id="top-saved-title"
+                  className="admin-page__section-title"
+                >
+                  Conteúdos mais guardados
+                </h2>
+
+                {favoritesStats.topSaved.length === 0 ? (
+                  <p className="admin-page__empty">
+                    Ainda não há dados suficientes para
+                    destacar conteúdos.
+                  </p>
+                ) : (
+                  <ul className="admin-favorite-breakdown">
+                    {favoritesStats.topSaved.map(
+                      (item) => (
                         <li
-                          key={category.value}
+                          key={`${item.nasaType}-${item.nasaId}`}
                           className="admin-favorite-breakdown__item"
                         >
                           <div className="admin-favorite-breakdown__head">
                             <span>
-                              {category.label}
+                              {item.title}{" "}
+                              <small>
+                                (
+                                {item.nasaType?.toUpperCase()}
+                                )
+                              </small>
                             </span>
 
                             <strong>
-                              {category.count}
+                              {item.saves}
                             </strong>
                           </div>
-
-                          <div
-                            className="admin-favorite-breakdown__bar"
-                            role="progressbar"
-                            aria-label={`${category.label}: ${category.count} favoritos`}
-                            aria-valuemin="0"
-                            aria-valuemax={
-                              favoritesStats.total
-                            }
-                            aria-valuenow={
-                              category.count
-                            }
-                          >
-                            <div
-                              className="admin-favorite-breakdown__bar-fill"
-                              style={{
-                                width: `${percentage}%`,
-                              }}
-                            />
-                          </div>
                         </li>
-                      );
-                    }
-                  )}
-                </ul>
-              )}
-            </section>
-
-            <section
-              className="admin-section"
-              aria-labelledby="top-saved-title"
-            >
-              <h2
-                id="top-saved-title"
-                className="admin-page__section-title"
-              >
-                Conteúdos mais guardados
-              </h2>
-
-              {favoritesStats.topSaved.length === 0 ? (
-                <p className="admin-page__empty">
-                  Ainda não há dados suficientes para
-                  destacar conteúdos.
-                </p>
-              ) : (
-                <ul className="admin-favorite-breakdown">
-                  {favoritesStats.topSaved.map(
-                    (item) => (
-                      <li
-                        key={`${item.nasaType}-${item.nasaId}`}
-                        className="admin-favorite-breakdown__item"
-                      >
-                        <div className="admin-favorite-breakdown__head">
-                          <span>
-                            {item.title}{" "}
-                            <small>
-                              (
-                              {item.nasaType?.toUpperCase()}
-                              )
-                            </small>
-                          </span>
-
-                          <strong>
-                            {item.saves}
-                          </strong>
-                        </div>
-                      </li>
-                    )
-                  )}
-                </ul>
-              )}
-            </section>
-
-            <section
-              className="admin-section"
-              aria-labelledby="contact-messages-title"
-            >
-              <div className="admin-section__header">
-                <h2
-                  id="contact-messages-title"
-                  className="admin-page__section-title"
-                >
-                  Mensagens de contacto
-                </h2>
-
-                <span className="admin-messages__counter">
-                  {formatCount(
-                    messagesStats.unread
-                  )}{" "}
-                  por ler
-                </span>
-              </div>
-
-              <div
-                className="admin-message-filters"
-                aria-label="Filtros das mensagens"
-              >
-                <div className="admin-message-filters__search">
-                  <Icon
-                    name="Search"
-                    size={17}
-                    aria-hidden="true"
-                  />
-
-                  <input
-                    type="search"
-                    value={messageSearch}
-                    onChange={(event) =>
-                      setMessageSearch(
-                        event.target.value
                       )
-                    }
-                    placeholder="Pesquisar por nome, email, assunto ou mensagem..."
-                    aria-label="Pesquisar mensagens"
-                  />
+                    )}
+                  </ul>
+                )}
+              </section>
+
+              <section
+                className="admin-section"
+                aria-labelledby="contact-messages-title"
+              >
+                <div className="admin-section__header">
+                  <h2
+                    id="contact-messages-title"
+                    className="admin-page__section-title"
+                  >
+                    Mensagens de contacto
+                  </h2>
+
+                  <span className="admin-messages__counter">
+                    {formatCount(
+                      messagesStats.unread
+                    )}{" "}
+                    por ler
+                  </span>
                 </div>
 
                 <div
-                  className="admin-message-filters__tabs"
-                  role="group"
-                  aria-label="Filtrar mensagens por estado"
+                  className="admin-message-filters"
+                  aria-label="Filtros das mensagens"
                 >
-                  <button
-                    type="button"
-                    className={
-                      messageStatusFilter === "all"
-                        ? "admin-message-filter-tab admin-message-filter-tab--active"
-                        : "admin-message-filter-tab"
-                    }
-                    onClick={() =>
-                      setMessageStatusFilter("all")
-                    }
-                    aria-pressed={
-                      messageStatusFilter === "all"
-                    }
-                  >
-                    Todas
-                    <span aria-hidden="true">
-                      {messagesStats.total}
-                    </span>
-                  </button>
+                  <div className="admin-message-filters__search">
+                    <Icon
+                      name="Search"
+                      size={17}
+                      aria-hidden="true"
+                    />
 
-                  <button
-                    type="button"
-                    className={
-                      messageStatusFilter ===
-                      "unread"
-                        ? "admin-message-filter-tab admin-message-filter-tab--active"
-                        : "admin-message-filter-tab"
-                    }
-                    onClick={() =>
-                      setMessageStatusFilter(
+                    <input
+                      type="search"
+                      value={messageSearch}
+                      onChange={(event) =>
+                        setMessageSearch(
+                          event.target.value
+                        )
+                      }
+                      placeholder="Pesquisar por nome, email, assunto ou mensagem..."
+                      aria-label="Pesquisar mensagens"
+                    />
+                  </div>
+
+                  <div
+                    className="admin-message-filters__tabs"
+                    role="group"
+                    aria-label="Filtrar mensagens por estado"
+                  >
+                    <button
+                      type="button"
+                      className={
+                        messageStatusFilter === "all"
+                          ? "admin-message-filter-tab admin-message-filter-tab--active"
+                          : "admin-message-filter-tab"
+                      }
+                      onClick={() =>
+                        setMessageStatusFilter("all")
+                      }
+                      aria-pressed={
+                        messageStatusFilter === "all"
+                      }
+                    >
+                      Todas
+                      <span aria-hidden="true">
+                        {messagesStats.total}
+                      </span>
+                    </button>
+
+                    <button
+                      type="button"
+                      className={
+                        messageStatusFilter ===
+                          "unread"
+                          ? "admin-message-filter-tab admin-message-filter-tab--active"
+                          : "admin-message-filter-tab"
+                      }
+                      onClick={() =>
+                        setMessageStatusFilter(
+                          "unread"
+                        )
+                      }
+                      aria-pressed={
+                        messageStatusFilter ===
                         "unread"
-                      )
-                    }
-                    aria-pressed={
-                      messageStatusFilter ===
-                      "unread"
-                    }
-                  >
-                    Por ler
-                    <span aria-hidden="true">
-                      {messagesStats.unread}
-                    </span>
-                  </button>
+                      }
+                    >
+                      Por ler
+                      <span aria-hidden="true">
+                        {messagesStats.unread}
+                      </span>
+                    </button>
 
-                  <button
-                    type="button"
-                    className={
-                      messageStatusFilter === "read"
-                        ? "admin-message-filter-tab admin-message-filter-tab--active"
-                        : "admin-message-filter-tab"
-                    }
-                    onClick={() =>
-                      setMessageStatusFilter("read")
-                    }
-                    aria-pressed={
-                      messageStatusFilter === "read"
-                    }
-                  >
-                    Lidas
-                    <span aria-hidden="true">
-                      {Math.max(
-                        messagesStats.total -
+                    <button
+                      type="button"
+                      className={
+                        messageStatusFilter === "read"
+                          ? "admin-message-filter-tab admin-message-filter-tab--active"
+                          : "admin-message-filter-tab"
+                      }
+                      onClick={() =>
+                        setMessageStatusFilter("read")
+                      }
+                      aria-pressed={
+                        messageStatusFilter === "read"
+                      }
+                    >
+                      Lidas
+                      <span aria-hidden="true">
+                        {Math.max(
+                          messagesStats.total -
                           messagesStats.unread,
-                        0
-                      )}
-                    </span>
-                  </button>
+                          0
+                        )}
+                      </span>
+                    </button>
+                  </div>
+
+                  <label className="admin-message-filters__sort">
+                    <span>Ordenar</span>
+
+                    <select
+                      value={messageSort}
+                      onChange={(event) =>
+                        setMessageSort(
+                          event.target.value
+                        )
+                      }
+                    >
+                      <option value="newest">
+                        Mais recentes
+                      </option>
+
+                      <option value="oldest">
+                        Mais antigas
+                      </option>
+                    </select>
+                  </label>
                 </div>
 
-                <label className="admin-message-filters__sort">
-                  <span>Ordenar</span>
-
-                  <select
-                    value={messageSort}
-                    onChange={(event) =>
-                      setMessageSort(
-                        event.target.value
-                      )
-                    }
+                {filteredMessages.length === 0 ? (
+                  <p className="admin-page__empty">
+                    {messagesStats.messages.length === 0
+                      ? "Ainda não foram enviadas mensagens de contacto."
+                      : "Não foram encontradas mensagens com estes filtros."}
+                  </p>
+                ) : (
+                  <div
+                    className="admin-messages"
+                    aria-live="polite"
                   >
-                    <option value="newest">
-                      Mais recentes
-                    </option>
-
-                    <option value="oldest">
-                      Mais antigas
-                    </option>
-                  </select>
-                </label>
-              </div>
-
-              {filteredMessages.length === 0 ? (
-                <p className="admin-page__empty">
-                  {messagesStats.messages.length === 0
-                    ? "Ainda não foram enviadas mensagens de contacto."
-                    : "Não foram encontradas mensagens com estes filtros."}
-                </p>
-              ) : (
-                <div
-                  className="admin-messages"
-                  aria-live="polite"
-                >
-                  {filteredMessages.map(
-                    (message) => (
-                      <article
-                        key={message.id}
-                        className={`admin-message-card ${
-                          message.is_read
+                    {filteredMessages.map(
+                      (message) => (
+                        <article
+                          key={message.id}
+                          className={`admin-message-card ${message.is_read
                             ? "admin-message-card--read"
                             : "admin-message-card--unread"
-                        }`}
-                      >
-                        <div className="admin-message-card__head">
-                          <div className="admin-message-card__author">
-                            <div className="admin-message-card__name-row">
-                              <strong>
-                                {message.name}
-                              </strong>
+                            }`}
+                        >
+                          <div className="admin-message-card__head">
+                            <div className="admin-message-card__author">
+                              <div className="admin-message-card__name-row">
+                                <strong>
+                                  {message.name}
+                                </strong>
 
-                              <span
-                                className={`admin-message-card__status ${
-                                  message.is_read
+                                <span
+                                  className={`admin-message-card__status ${message.is_read
                                     ? "admin-message-card__status--read"
                                     : "admin-message-card__status--unread"
-                                }`}
+                                    }`}
+                                >
+                                  {message.is_read
+                                    ? "Lida"
+                                    : "Por ler"}
+                                </span>
+                              </div>
+
+                              <a
+                                href={`mailto:${message.email}`}
                               >
-                                {message.is_read
-                                  ? "Lida"
-                                  : "Por ler"}
-                              </span>
+                                {message.email}
+                              </a>
                             </div>
 
-                            <a
-                              href={`mailto:${message.email}`}
+                            <time
+                              dateTime={
+                                message.created_at
+                              }
                             >
-                              {message.email}
-                            </a>
+                              {formatDate(
+                                message.created_at
+                              )}
+                            </time>
                           </div>
 
-                          <time
-                            dateTime={
-                              message.created_at
-                            }
-                          >
-                            {formatDate(
-                              message.created_at
+                          <div className="admin-message-card__content">
+                            <h3>
+                              {message.subject}
+                            </h3>
+
+                            <p className="admin-message-card__body">
+                              {message.message}
+                            </p>
+                          </div>
+
+                          <div className="admin-message-card__actions">
+                            {!message.is_read && (
+                              <button
+                                type="button"
+                                className="admin-message-card__button"
+                                onClick={() =>
+                                  handleMarkAsRead(
+                                    message.id
+                                  )
+                                }
+                              >
+                                <Icon
+                                  name="Check"
+                                  size={16}
+                                  aria-hidden="true"
+                                />
+                                Marcar como lida
+                              </button>
                             )}
-                          </time>
-                        </div>
 
-                        <div className="admin-message-card__content">
-                          <h3>
-                            {message.subject}
-                          </h3>
-
-                          <p className="admin-message-card__body">
-                            {message.message}
-                          </p>
-                        </div>
-
-                        <div className="admin-message-card__actions">
-                          {!message.is_read && (
                             <button
                               type="button"
-                              className="admin-message-card__button"
+                              className="admin-message-card__button admin-message-card__button--danger"
                               onClick={() =>
-                                handleMarkAsRead(
+                                handleDeleteMessage(
                                   message.id
                                 )
                               }
                             >
                               <Icon
-                                name="Check"
+                                name="Trash2"
                                 size={16}
                                 aria-hidden="true"
                               />
-                              Marcar como lida
+                              Eliminar
                             </button>
-                          )}
-
-                          <button
-                            type="button"
-                            className="admin-message-card__button admin-message-card__button--danger"
-                            onClick={() =>
-                              handleDeleteMessage(
-                                message.id
-                              )
-                            }
-                          >
-                            <Icon
-                              name="Trash2"
-                              size={16}
-                              aria-hidden="true"
-                            />
-                            Eliminar
-                          </button>
-                        </div>
-                      </article>
-                    )
-                  )}
-                </div>
-              )}
-            </section>
-          </>
-        )}
-      </Container>
-    </main>
+                          </div>
+                        </article>
+                      )
+                    )}
+                  </div>
+                )}
+              </section>
+            </>
+          )}
+        </Container>
+      </main>
+    </>
   );
 }
 

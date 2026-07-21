@@ -5,24 +5,31 @@ import DiscovrSolarSystem from "../../components/DISCOVR/DiscovrSolarSystem/Disc
 import DiscovrTimeline from "../../components/DISCOVR/DiscovrTimeline/DiscovrTimeline";
 import DiscovrAsteroidRadar from "../../components/DISCOVR/DiscovrAsteroidRadar/DiscovrAsteroidRadar";
 import DiscovrMissionStatus from "../../components/DISCOVR/DiscovrMissionStatus/DiscovrMissionStatus";
+import PageMeta from "../../components/common/PageMeta/PageMeta";
 
 import "./DISCOVR.css";
 
 function DISCOVR() {
   return (
-    <main className="discovr-page">
-      <DiscovrHero />
-      
+    <>
+      <PageMeta
+        title="Descobrir o Espaço — SpaceVision"
+        description="Explora conteúdos visuais, curiosidades e experiências interativas sobre o Universo com dados e recursos da NASA."
+      />
+      <main className="discovr-page">
+        <DiscovrHero />
 
-      <Container>
-        <DiscovrGallery />
-        <DiscovrSolarSystem />
-        <DiscovrTimeline />
-        <DiscovrAsteroidRadar />
-        <DiscovrMissionStatus />
-      </Container>
-    </main>
-  );
+
+        <Container>
+          <DiscovrGallery />
+          <DiscovrSolarSystem />
+          <DiscovrTimeline />
+          <DiscovrAsteroidRadar />
+          <DiscovrMissionStatus />
+        </Container>
+      </main>
+      </>
+      );
 }
 
-export default DISCOVR;
+      export default DISCOVR;
