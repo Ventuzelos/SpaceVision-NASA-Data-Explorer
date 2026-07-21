@@ -4,6 +4,7 @@ import Container from "../../components/common/Container/Container";
 import Icon from "../../components/common/Icon/Icon";
 import Breadcrumb from "../../components/common/Breadcrumb/Breadcrumb";
 import SearchInput from "../../components/common/SearchInput/SearchInput";
+import PageMeta from "../../components/common/PageMeta/PageMeta";
 
 import "./FAQ.css";
 
@@ -124,9 +125,8 @@ function FAQItem({
 }) {
   return (
     <article
-      className={`faq-item${
-        isOpen ? " faq-item--active" : ""
-      }`}
+      className={`faq-item${isOpen ? " faq-item--active" : ""
+        }`}
     >
       <h2 className="faq-item__heading">
         <button
@@ -210,113 +210,118 @@ function FAQ() {
   }
 
   return (
-    <main className="faq-page">
-      <Container>
-        <Breadcrumb title="FAQ" />
+    <>
+      <PageMeta
+        title="Perguntas Frequentes — SpaceVision"
+        description="Encontra respostas sobre o SpaceVision, as APIs da NASA, favoritos, conta de utilizador e utilização da plataforma."
+      />
+      <main className="faq-page">
+        <Container>
+          <Breadcrumb title="FAQ" />
 
-        <header className="faq-hero">
-          <p className="faq-hero__eyebrow">
-            Perguntas frequentes
-          </p>
-
-          <h1>Tudo o que precisas de saber</h1>
-
-          <p className="faq-hero__description">
-            Dúvidas sobre as APIs da NASA, a atualização dos dados e as
-            funcionalidades do SpaceVision.
-          </p>
-        </header>
-
-        <section
-          className="faq-tools"
-          aria-label="Pesquisa e filtros das perguntas frequentes"
-        >
-          <div className="faq-search">
-            <SearchInput
-              placeholder="Pesquisar por APOD, EPIC, favoritos..."
-              value={search}
-              onChange={(event) =>
-                setSearch(event.target.value)
-              }
-            />
-          </div>
-
-          <div
-            className="faq-filters"
-            role="group"
-            aria-label="Filtrar perguntas por categoria"
-          >
-            {CATEGORIES.map((category) => {
-              const isActive =
-                category === activeCategory;
-
-              return (
-                <button
-                  key={category}
-                  type="button"
-                  className={`faq-filter${
-                    isActive
-                      ? " faq-filter--active"
-                      : ""
-                  }`}
-                  onClick={() =>
-                    handleCategoryChange(category)
-                  }
-                  aria-pressed={isActive}
-                >
-                  {category}
-                </button>
-              );
-            })}
-          </div>
-        </section>
-
-        <section
-          className="faq-list"
-          aria-label="Perguntas frequentes"
-          aria-live="polite"
-        >
-          {visibleItems.map((item) => {
-            const index = FAQ_ITEMS.indexOf(item);
-            const panelId = `faq-panel-${index}`;
-            const triggerId = `faq-trigger-${index}`;
-
-            return (
-              <FAQItem
-                key={item.question}
-                item={item}
-                panelId={panelId}
-                triggerId={triggerId}
-                isOpen={openIndex === index}
-                onToggle={() => handleToggle(index)}
-              />
-            );
-          })}
-        </section>
-
-        {visibleItems.length === 0 && (
-          <div
-            className="faq-empty"
-            role="status"
-          >
-            <Icon
-              name="AlertCircle"
-              size={32}
-              aria-hidden="true"
-            />
-
-            <p>
-              Não encontrámos nenhuma pergunta com esse termo.
+          <header className="faq-hero">
+            <p className="faq-hero__eyebrow">
+              Perguntas frequentes
             </p>
 
-            <span>
-              Tenta pesquisar por outra palavra-chave.
-            </span>
-          </div>
-        )}
-      </Container>
-    </main>
-  );
+            <h1>Tudo o que precisas de saber</h1>
+
+            <p className="faq-hero__description">
+              Dúvidas sobre as APIs da NASA, a atualização dos dados e as
+              funcionalidades do SpaceVision.
+            </p>
+          </header>
+
+          <section
+            className="faq-tools"
+            aria-label="Pesquisa e filtros das perguntas frequentes"
+          >
+            <div className="faq-search">
+              <SearchInput
+                placeholder="Pesquisar por APOD, EPIC, favoritos..."
+                value={search}
+                onChange={(event) =>
+                  setSearch(event.target.value)
+                }
+              />
+            </div>
+
+            <div
+              className="faq-filters"
+              role="group"
+              aria-label="Filtrar perguntas por categoria"
+            >
+              {CATEGORIES.map((category) => {
+                const isActive =
+                  category === activeCategory;
+
+                return (
+                  <button
+                    key={category}
+                    type="button"
+                    className={`faq-filter${isActive
+                        ? " faq-filter--active"
+                        : ""
+                      }`}
+                    onClick={() =>
+                      handleCategoryChange(category)
+                    }
+                    aria-pressed={isActive}
+                  >
+                    {category}
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+
+          <section
+            className="faq-list"
+            aria-label="Perguntas frequentes"
+            aria-live="polite"
+          >
+            {visibleItems.map((item) => {
+              const index = FAQ_ITEMS.indexOf(item);
+              const panelId = `faq-panel-${index}`;
+              const triggerId = `faq-trigger-${index}`;
+
+              return (
+                <FAQItem
+                  key={item.question}
+                  item={item}
+                  panelId={panelId}
+                  triggerId={triggerId}
+                  isOpen={openIndex === index}
+                  onToggle={() => handleToggle(index)}
+                />
+              );
+            })}
+          </section>
+
+          {visibleItems.length === 0 && (
+            <div
+              className="faq-empty"
+              role="status"
+            >
+              <Icon
+                name="AlertCircle"
+                size={32}
+                aria-hidden="true"
+              />
+
+              <p>
+                Não encontrámos nenhuma pergunta com esse termo.
+              </p>
+
+              <span>
+                Tenta pesquisar por outra palavra-chave.
+              </span>
+            </div>
+          )}
+        </Container>
+      </main>
+      </>
+      );
 }
 
-export default FAQ;
+      export default FAQ;

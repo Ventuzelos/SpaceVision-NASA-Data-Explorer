@@ -4,11 +4,11 @@ import { useEpicPhotos } from "../../hooks/useEpicPhotos";
 import EpicPanel from "./EpicPanel/EpicPanel";
 import EpicDetail from "./EpicDetail/EpicDetail";
 import EpicDateControls from "./EpicDateControls/EpicDateControls";
-import EpicHero from "../../components/epic/EpicHero/EpicHero";
-import EpicTimelineSection from "../../components/epic/EpicTimelineSection/EpicTimelineSection";
-import EpicPipeline from "../../components/epic/EpicPipeline/EpicPipeline";
-import EpicSectionHead from "../../components/epic/EpicSectionHead/EpicSectionHead";
-import EpicLightbox from "../../components/epic/EpicLightbox/EpicLightbox";
+import EpicHero from "../../components/EPIC/EpicHero/EpicHero";
+import EpicTimelineSection from "../../components/EPIC/EpicTimelineSection/EpicTimelineSection";
+import EpicPipeline from "../../components/EPIC/EpicPipeline/EpicPipeline";
+import EpicSectionHead from "../../components/EPIC/EpicSectionHead/EpicSectionHead";
+import EpicLightbox from "../../components/EPIC/EpicLightbox/EpicLightbox";
 import Toast from "../../components/common/Toast/Toast";
 
 import "./Epic.css";
@@ -131,46 +131,45 @@ export default function Epic() {
     <main className="epic-page">
       <EpicHero />
 
-      <EpicTimelineSection />
+      <section id="viewer">
+        <div className="viewer-intro">
+          <EpicSectionHead
+            title="Visualizador de imagens"
+            sub="Escolhe uma data para ver todas as capturas do disco terrestre desse dia."
+          />
+
+          <EpicDateControls
+            date={displayedDate}
+            onDateChange={handleDateChange}
+            onLoad={handleLoadByDate}
+            onLatest={handleLoadLatest}
+            loading={loading}
+            validationError={dateError}
+          />
+        </div>
+
+        <div className="viewer-layout">
+          <EpicDetail
+            photo={selected}
+            onOpenLightbox={setLightbox}
+          />
+
+          <EpicPanel
+            photos={photos}
+            loading={loading}
+            error={error}
+            emptyMessage={emptyMessage}
+            date={date}
+            onSelect={setSelected}
+            onRetry={retryLastRequest}
+          />
+        </div>
+      </section>
 
       <EpicPipeline />
 
       <div className="bottom-glow">
-        <section id="viewer">
-          <div className="viewer-intro">
-            <EpicSectionHead
-              eyebrow="Experimenta agora"
-              title="Visualizador de imagens"
-              sub="Escolhe uma data para ver todas as capturas do disco terrestre desse dia."
-            />
-
-            <EpicDateControls
-              date={displayedDate}
-              onDateChange={handleDateChange}
-              onLoad={handleLoadByDate}
-              onLatest={handleLoadLatest}
-              loading={loading}
-              validationError={dateError}
-            />
-          </div>
-
-          <div className="viewer-layout">
-            <EpicDetail
-              photo={selected}
-              onOpenLightbox={setLightbox}
-            />
-
-            <EpicPanel
-              photos={photos}
-              loading={loading}
-              error={error}
-              emptyMessage={emptyMessage}
-              date={date}
-              onSelect={setSelected}
-              onRetry={retryLastRequest}
-            />
-          </div>
-        </section>
+        <EpicTimelineSection />
       </div>
 
       <EpicLightbox

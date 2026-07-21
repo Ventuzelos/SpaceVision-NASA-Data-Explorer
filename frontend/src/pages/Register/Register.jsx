@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import AuthGalaxyLayout from "../../components/common/AuthGalaxyLayout/AuthGalaxyLayout";
 import useAuth from "../../hooks/useAuth";
-
+import PageMeta from "../../components/common/PageMeta/PageMeta";
 import "./Register.css";
 
 function Register() {
@@ -96,202 +96,208 @@ function Register() {
   }
 
   return (
-    <AuthGalaxyLayout
-      title="Começa a tua exploração do Universo."
-      description="Cria uma conta para guardares conteúdos, acompanhares descobertas e personalizares a tua experiência SpaceVision."
-      sectionLabel="Criar uma conta SpaceVision"
-    >
-      <div className="register-card">
-        <div className="register-card__header">
-          <p className="register-card__eyebrow">
-            Junta-te ao SpaceVision
-          </p>
+    <>
+      <PageMeta
+        title="Criar conta — SpaceVision"
+        description="Cria uma conta no SpaceVision para guardares favoritos e personalizares a tua experiência."
+      />
+      <AuthGalaxyLayout
+        title="Começa a tua exploração do Universo."
+        description="Cria uma conta para guardares conteúdos, acompanhares descobertas e personalizares a tua experiência SpaceVision."
+        sectionLabel="Criar uma conta SpaceVision"
+      >
+        <div className="register-card">
+          <div className="register-card__header">
+            <p className="register-card__eyebrow">
+              Junta-te ao SpaceVision
+            </p>
 
-          <h1 id="register-title">
-            Criar conta
-          </h1>
+            <h1 id="register-title">
+              Criar conta
+            </h1>
 
-          <p className="register-card__description">
-            Guarda os teus favoritos e continua a tua
-            exploração em qualquer momento.
+            <p className="register-card__description">
+              Guarda os teus favoritos e continua a tua
+              exploração em qualquer momento.
+            </p>
+          </div>
+
+          <form
+            className="register-form"
+            onSubmit={handleSubmit}
+            noValidate
+          >
+            <div className="register-field">
+              <label htmlFor="name">
+                Nome
+              </label>
+
+              <input
+                id="name"
+                name="name"
+                type="text"
+                autoComplete="name"
+                placeholder="O teu nome"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="register-field">
+              <label htmlFor="email">
+                Email
+              </label>
+
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                placeholder="o-teu-email@exemplo.com"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="register-field">
+              <label htmlFor="password">
+                Palavra-passe
+              </label>
+
+              <div className="register-password">
+                <input
+                  id="password"
+                  name="password"
+                  type={
+                    showPassword
+                      ? "text"
+                      : "password"
+                  }
+                  autoComplete="new-password"
+                  placeholder="Mínimo de 8 caracteres"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  minLength={8}
+                />
+
+                <button
+                  type="button"
+                  className="register-password__toggle"
+                  onClick={() =>
+                    setShowPassword(
+                      (current) => !current
+                    )
+                  }
+                  aria-label={
+                    showPassword
+                      ? "Ocultar palavra-passe"
+                      : "Mostrar palavra-passe"
+                  }
+                  aria-pressed={showPassword}
+                >
+                  {showPassword ? (
+                    <EyeOff
+                      size={20}
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    <Eye
+                      size={20}
+                      aria-hidden="true"
+                    />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            <div className="register-field">
+              <label htmlFor="passwordConfirmation">
+                Confirmar palavra-passe
+              </label>
+
+              <div className="register-password">
+                <input
+                  id="passwordConfirmation"
+                  name="passwordConfirmation"
+                  type={
+                    showPasswordConfirmation
+                      ? "text"
+                      : "password"
+                  }
+                  autoComplete="new-password"
+                  placeholder="Repete a palavra-passe"
+                  value={
+                    formData.passwordConfirmation
+                  }
+                  onChange={handleChange}
+                  required
+                  minLength={8}
+                />
+
+                <button
+                  type="button"
+                  className="register-password__toggle"
+                  onClick={() =>
+                    setShowPasswordConfirmation(
+                      (current) => !current
+                    )
+                  }
+                  aria-label={
+                    showPasswordConfirmation
+                      ? "Ocultar confirmação da palavra-passe"
+                      : "Mostrar confirmação da palavra-passe"
+                  }
+                  aria-pressed={
+                    showPasswordConfirmation
+                  }
+                >
+                  {showPasswordConfirmation ? (
+                    <EyeOff
+                      size={20}
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    <Eye
+                      size={20}
+                      aria-hidden="true"
+                    />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {error && (
+              <p
+                className="register-error"
+                role="alert"
+              >
+                {error}
+              </p>
+            )}
+
+            <button
+              className="register-submit"
+              type="submit"
+              disabled={isSubmitting}
+            >
+              {isSubmitting
+                ? "A criar conta..."
+                : "Criar conta"}
+            </button>
+          </form>
+
+          <p className="register-switch">
+            Já fazes parte do SpaceVision?{" "}
+            <Link to="/login">
+              Entrar
+            </Link>
           </p>
         </div>
-
-        <form
-          className="register-form"
-          onSubmit={handleSubmit}
-          noValidate
-        >
-          <div className="register-field">
-            <label htmlFor="name">
-              Nome
-            </label>
-
-            <input
-              id="name"
-              name="name"
-              type="text"
-              autoComplete="name"
-              placeholder="O teu nome"
-              value={formData.name}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className="register-field">
-            <label htmlFor="email">
-              Email
-            </label>
-
-            <input
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              placeholder="o-teu-email@exemplo.com"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className="register-field">
-            <label htmlFor="password">
-              Palavra-passe
-            </label>
-
-            <div className="register-password">
-              <input
-                id="password"
-                name="password"
-                type={
-                  showPassword
-                    ? "text"
-                    : "password"
-                }
-                autoComplete="new-password"
-                placeholder="Mínimo de 8 caracteres"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                minLength={8}
-              />
-
-              <button
-                type="button"
-                className="register-password__toggle"
-                onClick={() =>
-                  setShowPassword(
-                    (current) => !current
-                  )
-                }
-                aria-label={
-                  showPassword
-                    ? "Ocultar palavra-passe"
-                    : "Mostrar palavra-passe"
-                }
-                aria-pressed={showPassword}
-              >
-                {showPassword ? (
-                  <EyeOff
-                    size={20}
-                    aria-hidden="true"
-                  />
-                ) : (
-                  <Eye
-                    size={20}
-                    aria-hidden="true"
-                  />
-                )}
-              </button>
-            </div>
-          </div>
-
-          <div className="register-field">
-            <label htmlFor="passwordConfirmation">
-              Confirmar palavra-passe
-            </label>
-
-            <div className="register-password">
-              <input
-                id="passwordConfirmation"
-                name="passwordConfirmation"
-                type={
-                  showPasswordConfirmation
-                    ? "text"
-                    : "password"
-                }
-                autoComplete="new-password"
-                placeholder="Repete a palavra-passe"
-                value={
-                  formData.passwordConfirmation
-                }
-                onChange={handleChange}
-                required
-                minLength={8}
-              />
-
-              <button
-                type="button"
-                className="register-password__toggle"
-                onClick={() =>
-                  setShowPasswordConfirmation(
-                    (current) => !current
-                  )
-                }
-                aria-label={
-                  showPasswordConfirmation
-                    ? "Ocultar confirmação da palavra-passe"
-                    : "Mostrar confirmação da palavra-passe"
-                }
-                aria-pressed={
-                  showPasswordConfirmation
-                }
-              >
-                {showPasswordConfirmation ? (
-                  <EyeOff
-                    size={20}
-                    aria-hidden="true"
-                  />
-                ) : (
-                  <Eye
-                    size={20}
-                    aria-hidden="true"
-                  />
-                )}
-              </button>
-            </div>
-          </div>
-
-          {error && (
-            <p
-              className="register-error"
-              role="alert"
-            >
-              {error}
-            </p>
-          )}
-
-          <button
-            className="register-submit"
-            type="submit"
-            disabled={isSubmitting}
-          >
-            {isSubmitting
-              ? "A criar conta..."
-              : "Criar conta"}
-          </button>
-        </form>
-
-        <p className="register-switch">
-          Já fazes parte do SpaceVision?{" "}
-          <Link to="/login">
-            Entrar
-          </Link>
-        </p>
-      </div>
-    </AuthGalaxyLayout>
+      </AuthGalaxyLayout>
+    </>
   );
 }
 

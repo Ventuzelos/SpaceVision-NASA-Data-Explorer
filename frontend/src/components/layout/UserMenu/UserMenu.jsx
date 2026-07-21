@@ -89,15 +89,45 @@ function UserMenu({ onMobileNavigate }) {
 
   if (!isAuthenticated) {
     return (
-      <div className="user-menu">
-        <Link
-          to="/login"
-          onClick={handleMobileNavigation}
-        >
-          <Button variant="primary">
-            Entrar
-          </Button>
-        </Link>
+      <div className="user-menu user-menu--guest">
+        <div className="user-menu__guest-desktop">
+          <Link
+            to="/login"
+            onClick={handleMobileNavigation}
+          >
+            <Button variant="primary">
+              Entrar
+            </Button>
+          </Link>
+
+          <Link
+            to="/register"
+            onClick={handleMobileNavigation}
+            className="user-menu__register-link"
+          >
+            Registar
+          </Link>
+        </div>
+
+        <div className="user-menu__guest-mobile">
+          <Link
+            to="/login"
+            onClick={handleMobileNavigation}
+          >
+            <Button variant="primary">
+              Entrar
+            </Button>
+          </Link>
+
+          <Link
+            to="/register"
+            onClick={handleMobileNavigation}
+          >
+            <Button variant="secondary">
+              Criar conta
+            </Button>
+          </Link>
+        </div>
       </div>
     );
   }
