@@ -7,7 +7,7 @@
   grid-template-columns:
     minmax(0, 0.9fr)
     minmax(28rem, 1.3fr);
-  align-items: center;
+  align-items: start;
   gap: var(--space-7);
   margin-bottom: var(--space-7);
 }
