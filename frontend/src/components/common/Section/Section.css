@@ -14,11 +14,11 @@
 
 .section__eyebrow {
   margin: 0 0 .5rem;
-  color: var(--color-link);
+  color: var(--color-text-secondary);
   font-size: .875rem;
-  font-weight: 600;
+  font-weight: var(--font-weight-medium);
   text-transform: uppercase;
-  letter-spacing: .08em;
+  letter-spacing: .04em;
 }
 
 .section__title {
