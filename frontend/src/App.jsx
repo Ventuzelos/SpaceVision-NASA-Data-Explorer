@@ -40,7 +40,6 @@ function App() {
         <Route path="discover" element={<DISCOVR />} />
         <Route path="quiz" element={<Quiz />} />
         <Route path="neowatch" element={<NeoWS />} />
-        <Route path="favorites" element={<Favorites />} />
         <Route
           path="nao-autorizado"
           element={<Unauthorized />}
@@ -61,6 +60,7 @@ function App() {
 
         <Route element={<ProtectedRoute />}>
           <Route path="profile" element={<Profile />} />
+          <Route path="favorites" element={<Favorites />} />
         </Route>
 
         <Route element={<ProtectedRoute adminOnly />}>
