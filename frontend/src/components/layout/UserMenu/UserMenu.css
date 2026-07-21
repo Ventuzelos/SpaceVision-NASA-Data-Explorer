@@ -14,6 +14,8 @@
   display: none;
 }
 
+/* Conta autenticada */
+
 .account-menu-trigger {
   display: flex;
   align-items: center;
@@ -74,6 +76,8 @@
   transform: rotate(180deg);
 }
 
+/* Dropdown da conta */
+
 .account-dropdown {
   position: absolute;
   top: calc(100% + 12px);
@@ -81,7 +85,6 @@
   z-index: 1300;
 
   width: min(320px, calc(100vw - 32px));
-
   padding: var(--space-3);
 
   border: 1px solid var(--color-border);
@@ -123,6 +126,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 
   width: 42px;
   height: 42px;
@@ -152,6 +156,7 @@
 
 .account-dropdown__header span:not(.account-dropdown__avatar) {
   overflow: hidden;
+
   color: var(--color-text-secondary);
   font-size: 0.8rem;
   text-overflow: ellipsis;
@@ -212,6 +217,8 @@
   color: var(--color-error);
 }
 
+/* Utilizador não autenticado */
+
 .user-menu__guest-desktop {
   display: flex;
   align-items: center;
@@ -236,9 +243,39 @@
 }
 
 .user-menu__register-link:focus-visible {
+  border-radius: 4px;
   outline: 2px solid var(--color-primary);
   outline-offset: 4px;
-  border-radius: 4px;
+}
+
+/* Estado de carregamento da autenticação */
+
+.user-menu--loading {
+  display: flex;
+  align-items: center;
+
+  min-width: 118px;
+  min-height: 44px;
+}
+
+.user-menu__skeleton {
+  display: block;
+
+  width: 118px;
+  height: 44px;
+
+  border-radius: 12px;
+
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 25%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.05) 75%
+  );
+
+  background-size: 200% 100%;
+
+  animation: user-menu-loading 1.2s infinite linear;
 }
 
 @keyframes account-dropdown-enter {
@@ -252,6 +289,18 @@
     transform: translateY(0);
   }
 }
+
+@keyframes user-menu-loading {
+  from {
+    background-position: 200% 0;
+  }
+
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* Mobile */
 
 @media (max-width: 960px) {
   .navbar__mobile-actions,
@@ -279,6 +328,7 @@
   .navbar__mobile-actions .user-menu__mobile > a,
   .navbar__mobile-actions .user-menu__mobile > button {
     display: block;
+
     width: 100%;
     max-width: none;
   }
@@ -293,8 +343,10 @@
     max-width: none !important;
     min-width: 0;
   }
+
   .navbar__mobile-actions .user-menu--guest {
     display: block;
+
     width: 100%;
   }
 
@@ -312,6 +364,7 @@
 
   .navbar__mobile-actions .user-menu__guest-mobile > a {
     display: block;
+
     width: 100%;
   }
 
@@ -329,6 +382,15 @@
     max-width: none !important;
     min-width: 0;
   }
+
+  .navbar__mobile-actions .user-menu--loading {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .navbar__mobile-actions .user-menu__skeleton {
+    width: 100%;
+  }
 }
 
 @media (max-width: 480px) {
@@ -341,6 +403,15 @@
   }
 }
 
+@media (max-width: 360px) {
+  .navbar__brand img,
+  .navbar__brand svg,
+  .navbar .logo img,
+  .navbar .logo svg {
+    max-width: 140px;
+  }
+}
+
 @media (max-width: 280px) {
   .user-menu__guest-mobile {
     gap: 8px;
@@ -350,6 +421,42 @@
     min-height: 44px;
     padding-right: 8px;
     padding-left: 8px;
+
     font-size: 0.88rem;
+  }
+
+  .account-dropdown {
+    right: -4px;
+
+    width: min(230px, calc(100vw - 16px));
+    padding: 8px;
+  }
+
+  .account-dropdown__header {
+    gap: 8px;
+    padding: 6px;
+  }
+
+  .account-dropdown__avatar {
+    width: 36px;
+    height: 36px;
+  }
+
+  .account-dropdown__header strong {
+    font-size: 0.85rem;
+  }
+
+  .account-dropdown__header span:not(.account-dropdown__avatar) {
+    font-size: 0.7rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .account-dropdown,
+  .account-menu-trigger__icon,
+  .user-menu__register-link,
+  .user-menu__skeleton {
+    animation: none;
+    transition: none;
   }
 }
