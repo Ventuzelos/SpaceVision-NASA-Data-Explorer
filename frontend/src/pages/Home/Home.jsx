@@ -12,6 +12,7 @@ import ErrorState from "../../components/common/ErrorState/ErrorState";
 import APODCard from "../../components/apod/APODCard";
 import APODSkeleton from "../../components/apod/APODSkeleton/APODSkeleton";
 import APODHistoryCard from "../../components/apod/APODHistoryCard/APODHistoryCard";
+import PageMeta from "../../components/common/PageMeta/PageMeta";
 
 import {
   getApod,
@@ -92,9 +93,9 @@ function Home() {
 
       const orderedResults = Array.isArray(results)
         ? [...results].sort(
-            (firstItem, secondItem) =>
-              new Date(secondItem.date) - new Date(firstItem.date)
-          )
+          (firstItem, secondItem) =>
+            new Date(secondItem.date) - new Date(firstItem.date)
+        )
         : [];
 
       setHistory(orderedResults);
@@ -130,60 +131,69 @@ function Home() {
   }, []);
 
   return (
-    <main>
-      <Hero />
+    <>
+      <PageMeta
+        title="SpaceVision — Explora dados reais da NASA"
+        description="Explora imagens da Terra, meteorologia espacial, asteroides próximos e outros dados oficiais da NASA numa experiência visual e interativa."
+      />
 
-      <Container>
-        <div className="home-apod-section">
-          <Section
-            eyebrow="NASA Astronomy Picture of the Day"
-            title="Imagem astronómica do dia"
-            description="Explora diariamente uma imagem real da NASA, acompanhada da sua explicação científica."
-          >
-            {isLoading && <APODSkeleton />}
+      <main>
+        <Hero />
 
-            {error && !isLoading && (
-              <ErrorState
-                title="Não foi possível carregar a APOD"
-                message={error}
-                onRetry={() => loadApod(selectedDate)}
-              />
-            )}
+        <Container>
+          <div className="home-apod-section">
+            <Section
+              eyebrow="NASA Astronomy Picture of the Day"
+              title="Imagem astronómica do dia"
+              description="Explora diariamente uma imagem real da NASA, acompanhada da sua explicação científica."
+            >
+              {isLoading && <APODSkeleton />}
 
-            {apod && !isLoading && !error && <APODCard apod={apod} />}
-          </Section>
-        </div>
+              {error && !isLoading && (
+                <ErrorState
+                  title="Não foi possível carregar a APOD"
+                  message={error}
+                  onRetry={() => loadApod(selectedDate)}
+                />
+              )}
 
-        <div className="home-apod-section">
-          <Section
-            title="Imagens anteriores"
-            description="Explora as imagens astronómicas publicadas nos últimos dias."
-          >
-            {historyError ? (
-              <ErrorState
-                title="Não foi possível carregar o histórico"
-                message={historyError}
-                onRetry={loadPreviousApods}
-              />
-            ) : (
-              <Carousel>
-                {history.map((item) => (
-                  <APODHistoryCard
-                    key={item.date}
-                    item={item}
-                    active={activeHistory === item.date}
-                    onSelect={handleHistorySelect}
-                  />
-                ))}
-              </Carousel>
-            )}
-          </Section>
-        </div>
-      </Container>
+              {apod && !isLoading && !error && (
+                <APODCard apod={apod} />
+              )}
+            </Section>
+          </div>
 
-      <ApiSection />
-      <CTASection />
-    </main>
+          <div className="home-apod-section">
+            <Section
+              title="Imagens anteriores"
+              description="Explora as imagens astronómicas publicadas nos últimos dias."
+            >
+              {historyError ? (
+                <ErrorState
+                  title="Não foi possível carregar o histórico"
+                  message={historyError}
+                  onRetry={loadPreviousApods}
+                />
+              ) : (
+                <Carousel>
+                  {history.map((item) => (
+                    <APODHistoryCard
+                      key={item.date}
+                      item={item}
+                      active={activeHistory === item.date}
+                      onSelect={handleHistorySelect}
+                    />
+                  ))}
+                </Carousel>
+              )}
+            </Section>
+          </div>
+        </Container>
+
+        <ApiSection />
+        <CTASection />
+      </main>
+    </>
   );
 }
 

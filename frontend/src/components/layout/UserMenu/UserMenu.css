@@ -212,6 +212,35 @@
   color: var(--color-error);
 }
 
+.user-menu__guest-desktop {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.user-menu__guest-mobile {
+  display: none;
+}
+
+.user-menu__register-link {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+
+  transition: color var(--transition-fast);
+}
+
+.user-menu__register-link:hover {
+  color: var(--color-text);
+}
+
+.user-menu__register-link:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
 @keyframes account-dropdown-enter {
   from {
     opacity: 0;
@@ -264,6 +293,42 @@
     max-width: none !important;
     min-width: 0;
   }
+  .navbar__mobile-actions .user-menu--guest {
+    display: block;
+    width: 100%;
+  }
+
+  .navbar__mobile-actions .user-menu__guest-desktop {
+    display: none;
+  }
+
+  .navbar__mobile-actions .user-menu__guest-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+
+    width: 100%;
+  }
+
+  .navbar__mobile-actions .user-menu__guest-mobile > a {
+    display: block;
+    width: 100%;
+  }
+
+  .navbar__mobile-actions
+    .user-menu__guest-mobile
+    > a
+    > button,
+  .navbar__mobile-actions
+    .user-menu__guest-mobile
+    .button {
+    display: flex;
+    justify-content: center;
+
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0;
+  }
 }
 
 @media (max-width: 480px) {
@@ -276,52 +341,15 @@
   }
 }
 
-@media (max-width: 360px) {
-  .navbar__brand img,
-  .navbar__brand svg,
-  .navbar .logo img,
-  .navbar .logo svg {
-    max-width: 140px;
-  }
-}
-
-.user-menu--loading {
-  display: flex;
-  align-items: center;
-  min-width: 118px;
-  min-height: 44px;
-}
-
-.user-menu__skeleton {
-  display: block;
-  width: 118px;
-  height: 44px;
-
-  border-radius: 12px;
-
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.05) 25%,
-    rgba(255, 255, 255, 0.1) 50%,
-    rgba(255, 255, 255, 0.05) 75%
-  );
-
-  background-size: 200% 100%;
-  animation: user-menu-loading 1.2s infinite linear;
-}
-
-@keyframes user-menu-loading {
-  from {
-    background-position: 200% 0;
+@media (max-width: 280px) {
+  .user-menu__guest-mobile {
+    gap: 8px;
   }
 
-  to {
-    background-position: -200% 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .user-menu__skeleton {
-    animation: none;
+  .user-menu__guest-mobile .button {
+    min-height: 44px;
+    padding-right: 8px;
+    padding-left: 8px;
+    font-size: 0.88rem;
   }
 }
