@@ -5,13 +5,20 @@ export default function DonkiHeroVideo() {
   return (
     <video
       className="donki-hero-video"
-      src={donkiSun}
       autoPlay
       muted
       loop
       playsInline
+      preload="metadata"
+      disablePictureInPicture
+      disableRemotePlayback
       aria-hidden="true"
       tabIndex={-1}
-    />
+    >
+      <source
+        src={donkiSun}
+        type="video/mp4"
+      />
+    </video>
   );
 }
