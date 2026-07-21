@@ -20,6 +20,7 @@ function UserMenu({ onMobileNavigate }) {
     user,
     isAuthenticated,
     isAdmin,
+    isAuthLoading,
     logout,
   } = useAuth();
 
@@ -72,6 +73,18 @@ function UserMenu({ onMobileNavigate }) {
     onMobileNavigate?.();
 
     navigate("/");
+  }
+  
+  if (isAuthLoading) {
+    return (
+      <div
+        className="user-menu user-menu--loading"
+        aria-label="A carregar sessão"
+        aria-busy="true"
+      >
+        <span className="user-menu__skeleton" />
+      </div>
+    );
   }
 
   if (!isAuthenticated) {

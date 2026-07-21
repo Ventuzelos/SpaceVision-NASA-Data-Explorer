@@ -275,3 +275,44 @@
     height: auto;
   }
 }
+
+.user-menu--loading {
+  display: flex;
+  align-items: center;
+  min-width: 118px;
+  min-height: 44px;
+}
+
+.user-menu__skeleton {
+  display: block;
+  width: 118px;
+  height: 44px;
+
+  border-radius: 12px;
+
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 25%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.05) 75%
+  );
+
+  background-size: 200% 100%;
+  animation: user-menu-loading 1.2s infinite linear;
+}
+
+@keyframes user-menu-loading {
+  from {
+    background-position: 200% 0;
+  }
+
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .user-menu__skeleton {
+    animation: none;
+  }
+}
