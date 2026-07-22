@@ -85,6 +85,16 @@ function NeoWS() {
     isAuthLoading,
   } = useAuth();
 
+  const [isMobileViewer, setIsMobileViewer] =
+    useState(() =>
+      window.matchMedia("(max-width: 768px)").matches
+    );
+
+  const [shouldLoadViewer, setShouldLoadViewer] =
+    useState(() =>
+      !window.matchMedia("(max-width: 768px)").matches
+    );
+
   const [dateRange] = useState(() =>
     getDefaultDateRange()
   );
@@ -147,6 +157,32 @@ function NeoWS() {
   }
 
   const requestIdRef = useRef(0);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(
+      "(max-width: 768px)"
+    );
+
+    function handleViewportChange(event) {
+      setIsMobileViewer(event.matches);
+
+      if (!event.matches) {
+        setShouldLoadViewer(true);
+      }
+    }
+
+    mediaQuery.addEventListener(
+      "change",
+      handleViewportChange
+    );
+
+    return () => {
+      mediaQuery.removeEventListener(
+        "change",
+        handleViewportChange
+      );
+    };
+  }, []);
 
   const loadFeed = useCallback(
     async (start, end) => {
@@ -221,7 +257,7 @@ function NeoWS() {
         const keys = favorites.map((favorite) =>
           String(
             favorite.nasa_id ||
-              favorite.id
+            favorite.id
           )
         );
 
@@ -295,7 +331,7 @@ function NeoWS() {
     try {
       const rawNeo =
         neo.raw &&
-        typeof neo.raw === "object"
+          typeof neo.raw === "object"
           ? neo.raw
           : neo;
 
@@ -542,27 +578,65 @@ function NeoWS() {
           </div>
 
           <div className="neows-page__viewer">
-            <Suspense
-              fallback={
-                <div
-                  className="bennu-viewer-loading"
-                  role="status"
-                  aria-live="polite"
-                  aria-busy="true"
-                >
+            {shouldLoadViewer ? (
+              <Suspense
+                fallback={
                   <div
-                    className="bennu-viewer-loading__spinner"
+                    className="bennu-viewer-loading"
+                    role="status"
+                    aria-live="polite"
+                    aria-busy="true"
+                  >
+                    <div
+                      className="bennu-viewer-loading__spinner"
+                      aria-hidden="true"
+                    />
+
+                    <p>
+                      A carregar visualização 3D...
+                    </p>
+                  </div>
+                }
+              >
+                <BennuViewer />
+              </Suspense>
+            ) : (
+              <div className="bennu-viewer-placeholder">
+                <div className="bennu-viewer-placeholder__content">
+                  <span
+                    className="bennu-viewer-placeholder__eyebrow"
                     aria-hidden="true"
-                  />
+                  >
+                    3D
+                  </span>
+
+                  <h2>Explora o asteroide Bennu</h2>
 
                   <p>
-                    A carregar visualização 3D...
+                    Carrega a visualização interativa para
+                    observar o asteroide, as órbitas e a sua
+                    aproximação à Terra.
                   </p>
+
+                  <button
+                    type="button"
+                    className="bennu-viewer-placeholder__button"
+                    onClick={() =>
+                      setShouldLoadViewer(true)
+                    }
+                  >
+                    Carregar visualização 3D
+                  </button>
+
+                  {isMobileViewer && (
+                    <small>
+                      O carregamento manual ajuda a melhorar o
+                      desempenho em dispositivos móveis.
+                    </small>
+                  )}
                 </div>
-              }
-            >
-              <BennuViewer />
-            </Suspense>
+              </div>
+            )}
           </div>
         </header>
 
