@@ -60,26 +60,33 @@ class NasaController extends Controller
 
         return $this->getNasaResponse(
             'planetary/apod',
-            $validated
+            $validated,
+            $request
         );
     }
 
-    public function epic(): JsonResponse
+    public function epic(Request $request): JsonResponse
     {
         return $this->getNasaResponse(
-            'EPIC/api/natural'
+            'EPIC/api/natural',
+            [],
+            $request
         );
     }
 
-    public function epicByDate(string $date): JsonResponse
-    {
+    public function epicByDate(
+        Request $request,
+        string $date
+    ): JsonResponse {
         validator(
             ['date' => $date],
             ['date' => ['required', 'date_format:Y-m-d']]
         )->validate();
 
         return $this->getNasaResponse(
-            "EPIC/api/natural/date/{$date}"
+            "EPIC/api/natural/date/{$date}",
+            [],
+            $request
         );
     }
 
@@ -99,7 +106,8 @@ class NasaController extends Controller
 
         return $this->getNasaResponse(
             'neo/rest/v1/feed',
-            $validated
+            $validated,
+            $request
         );
     }
 
@@ -136,23 +144,39 @@ class NasaController extends Controller
 
         return $this->getNasaResponse(
             "DONKI/{$type}",
-            $validated
+            $validated,
+            $request
         );
     }
 
     private function getNasaResponse(
         string $endpoint,
-        array $query = []
+        array $query,
+        Request $request
     ): JsonResponse {
         try {
             $data = $this->nasaApiService->get(
                 $endpoint,
-                $query
+                $query,
+                $request->user()
             );
 
             return response()->json($data);
         } catch (RequestException $exception) {
             $response = $exception->response;
+
+            if ($response->status() === 429) {
+                $hasPersonalKey = filled(
+                    $request->user()?->nasa_api_key
+                );
+
+                return response()->json([
+                    'message' => $hasPersonalKey
+                        ? 'A sua chave da NASA atingiu temporariamente o limite de pedidos.'
+                        : 'O limite geral de pedidos à NASA foi atingido. Adicione uma chave pessoal no perfil ou tente novamente mais tarde.',
+                    'code' => 'NASA_RATE_LIMIT_EXCEEDED',
+                ], 429);
+            }
 
             return response()->json(
                 $response->json() ?? [

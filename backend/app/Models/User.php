@@ -18,11 +18,13 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'nasa_api_key',
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
+        'nasa_api_key',
     ];
 
     protected function casts(): array
@@ -30,6 +32,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'nasa_api_key' => 'encrypted',
         ];
     }
 
