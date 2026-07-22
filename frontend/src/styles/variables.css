@@ -4,16 +4,15 @@
 
 :root {
   /* Brand Colors */
-  --color-primary: #7e47fd;
-  --color-primary-dark: #4840f0;
-  --color-secondary: #7e47fd;
+  --color-primary: #2e6ff5;
+  --color-primary-dark: #0033b8;
+  --color-secondary: #2e6ff5;
   --color-accent: #4f8df0;
 
   --gradient-primary:
     linear-gradient(135deg,
-      #7e47fd 0%,
-      #4840f0 50%,
-      #4f8df0 100%);
+      #2e6ff5 0%,
+      #0033b8 100%);
 
   /* Semantic Colors */
   --color-success: #10b981;
@@ -30,8 +29,8 @@
   --color-border: #334155;
 
   /* Accessible link colors */
-  --color-link: #a78bfa;
-  --color-link-hover: #c4b5fd;
+  --color-link: #6ea8ff;
+  --color-link-hover: #9cc4ff;
   
   /* Typography */
   --font-family: "Inter", sans-serif;

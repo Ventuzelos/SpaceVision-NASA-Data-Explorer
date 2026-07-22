@@ -159,6 +159,8 @@ export default function EpicThumbnail({
           alt=""
           role="button"
           tabIndex={0}
+          loading="lazy"
+          decoding="async"
           aria-label={
             photo.caption ||
             `Imagem EPIC${time ? ` às ${time} UTC` : ""}`

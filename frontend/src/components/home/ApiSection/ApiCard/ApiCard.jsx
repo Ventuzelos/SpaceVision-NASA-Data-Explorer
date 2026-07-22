@@ -6,7 +6,13 @@ function ApiCard({ title, description, image, link }) {
   return (
     <article className="api-card">
       <div className="api-card__media">
-        <img className="api-card__image" src={image} alt={title} />
+        <img
+          className="api-card__image"
+          src={image}
+          alt={title}
+          loading="lazy"
+          decoding="async"
+        />
       </div>
 
       <div className="api-card__content">

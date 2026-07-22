@@ -18,7 +18,7 @@
 .apod-history-card:hover {
   transform: translateY(-6px);
   border-color: var(--color-primary);
-  box-shadow: 0 12px 30px rgba(79, 70, 229, .18);
+  box-shadow: 0 12px 30px rgba(46, 111, 245, .18);
 }
 
 .apod-history-card__media {

@@ -15,7 +15,12 @@ function APODHistoryCard({ item, active, onSelect }) {
     >
       <div className="apod-history-card__media">
         {item.media_type === "image" ? (
-          <img src={item.url} alt={item.title} />
+          <img
+            src={item.url}
+            alt={item.title}
+            loading="lazy"
+            decoding="async"
+          />
         ) : (
           <div className="apod-history-card__video">
             <PlayCircle size={42} />
