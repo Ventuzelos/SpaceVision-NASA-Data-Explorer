@@ -15,11 +15,11 @@ function CTASection() {
 
         <div className="cta-section__actions">
           <Link to="/discover">
-            <Button>Explorar Discover</Button>
+            <Button>Explorar conteúdos</Button>
           </Link>
 
           <Link to="/donki">
-            <Button variant="secondary">Ver DONKI</Button>
+            <Button variant="secondary">Descobrir o espaço</Button>
           </Link>
         </div>
       </div>

@@ -31,7 +31,7 @@ const FAQ_ITEMS = [
 
           <li>
             <strong>DONKI</strong>
-            Space Weather Database — erupções solares, ejeções de massa
+            Base de dados de meteorologia espacial — erupções solares, ejeções de massa
             coronal e outros eventos de meteorologia espacial.
           </li>
 
@@ -84,7 +84,7 @@ const FAQ_ITEMS = [
     answer: (
       <p>
         Não. Podes navegar pelas páginas APOD, DONKI, EPIC, NeoWatch e
-        Discover sem criar conta. A autenticação é necessária apenas para
+        a área Descobrir sem criar conta. A autenticação é necessária apenas para
         funcionalidades pessoais, como guardar favoritos e gerir o perfil.
       </p>
     ),

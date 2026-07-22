@@ -14,8 +14,7 @@ export default function DonkiHero() {
       <div className="donki-hero__grid">
         <div className="donki-hero__content">
           <p className="donki-hero__eyebrow">
-            DONKI · Space Weather Database Of
-            Notifications, Knowledge and Information
+            DONKI · Base de dados de meteorologia espacial da NASA
           </p>
 
           <h1

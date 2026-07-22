@@ -22,12 +22,12 @@ function DiscovrHero() {
       />
 
       <Container>
-        <Breadcrumb title="Discover" />
+        <Breadcrumb title="Descobrir" />
 
         <div className="discovr-hero__grid">
           <div className="discovr-hero__content">
             <p className="discovr-hero__badge">
-              <span>Discover</span>
+              <span>Descobrir</span>
             </p>
 
             <h1
