@@ -105,7 +105,7 @@ function UserMenu({ onMobileNavigate }) {
             onClick={handleMobileNavigation}
             className="user-menu__register-link"
           >
-            Registar
+            Criar conta
           </Link>
         </div>
 
