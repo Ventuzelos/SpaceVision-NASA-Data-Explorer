@@ -29,7 +29,7 @@ Route::post('/contact', [ContactMessageController::class, 'store'])
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'user']);
-    Route::patch('/profile/nasa-api-key',[ProfileController::class,'updateNasaApiKey']);
+    Route::patch('/profile/nasa-api-key',[ProfileController::class,'updateNasaApiKey'])->middleware('throttle:5,1');
 
     Route::patch(
         '/user/profile',
