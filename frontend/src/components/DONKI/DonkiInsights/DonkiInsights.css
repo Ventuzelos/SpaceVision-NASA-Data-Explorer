@@ -31,8 +31,8 @@
 }
 
 .donki-insights__tab--active {
-  background: var(--color-link);
-  border-color: var(--color-link);
+  background: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
   color: var(--color-text);
 }
 

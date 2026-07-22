@@ -63,7 +63,7 @@
 
 .discovr-status-card__badge--upcoming {
   border-color: var(--color-link);
-  background: rgba(126, 71, 253, 0.18);
+  background: rgba(46, 111, 245, 0.18);
   color: var(--color-link-hover);
 }
 

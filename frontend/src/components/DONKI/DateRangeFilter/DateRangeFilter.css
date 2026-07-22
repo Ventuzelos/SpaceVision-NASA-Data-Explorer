@@ -49,7 +49,7 @@
 
 .date-range-filter__preset:hover {
   border-color: var(--color-link);
-  background: rgba(126, 71, 253, 0.14);
+  background: rgba(46, 111, 245, 0.14);
   color: var(--color-text);
 }
 
@@ -106,7 +106,7 @@
 .date-range-filter__field input:focus-visible {
   border-color: var(--color-link);
   outline: none;
-  box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.2);
+  box-shadow: 0 0 0 3px rgba(110, 168, 255, 0.2);
 }
 
 .date-range-filter__field input:disabled {

@@ -41,7 +41,7 @@
 .epic-page .epic-date-controls__field input:focus-visible {
   border-color: var(--color-link);
   outline: none;
-  box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.2);
+  box-shadow: 0 0 0 3px rgba(110, 168, 255, 0.2);
 }
 
 .epic-page
@@ -91,7 +91,7 @@
   border-color: var(--color-link);
   outline: 2px solid var(--color-link);
   outline-offset: 3px;
-  box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.18);
+  box-shadow: 0 0 0 4px rgba(110, 168, 255, 0.18);
 }
 
 .epic-page .epic-date-controls__button:disabled,

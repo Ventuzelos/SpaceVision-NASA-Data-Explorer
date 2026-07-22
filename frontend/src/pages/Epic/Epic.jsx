@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-
 import { useEpicPhotos } from "../../hooks/useEpicPhotos";
 import EpicPanel from "./EpicPanel/EpicPanel";
 import EpicDetail from "./EpicDetail/EpicDetail";
