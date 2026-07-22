@@ -198,7 +198,7 @@
 
   border: 3px solid
     rgba(255, 255, 255, 0.12);
-  border-top-color: #7e47fd;
+  border-top-color: var(--color-primary);
   border-radius: 50%;
 
   animation:

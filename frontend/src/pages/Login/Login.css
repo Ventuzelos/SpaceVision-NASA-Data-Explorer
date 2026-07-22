@@ -20,7 +20,7 @@
   pointer-events: none;
   background:
     radial-gradient(circle at 18% 45%,
-      rgba(124, 58, 237, 0.12),
+      rgba(46, 111, 245, 0.12),
       transparent 42%),
     linear-gradient(90deg,
       rgba(11, 16, 32, 0.15) 0%,
@@ -100,7 +100,7 @@
   margin-top: var(--space-7);
   padding:
     var(--space-3) var(--space-4);
-  border: 1px solid rgba(167, 139, 250, 0.16);
+  border: 1px solid rgba(110, 168, 255, 0.16);
   border-radius: var(--radius-full);
   background: rgba(17, 24, 39, 0.35);
   color: var(--color-text-secondary);
@@ -228,7 +228,7 @@
   border-color: var(--color-link);
   background: rgba(11, 16, 32, 0.94);
   box-shadow:
-    0 0 0 0.25rem rgba(167, 139, 250, 0.17);
+    0 0 0 0.25rem rgba(110, 168, 255, 0.17);
 }
 
 .login-forgot-password {
@@ -279,7 +279,7 @@
 }
 
 .login-password-toggle:hover {
-  background: rgba(167, 139, 250, 0.12);
+  background: rgba(110, 168, 255, 0.12);
   color: var(--color-text);
 }
 
@@ -310,25 +310,22 @@
   margin-top: var(--space-1);
   border: 0;
   border-radius: var(--radius-md);
-  background: linear-gradient(90deg,
-      var(--color-secondary),
-      var(--color-primary));
-  background-size: 180% 100%;
+  background: var(--gradient-primary);
   color: #ffffff;
   cursor: pointer;
   font: inherit;
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-bold);
   transition:
-    background-position var(--transition-normal),
     box-shadow var(--transition-fast),
+    filter var(--transition-fast),
     transform var(--transition-fast);
 }
 
 .login-auth-submit:hover:not(:disabled) {
-  background-position: 100% 0;
   box-shadow:
-    0 0.875rem 2rem rgba(79, 70, 229, 0.32);
+    0 0.875rem 2rem rgba(46, 111, 245, 0.32);
+  filter: brightness(1.08);
   transform: translateY(-1px);
 }
 
@@ -370,7 +367,7 @@
   .login-page__overlay {
     background:
       radial-gradient(circle at 22% 48%,
-        rgba(124, 58, 237, 0.16),
+        rgba(46, 111, 245, 0.16),
         transparent 40%),
       linear-gradient(90deg,
         rgba(11, 16, 32, 0.32) 0%,

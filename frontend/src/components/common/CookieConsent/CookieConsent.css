@@ -49,7 +49,7 @@
   height: 48px;
   border-radius: var(--radius-md);
 
-  background: rgba(126, 71, 253, 0.12);
+  background: rgba(46, 111, 245, 0.12);
   color: var(--color-link);
 }
 
@@ -103,7 +103,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
 
-  background: var(--color-surface-alt, rgba(126, 71, 253, 0.06));
+  background: var(--color-surface-alt, rgba(46, 111, 245, 0.06));
   text-align: left;
 
   animation: cookie-consent-enter 0.2s ease;

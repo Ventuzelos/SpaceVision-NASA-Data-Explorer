@@ -74,7 +74,7 @@
       rgba(79, 141, 240, 0.15),
       transparent 36%),
     radial-gradient(circle at 90% 0%,
-      rgba(126, 71, 253, 0.12),
+      rgba(46, 111, 245, 0.12),
       transparent 34%),
     var(--color-surface);
 }
