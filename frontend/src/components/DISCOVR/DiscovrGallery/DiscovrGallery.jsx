@@ -205,6 +205,8 @@ function DiscovrGallery() {
                 src={currentPhoto.url}
                 alt={currentPhoto.title}
                 className="discovr-carousel__image"
+                loading="lazy"
+                decoding="async"
               />
 
               <a

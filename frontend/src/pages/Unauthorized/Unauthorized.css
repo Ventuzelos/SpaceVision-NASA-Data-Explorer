@@ -69,7 +69,7 @@
 }
 
 .unauthorized__btn--primary {
-  background: linear-gradient(90deg, #7e47fd, #4f8df0);
+  background: var(--gradient-primary);
   color: #fff;
 }
 

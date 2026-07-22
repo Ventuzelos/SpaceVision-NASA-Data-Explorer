@@ -53,7 +53,7 @@
   border-radius: var(--radius-lg);
 
   background:
-    linear-gradient(135deg, rgba(126, 71, 253, 0.12), rgba(79, 141, 240, 0.08)),
+    linear-gradient(135deg, rgba(46, 111, 245, 0.12), rgba(79, 141, 240, 0.08)),
     var(--color-surface);
 
   color: var(--color-text-secondary);
@@ -133,7 +133,7 @@
 
 .cookies-rail__link--active {
   color: var(--color-text);
-  background: rgba(79, 70, 229, 0.14);
+  background: rgba(46, 111, 245, 0.14);
   font-weight: var(--font-weight-semibold);
 }
 
@@ -331,7 +331,7 @@
 
   .cookies-toc__link--active {
     border-color: var(--color-primary);
-    background: rgba(79, 70, 229, 0.15);
+    background: rgba(46, 111, 245, 0.15);
     color: var(--color-text);
   }
 }
