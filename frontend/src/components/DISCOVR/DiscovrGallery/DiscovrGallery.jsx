@@ -12,6 +12,15 @@ import "./DiscovrGallery.css";
 
 const APOD_START_DATE = new Date("1995-06-16");
 const CAROUSEL_SIZE = 5;
+const MAX_APOD_ATTEMPTS = 6;
+const APOD_REQUEST_DELAY = 1000;
+const GALLERY_CACHE_KEY = "spacevision_discovr_gallery";
+
+function wait(milliseconds) {
+  return new Promise((resolve) => {
+    window.setTimeout(resolve, milliseconds);
+  });
+}
 
 function randomApodDate() {
   const today = new Date();
@@ -19,16 +28,6 @@ function randomApodDate() {
   const randomTime = APOD_START_DATE.getTime() + Math.random() * span;
 
   return new Date(randomTime).toISOString().split("T")[0];
-}
-
-function randomApodDates(count) {
-  const dates = new Set();
-
-  while (dates.size < count) {
-    dates.add(randomApodDate());
-  }
-
-  return Array.from(dates);
 }
 
 function formatApodEyebrow(dateStr) {
@@ -66,46 +65,137 @@ function DiscovrGallery() {
   const parallaxRef = useParallax(0.15);
 
   useEffect(() => {
-    loadCarouselPhotos();
+    let isMounted = true;
+
+    async function initializeGallery() {
+      const cachedGallery = sessionStorage.getItem(
+        GALLERY_CACHE_KEY
+      );
+
+      if (cachedGallery) {
+        try {
+          const parsedGallery = JSON.parse(cachedGallery);
+
+          if (
+            Array.isArray(parsedGallery) &&
+            parsedGallery.length > 0
+          ) {
+            setCarouselPhotos(parsedGallery);
+            setCarouselLoading(false);
+            return;
+          }
+        } catch {
+          sessionStorage.removeItem(
+            GALLERY_CACHE_KEY
+          );
+        }
+      }
+
+      await loadCarouselPhotos(isMounted);
+    }
+
+    initializeGallery();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-  async function loadCarouselPhotos() {
+  async function loadCarouselPhotos(
+    isMounted = true
+  ) {
     setCarouselLoading(true);
     setCarouselError("");
     setCarouselIndex(0);
 
+    const photos = [];
+    const attemptedDates = new Set();
+
     try {
-      const dates = randomApodDates(CAROUSEL_SIZE + 4);
+      while (
+        photos.length < CAROUSEL_SIZE &&
+        attemptedDates.size < MAX_APOD_ATTEMPTS
+      ) {
+        const date = randomApodDate();
 
-      const results = await Promise.allSettled(
-        dates.map((date) => getApodByDate(date))
-      );
+        if (attemptedDates.has(date)) {
+          continue;
+        }
 
-      const photos = results
-        .filter(
-          (result) =>
-            result.status === "fulfilled" &&
-            result.value?.media_type === "image"
-        )
-        .map((result) => ({
-          url: result.value.hdurl || result.value.url,
-          title: result.value.title,
-          date: result.value.date,
-          explanation: result.value.explanation,
-        }))
-        .slice(0, CAROUSEL_SIZE);
+        attemptedDates.add(date);
 
-      if (photos.length === 0) {
-        setCarouselError(
-          "Não foi possível carregar imagens da NASA neste momento."
-        );
-        setCarouselPhotos([]);
+        try {
+          const result = await getApodByDate(date);
+
+          if (
+            result?.media_type === "image" &&
+            result.url
+          ) {
+            photos.push({
+              url: result.hdurl || result.url,
+              previewUrl: result.url,
+              title: result.title,
+              date: result.date,
+              explanation: result.explanation,
+            });
+          }
+        } catch (requestError) {
+          if (requestError.response?.status === 429) {
+            if (photos.length === 0) {
+              setCarouselError(
+                "Foram efetuados demasiados pedidos à NASA. Aguarda um momento e tenta novamente."
+              );
+            }
+
+            break;
+          } else {
+            console.warn(
+              `Não foi possível carregar o APOD de ${date}:`,
+              requestError
+            );
+          }
+        }
+
+        if (photos.length < CAROUSEL_SIZE) {
+          await wait(APOD_REQUEST_DELAY);
+        }
+      }
+
+      if (!isMounted) {
         return;
       }
 
-      setCarouselPhotos(photos);
+      if (photos.length > 0) {
+        setCarouselPhotos(photos);
+
+        sessionStorage.setItem(
+          GALLERY_CACHE_KEY,
+          JSON.stringify(photos)
+        );
+
+        setCarouselError("");
+        return;
+      }
+
+      setCarouselError(
+        "Não foi possível carregar imagens da NASA neste momento."
+      );
+
+      setCarouselPhotos([]);
+
+      sessionStorage.setItem(
+        GALLERY_CACHE_KEY,
+        JSON.stringify(photos)
+      );
     } catch (requestError) {
-      console.error("Erro ao carregar carrossel de imagens:", requestError);
+      if (!isMounted) {
+        return;
+      }
+
+      console.error(
+        "Erro ao carregar carrossel de imagens:",
+        requestError
+      );
 
       setCarouselError(
         getApiErrorMessage(
@@ -113,9 +203,12 @@ function DiscovrGallery() {
           "Não foi possível carregar imagens da NASA."
         )
       );
+
       setCarouselPhotos([]);
     } finally {
-      setCarouselLoading(false);
+      if (isMounted) {
+        setCarouselLoading(false);
+      }
     }
   }
 
@@ -176,7 +269,9 @@ function DiscovrGallery() {
         <ErrorState
           title="Sinal perdido"
           message={carouselError}
-          onRetry={loadCarouselPhotos}
+          onRetry={() =>
+            loadCarouselPhotos(true)
+          }
         />
       )}
 
@@ -202,7 +297,10 @@ function DiscovrGallery() {
               <img
                 ref={parallaxRef}
                 key={currentPhoto.url}
-                src={currentPhoto.url}
+                src={
+                  currentPhoto.previewUrl ||
+                  currentPhoto.url
+                }
                 alt={currentPhoto.title}
                 className="discovr-carousel__image"
                 loading="lazy"
@@ -228,7 +326,7 @@ function DiscovrGallery() {
                 aria-label={`Ver a imagem completa ${currentPhoto.title} no site APOD da NASA, abre numa nova janela`}
               >
                 Ver imagem completa
-                <Icon name="ArrowRight" size={14} aria-hidden="true"/>
+                <Icon name="ArrowRight" size={14} aria-hidden="true" />
               </a>
             </div>
           </div>
@@ -248,11 +346,10 @@ function DiscovrGallery() {
                 <button
                   type="button"
                   key={photo.url}
-                  className={`discovr-carousel__dot${
-                    index === carouselIndex
-                      ? " discovr-carousel__dot--active"
-                      : ""
-                  }`}
+                  className={`discovr-carousel__dot${index === carouselIndex
+                    ? " discovr-carousel__dot--active"
+                    : ""
+                    }`}
                   onClick={() => setCarouselIndex(index)}
                   aria-label={`Ver imagem ${index + 1}`}
                 />

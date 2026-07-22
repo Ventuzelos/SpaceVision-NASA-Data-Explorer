@@ -1,4 +1,10 @@
-import { lazy, Suspense } from "react";
+import {
+  lazy,
+  Suspense,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 import Container from "../../components/common/Container/Container";
 import DiscovrHero from "../../components/DISCOVR/DiscovrHero/DiscovrHero";
@@ -17,46 +23,95 @@ const DiscovrSolarSystem = lazy(() =>
 );
 
 function DISCOVR() {
+  const solarSystemTriggerRef = useRef(null);
+
+  const [shouldLoadSolarSystem, setShouldLoadSolarSystem] =
+    useState(false);
+
+  useEffect(() => {
+    const trigger = solarSystemTriggerRef.current;
+
+    if (!trigger || shouldLoadSolarSystem) {
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldLoadSolarSystem(true);
+          observer.disconnect();
+        }
+      },
+      {
+        rootMargin: "300px 0px",
+        threshold: 0.01,
+      }
+    );
+
+    observer.observe(trigger);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [shouldLoadSolarSystem]);
+
   return (
     <>
       <PageMeta
         title="Descobrir o Espaço — SpaceVision"
         description="Explora conteúdos visuais, curiosidades e experiências interativas sobre o Universo com dados e recursos da NASA."
       />
+
       <main className="discovr-page">
         <DiscovrHero />
-
 
         <Container>
           <DiscovrGallery />
 
-          <Suspense
-            fallback={
-              <div
-                className="discovr-solar-system-loading"
-                role="status"
-                aria-live="polite"
-                aria-busy="true"
-              >
-                <div
-                  className="discovr-solar-system-loading__spinner"
-                  aria-hidden="true"
-                />
+          <div ref={solarSystemTriggerRef}>
+            {shouldLoadSolarSystem ? (
+              <Suspense
+                fallback={
+                  <section
+                    className="discovr-section discovr-solar-system-placeholder"
+                    role="status"
+                    aria-live="polite"
+                    aria-busy="true"
+                  >
+                    <h2 className="discovr-section__title">
+                      Sistema solar
+                    </h2>
 
-                <p>A carregar simulação 3D...</p>
-              </div>
-            }
-          >
-            <DiscovrSolarSystem />
-          </Suspense>
+                    <p>A preparar a simulação 3D...</p>
+                  </section>
+                }
+              >
+                <DiscovrSolarSystem />
+              </Suspense>
+            ) : (
+              <section
+                className="discovr-section discovr-solar-system-placeholder"
+                aria-label="Sistema solar interativo"
+              >
+                <h2 className="discovr-section__title">
+                  Sistema solar
+                </h2>
+
+                <p>
+                  A simulação 3D será carregada quando
+                  estiveres perto desta secção.
+                </p>
+              </section>
+            )}
+          </div>
 
           <DiscovrTimeline />
           <DiscovrAsteroidRadar />
           <DiscovrMissionStatus />
         </Container>
       </main>
-      </>
-      );
+    </>
+  );
 }
 
-      export default DISCOVR;
+export default DISCOVR;
