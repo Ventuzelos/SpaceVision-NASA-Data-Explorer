@@ -8,7 +8,7 @@
 
 .epic-page::selection,
 .epic-page *::selection {
-  background: rgba(126, 71, 253, 0.35);
+  background: rgba(46, 111, 245, 0.35);
   color: var(--color-text);
 }
 
@@ -35,7 +35,7 @@
   width: 22rem;
   height: 22rem;
   border-radius: 50%;
-  background: rgba(126, 71, 253, 0.08);
+  background: rgba(46, 111, 245, 0.08);
   filter: blur(5rem);
   pointer-events: none;
 }

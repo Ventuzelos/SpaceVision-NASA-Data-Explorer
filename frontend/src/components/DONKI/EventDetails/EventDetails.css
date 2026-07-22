@@ -66,7 +66,7 @@
 }
 
 .event-details__badge {
-  background: rgba(79, 70, 229, 0.15);
+  background: rgba(46, 111, 245, 0.15);
   color: var(--color-primary);
   border-radius: var(--radius-sm);
   padding: var(--space-2) var(--space-4);

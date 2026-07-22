@@ -61,13 +61,13 @@
 
 .contact-form__field input:hover:not(:disabled),
 .contact-form__field textarea:hover:not(:disabled) {
-  border-color: rgba(126, 71, 253, 0.6);
+  border-color: rgba(46, 111, 245, 0.6);
 }
 
 .contact-form__field input:focus,
 .contact-form__field textarea:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(126, 71, 253, 0.18);
+  box-shadow: 0 0 0 3px rgba(46, 111, 245, 0.18);
 }
 
 .contact-form__field input[aria-invalid="true"],

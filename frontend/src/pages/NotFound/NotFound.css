@@ -20,7 +20,7 @@
 .notfound__btn:focus-visible {
   outline: 2px solid var(--color-link);
   outline-offset: 3px;
-  box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.18);
+  box-shadow: 0 0 0 4px rgba(110, 168, 255, 0.18);
 }
 
 .notfound__image {

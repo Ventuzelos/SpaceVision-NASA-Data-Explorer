@@ -13,7 +13,7 @@
   background:
     radial-gradient(
       circle at 50% 25%,
-      rgba(126, 71, 253, 0.16),
+      rgba(46, 111, 245, 0.16),
       transparent 34%
     ),
     radial-gradient(
@@ -64,7 +64,7 @@
 
   box-shadow:
     0 24px 70px rgba(0, 0, 0, 0.38),
-    0 0 40px rgba(126, 71, 253, 0.08);
+    0 0 40px rgba(46, 111, 245, 0.08);
 }
 
 .server-error-icon {
@@ -76,22 +76,22 @@
   height: 72px;
   margin-bottom: 24px;
 
-  color: #a78bfa;
+  color: var(--color-link);
 
-  border: 1px solid rgba(167, 139, 250, 0.25);
+  border: 1px solid rgba(46, 111, 245, 0.25);
   border-radius: 50%;
 
-  background: rgba(126, 71, 253, 0.12);
+  background: rgba(46, 111, 245, 0.12);
 
   box-shadow:
-    0 0 0 8px rgba(126, 71, 253, 0.05),
+    0 0 0 8px rgba(46, 111, 245, 0.05),
     0 12px 30px rgba(0, 0, 0, 0.2);
 }
 
 .server-error-eyebrow {
   margin: 0 0 10px;
 
-  color: #a78bfa;
+  color: var(--color-link);
 
   font-size: 0.82rem;
   font-weight: 700;
@@ -150,15 +150,10 @@
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 12px;
 
-  background:
-    linear-gradient(
-      135deg,
-      #7e47fd,
-      #4840f0
-    );
+  background: var(--gradient-primary);
 
   box-shadow:
-    0 12px 26px rgba(72, 64, 240, 0.3);
+    0 12px 26px rgba(46, 111, 245, 0.3);
 
   transition:
     transform 160ms ease,
@@ -170,13 +165,13 @@
   transform: translateY(-2px);
 
   box-shadow:
-    0 16px 34px rgba(72, 64, 240, 0.4);
+    0 16px 34px rgba(0, 51, 184, 0.4);
 
   filter: brightness(1.06);
 }
 
 .server-error-button:focus-visible {
-  outline: 3px solid rgba(167, 139, 250, 0.45);
+  outline: 3px solid rgba(110, 168, 255, 0.45);
   outline-offset: 4px;
 }
 

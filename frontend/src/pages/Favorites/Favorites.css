@@ -103,7 +103,7 @@
 }
 
 .favorites-filter-button:focus-visible {
-  outline: 3px solid rgba(79, 70, 229, 0.35);
+  outline: 3px solid rgba(46, 111, 245, 0.35);
   outline-offset: 3px;
 }
 
