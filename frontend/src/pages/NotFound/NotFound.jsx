@@ -31,8 +31,8 @@ function NotFound() {
                     x2="100%"
                     y2="100%"
                   >
-                    <stop offset="0%" stopColor="#7e47fd" />
-                    <stop offset="50%" stopColor="#4840f0" />
+                    <stop offset="0%" stopColor="#2e6ff5" />
+                    <stop offset="50%" stopColor="#0033b8" />
                     <stop offset="100%" stopColor="#4f8df0" />
                   </linearGradient>
 
@@ -43,7 +43,7 @@ function NotFound() {
                     r="75%"
                   >
                     <stop offset="0%" stopColor="#4f8df0" />
-                    <stop offset="100%" stopColor="#4840f0" />
+                    <stop offset="100%" stopColor="#0033b8" />
                   </radialGradient>
 
                   <radialGradient
