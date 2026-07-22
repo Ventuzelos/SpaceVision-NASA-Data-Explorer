@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Camada_1" data-name="Camada 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 511.49 290">
+  <defs>
+    <style>
+      .cls-1 {
+        stroke: rgba(255, 255, 255, .3);
+      }
+
+      .cls-1, .cls-2 {
+        stroke-width: 9px;
+      }
+
+      .cls-1, .cls-2, .cls-3 {
+        fill: none;
+      }
+
+      .cls-1, .cls-3 {
+        stroke-miterlimit: 3.8;
+      }
+
+      .cls-2 {
+        stroke: rgba(188, 212, 232, .4);
+        stroke-miterlimit: 3.8;
+      }
+
+      .cls-4 {
+        fill: url(#Gradiente_sem_nome_6);
+      }
+
+      .cls-3 {
+        stroke: #4bb2e6;
+        stroke-linecap: round;
+        stroke-width: 8.77px;
+      }
+    </style>
+    <linearGradient id="Gradiente_sem_nome_6" data-name="Gradiente sem nome 6" x1="-120.8" y1="488.1" x2="-114.05" y2="494.85" gradientTransform="translate(802 -1352.2) scale(3)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#eaf3ff"/>
+      <stop offset=".5" stop-color="#7fb8ff"/>
+      <stop offset="1" stop-color="#3a7bd5"/>
+    </linearGradient>
+  </defs>
+  <ellipse class="cls-2" cx="257.91" cy="148.78" rx="190.35" ry="66.83" transform="translate(-36.95 107.45) rotate(-22)"/>
+  <circle class="cls-1" cx="250.93" cy="136.08" r="114.08"/>
+  <path class="cls-3" d="M250.93,22c-63.45,0-114.07,51.3-114.07,114.07s51.3,114.08,114.07,114.08"/>
+  <circle class="cls-4" cx="422.38" cy="94.9" r="10.12"/>
+</svg>
