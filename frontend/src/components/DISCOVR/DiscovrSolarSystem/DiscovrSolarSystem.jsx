@@ -17,18 +17,41 @@ function DiscovrSolarSystem() {
 
   useEffect(() => {
     const container = mountRef.current;
-    const api = createSolarSystemScene(container, { initialSpeed: speed });
+
+    if (!container) {
+      return undefined;
+    }
+
+    const api = createSolarSystemScene(container, {
+      initialSpeed: speed,
+    });
+
     sceneApiRef.current = api;
 
     const unsubscribe = api.onUpdate((state) => {
       setElapsedDays(state.simDays);
     });
 
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        api.setActive(entry.isIntersecting);
+      },
+      {
+        rootMargin: "150px 0px",
+        threshold: 0.05,
+      }
+    );
+
+    observer.observe(container);
+
     return () => {
+      observer.disconnect();
       unsubscribe();
       api.dispose();
       sceneApiRef.current = null;
     };
+
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
