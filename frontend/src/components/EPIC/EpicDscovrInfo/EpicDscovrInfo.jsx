@@ -42,8 +42,8 @@ export default function EpicDscovrInfo() {
         <div id="dscovr-info-popover"
           className="dscovr-info__popover"
           role="dialog"
-          aria-label="Sobre o discover">
-          <p className="dscovr-info__title">Sobre o DSCOVR</p>
+          aria-label="Sobre o satélite DSCOVR">
+          <p className="dscovr-info__title">Sobre o satélite DSCOVR</p>
           <p>
             Satélite de meteorologia espacial da NOAA — monitoriza vento solar e ejeções de
             massa coronal a partir do ponto de Lagrange L1.
