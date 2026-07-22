@@ -54,7 +54,7 @@ function Footer() {
             </Link>
 
             <Link to="/discover">
-              Discover
+              Descobrir
             </Link>
 
             <Link to="/quiz">

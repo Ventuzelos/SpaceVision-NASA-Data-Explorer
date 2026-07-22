@@ -22,7 +22,7 @@ export const publicNavigation = [
   },
   {
     id: 5,
-    label: "Discover",
+    label: "Descobrir",
     path: "/discover",
   },
 ];
