@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ContactMessageController;
 use App\Http\Controllers\Api\FavoriteController;
 use App\Http\Controllers\Api\NasaController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\ProfileController;
 
 Route::middleware('throttle:auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
@@ -28,6 +29,7 @@ Route::post('/contact', [ContactMessageController::class, 'store'])
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'user']);
+    Route::patch('/profile/nasa-api-key',[ProfileController::class,'updateNasaApiKey']);
 
     Route::patch(
         '/user/profile',

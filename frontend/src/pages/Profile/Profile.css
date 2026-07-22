@@ -521,6 +521,48 @@ min-height: 44px;
   margin-bottom: var(--space-5);
 }
 
+/* NASA API Key */
+
+.profile-nasa-key-status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+
+  margin-bottom: var(--space-5);
+  padding: var(--space-3) var(--space-4);
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  background: var(--color-surface-light);
+  color: var(--color-text-secondary);
+
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.profile-nasa-key-status--active {
+  border-color: rgba(16, 185, 129, 0.35);
+
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--color-success);
+}
+
+.profile-form__help {
+  margin: 0;
+
+  color: var(--color-text-secondary);
+
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.profile-feature__content
+  .profile-nasa-key-status
+  + .profile-form {
+  margin-top: 0;
+}
+
 /* Tablet */
 
 @media (max-width: 1024px) {

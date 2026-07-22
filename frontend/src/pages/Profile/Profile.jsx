@@ -1,11 +1,21 @@
-import { useEffect, useMemo, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+
+import {
+  Navigate,
+  useNavigate,
+} from "react-router-dom";
+
 import {
   AlertTriangle,
   Database,
   Download,
   Edit3,
   Heart,
+  KeyRound,
   LogOut,
   ShieldCheck,
   Trash2,
@@ -16,9 +26,18 @@ import Container from "../../components/common/Container/Container";
 import Button from "../../components/common/Button/Button";
 import Toast from "../../components/common/Toast/Toast";
 import Breadcrumb from "../../components/common/Breadcrumb/Breadcrumb";
-import { getFavorites } from "../../services/favoritesService";
-import useAuth from "../../hooks/useAuth";
 import PageMeta from "../../components/common/PageMeta/PageMeta";
+
+import {
+  getFavorites,
+} from "../../services/favoritesService";
+
+import {
+  removeNasaApiKey,
+  updateNasaApiKey,
+} from "../../services/profileService";
+
+import useAuth from "../../hooks/useAuth";
 
 import "./Profile.css";
 
@@ -27,6 +46,11 @@ const TABS = [
     id: "profile",
     label: "O meu perfil",
     icon: User,
+  },
+  {
+    id: "nasa-key",
+    label: "Chave NASA",
+    icon: KeyRound,
   },
   {
     id: "download",
@@ -80,6 +104,26 @@ function formatMemberDate(date) {
   }).format(parsedDate);
 }
 
+function getApiErrorMessage(
+  error,
+  fallbackMessage
+) {
+  const validationErrors =
+    error.response?.data?.errors;
+
+  const firstValidationError =
+    validationErrors &&
+    Object.values(validationErrors)
+      .flat()
+      .find(Boolean);
+
+  return (
+    firstValidationError ||
+    error.response?.data?.message ||
+    fallbackMessage
+  );
+}
+
 function Profile() {
   const navigate = useNavigate();
 
@@ -89,39 +133,75 @@ function Profile() {
     isAuthLoading,
     logout,
     updateProfile,
+    updateLocalUser,
     deleteAccount,
   } = useAuth();
 
-  const [activeTab, setActiveTab] = useState("profile");
-  const [isEditing, setIsEditing] = useState(false);
+  const [activeTab, setActiveTab] =
+    useState("profile");
+
+  const [isEditing, setIsEditing] =
+    useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
     email: "",
   });
 
-  const [formError, setFormError] = useState("");
+  const [formError, setFormError] =
+    useState("");
+
   const [isSavingProfile, setIsSavingProfile] =
     useState(false);
-  const [toast, setToast] = useState("");
-  const [toastType, setToastType] = useState("success");
 
-  const [favorites, setFavorites] = useState([]);
-  const [isLoadingFavorites, setIsLoadingFavorites] =
-    useState(true);
+  const [toast, setToast] = useState("");
+  const [toastType, setToastType] =
+    useState("success");
+
+  const [favorites, setFavorites] =
+    useState([]);
+
+  const [
+    isLoadingFavorites,
+    setIsLoadingFavorites,
+  ] = useState(true);
 
   const [isDownloading, setIsDownloading] =
     useState(false);
 
-  const [deleteConfirm, setDeleteConfirm] = useState("");
-  const [deletePassword, setDeletePassword] = useState("");
-  const [deleteError, setDeleteError] = useState("");
-  const [isDeletingAccount, setIsDeletingAccount] =
-    useState(false);
+  const [nasaApiKey, setNasaApiKey] =
+    useState("");
+
+  const [nasaKeyError, setNasaKeyError] =
+    useState("");
+
+  const [
+    isSavingNasaKey,
+    setIsSavingNasaKey,
+  ] = useState(false);
+
+  const [
+    isRemovingNasaKey,
+    setIsRemovingNasaKey,
+  ] = useState(false);
+
+  const [deleteConfirm, setDeleteConfirm] =
+    useState("");
+
+  const [deletePassword, setDeletePassword] =
+    useState("");
+
+  const [deleteError, setDeleteError] =
+    useState("");
+
+  const [
+    isDeletingAccount,
+    setIsDeletingAccount,
+  ] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated || !user) {
-      return;
+      return undefined;
     }
 
     let isMounted = true;
@@ -134,7 +214,9 @@ function Profile() {
 
         if (isMounted) {
           setFavorites(
-            Array.isArray(result) ? result : []
+            Array.isArray(result)
+              ? result
+              : []
           );
         }
       } catch (error) {
@@ -215,7 +297,10 @@ function Profile() {
     );
   }
 
-  function showToast(message, type = "success") {
+  function showToast(
+    message,
+    type = "success"
+  ) {
     setToast(message);
     setToastType(type);
 
@@ -262,17 +347,20 @@ function Profile() {
     const email = formData.email.trim();
 
     if (!name || !email) {
-      setFormError("Preenche o nome e o email.");
+      setFormError(
+        "Preenche o nome e o email."
+      );
       return;
     }
 
     try {
       setIsSavingProfile(true);
 
-      const response = await updateProfile({
-        name,
-        email,
-      });
+      const response =
+        await updateProfile({
+          name,
+          email,
+        });
 
       setFormData({
         name: response.user.name,
@@ -283,25 +371,103 @@ function Profile() {
 
       showToast(
         response.message ||
-        "Perfil atualizado com sucesso."
+          "Perfil atualizado com sucesso."
       );
     } catch (error) {
-      const validationErrors =
-        error.response?.data?.errors;
-
-      const firstValidationError =
-        validationErrors &&
-        Object.values(validationErrors)
-          .flat()
-          .find(Boolean);
-
       setFormError(
-        firstValidationError ||
-        error.response?.data?.message ||
-        "Não foi possível atualizar o perfil."
+        getApiErrorMessage(
+          error,
+          "Não foi possível atualizar o perfil."
+        )
       );
     } finally {
       setIsSavingProfile(false);
+    }
+  }
+
+  async function handleSaveNasaApiKey(
+    event
+  ) {
+    event.preventDefault();
+
+    const trimmedKey = nasaApiKey.trim();
+
+    setNasaKeyError("");
+
+    if (!trimmedKey) {
+      setNasaKeyError(
+        "Introduz uma chave da API NASA."
+      );
+      return;
+    }
+
+    try {
+      setIsSavingNasaKey(true);
+
+      const response =
+        await updateNasaApiKey(
+          trimmedKey
+        );
+
+      updateLocalUser({
+        has_nasa_api_key:
+          response.has_nasa_api_key,
+      });
+
+      setNasaApiKey("");
+
+      showToast(
+        response.message ||
+          "Chave da NASA guardada com sucesso."
+      );
+    } catch (error) {
+      setNasaKeyError(
+        getApiErrorMessage(
+          error,
+          "Não foi possível guardar a chave da NASA."
+        )
+      );
+    } finally {
+      setIsSavingNasaKey(false);
+    }
+  }
+
+  async function handleRemoveNasaApiKey() {
+    const confirmed = window.confirm(
+      "Pretendes remover a tua chave pessoal da NASA? A aplicação passará a utilizar a chave geral do SpaceVision."
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      setIsRemovingNasaKey(true);
+      setNasaKeyError("");
+
+      const response =
+        await removeNasaApiKey();
+
+      updateLocalUser({
+        has_nasa_api_key:
+          response.has_nasa_api_key,
+      });
+
+      setNasaApiKey("");
+
+      showToast(
+        response.message ||
+          "Chave da NASA removida com sucesso."
+      );
+    } catch (error) {
+      setNasaKeyError(
+        getApiErrorMessage(
+          error,
+          "Não foi possível remover a chave da NASA."
+        )
+      );
+    } finally {
+      setIsRemovingNasaKey(false);
     }
   }
 
@@ -309,36 +475,55 @@ function Profile() {
     try {
       setIsDownloading(true);
 
-      const updatedFavorites = await getFavorites();
+      const updatedFavorites =
+        await getFavorites();
 
       const exportData = {
-        exportedAt: new Date().toISOString(),
+        exportedAt:
+          new Date().toISOString(),
 
         profile: {
           id: user.id,
           name: user.name,
           email: user.email,
           role: user.role || "user",
-          createdAt: user.created_at || null,
+          createdAt:
+            user.created_at || null,
+          hasNasaApiKey:
+            Boolean(
+              user.has_nasa_api_key
+            ),
         },
 
-        favorites: Array.isArray(updatedFavorites)
+        favorites: Array.isArray(
+          updatedFavorites
+        )
           ? updatedFavorites
           : [],
       };
 
       const blob = new Blob(
-        [JSON.stringify(exportData, null, 2)],
+        [
+          JSON.stringify(
+            exportData,
+            null,
+            2
+          ),
+        ],
         {
           type: "application/json",
         }
       );
 
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
+      const url =
+        URL.createObjectURL(blob);
+
+      const link =
+        document.createElement("a");
 
       link.href = url;
-      link.download = `spacevision-dados-${user.id}.json`;
+      link.download =
+        `spacevision-dados-${user.id}.json`;
 
       document.body.appendChild(link);
       link.click();
@@ -362,12 +547,17 @@ function Profile() {
     }
   }
 
-  async function handleDeleteAccount(event) {
+  async function handleDeleteAccount(
+    event
+  ) {
     event.preventDefault();
 
     setDeleteError("");
 
-    if (deleteConfirm.trim() !== "ELIMINAR") {
+    if (
+      deleteConfirm.trim() !==
+      "ELIMINAR"
+    ) {
       setDeleteError(
         'Escreve "ELIMINAR" para confirmar a eliminação da conta.'
       );
@@ -392,9 +582,10 @@ function Profile() {
     try {
       setIsDeletingAccount(true);
 
-      const response = await deleteAccount(
-        deletePassword
-      );
+      const response =
+        await deleteAccount(
+          deletePassword
+        );
 
       navigate("/", {
         replace: true,
@@ -405,19 +596,11 @@ function Profile() {
         },
       });
     } catch (error) {
-      const validationErrors =
-        error.response?.data?.errors;
-
-      const firstValidationError =
-        validationErrors &&
-        Object.values(validationErrors)
-          .flat()
-          .find(Boolean);
-
       setDeleteError(
-        firstValidationError ||
-        error.response?.data?.message ||
-        "Não foi possível eliminar a conta."
+        getApiErrorMessage(
+          error,
+          "Não foi possível eliminar a conta."
+        )
       );
     } finally {
       setIsDeletingAccount(false);
@@ -437,328 +620,362 @@ function Profile() {
 
     setFormError("");
     setDeleteError("");
+    setNasaKeyError("");
 
     if (tab.id !== "delete") {
       setDeleteConfirm("");
       setDeletePassword("");
     }
 
+    if (tab.id !== "nasa-key") {
+      setNasaApiKey("");
+    }
+
     setActiveTab(tab.id);
   }
 
   return (
-     <>
-    <PageMeta
-      title="Perfil — SpaceVision"
-      description="Gere os teus dados pessoais, favoritos e preferências da conta no SpaceVision."
-    />
-    <main className="profile-page">
-      <Container>
-        <Breadcrumb title="Perfil" />
+    <>
+      <PageMeta
+        title="Perfil — SpaceVision"
+        description="Gere os teus dados pessoais, favoritos e preferências da conta no SpaceVision."
+      />
 
-        <section className="profile-hero">
-          <div className="profile-hero__identity">
-            <div
-              className="profile-hero__avatar"
-              aria-hidden="true"
-            >
-              {userInitials}
+      <main className="profile-page">
+        <Container>
+          <Breadcrumb title="Perfil" />
+
+          <section className="profile-hero">
+            <div className="profile-hero__identity">
+              <div
+                className="profile-hero__avatar"
+                aria-hidden="true"
+              >
+                {userInitials}
+              </div>
+
+              <div className="profile-hero__content">
+                <p className="profile-page__label">
+                  Área pessoal
+                </p>
+
+                <h1>{user.name}</h1>
+
+                <p className="profile-hero__email">
+                  {user.email}
+                </p>
+              </div>
             </div>
 
-            <div className="profile-hero__content">
-              <p className="profile-page__label">
-                Área pessoal
+            <div className="profile-hero__account">
+              <span className="profile-hero__badge">
+                <ShieldCheck
+                  size={16}
+                  aria-hidden="true"
+                />
+
+                {accountType}
+              </span>
+
+              <p>
+                Membro da comunidade SpaceVision
               </p>
-
-              <h1>{user.name}</h1>
-
-              <p className="profile-hero__email">
-                {user.email}
-              </p>
             </div>
-          </div>
+          </section>
 
-          <div className="profile-hero__account">
-            <span className="profile-hero__badge">
-              <ShieldCheck
-                size={16}
-                aria-hidden="true"
-              />
-
-              {accountType}
-            </span>
-
-            <p>
-              Membro da comunidade SpaceVision
-            </p>
-          </div>
-        </section>
-
-        <section
-          className="profile-stats"
-          aria-label="Resumo da conta"
-        >
-          <article className="profile-stat-card">
-            <div className="profile-stat-card__icon">
-              <Heart
-                size={21}
-                aria-hidden="true"
-              />
-            </div>
-
-            <div>
-              <strong>
-                {isLoadingFavorites
-                  ? "—"
-                  : favorites.length}
-              </strong>
-
-              <span>
-                Favoritos guardados
-              </span>
-            </div>
-          </article>
-
-          <article className="profile-stat-card">
-            <div className="profile-stat-card__icon">
-              <Database
-                size={21}
-                aria-hidden="true"
-              />
-            </div>
-
-            <div>
-              <strong>
-                {isLoadingFavorites
-                  ? "—"
-                  : favoriteTypes}
-              </strong>
-
-              <span>
-                Fontes exploradas
-              </span>
-            </div>
-          </article>
-
-          <article className="profile-stat-card">
-            <div className="profile-stat-card__icon">
-              <ShieldCheck
-                size={21}
-                aria-hidden="true"
-              />
-            </div>
-
-            <div>
-              <strong>{accountType}</strong>
-
-              <span>
-                Tipo de conta
-              </span>
-            </div>
-          </article>
-
-          <article className="profile-stat-card">
-            <div className="profile-stat-card__icon">
-              <User
-                size={21}
-                aria-hidden="true"
-              />
-            </div>
-
-            <div>
-              <strong>{memberSince}</strong>
-
-              <span>
-                Membro desde
-              </span>
-            </div>
-          </article>
-        </section>
-
-        {toast && (
-          <Toast
-            message={toast}
-            type={toastType}
-          />
-        )}
-
-        <section className="profile-workspace">
-          <nav
-            className="profile-sidebar"
-            aria-label="Secções do perfil"
+          <section
+            className="profile-stats"
+            aria-label="Resumo da conta"
           >
-            <div className="profile-sidebar__heading">
-              <span>Definições da conta</span>
-            </div>
+            <article className="profile-stat-card">
+              <div className="profile-stat-card__icon">
+                <Heart
+                  size={21}
+                  aria-hidden="true"
+                />
+              </div>
 
-            {TABS.map((tab) => {
-              const TabIcon = tab.icon;
+              <div>
+                <strong>
+                  {isLoadingFavorites
+                    ? "—"
+                    : favorites.length}
+                </strong>
 
-              return (
-                <button
-                  key={tab.id}
-                  type="button"
-                  className={[
-                    "profile-sidebar__tab",
-                    activeTab === tab.id
-                      ? "profile-sidebar__tab--active"
-                      : "",
-                    tab.danger
-                      ? "profile-sidebar__tab--danger"
-                      : "",
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
-                  onClick={() =>
-                    handleTabClick(tab)
-                  }
-                  aria-current={
-                    activeTab === tab.id
-                      ? "page"
-                      : undefined
-                  }
-                >
-                  <TabIcon
-                    size={18}
-                    aria-hidden="true"
-                  />
+                <span>
+                  Favoritos guardados
+                </span>
+              </div>
+            </article>
 
-                  <span>{tab.label}</span>
-                </button>
-              );
-            })}
-          </nav>
+            <article className="profile-stat-card">
+              <div className="profile-stat-card__icon">
+                <Database
+                  size={21}
+                  aria-hidden="true"
+                />
+              </div>
 
-          <div className="profile-content">
-            {activeTab === "profile" && (
-              <article className="profile-card">
-                <header className="profile-card__header">
-                  <div className="profile-card__title-group">
-                    <div className="profile-feature__icon">
-                      <User
-                        size={30}
-                        aria-hidden="true"
-                      />
+              <div>
+                <strong>
+                  {isLoadingFavorites
+                    ? "—"
+                    : favoriteTypes}
+                </strong>
+
+                <span>
+                  Fontes exploradas
+                </span>
+              </div>
+            </article>
+
+            <article className="profile-stat-card">
+              <div className="profile-stat-card__icon">
+                <ShieldCheck
+                  size={21}
+                  aria-hidden="true"
+                />
+              </div>
+
+              <div>
+                <strong>
+                  {accountType}
+                </strong>
+
+                <span>
+                  Tipo de conta
+                </span>
+              </div>
+            </article>
+
+            <article className="profile-stat-card">
+              <div className="profile-stat-card__icon">
+                <User
+                  size={21}
+                  aria-hidden="true"
+                />
+              </div>
+
+              <div>
+                <strong>
+                  {memberSince}
+                </strong>
+
+                <span>
+                  Membro desde
+                </span>
+              </div>
+            </article>
+          </section>
+
+          {toast && (
+            <Toast
+              message={toast}
+              type={toastType}
+            />
+          )}
+
+          <section className="profile-workspace">
+            <nav
+              className="profile-sidebar"
+              aria-label="Secções do perfil"
+            >
+              <div className="profile-sidebar__heading">
+                <span>
+                  Definições da conta
+                </span>
+              </div>
+
+              {TABS.map((tab) => {
+                const TabIcon = tab.icon;
+
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    className={[
+                      "profile-sidebar__tab",
+                      activeTab === tab.id
+                        ? "profile-sidebar__tab--active"
+                        : "",
+                      tab.danger
+                        ? "profile-sidebar__tab--danger"
+                        : "",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                    onClick={() =>
+                      handleTabClick(tab)
+                    }
+                    aria-current={
+                      activeTab === tab.id
+                        ? "page"
+                        : undefined
+                    }
+                  >
+                    <TabIcon
+                      size={18}
+                      aria-hidden="true"
+                    />
+
+                    <span>
+                      {tab.label}
+                    </span>
+                  </button>
+                );
+              })}
+            </nav>
+
+            <div className="profile-content">
+              {activeTab === "profile" && (
+                <article className="profile-card">
+                  <header className="profile-card__header">
+                    <div className="profile-card__title-group">
+                      <div className="profile-feature__icon">
+                        <User
+                          size={30}
+                          aria-hidden="true"
+                        />
+                      </div>
+
+                      <div>
+                        <p className="profile-page__label">
+                          Dados pessoais
+                        </p>
+
+                        <h2>
+                          Informação da conta
+                        </h2>
+
+                        <p className="profile-card__intro">
+                          Consulta e gere os
+                          dados associados à tua
+                          conta SpaceVision.
+                        </p>
+                      </div>
                     </div>
 
-                    <div>
-                      <p className="profile-page__label">
-                        Dados pessoais
-                      </p>
-
-                      <h2>Informação da conta</h2>
-
-                      <p className="profile-card__intro">
-                        Consulta e gere os dados associados à tua conta
-                        SpaceVision.
-                      </p>
-                    </div>
-                  </div>
-
-                  {!isEditing && (
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      onClick={handleStartEditing}
-                    >
-                      <Edit3
-                        size={17}
-                        aria-hidden="true"
-                      />
-
-                      Editar
-                    </Button>
-                  )}
-                </header>
-
-                <form
-                  className="profile-form"
-                  onSubmit={handleSaveProfile}
-                >
-                  <div className="profile-form__grid">
-                    <div className="profile-form__field">
-                      <label htmlFor="name">
-                        Nome
-                      </label>
-
-                      <input
-                        id="name"
-                        name="name"
-                        type="text"
-                        value={
-                          isEditing
-                            ? formData.name
-                            : user.name || ""
+                    {!isEditing && (
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        onClick={
+                          handleStartEditing
                         }
-                        onChange={handleChange}
-                        disabled={!isEditing}
-                        autoComplete="name"
-                      />
+                      >
+                        <Edit3
+                          size={17}
+                          aria-hidden="true"
+                        />
+
+                        Editar
+                      </Button>
+                    )}
+                  </header>
+
+                  <form
+                    className="profile-form"
+                    onSubmit={
+                      handleSaveProfile
+                    }
+                  >
+                    <div className="profile-form__grid">
+                      <div className="profile-form__field">
+                        <label htmlFor="name">
+                          Nome
+                        </label>
+
+                        <input
+                          id="name"
+                          name="name"
+                          type="text"
+                          value={
+                            isEditing
+                              ? formData.name
+                              : user.name || ""
+                          }
+                          onChange={
+                            handleChange
+                          }
+                          disabled={
+                            !isEditing
+                          }
+                          autoComplete="name"
+                        />
+                      </div>
+
+                      <div className="profile-form__field">
+                        <label htmlFor="email">
+                          Email
+                        </label>
+
+                        <input
+                          id="email"
+                          name="email"
+                          type="email"
+                          value={
+                            isEditing
+                              ? formData.email
+                              : user.email || ""
+                          }
+                          onChange={
+                            handleChange
+                          }
+                          disabled={
+                            !isEditing
+                          }
+                          autoComplete="email"
+                        />
+                      </div>
+
+                      <div className="profile-form__field">
+                        <label htmlFor="role">
+                          Tipo de conta
+                        </label>
+
+                        <input
+                          id="role"
+                          type="text"
+                          value={
+                            accountType
+                          }
+                          disabled
+                        />
+                      </div>
+
+                      <div className="profile-form__field">
+                        <label htmlFor="memberSince">
+                          Membro desde
+                        </label>
+
+                        <input
+                          id="memberSince"
+                          type="text"
+                          value={
+                            memberSince
+                          }
+                          disabled
+                        />
+                      </div>
                     </div>
 
-                    <div className="profile-form__field">
-                      <label htmlFor="email">
-                        Email
-                      </label>
+                    {formError && (
+                      <p
+                        className="profile-error"
+                        role="alert"
+                      >
+                        {formError}
+                      </p>
+                    )}
 
-                      <input
-                        id="email"
-                        name="email"
-                        type="email"
-                        value={
-                          isEditing
-                            ? formData.email
-                            : user.email || ""
-                        }
-                        onChange={handleChange}
-                        disabled={!isEditing}
-                        autoComplete="email"
-                      />
-                    </div>
-
-                    <div className="profile-form__field">
-                      <label htmlFor="role">
-                        Tipo de conta
-                      </label>
-
-                      <input
-                        id="role"
-                        type="text"
-                        value={accountType}
-                        disabled
-                      />
-                    </div>
-
-                    <div className="profile-form__field">
-                      <label htmlFor="memberSince">
-                        Membro desde
-                      </label>
-
-                      <input
-                        id="memberSince"
-                        type="text"
-                        value={memberSince}
-                        disabled
-                      />
-                    </div>
-                  </div>
-
-                  {formError && (
-                    <p
-                      className="profile-error"
-                      role="alert"
-                    >
-                      {formError}
-                    </p>
-                  )}
-
-                  {isEditing && (
-                    <>
+                    {isEditing && (
                       <div className="profile-form__actions">
                         <Button
                           type="submit"
                           variant="primary"
-                          disabled={isSavingProfile}
+                          disabled={
+                            isSavingProfile
+                          }
                         >
                           {isSavingProfile
                             ? "A guardar..."
@@ -768,168 +985,349 @@ function Profile() {
                         <Button
                           type="button"
                           variant="secondary"
-                          onClick={handleCancelEdit}
-                          disabled={isSavingProfile}
+                          onClick={
+                            handleCancelEdit
+                          }
+                          disabled={
+                            isSavingProfile
+                          }
                         >
                           Cancelar
                         </Button>
                       </div>
-                    </>
-                  )}
-                </form>
-              </article>
-            )}
+                    )}
+                  </form>
+                </article>
+              )}
 
-            {activeTab === "download" && (
-              <article className="profile-card">
-                <div className="profile-feature">
-                  <div className="profile-feature__icon">
-                    <Download
-                      size={30}
-                      aria-hidden="true"
-                    />
-                  </div>
-
-                  <div>
-                    <p className="profile-page__label">
-                      Exportação
-                    </p>
-
-                    <h2>
-                      Descarregar os meus dados
-                    </h2>
-
-                    <p className="profile-card__intro">
-                      Cria uma cópia em formato JSON
-                      com os dados da conta e os
-                      favoritos guardados.
-                    </p>
-
-                    <Button
-                      variant="primary"
-                      onClick={handleDownloadData}
-                      disabled={isDownloading}
-                    >
-                      <Download
-                        size={17}
+              {activeTab === "nasa-key" && (
+                <article className="profile-card">
+                  <div className="profile-feature">
+                    <div className="profile-feature__icon">
+                      <KeyRound
+                        size={30}
                         aria-hidden="true"
                       />
+                    </div>
 
-                      {isDownloading
-                        ? "A preparar download..."
-                        : "Descarregar dados"}
-                    </Button>
-                  </div>
-                </div>
-              </article>
-            )}
+                    <div className="profile-feature__content">
+                      <p className="profile-page__label">
+                        Integração NASA
+                      </p>
 
-            {activeTab === "delete" && (
-              <article className="profile-card profile-card--danger">
-                <div className="profile-feature">
-                  <div className="profile-feature__icon profile-feature__icon--danger">
-                    <AlertTriangle
-                      size={30}
-                      aria-hidden="true"
-                    />
-                  </div>
+                      <h2>
+                        Chave pessoal da API NASA
+                      </h2>
 
-                  <div className="profile-feature__content">
-                    <p className="profile-page__label profile-page__label--danger">
-                      Zona de perigo
-                    </p>
+                      <p className="profile-card__intro">
+                        Adiciona uma chave
+                        pessoal para utilizar os
+                        teus próprios limites de
+                        pedidos às APIs da NASA.
+                      </p>
 
-                    <h2>
-                      Eliminar conta e dados
-                    </h2>
-
-                    <p className="profile-card__intro">
-                      Esta ação irá eliminar
-                      permanentemente a conta e os
-                      dados associados. Não poderá
-                      ser desfeita.
-                    </p>
-
-                    <form
-                      className="profile-form"
-                      onSubmit={handleDeleteAccount}
-                    >
-                      <div className="profile-form__field">
-                        <label htmlFor="deleteConfirm">
-                          Escreve{" "}
-                          <strong>ELIMINAR</strong>{" "}
-                          para confirmar
-                        </label>
-
-                        <input
-                          id="deleteConfirm"
-                          name="deleteConfirm"
-                          type="text"
-                          value={deleteConfirm}
-                          onChange={(event) =>
-                            setDeleteConfirm(
-                              event.target.value
-                            )
-                          }
-                          placeholder="ELIMINAR"
-                          autoComplete="off"
-                          disabled={isDeletingAccount}
+                      <div
+                        className={[
+                          "profile-nasa-key-status",
+                          user.has_nasa_api_key
+                            ? "profile-nasa-key-status--active"
+                            : "",
+                        ]
+                          .filter(Boolean)
+                          .join(" ")}
+                        role="status"
+                      >
+                        <ShieldCheck
+                          size={18}
+                          aria-hidden="true"
                         />
+
+                        <span>
+                          {user.has_nasa_api_key
+                            ? "Chave pessoal configurada"
+                            : "A utilizar a chave geral do SpaceVision"}
+                        </span>
                       </div>
 
-                      <div className="profile-form__field">
-                        <label htmlFor="deletePassword">
-                          Palavra-passe atual
-                        </label>
+                      <form
+                        className="profile-form"
+                        onSubmit={
+                          handleSaveNasaApiKey
+                        }
+                      >
+                        <div className="profile-form__field">
+                          <label htmlFor="nasaApiKey">
+                            NASA API Key
+                          </label>
 
-                        <input
-                          id="deletePassword"
-                          name="deletePassword"
-                          type="password"
-                          value={deletePassword}
-                          onChange={(event) =>
-                            setDeletePassword(
-                              event.target.value
-                            )
-                          }
-                          placeholder="Introduz a tua palavra-passe"
-                          autoComplete="current-password"
-                          disabled={isDeletingAccount}
-                        />
-                      </div>
+                          <input
+                            id="nasaApiKey"
+                            name="nasaApiKey"
+                            type="password"
+                            value={
+                              nasaApiKey
+                            }
+                            onChange={(
+                              event
+                            ) => {
+                              setNasaApiKey(
+                                event.target
+                                  .value
+                              );
 
-                      {deleteError && (
-                        <p
-                          className="profile-error"
-                          role="alert"
-                        >
-                          {deleteError}
-                        </p>
-                      )}
+                              if (
+                                nasaKeyError
+                              ) {
+                                setNasaKeyError(
+                                  ""
+                                );
+                              }
+                            }}
+                            placeholder={
+                              user.has_nasa_api_key
+                                ? "Introduz uma nova chave para substituir a atual"
+                                : "Introduz a tua NASA API Key"
+                            }
+                            autoComplete="off"
+                            spellCheck="false"
+                            disabled={
+                              isSavingNasaKey ||
+                              isRemovingNasaKey
+                            }
+                          />
+
+                          <p className="profile-form__help">
+                            A chave será guardada
+                            de forma encriptada e
+                            não será apresentada
+                            novamente.
+                          </p>
+                        </div>
+
+                        {nasaKeyError && (
+                          <p
+                            className="profile-error"
+                            role="alert"
+                          >
+                            {nasaKeyError}
+                          </p>
+                        )}
+
+                        <div className="profile-form__actions">
+                          <Button
+                            type="submit"
+                            variant="primary"
+                            disabled={
+                              isSavingNasaKey ||
+                              isRemovingNasaKey
+                            }
+                          >
+                            {isSavingNasaKey
+                              ? "A validar e guardar..."
+                              : user.has_nasa_api_key
+                                ? "Substituir chave"
+                                : "Guardar chave"}
+                          </Button>
+
+                          {user.has_nasa_api_key && (
+                            <Button
+                              type="button"
+                              variant="secondary"
+                              onClick={
+                                handleRemoveNasaApiKey
+                              }
+                              disabled={
+                                isSavingNasaKey ||
+                                isRemovingNasaKey
+                              }
+                            >
+                              {isRemovingNasaKey
+                                ? "A remover..."
+                                : "Remover chave"}
+                            </Button>
+                          )}
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </article>
+              )}
+
+              {activeTab === "download" && (
+                <article className="profile-card">
+                  <div className="profile-feature">
+                    <div className="profile-feature__icon">
+                      <Download
+                        size={30}
+                        aria-hidden="true"
+                      />
+                    </div>
+
+                    <div>
+                      <p className="profile-page__label">
+                        Exportação
+                      </p>
+
+                      <h2>
+                        Descarregar os meus dados
+                      </h2>
+
+                      <p className="profile-card__intro">
+                        Cria uma cópia em
+                        formato JSON com os
+                        dados da conta e os
+                        favoritos guardados.
+                      </p>
 
                       <Button
-                        type="submit"
-                        variant="danger"
-                        disabled={isDeletingAccount}
+                        variant="primary"
+                        onClick={
+                          handleDownloadData
+                        }
+                        disabled={
+                          isDownloading
+                        }
                       >
-                        <Trash2
+                        <Download
                           size={17}
                           aria-hidden="true"
                         />
 
-                        {isDeletingAccount
-                          ? "A eliminar conta..."
-                          : "Eliminar permanentemente"}
+                        {isDownloading
+                          ? "A preparar download..."
+                          : "Descarregar dados"}
                       </Button>
-                    </form>
+                    </div>
                   </div>
-                </div>
-              </article>
-            )}
-          </div>
-        </section>
-      </Container>
-    </main>
+                </article>
+              )}
+
+              {activeTab === "delete" && (
+                <article className="profile-card profile-card--danger">
+                  <div className="profile-feature">
+                    <div className="profile-feature__icon profile-feature__icon--danger">
+                      <AlertTriangle
+                        size={30}
+                        aria-hidden="true"
+                      />
+                    </div>
+
+                    <div className="profile-feature__content">
+                      <p className="profile-page__label profile-page__label--danger">
+                        Zona de perigo
+                      </p>
+
+                      <h2>
+                        Eliminar conta e dados
+                      </h2>
+
+                      <p className="profile-card__intro">
+                        Esta ação irá eliminar
+                        permanentemente a conta
+                        e os dados associados.
+                        Não poderá ser desfeita.
+                      </p>
+
+                      <form
+                        className="profile-form"
+                        onSubmit={
+                          handleDeleteAccount
+                        }
+                      >
+                        <div className="profile-form__field">
+                          <label htmlFor="deleteConfirm">
+                            Escreve{" "}
+                            <strong>
+                              ELIMINAR
+                            </strong>{" "}
+                            para confirmar
+                          </label>
+
+                          <input
+                            id="deleteConfirm"
+                            name="deleteConfirm"
+                            type="text"
+                            value={
+                              deleteConfirm
+                            }
+                            onChange={(
+                              event
+                            ) =>
+                              setDeleteConfirm(
+                                event.target
+                                  .value
+                              )
+                            }
+                            placeholder="ELIMINAR"
+                            autoComplete="off"
+                            disabled={
+                              isDeletingAccount
+                            }
+                          />
+                        </div>
+
+                        <div className="profile-form__field">
+                          <label htmlFor="deletePassword">
+                            Palavra-passe atual
+                          </label>
+
+                          <input
+                            id="deletePassword"
+                            name="deletePassword"
+                            type="password"
+                            value={
+                              deletePassword
+                            }
+                            onChange={(
+                              event
+                            ) =>
+                              setDeletePassword(
+                                event.target
+                                  .value
+                              )
+                            }
+                            placeholder="Introduz a tua palavra-passe"
+                            autoComplete="current-password"
+                            disabled={
+                              isDeletingAccount
+                            }
+                          />
+                        </div>
+
+                        {deleteError && (
+                          <p
+                            className="profile-error"
+                            role="alert"
+                          >
+                            {deleteError}
+                          </p>
+                        )}
+
+                        <Button
+                          type="submit"
+                          variant="danger"
+                          disabled={
+                            isDeletingAccount
+                          }
+                        >
+                          <Trash2
+                            size={17}
+                            aria-hidden="true"
+                          />
+
+                          {isDeletingAccount
+                            ? "A eliminar conta..."
+                            : "Eliminar permanentemente"}
+                        </Button>
+                      </form>
+                    </div>
+                  </div>
+                </article>
+              )}
+            </div>
+          </section>
+        </Container>
+      </main>
     </>
   );
 }
