@@ -12,4 +12,17 @@ const nasaApi = axios.create({
   },
 });
 
+nasaApi.interceptors.request.use(
+  (config) => {
+    const token = sessionStorage.getItem("spacevision_token");
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 export default nasaApi;

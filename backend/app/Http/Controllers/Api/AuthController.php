@@ -28,7 +28,7 @@ class AuthController extends Controller
         $token = $user->createToken('spacevision-token')->plainTextToken;
 
         return response()->json([
-            'user' => $user,
+            'user' => $this->userData($user),
             'token' => $token,
         ], 201);
     }
@@ -51,7 +51,7 @@ class AuthController extends Controller
         $token = $user->createToken('spacevision-token')->plainTextToken;
 
         return response()->json([
-            'user' => $user,
+            'user' => $this->userData($user),
             'token' => $token,
         ]);
     }
@@ -139,7 +139,7 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Perfil atualizado com sucesso.',
-            'user' => $user->fresh(),
+            'user' => $this->userData($user->fresh()),
         ]);
     }
 
@@ -185,6 +185,22 @@ class AuthController extends Controller
 
     public function user(Request $request)
     {
-        return response()->json($request->user());
+        return response()->json(
+            $this->userData($request->user())
+        );
+    }
+
+    private function userData(User $user): array
+    {
+        return [
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'role' => $user->role,
+            'is_admin' => $user->isAdmin(),
+            'has_nasa_api_key' => filled($user->nasa_api_key),
+            'created_at' => $user->created_at,
+            'updated_at' => $user->updated_at,
+        ];
     }
 }

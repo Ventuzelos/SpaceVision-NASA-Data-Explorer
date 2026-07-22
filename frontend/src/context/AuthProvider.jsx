@@ -153,6 +153,19 @@ export function AuthProvider({ children }) {
     []
   );
 
+  const updateLocalUser = useCallback((userData) => {
+    setUser((currentUser) => {
+      if (!currentUser) {
+        return currentUser;
+      }
+
+      return {
+        ...currentUser,
+        ...userData,
+      };
+    });
+  }, []);
+
   const deleteAccount = useCallback(
     async (password) => {
       const response =
@@ -198,6 +211,7 @@ export function AuthProvider({ children }) {
       register,
       logout,
       updateProfile,
+      updateLocalUser,
       deleteAccount,
       retryAuthentication,
     }),
@@ -211,6 +225,7 @@ export function AuthProvider({ children }) {
       register,
       logout,
       updateProfile,
+      updateLocalUser,
       deleteAccount,
       retryAuthentication,
     ]

@@ -2,13 +2,14 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
 
 class NasaApiService
 {
-    private readonly string $apiKey;
+    private readonly string $defaultApiKey;
 
     private readonly string $baseUrl;
 
@@ -16,29 +17,28 @@ class NasaApiService
 
     public function __construct()
     {
-        $this->apiKey = (string) config('services.nasa.api_key');
+        $this->defaultApiKey = (string) config(
+            'services.nasa.api_key'
+        );
+
         $this->baseUrl = rtrim(
             (string) config('services.nasa.base_url'),
             '/'
         );
+
         $this->cacheTtl = (int) config(
             'services.nasa.cache_ttl',
             3600
         );
-
-        if ($this->apiKey === '') {
-            throw new RuntimeException(
-                'A chave da API da NASA não está configurada.'
-            );
-        }
     }
 
-    public function get(string $endpoint, array $query = []): array
-    {
+    public function get(
+        string $endpoint,
+        array $query = [],
+        ?User $user = null
+    ): array {
         $endpoint = ltrim($endpoint, '/');
 
-        // Garante que os mesmos parâmetros produzem sempre
-        // a mesma chave de cache.
         ksort($query);
 
         $cacheKey = 'nasa:'.sha1(
@@ -51,7 +51,13 @@ class NasaApiService
         return Cache::remember(
             $cacheKey,
             $this->cacheTtl,
-            function () use ($endpoint, $query): array {
+            function () use (
+                $endpoint,
+                $query,
+                $user
+            ): array {
+                $apiKey = $this->resolveApiKey($user);
+
                 $response = Http::baseUrl($this->baseUrl)
                     ->acceptJson()
                     ->timeout(15)
@@ -59,7 +65,7 @@ class NasaApiService
                     ->get(
                         $endpoint,
                         array_merge($query, [
-                            'api_key' => $this->apiKey,
+                            'api_key' => $apiKey,
                         ])
                     )
                     ->throw();
@@ -75,5 +81,20 @@ class NasaApiService
                 return $decoded;
             }
         );
+    }
+
+    private function resolveApiKey(?User $user = null): string
+    {
+        if ($user && filled($user->nasa_api_key)) {
+            return $user->nasa_api_key;
+        }
+
+        if ($this->defaultApiKey === '') {
+            throw new RuntimeException(
+                'A chave da API da NASA não está configurada.'
+            );
+        }
+
+        return $this->defaultApiKey;
     }
 }
