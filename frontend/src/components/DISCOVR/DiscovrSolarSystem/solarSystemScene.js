@@ -1,25 +1,8 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
-/**
- * solarSystemScene
- * ----------------
- * Motor 3D independente de framework para uma visualização orbital do
- * sistema solar, inspirada no jsorrery (https://mgvez.github.io/jsorrery/).
- * Recebe um elemento DOM (container) e devolve um controlador imperativo
- * { setPlaying, setSpeed, setShowOrbits, setFocus, onUpdate, dispose }
- * para ser pilotado por React — mesmo contrato do bennuScene.js.
- *
- * As distâncias reais entre o Sol e os planetas variam demasiado (0.39 UA
- * a 30 UA) para caberem, à escala linear, no mesmo enquadramento sem que
- * os planetas interiores fiquem ilegíveis. Por isso a posição orbital usa
- * uma escala comprimida (raiz quadrada da distância real em UA) — os
- * períodos orbitais mantêm-se proporcionais aos reais, só a distância
- * visual é que não está à escala (a mesma filosofia já usada no
- * BennuViewer, que também assume "escala não proporcional").
- */
 
-const SCALE = 13; // unidades de cena por raiz quadrada de UA
+const SCALE = 13;
 function scaledDistance(au) {
   return Math.sqrt(au) * SCALE;
 }
@@ -221,6 +204,8 @@ export function createSolarSystemScene(container, options = {}) {
   let focusId = null;
   let simDays = 0;
   let disposed = false;
+  let active = true;
+  let lastStateEmission = 0;
 
   const listeners = new Set();
   function emitState() {
@@ -233,7 +218,16 @@ export function createSolarSystemScene(container, options = {}) {
   const camera = new THREE.PerspectiveCamera(48, 1, 0.1, 5000);
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  const isMobile = window.matchMedia(
+    "(max-width: 768px)"
+  ).matches;
+
+  renderer.setPixelRatio(
+    Math.min(
+      window.devicePixelRatio,
+      isMobile ? 1.25 : 2
+    )
+  );
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.15;
@@ -258,7 +252,7 @@ export function createSolarSystemScene(container, options = {}) {
 
   /* ---- Estrelas ---- */
   (function buildStarfield() {
-    const starCount = 4000;
+    const starCount = isMobile ? 1200 : 4000;
     const positions = new Float32Array(starCount * 3);
     const colors = new Float32Array(starCount * 3);
     const palette = [
@@ -367,18 +361,43 @@ export function createSolarSystemScene(container, options = {}) {
   let rafId = null;
 
   function tick() {
+    if (disposed || !active) {
+      rafId = null;
+      return;
+    }
+
     rafId = requestAnimationFrame(tick);
+
     const dt = Math.min(clock.getDelta(), 0.05);
 
-    if (playing) simDays += dt * daysPerSecond;
+    if (playing) {
+      simDays += dt * daysPerSecond;
+    }
 
     let focusedPos = null;
 
     planets.forEach((planet) => {
-      const meanAnomaly = ((simDays / planet.periodDays) * Math.PI * 2) % (Math.PI * 2);
-      const pos = keplerPosition(planet.aScaled, planet.e, planet.inc, planet.omega, planet.node, meanAnomaly);
+      const meanAnomaly =
+        ((simDays / planet.periodDays) *
+          Math.PI *
+          2) %
+        (Math.PI * 2);
+
+      const pos = keplerPosition(
+        planet.aScaled,
+        planet.e,
+        planet.inc,
+        planet.omega,
+        planet.node,
+        meanAnomaly
+      );
+
       planet.positionGroup.position.copy(pos);
-      planet.mesh.rotation.y += dt * planet.spinSpeed;
+
+      if (playing) {
+        planet.mesh.rotation.y +=
+          dt * planet.spinSpeed;
+      }
 
       if (planet.id === focusId) {
         focusedPos = pos;
@@ -386,21 +405,48 @@ export function createSolarSystemScene(container, options = {}) {
     });
 
     if (focusedPos) {
-      const prevTarget = controls.target.clone();
-      controls.target.lerp(focusedPos, 0.06);
-      const delta = controls.target.clone().sub(prevTarget);
+      const previousTarget =
+        controls.target.clone();
+
+      controls.target.lerp(
+        focusedPos,
+        0.06
+      );
+
+      const delta = controls.target
+        .clone()
+        .sub(previousTarget);
+
       camera.position.add(delta);
     } else {
-      controls.target.lerp(new THREE.Vector3(0, 0, 0), 0.04);
+      controls.target.lerp(
+        scene.position,
+        0.04
+      );
     }
 
     controls.update();
     renderer.render(scene, camera);
-    emitState();
+
+    const now = performance.now();
+
+    if (now - lastStateEmission >= 250) {
+      emitState();
+      lastStateEmission = now;
+    }
   }
+
   tick();
 
   return {
+    setActive(value) {
+      active = Boolean(value);
+
+      if (active && rafId === null && !disposed) {
+        clock.getDelta();
+        tick();
+      }
+    },
     setPlaying(value) {
       playing = value;
     },
