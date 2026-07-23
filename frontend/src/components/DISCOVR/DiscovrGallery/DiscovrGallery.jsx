@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 
 import Icon from "../../common/Icon/Icon";
 import ErrorState from "../../common/ErrorState/ErrorState";
@@ -287,10 +286,10 @@ function DiscovrGallery() {
 
               <p>{truncateText(currentPhoto.explanation, 220)}</p>
 
-              <Link to="/apod" className="discovr-link">
+              <a href="#apod-historico" className="discovr-link">
                 Ver arquivo de imagens
                 <Icon name="ArrowRight" size={16} />
-              </Link>
+              </a>
             </div>
 
             <div className="discovr-carousel__media">

@@ -1,26 +1,38 @@
 import { Link } from "react-router-dom";
-import Button from "../../common/Button/Button";
 
 import "./CTASection.css";
+
+const ctaImage =
+  "https://images.unsplash.com/photo-1464802686167-b939a6910659?crop=entropy&cs=srgb&fm=jpg&q=85&w=1600";
 
 function CTASection() {
   return (
     <section className="cta-section">
-      <div className="container cta-section__container">
-        <h2>Pronto para explorar o Universo?</h2>
+      <div className="container">
+        <div
+          className="cta-section__card"
+          style={{ backgroundImage: `url(${ctaImage})` }}
+        >
+          <div className="cta-section__overlay" aria-hidden="true" />
 
-        <p>
-          Começa pela imagem astronómica do dia e navega pelas nossas APIs.
-        </p>
+          <div className="cta-section__content">
+            <h2 className="cta-section__title">
+              Espaço:{" "}
+              <span className="cta-section__title-accent">
+                A Fronteira Final
+              </span>
+            </h2>
 
-        <div className="cta-section__actions">
-          <Link to="/discover">
-            <Button>Explorar conteúdos</Button>
-          </Link>
+            <p className="cta-section__description">
+              A nossa comunidade dedica-se a partilhar dados pelo amor ao
+              espaço. Encontra o teu lugar dentro da nossa base de dados
+              cósmica.
+            </p>
 
-          <Link to="/donki">
-            <Button variant="secondary">Descobrir o espaço</Button>
-          </Link>
+            <Link to="/discover" className="cta-section__button">
+              Explorar o Universo
+            </Link>
+          </div>
         </div>
       </div>
     </section>
