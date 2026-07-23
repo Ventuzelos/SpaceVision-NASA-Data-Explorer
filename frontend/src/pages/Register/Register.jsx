@@ -1,15 +1,20 @@
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import AuthGalaxyLayout from "../../components/common/AuthGalaxyLayout/AuthGalaxyLayout";
 import useAuth from "../../hooks/useAuth";
 import PageMeta from "../../components/common/PageMeta/PageMeta";
+import { resendVerificationEmail } from "../../services/authService";
 import "./Register.css";
 
 function Register() {
-  const navigate = useNavigate();
   const { register } = useAuth();
+
+  const [registeredEmail, setRegisteredEmail] = useState("");
+  const [resendState, setResendState] = useState("idle");
+  const [devVerificationUrl, setDevVerificationUrl] =
+    useState("");
 
   const [formData, setFormData] = useState({
     name: "",
@@ -64,15 +69,18 @@ function Register() {
     try {
       setIsSubmitting(true);
 
-      await register({
+      const trimmedEmail = formData.email.trim();
+
+      const result = await register({
         name: formData.name.trim(),
-        email: formData.email.trim(),
+        email: trimmedEmail,
         password: formData.password,
         password_confirmation:
           formData.passwordConfirmation,
       });
 
-      navigate("/");
+      setRegisteredEmail(trimmedEmail);
+      setDevVerificationUrl(result?.verification_url || "");
     } catch (requestError) {
       console.error(
         "Erro no registo:",
@@ -93,6 +101,105 @@ function Register() {
     } finally {
       setIsSubmitting(false);
     }
+  }
+
+  async function handleResend() {
+    try {
+      setResendState("sending");
+      const result = await resendVerificationEmail(registeredEmail);
+      setResendState("sent");
+      setDevVerificationUrl(result?.verification_url || "");
+    } catch (requestError) {
+      console.error(
+        "Erro ao reenviar email de verificação:",
+        requestError
+      );
+      setResendState("error");
+    }
+  }
+
+  if (registeredEmail) {
+    return (
+      <>
+        <PageMeta
+          title="Confirma o teu email — SpaceVision"
+          description="Falta confirmar o teu email para ativares a conta SpaceVision."
+        />
+        <AuthGalaxyLayout
+          title="Falta só um passo."
+          description="Enviámos um link de confirmação para o teu email."
+          sectionLabel="Confirma a tua conta SpaceVision"
+        >
+          <div className="register-card">
+            <div className="register-card__header">
+              <p className="register-card__eyebrow">
+                Quase lá
+              </p>
+
+              <h1 id="register-title">
+                Verifica o teu email
+              </h1>
+
+              <p className="register-card__description">
+                Enviámos um link de confirmação para{" "}
+                <strong>{registeredEmail}</strong>. Abre esse
+                email e clica no link para ativares a conta.
+              </p>
+            </div>
+
+            <p className="register-switch">
+              Não recebeste nada?{" "}
+              <button
+                type="button"
+                className="register-resend-link"
+                onClick={handleResend}
+                disabled={resendState === "sending"}
+              >
+                {resendState === "sending"
+                  ? "A reenviar..."
+                  : "Reenviar email"}
+              </button>
+            </p>
+
+            {devVerificationUrl && (
+              <div className="register-dev-verify">
+                <p className="register-dev-verify__label">
+                  Ambiente local — sem envio real de email
+                </p>
+
+                <a
+                  className="register-dev-verify__link"
+                  href={devVerificationUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Abrir link de verificação
+                </a>
+              </div>
+            )}
+
+            {resendState === "sent" && (
+              <p className="register-resend-status" role="status">
+                Se a conta ainda não estiver confirmada, foi
+                enviado um novo link.
+              </p>
+            )}
+
+            {resendState === "error" && (
+              <p className="register-error" role="alert">
+                Não foi possível reenviar agora. Tenta
+                novamente dentro de momentos.
+              </p>
+            )}
+
+            <p className="register-switch">
+              Já confirmaste?{" "}
+              <Link to="/login">Entrar</Link>
+            </p>
+          </div>
+        </AuthGalaxyLayout>
+      </>
+    );
   }
 
   return (
