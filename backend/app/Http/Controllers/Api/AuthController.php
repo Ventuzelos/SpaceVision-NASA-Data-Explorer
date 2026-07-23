@@ -25,7 +25,7 @@ class AuthController extends Controller
 
         $user = User::create($validated);
 
-        $token = $user->createToken('spacevision-token')->plainTextToken;
+        $token = $this->createAccessToken($user);
 
         return response()->json([
             'user' => $this->userData($user),
@@ -48,7 +48,7 @@ class AuthController extends Controller
             ]);
         }
 
-        $token = $user->createToken('spacevision-token')->plainTextToken;
+        $token = $this->createAccessToken($user);
 
         return response()->json([
             'user' => $this->userData($user),
@@ -92,6 +92,8 @@ class AuthController extends Controller
                 ])->setRememberToken(Str::random(60));
 
                 $user->save();
+
+                $user->tokens()->delete();
 
                 event(new PasswordReset($user));
             }
@@ -176,7 +178,11 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        $currentAccessToken = $request->user()->currentAccessToken();
+
+        if ($currentAccessToken) {
+            $currentAccessToken->delete();
+        }
 
         return response()->json([
             'message' => 'Sessão terminada com sucesso.',
@@ -188,6 +194,24 @@ class AuthController extends Controller
         return response()->json(
             $this->userData($request->user())
         );
+    }
+
+    private function createAccessToken(User $user): string
+    {
+        $abilities = [
+            'profile:read',
+            'profile:update',
+            'favorites:manage',
+            'nasa:read',
+        ];
+
+        if ($user->isAdmin()) {
+            $abilities[] = 'admin:access';
+        }
+
+        return $user
+            ->createToken('spacevision-token', $abilities)
+            ->plainTextToken;
     }
 
     private function userData(User $user): array

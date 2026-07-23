@@ -67,7 +67,7 @@ class ContactAdminTest extends TestCase
             'role' => 'user',
         ]);
 
-        Sanctum::actingAs($user);
+        $this->authenticateAdminRoute($user);
 
         $response = $this->getJson('/api/admin/dashboard');
 
@@ -80,7 +80,7 @@ class ContactAdminTest extends TestCase
             'role' => 'admin',
         ]);
 
-        Sanctum::actingAs($admin);
+        $this->authenticateAdminRoute($admin);
 
         $response = $this->getJson('/api/admin/dashboard');
 
@@ -113,7 +113,7 @@ class ContactAdminTest extends TestCase
             'is_read' => true,
         ]);
 
-        Sanctum::actingAs($admin);
+        $this->authenticateAdminRoute($admin);
 
         $response = $this->getJson('/api/admin/messages');
 
@@ -138,7 +138,7 @@ class ContactAdminTest extends TestCase
             'is_read' => false,
         ]);
 
-        Sanctum::actingAs($admin);
+        $this->authenticateAdminRoute($admin);
 
         $response = $this->patchJson(
             "/api/admin/messages/{$message->id}/read"
@@ -172,7 +172,7 @@ class ContactAdminTest extends TestCase
             'is_read' => false,
         ]);
 
-        Sanctum::actingAs($admin);
+        $this->authenticateAdminRoute($admin);
 
         $response = $this->deleteJson(
             "/api/admin/messages/{$message->id}"
@@ -203,7 +203,7 @@ class ContactAdminTest extends TestCase
             'is_read' => false,
         ]);
 
-        Sanctum::actingAs($user);
+        $this->authenticateAdminRoute($user);
 
         $this
             ->getJson('/api/admin/messages')
@@ -227,6 +227,25 @@ class ContactAdminTest extends TestCase
         ]);
     }
 
+    public function test_admin_without_admin_ability_cannot_access_admin_routes(): void
+    {
+        $admin = User::factory()->create([
+            'role' => 'admin',
+        ]);
+
+        Sanctum::actingAs($admin, [
+            'profile:read',
+        ]);
+
+        $this
+            ->getJson('/api/admin/dashboard')
+            ->assertForbidden();
+
+        $this
+            ->getJson('/api/admin/messages')
+            ->assertForbidden();
+    }
+
     public function test_unauthenticated_user_cannot_access_admin_routes(): void
     {
         $this
@@ -236,5 +255,12 @@ class ContactAdminTest extends TestCase
         $this
             ->getJson('/api/admin/messages')
             ->assertUnauthorized();
+    }
+
+    private function authenticateAdminRoute(User $user): void
+    {
+        Sanctum::actingAs($user, [
+            'admin:access',
+        ]);
     }
 }
