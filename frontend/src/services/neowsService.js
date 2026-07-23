@@ -5,13 +5,29 @@ const FEED_ENDPOINT = "/neo/feed";
 // Limite imposto pela NASA NeoWS Feed API: máx. 7 dias por pesquisa (RF-06)
 export const MAX_RANGE_DAYS = 7;
 
+// toISOString() converte para UTC, o que desalinha o dia consoante o
+// fuso horário de quem corre o código (ex: passa em UTC+1, falha em
+// CI a correr em UTC). Formata sempre a partir dos getters locais.
 function toISODate(date) {
-  return date.toISOString().split("T")[0];
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+// new Date("YYYY-MM-DD") é interpretado como UTC pelo spec do JS,
+// o que voltaria a introduzir o mesmo desalinhamento ao misturar com
+// getDate()/setDate() (hora local). Construir sempre em hora local.
+function parseISODate(isoString) {
+  const [year, month, day] = isoString.split("-").map(Number);
+
+  return new Date(year, month - 1, day);
 }
 
 function diffInDays(startISO, endISO) {
-  const start = new Date(startISO);
-  const end = new Date(endISO);
+  const start = parseISODate(startISO);
+  const end = parseISODate(endISO);
   return Math.round((end - start) / (1000 * 60 * 60 * 24));
 }
 
@@ -35,8 +51,8 @@ export function getDefaultDateRange(daysAhead = MAX_RANGE_DAYS) {
  * Devolve também um indicador de que o intervalo foi ajustado.
  */
 export function clampDateRange(startDate, endDate) {
-  const start = new Date(startDate);
-  let end = new Date(endDate);
+  const start = parseISODate(startDate);
+  let end = parseISODate(endDate);
   let wasClamped = false;
 
   if (end < start) {

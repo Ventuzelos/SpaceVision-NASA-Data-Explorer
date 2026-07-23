@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Link,
   useLocation,
@@ -20,6 +20,13 @@ function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
+
+  const wasEmailJustVerified = useMemo(
+    () =>
+      new URLSearchParams(location.search).get("verified") ===
+      "1",
+    [location.search]
+  );
 
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -145,6 +152,16 @@ function Login() {
                       exploração do Universo.
                     </p>
                   </div>
+
+                  {wasEmailJustVerified && (
+                    <p
+                      className="login-auth-verified-banner"
+                      role="status"
+                    >
+                      Email confirmado com sucesso. Já podes
+                      iniciar sessão.
+                    </p>
+                  )}
 
                   <form
                     className="login-auth-form"

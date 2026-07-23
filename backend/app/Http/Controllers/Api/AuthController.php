@@ -4,33 +4,148 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Notifications\ExistingAccountRegistrationAttempted;
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
+    /**
+     * Regista uma conta nova.
+     *
+     * A resposta é sempre igual quer o email já exista quer não
+     * (não cria conta duplicada nem revela qual dos dois casos
+     * aconteceu - ver finding F5 da auditoria de segurança). O
+     * registo já não devolve token de acesso imediato: a conta só
+     * fica utilizável depois de confirmar o email (F6).
+     */
     public function register(Request $request)
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'email' => ['required', 'email', 'max:255'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
-        $user = User::create($validated);
+        $existingUser = User::where('email', $validated['email'])->first();
 
-        $token = $this->createAccessToken($user);
+        $responseData = [
+            'message' => 'Verifica o teu email para ativares a conta.',
+        ];
 
-        return response()->json([
-            'user' => $this->userData($user),
-            'token' => $token,
-        ], 201);
+        if ($existingUser) {
+            $existingUser->notify(
+                new ExistingAccountRegistrationAttempted
+            );
+        } else {
+            $user = User::create($validated);
+
+            event(new Registered($user));
+
+            $verificationUrl = $this->localVerificationUrl($user);
+
+            if ($verificationUrl) {
+                $responseData['verification_url'] = $verificationUrl;
+            }
+        }
+
+        return response()->json($responseData, 201);
+    }
+
+    /**
+     * Devolve o link de verificação assinado para uso direto em
+     * testes locais (evita ter de ir ao storage/logs/laravel.log
+     * ou configurar um mailer real só para testar o registo).
+     *
+     * Nunca ativo fora de app()->isLocal() - expor isto em staging
+     * ou produção anularia o propósito da verificação de email.
+     */
+    private function localVerificationUrl(User $user): ?string
+    {
+        if (! app()->isLocal()) {
+            return null;
+        }
+
+        return URL::temporarySignedRoute(
+            'verification.verify',
+            now()->addMinutes(60),
+            [
+                'id' => $user->id,
+                'hash' => sha1($user->getEmailForVerification()),
+            ]
+        );
+    }
+
+    /**
+     * Confirma o email a partir do link assinado enviado por email
+     * e redireciona para o frontend.
+     */
+    public function verifyEmail(
+        Request $request,
+        int $id,
+        string $hash
+    ) {
+        $user = User::findOrFail($id);
+
+        if (! hash_equals(
+            (string) $hash,
+            sha1($user->getEmailForVerification())
+        )) {
+            abort(403, 'Link de verificação inválido.');
+        }
+
+        if (! $user->hasVerifiedEmail()) {
+            $user->markEmailAsVerified();
+
+            event(new Verified($user));
+        }
+
+        $frontendUrl = rtrim(
+            (string) config('app.frontend_url'),
+            '/'
+        );
+
+        return redirect()->away(
+            $frontendUrl.'/login?verified=1'
+        );
+    }
+
+    /**
+     * Reenvia o email de verificação, se existir uma conta por
+     * verificar com este email. Resposta sempre genérica (F5).
+     */
+    public function resendVerification(Request $request)
+    {
+        $validated = $request->validate([
+            'email' => ['required', 'email'],
+        ]);
+
+        $user = User::where('email', $validated['email'])->first();
+
+        $responseData = [
+            'message' => 'Se existir uma conta por verificar com esse email, foi enviado um novo link.',
+        ];
+
+        if ($user && ! $user->hasVerifiedEmail()) {
+            $user->sendEmailVerificationNotification();
+
+            $verificationUrl = $this->localVerificationUrl($user);
+
+            if ($verificationUrl) {
+                $responseData['verification_url'] = $verificationUrl;
+            }
+        }
+
+        return response()->json($responseData);
     }
 
     public function login(Request $request)

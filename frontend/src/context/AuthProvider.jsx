@@ -131,12 +131,9 @@ export function AuthProvider({ children }) {
   const register = useCallback(async (userData) => {
     setAuthError("");
 
-    const data = await registerUser(userData);
-
-    clearFavoritesCache();
-    setUser(data.user);
-
-    return data.user;
+    // Sem login automático: a conta só fica utilizável depois de
+    // confirmar o email (ver authService.registerUser).
+    return registerUser(userData);
   }, []);
 
   const updateProfile = useCallback(

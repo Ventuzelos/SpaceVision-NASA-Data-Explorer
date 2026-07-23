@@ -36,13 +36,15 @@ class DatabaseSeeder extends Seeder
             );
         }
 
-        User::query()->updateOrCreate(
-            ['email' => $email],
-            [
-                'name' => $name,
-                'password' => $password,
-                'role' => $role,
-            ]
-        );
+        $user = User::firstOrNew(['email' => $email]);
+
+        // 'role' não é mass-assignable de propósito (evita escalada de
+        // privilégio via input de utilizador); forceFill() é seguro aqui
+        // porque este seeder só corre em ambiente local (ver guarda acima).
+        $user->forceFill([
+            'name' => $name,
+            'password' => $password,
+            'role' => $role,
+        ])->save();
     }
 }
