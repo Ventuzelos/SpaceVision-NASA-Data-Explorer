@@ -6,17 +6,17 @@
 
 
 
-\- \[ ] A branch `main` está atualizada.
+\- \[x] A branch `main` está atualizada.
 
-\- \[ ] Não existem alterações locais por guardar.
+\- \[x] Não existem alterações locais por guardar.
 
-\- \[ ] Não existem conflitos de merge.
+\- \[x] Não existem conflitos de merge.
 
-\- \[ ] As branches concluídas foram integradas.
+\- \[x] As branches concluídas foram integradas.
 
-\- \[ ] O `.gitignore` exclui ficheiros sensíveis e dependências.
+\- \[x] O `.gitignore` exclui ficheiros sensíveis e dependências.
 
-\- \[ ] Nenhum ficheiro `.env` foi enviado para o repositório.
+\- \[x] Nenhum ficheiro `.env` foi enviado para o repositório.
 
 
 
@@ -24,13 +24,13 @@
 
 
 
-\- \[ ] `npm ci` termina sem erros.
+\- \[x] `npm ci` termina sem erros.
 
-\- \[ ] `npm run lint` termina sem erros.
+\- \[x] `npm run lint` termina sem erros.
 
-\- \[ ] `npm run test:run` aprova todos os testes.
+\- \[x] `npm run test:run` aprova todos os testes.
 
-\- \[ ] `npm run build` termina com sucesso.
+\- \[x] `npm run build` termina com sucesso.
 
 \- \[ ] As páginas principais carregam corretamente.
 
@@ -46,17 +46,17 @@
 
 
 
-\- \[ ] `composer install` termina sem erros.
+\- \[x] `composer install` termina sem erros.
 
-\- \[ ] `php artisan optimize:clear` termina sem erros.
+\- \[x] `php artisan optimize:clear` termina sem erros.
 
-\- \[ ] `php artisan test` aprova todos os testes.
+\- \[x] `php artisan test` aprova todos os testes.
 
-\- \[ ] `composer audit` não apresenta vulnerabilidades.
+\- \[x] `composer audit` não apresenta vulnerabilidades.
 
 \- \[ ] As migrações executam corretamente.
 
-\- \[ ] O seeder local cria utilizadores comuns e administradores.
+\- \[x] O seeder local cria utilizadores comuns e administradores.
 
 \- \[ ] Os endpoints protegidos exigem autenticação.
 
@@ -104,21 +104,21 @@
 
 
 
-\- \[ ] A NASA API Key não aparece no Front-End.
+\- \[x] A NASA API Key não aparece no Front-End.
 
-\- \[ ] A chave pessoal do utilizador não aparece nas respostas da API.
+\- \[x] A chave pessoal do utilizador não aparece nas respostas da API.
 
 \- \[ ] Os tokens expiram corretamente.
 
-\- \[ ] As rotas administrativas estão protegidas.
+\- \[x] As rotas administrativas estão protegidas.
 
-\- \[ ] Os formulários possuem validação.
+\- \[x] Os formulários possuem validação.
 
 \- \[ ] Os erros não apresentam stack traces ou dados sensíveis.
 
 \- \[ ] O CORS permite apenas as origens necessárias.
 
-\- \[ ] Não existem vulnerabilidades conhecidas no npm ou Composer.
+\- \[x] Não existem vulnerabilidades conhecidas no npm ou Composer.
 
 
 
@@ -158,7 +158,7 @@
 
 \- \[ ] As variáveis dos ficheiros `.env.example` estão documentadas.
 
-\- \[ ] A criação do administrador está documentada.
+\- \[x] A criação do administrador está documentada.
 
 \- \[ ] As rotas principais estão documentadas.
 
