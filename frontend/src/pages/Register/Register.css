@@ -214,6 +214,71 @@
   outline-offset: 3px;
 }
 
+.register-resend-link {
+  border: 0;
+  padding: 0;
+  background: none;
+  color: var(--color-link-hover);
+  cursor: pointer;
+  font: inherit;
+  font-weight: var(--font-weight-bold);
+}
+
+.register-resend-link:hover:not(:disabled) {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.register-resend-link:focus-visible {
+  border-radius: var(--radius-xs);
+  outline: 2px solid var(--color-link);
+  outline-offset: 3px;
+}
+
+.register-resend-link:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+.register-resend-status {
+  margin: var(--space-3) 0 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+.register-dev-verify {
+  margin-top: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border: 1px dashed var(--color-warning);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-warning) 12%, transparent);
+  text-align: center;
+}
+
+.register-dev-verify__label {
+  margin: 0 0 var(--space-2);
+  color: var(--color-warning);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.register-dev-verify__link {
+  color: var(--color-link-hover);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.register-dev-verify__link:focus-visible {
+  border-radius: var(--radius-xs);
+  outline: 2px solid var(--color-link);
+  outline-offset: 3px;
+}
+
 @media (max-width: 1024px) {
   .register-card {
     width: min(100%, 36rem);

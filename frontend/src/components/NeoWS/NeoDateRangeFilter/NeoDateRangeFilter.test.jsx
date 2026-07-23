@@ -14,18 +14,34 @@ import {
 
 import NeoDateRangeFilter from "./NeoDateRangeFilter";
 
+// Construção e formatação em hora local em toda a função (nunca
+// toISOString/parsing de string, que são baseados em UTC) - assim o
+// teste dá o mesmo resultado seja qual for o fuso horário de quem o
+// corre (a versão anterior passava em UTC+1 mas falhava em CI, que
+// corre em UTC).
+function toLocalISODate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+}
+
+function parseLocalISODate(isoString) {
+    const [year, month, day] = isoString
+        .split("-")
+        .map(Number);
+
+    return new Date(year, month - 1, day);
+}
+
 vi.mock("../../../services/neowsService", () => ({
     MAX_RANGE_DAYS: 7,
 
     clampDateRange: vi.fn(
         (startDate, endDate) => {
-            const start = new Date(
-                `${startDate}T00:00:00`
-            );
-
-            const end = new Date(
-                `${endDate}T00:00:00`
-            );
+            const start = parseLocalISODate(startDate);
+            const end = parseLocalISODate(endDate);
 
             const maximumEnd = new Date(start);
 
@@ -36,9 +52,7 @@ vi.mock("../../../services/neowsService", () => ({
             if (end > maximumEnd) {
                 return {
                     startDate,
-                    endDate: maximumEnd
-                        .toISOString()
-                        .split("T")[0],
+                    endDate: toLocalISODate(maximumEnd),
                     wasClamped: true,
                 };
             }
@@ -178,13 +192,13 @@ describe("NeoDateRangeFilter", () => {
 
         expect(
             defaultProps.onEndDateChange
-        ).toHaveBeenCalledWith("2026-07-21");
+        ).toHaveBeenCalledWith("2026-07-22");
 
         expect(
             defaultProps.onSearch
         ).toHaveBeenCalledWith(
             "2026-07-15",
-            "2026-07-21"
+            "2026-07-22"
         );
 
         expect(
@@ -218,7 +232,7 @@ describe("NeoDateRangeFilter", () => {
 
         expect(
             defaultProps.onEndDateChange
-        ).toHaveBeenCalledWith("2026-07-11");
+        ).toHaveBeenCalledWith("2026-07-12");
     });
 
     it("mantém a data final quando o intervalo é válido", () => {

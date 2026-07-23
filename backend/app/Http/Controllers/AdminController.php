@@ -11,14 +11,12 @@ use Illuminate\Validation\Rule;
 
 class AdminController extends Controller
 {
-
     public function usersCount(): JsonResponse
     {
         return response()->json([
             'count' => User::count(),
         ]);
     }
-
 
     public function usersStats(): JsonResponse
     {
@@ -29,7 +27,6 @@ class AdminController extends Controller
                 ->count(),
         ]);
     }
-
 
     public function favoritesStats(): JsonResponse
     {
@@ -78,7 +75,6 @@ class AdminController extends Controller
             'top_saved' => $topSaved,
         ]);
     }
-
 
     public function contactMessages(Request $request): JsonResponse
     {
@@ -186,7 +182,6 @@ class AdminController extends Controller
         ]);
     }
 
-
     public function markContactMessageAsRead(
         ContactMessage $message
     ): JsonResponse {
@@ -201,7 +196,6 @@ class AdminController extends Controller
             'data' => $message->fresh(),
         ]);
     }
-
 
     public function destroyContactMessage(
         ContactMessage $message

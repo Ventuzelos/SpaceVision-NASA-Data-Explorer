@@ -21,14 +21,18 @@ export async function loginUser(credentials) {
 export async function registerUser(userData) {
   const response = await backendApi.post("/register", userData);
 
-  const { user, token } = response.data;
+  // O registo já não devolve token/login imediato - a conta só
+  // fica utilizável depois de confirmar o email (ver AuthController::register).
+  return response.data;
+}
 
-  sessionStorage.setItem(TOKEN_KEY, token);
+export async function resendVerificationEmail(email) {
+  const response = await backendApi.post(
+    "/email/resend-verification",
+    { email }
+  );
 
-  return {
-    user,
-    token,
-  };
+  return response.data;
 }
 export async function updateUserProfile(profileData) {
   const response = await backendApi.patch("/user/profile", profileData);
