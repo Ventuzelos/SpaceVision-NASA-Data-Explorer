@@ -12,17 +12,6 @@ function Footer() {
       <div className="container footer__container">
         <div className="footer__brand">
           <Logo />
-
-          <p className="footer__description">
-            Explora imagens, eventos espaciais e dados reais da NASA através
-            de uma experiência digital simples, educativa e interativa.
-          </p>
-
-          <p className="footer__disclaimer">
-            Projeto académico desenvolvido para fins educativos. O SpaceVision
-            não é um website oficial da NASA e não representa nem está afiliado
-            à NASA.
-          </p>
         </div>
 
         <nav
@@ -37,10 +26,7 @@ function Footer() {
               Explorar
             </h2>
 
-            <Link to="/apod">
-              Imagem do dia
-            </Link>
-
+            <div className="footer__group-links">
             <Link to="/donki">
               Eventos espaciais
             </Link>
@@ -60,6 +46,7 @@ function Footer() {
             <Link to="/quiz">
               Quiz
             </Link>
+          </div>
           </section>
 
           <section
@@ -70,9 +57,10 @@ function Footer() {
               Informação
             </h2>
 
-            <Link to="/about">
-              Sobre o projeto
-            </Link>
+            <div className="footer__group-links">
+              <Link to="/about">
+                Sobre o projeto
+              </Link>
 
             <Link to="/faq">
               Perguntas frequentes
@@ -85,10 +73,10 @@ function Footer() {
             <Link to="/accessibility">
               Acessibilidade
             </Link>
+          </div>
           </section>
 
       
-
           <section
             className="footer__group"
             aria-labelledby="footer-resources-title"
@@ -96,6 +84,7 @@ function Footer() {
             <h2 id="footer-resources-title">
               Fontes oficiais
             </h2>
+
 
             <a
               href="https://api.nasa.gov/"
@@ -123,20 +112,21 @@ function Footer() {
       </div>
 
       <div className="container footer__bottom">
-  <p>© {currentYear} SpaceVision — NASA Data Explorer.</p>
-
-  
-
-  <div className="footer__legal">
-    <a href="/cookies">Política de Cookies</a>
-    <span aria-hidden="true">·</span>
-    <a href="/termos">Termos e Condições</a>
-    <span aria-hidden="true">·</span>
-    <a href="/privacidade">Política de Privacidade</a>
+  <div className="footer__left">
+    © {currentYear} SpaceVision — NASA Data Explorer.
   </div>
-  <p className="footer__note">
-    Dados e imagens fornecidos através de serviços oficiais da NASA.
-  </p>
+
+  <div className="footer__center">
+    <Link to="/cookies">Política de Cookies</Link>
+    <span>·</span>
+    <Link to="/termos">Termos e Condições</Link>
+    <span>·</span>
+    <Link to="/privacidade">Política de Privacidade</Link>
+  </div>
+
+  <div className="footer__right">
+    Projeto académico desenvolvido para fins educativos.
+  </div>
 </div>
     </footer>
   );
