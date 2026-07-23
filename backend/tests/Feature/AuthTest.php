@@ -173,7 +173,9 @@ class AuthTest extends TestCase
             'email' => 'angela@example.com',
         ]);
 
-        Sanctum::actingAs($user);
+        Sanctum::actingAs($user, [
+            'profile:read',
+        ]);
 
         $response = $this->getJson('/api/user');
 

@@ -1,12 +1,18 @@
-import { useEffect, useMemo, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { Navigate } from "react-router-dom";
 
 import Container from "../../components/common/Container/Container";
 import Breadcrumb from "../../components/common/Breadcrumb/Breadcrumb";
 import ErrorState from "../../components/common/ErrorState/ErrorState";
 import Icon from "../../components/common/Icon/Icon";
-import useAuth from "../../hooks/useAuth";
 import PageMeta from "../../components/common/PageMeta/PageMeta";
+
+import useAuth from "../../hooks/useAuth";
 
 import {
   deleteMessage,
@@ -17,6 +23,9 @@ import {
 } from "../../services/adminService";
 
 import "./Admin.css";
+
+const MESSAGES_PER_PAGE = 10;
+const SEARCH_DELAY = 400;
 
 function formatDate(value) {
   return new Date(value).toLocaleDateString("pt-PT", {
@@ -49,7 +58,11 @@ function Admin() {
   } = useAuth();
 
   const [isLoading, setIsLoading] = useState(true);
+  const [isMessagesLoading, setIsMessagesLoading] =
+    useState(true);
+
   const [error, setError] = useState("");
+  const [messagesError, setMessagesError] = useState("");
 
   const [usersStats, setUsersStats] = useState({
     total: null,
@@ -59,7 +72,20 @@ function Admin() {
   const [messagesStats, setMessagesStats] = useState({
     total: 0,
     unread: 0,
+    filteredTotal: 0,
     messages: [],
+    pagination: {
+      currentPage: 1,
+      lastPage: 1,
+      perPage: MESSAGES_PER_PAGE,
+      from: null,
+      to: null,
+      total: 0,
+    },
+    filters: {
+      search: "",
+      status: "all",
+    },
   });
 
   const [favoritesStats, setFavoritesStats] = useState({
@@ -72,82 +98,38 @@ function Admin() {
   const [messageStatusFilter, setMessageStatusFilter] =
     useState("all");
   const [messageSort, setMessageSort] = useState("newest");
+  const [messagePage, setMessagePage] = useState(1);
 
-  const filteredMessages = useMemo(() => {
-    const normalizedSearch = messageSearch
-      .trim()
-      .toLowerCase();
+  const sortedMessages = useMemo(() => {
+    return [...messagesStats.messages].sort(
+      (first, second) => {
+        const firstDate = new Date(
+          first.created_at
+        ).getTime();
 
-    const filtered = messagesStats.messages.filter(
-      (message) => {
-        const matchesStatus =
-          messageStatusFilter === "all" ||
-          (messageStatusFilter === "unread" &&
-            !message.is_read) ||
-          (messageStatusFilter === "read" &&
-            message.is_read);
+        const secondDate = new Date(
+          second.created_at
+        ).getTime();
 
-        const searchableContent = [
-          message.name,
-          message.email,
-          message.subject,
-          message.message,
-        ]
-          .filter(Boolean)
-          .join(" ")
-          .toLowerCase();
-
-        const matchesSearch =
-          !normalizedSearch ||
-          searchableContent.includes(normalizedSearch);
-
-        return matchesStatus && matchesSearch;
+        return messageSort === "oldest"
+          ? firstDate - secondDate
+          : secondDate - firstDate;
       }
     );
+  }, [messagesStats.messages, messageSort]);
 
-    return [...filtered].sort((first, second) => {
-      const firstDate = new Date(
-        first.created_at
-      ).getTime();
-
-      const secondDate = new Date(
-        second.created_at
-      ).getTime();
-
-      return messageSort === "oldest"
-        ? firstDate - secondDate
-        : secondDate - firstDate;
-    });
-  }, [
-    messagesStats.messages,
-    messageSearch,
-    messageStatusFilter,
-    messageSort,
-  ]);
-
-  useEffect(() => {
-    if (!isAuthenticated || !isAdmin) {
-      return;
-    }
-
-    loadDashboard();
-  }, [isAuthenticated, isAdmin]);
-
-  async function loadDashboard() {
+  const loadDashboardStats = useCallback(async () => {
     try {
       setIsLoading(true);
       setError("");
 
-      const [users, favorites, messages] =
-        await Promise.all([
-          getUsersStats(),
-          getFavoritesStats(),
-          getMessagesStats(),
-        ]);
+      const [users, favorites] = await Promise.all([
+        getUsersStats(),
+        getFavoritesStats(),
+      ]);
 
       setUsersStats(users);
       setFavoritesStats(favorites);
-      setMessagesStats(messages);
     } catch (requestError) {
       console.error(
         "Erro ao carregar o painel de administração:",
@@ -160,6 +142,102 @@ function Admin() {
     } finally {
       setIsLoading(false);
     }
+  }, []);
+
+  const loadMessages = useCallback(async () => {
+    try {
+      setIsMessagesLoading(true);
+      setMessagesError("");
+
+      const messages = await getMessagesStats({
+        page: messagePage,
+        search: messageSearch,
+        status: messageStatusFilter,
+        perPage: MESSAGES_PER_PAGE,
+      });
+
+      setMessagesStats(messages);
+    } catch (requestError) {
+      console.error(
+        "Erro ao carregar as mensagens:",
+        requestError
+      );
+
+      setMessagesError(
+        "Não foi possível carregar as mensagens de contacto."
+      );
+    } finally {
+      setIsMessagesLoading(false);
+    }
+  }, [
+    messagePage,
+    messageSearch,
+    messageStatusFilter,
+  ]);
+
+  useEffect(() => {
+    if (!isAuthenticated || !isAdmin) {
+      return undefined;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      loadDashboardStats();
+    }, 0);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [
+    isAuthenticated,
+    isAdmin,
+    loadDashboardStats,
+  ]);
+
+  useEffect(() => {
+    if (!isAuthenticated || !isAdmin) {
+      return undefined;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      loadMessages();
+    }, SEARCH_DELAY);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [
+    isAuthenticated,
+    isAdmin,
+    loadMessages,
+  ]);
+
+  function handleSearchChange(event) {
+    setMessageSearch(event.target.value);
+    setMessagePage(1);
+  }
+
+  function handleStatusChange(status) {
+    setMessageStatusFilter(status);
+    setMessagePage(1);
+  }
+
+  function handlePreviousPage() {
+    setMessagePage((currentPage) =>
+      Math.max(currentPage - 1, 1)
+    );
+  }
+
+  function handleNextPage() {
+    setMessagePage((currentPage) =>
+      Math.min(
+        currentPage + 1,
+        messagesStats.pagination.lastPage
+      )
+    );
+  }
+
+  function handlePageChange(page) {
+    setMessagePage(page);
   }
 
   async function handleMarkAsRead(messageId) {
@@ -188,7 +266,7 @@ function Admin() {
         requestError
       );
 
-      setError(
+      setMessagesError(
         "Não foi possível atualizar a mensagem."
       );
     }
@@ -206,40 +284,25 @@ function Admin() {
     try {
       await deleteMessage(messageId);
 
-      setMessagesStats((currentStats) => {
-        const deletedMessage =
-          currentStats.messages.find(
-            (message) =>
-              message.id === messageId
-          );
+      const isOnlyMessageOnPage =
+        messagesStats.messages.length === 1;
 
-        return {
-          total: Math.max(
-            currentStats.total - 1,
-            0
-          ),
-          unread:
-            deletedMessage &&
-              !deletedMessage.is_read
-              ? Math.max(
-                currentStats.unread - 1,
-                0
-              )
-              : currentStats.unread,
-          messages:
-            currentStats.messages.filter(
-              (message) =>
-                message.id !== messageId
-            ),
-        };
-      });
+      if (isOnlyMessageOnPage && messagePage > 1) {
+        setMessagePage((currentPage) =>
+          Math.max(currentPage - 1, 1)
+        );
+
+        return;
+      }
+
+      await loadMessages();
     } catch (requestError) {
       console.error(
         "Erro ao eliminar mensagem:",
         requestError
       );
 
-      setError(
+      setMessagesError(
         "Não foi possível eliminar a mensagem."
       );
     }
@@ -268,12 +331,34 @@ function Admin() {
     return <Navigate to="/" replace />;
   }
 
+  const totalReadMessages = Math.max(
+    messagesStats.total - messagesStats.unread,
+    0
+  );
+
+  const visiblePages = Array.from(
+    {
+      length: messagesStats.pagination.lastPage,
+    },
+    (_, index) => index + 1
+  ).filter((page) => {
+    const currentPage =
+      messagesStats.pagination.currentPage;
+
+    return (
+      page === 1 ||
+      page === messagesStats.pagination.lastPage ||
+      Math.abs(page - currentPage) <= 1
+    );
+  });
+
   return (
     <>
       <PageMeta
         title="Administração — SpaceVision"
         description="Gere utilizadores, favoritos e mensagens recebidas através do painel de administração do SpaceVision."
       />
+
       <main className="admin-page">
         <Container>
           <Breadcrumb title="Administração" />
@@ -304,7 +389,7 @@ function Admin() {
           {!isLoading && error && (
             <ErrorState
               message={error}
-              onRetry={loadDashboard}
+              onRetry={loadDashboardStats}
             />
           )}
 
@@ -535,11 +620,7 @@ function Admin() {
                     <input
                       type="search"
                       value={messageSearch}
-                      onChange={(event) =>
-                        setMessageSearch(
-                          event.target.value
-                        )
-                      }
+                      onChange={handleSearchChange}
                       placeholder="Pesquisar por nome, email, assunto ou mensagem..."
                       aria-label="Pesquisar mensagens"
                     />
@@ -558,7 +639,7 @@ function Admin() {
                           : "admin-message-filter-tab"
                       }
                       onClick={() =>
-                        setMessageStatusFilter("all")
+                        handleStatusChange("all")
                       }
                       aria-pressed={
                         messageStatusFilter === "all"
@@ -579,9 +660,7 @@ function Admin() {
                           : "admin-message-filter-tab"
                       }
                       onClick={() =>
-                        setMessageStatusFilter(
-                          "unread"
-                        )
+                        handleStatusChange("unread")
                       }
                       aria-pressed={
                         messageStatusFilter ===
@@ -602,7 +681,7 @@ function Admin() {
                           : "admin-message-filter-tab"
                       }
                       onClick={() =>
-                        setMessageStatusFilter("read")
+                        handleStatusChange("read")
                       }
                       aria-pressed={
                         messageStatusFilter === "read"
@@ -610,11 +689,7 @@ function Admin() {
                     >
                       Lidas
                       <span aria-hidden="true">
-                        {Math.max(
-                          messagesStats.total -
-                          messagesStats.unread,
-                          0
-                        )}
+                        {totalReadMessages}
                       </span>
                     </button>
                   </div>
@@ -641,115 +716,256 @@ function Admin() {
                   </label>
                 </div>
 
-                {filteredMessages.length === 0 ? (
-                  <p className="admin-page__empty">
-                    {messagesStats.messages.length === 0
-                      ? "Ainda não foram enviadas mensagens de contacto."
-                      : "Não foram encontradas mensagens com estes filtros."}
-                  </p>
-                ) : (
-                  <div
-                    className="admin-messages"
+                {isMessagesLoading && (
+                  <p
+                    className="admin-page__empty"
+                    role="status"
                     aria-live="polite"
                   >
-                    {filteredMessages.map(
-                      (message) => (
-                        <article
-                          key={message.id}
-                          className={`admin-message-card ${message.is_read
-                            ? "admin-message-card--read"
-                            : "admin-message-card--unread"
-                            }`}
-                        >
-                          <div className="admin-message-card__head">
-                            <div className="admin-message-card__author">
-                              <div className="admin-message-card__name-row">
-                                <strong>
-                                  {message.name}
-                                </strong>
+                    A carregar mensagens...
+                  </p>
+                )}
 
-                                <span
-                                  className={`admin-message-card__status ${message.is_read
-                                    ? "admin-message-card__status--read"
-                                    : "admin-message-card__status--unread"
-                                    }`}
+                {!isMessagesLoading &&
+                  messagesError && (
+                    <ErrorState
+                      message={messagesError}
+                      onRetry={loadMessages}
+                    />
+                  )}
+
+                {!isMessagesLoading &&
+                  !messagesError &&
+                  sortedMessages.length === 0 && (
+                    <p className="admin-page__empty">
+                      {messagesStats.total === 0
+                        ? "Ainda não foram enviadas mensagens de contacto."
+                        : "Não foram encontradas mensagens com estes filtros."}
+                    </p>
+                  )}
+
+                {!isMessagesLoading &&
+                  !messagesError &&
+                  sortedMessages.length > 0 && (
+                    <>
+                      <p className="admin-messages__results">
+                        A mostrar{" "}
+                        {messagesStats.pagination.from}–
+                        {messagesStats.pagination.to} de{" "}
+                        {formatCount(
+                          messagesStats.filteredTotal
+                        )}{" "}
+                        mensagens
+                      </p>
+
+                      <div
+                        className="admin-messages"
+                        aria-live="polite"
+                      >
+                        {sortedMessages.map(
+                          (message) => (
+                            <article
+                              key={message.id}
+                              className={`admin-message-card ${message.is_read
+                                ? "admin-message-card--read"
+                                : "admin-message-card--unread"
+                                }`}
+                            >
+                              <div className="admin-message-card__head">
+                                <div className="admin-message-card__author">
+                                  <div className="admin-message-card__name-row">
+                                    <strong>
+                                      {message.name}
+                                    </strong>
+
+                                    <span
+                                      className={`admin-message-card__status ${message.is_read
+                                        ? "admin-message-card__status--read"
+                                        : "admin-message-card__status--unread"
+                                        }`}
+                                    >
+                                      {message.is_read
+                                        ? "Lida"
+                                        : "Por ler"}
+                                    </span>
+                                  </div>
+
+                                  <a
+                                    href={`mailto:${message.email}`}
+                                  >
+                                    {message.email}
+                                  </a>
+                                </div>
+
+                                <time
+                                  dateTime={
+                                    message.created_at
+                                  }
                                 >
-                                  {message.is_read
-                                    ? "Lida"
-                                    : "Por ler"}
-                                </span>
+                                  {formatDate(
+                                    message.created_at
+                                  )}
+                                </time>
                               </div>
 
-                              <a
-                                href={`mailto:${message.email}`}
-                              >
-                                {message.email}
-                              </a>
-                            </div>
+                              <div className="admin-message-card__content">
+                                <h3>
+                                  {message.subject}
+                                </h3>
 
-                            <time
-                              dateTime={
-                                message.created_at
-                              }
-                            >
-                              {formatDate(
-                                message.created_at
-                              )}
-                            </time>
-                          </div>
+                                <p className="admin-message-card__body">
+                                  {message.message}
+                                </p>
+                              </div>
 
-                          <div className="admin-message-card__content">
-                            <h3>
-                              {message.subject}
-                            </h3>
+                              <div className="admin-message-card__actions">
+                                {!message.is_read && (
+                                  <button
+                                    type="button"
+                                    className="admin-message-card__button"
+                                    onClick={() =>
+                                      handleMarkAsRead(
+                                        message.id
+                                      )
+                                    }
+                                  >
+                                    <Icon
+                                      name="Check"
+                                      size={16}
+                                      aria-hidden="true"
+                                    />
+                                    Marcar como lida
+                                  </button>
+                                )}
 
-                            <p className="admin-message-card__body">
-                              {message.message}
-                            </p>
-                          </div>
+                                <button
+                                  type="button"
+                                  className="admin-message-card__button admin-message-card__button--danger"
+                                  onClick={() =>
+                                    handleDeleteMessage(
+                                      message.id
+                                    )
+                                  }
+                                >
+                                  <Icon
+                                    name="Trash2"
+                                    size={16}
+                                    aria-hidden="true"
+                                  />
+                                  Eliminar
+                                </button>
+                              </div>
+                            </article>
+                          )
+                        )}
+                      </div>
 
-                          <div className="admin-message-card__actions">
-                            {!message.is_read && (
-                              <button
-                                type="button"
-                                className="admin-message-card__button"
-                                onClick={() =>
-                                  handleMarkAsRead(
-                                    message.id
-                                  )
-                                }
-                              >
-                                <Icon
-                                  name="Check"
-                                  size={16}
-                                  aria-hidden="true"
-                                />
-                                Marcar como lida
-                              </button>
-                            )}
-
+                      {messagesStats.pagination.lastPage >
+                        1 && (
+                          <nav
+                            className="admin-pagination"
+                            aria-label="Paginação das mensagens"
+                          >
                             <button
                               type="button"
-                              className="admin-message-card__button admin-message-card__button--danger"
-                              onClick={() =>
-                                handleDeleteMessage(
-                                  message.id
-                                )
+                              className="admin-pagination__button"
+                              onClick={handlePreviousPage}
+                              disabled={
+                                messagesStats.pagination
+                                  .currentPage === 1
                               }
                             >
                               <Icon
-                                name="Trash2"
-                                size={16}
+                                name="ChevronLeft"
+                                size={17}
                                 aria-hidden="true"
                               />
-                              Eliminar
+                              Anterior
                             </button>
-                          </div>
-                        </article>
-                      )
-                    )}
-                  </div>
-                )}
+
+                            <div className="admin-pagination__pages">
+                              {visiblePages.map(
+                                (page, index) => {
+                                  const previousPage =
+                                    visiblePages[
+                                    index - 1
+                                    ];
+
+                                  const showEllipsis =
+                                    previousPage &&
+                                    page -
+                                    previousPage >
+                                    1;
+
+                                  return (
+                                    <span
+                                      key={page}
+                                      className="admin-pagination__page-wrapper"
+                                    >
+                                      {showEllipsis && (
+                                        <span
+                                          className="admin-pagination__ellipsis"
+                                          aria-hidden="true"
+                                        >
+                                          …
+                                        </span>
+                                      )}
+
+                                      <button
+                                        type="button"
+                                        className={
+                                          page ===
+                                            messagesStats
+                                              .pagination
+                                              .currentPage
+                                            ? "admin-pagination__page admin-pagination__page--active"
+                                            : "admin-pagination__page"
+                                        }
+                                        onClick={() =>
+                                          handlePageChange(
+                                            page
+                                          )
+                                        }
+                                        aria-current={
+                                          page ===
+                                            messagesStats
+                                              .pagination
+                                              .currentPage
+                                            ? "page"
+                                            : undefined
+                                        }
+                                        aria-label={`Página ${page}`}
+                                      >
+                                        {page}
+                                      </button>
+                                    </span>
+                                  );
+                                }
+                              )}
+                            </div>
+
+                            <button
+                              type="button"
+                              className="admin-pagination__button"
+                              onClick={handleNextPage}
+                              disabled={
+                                messagesStats.pagination
+                                  .currentPage ===
+                                messagesStats.pagination
+                                  .lastPage
+                              }
+                            >
+                              Seguinte
+                              <Icon
+                                name="ChevronRight"
+                                size={17}
+                                aria-hidden="true"
+                              />
+                            </button>
+                          </nav>
+                        )}
+                    </>
+                  )}
               </section>
             </>
           )}
