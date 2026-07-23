@@ -42,4 +42,18 @@ class UserFactory extends Factory
             'email_verified_at' => null,
         ]);
     }
+
+    /**
+     * Indicate that the user has the admin role.
+     *
+     * 'role' não está em $fillable de propósito (evita escalada de
+     * privilégio via input de utilizador), por isso usa-se forceFill()
+     * aqui em vez de passar 'role' pelo array de atributos do factory.
+     */
+    public function admin(): static
+    {
+        return $this->afterCreating(function (User $user) {
+            $user->forceFill(['role' => 'admin'])->save();
+        });
+    }
 }
