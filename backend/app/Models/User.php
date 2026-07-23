@@ -19,6 +19,7 @@ class User extends Authenticatable
         'email',
         'password',
         'nasa_api_key',
+        'role',
     ];
 
     protected $hidden = [

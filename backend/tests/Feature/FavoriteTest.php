@@ -16,7 +16,7 @@ class FavoriteTest extends TestCase
     {
         $user = User::factory()->create();
 
-        Sanctum::actingAs($user);
+        $this->authenticateUser($user);
 
         $response = $this->postJson('/api/favorites', [
             'nasa_type' => 'apod',
@@ -51,7 +51,7 @@ class FavoriteTest extends TestCase
     {
         $user = User::factory()->create();
 
-        Sanctum::actingAs($user);
+        $this->authenticateUser($user);
 
         $response = $this->postJson('/api/favorites', [
             'nasa_id' => '2026-07-15',
@@ -69,7 +69,7 @@ class FavoriteTest extends TestCase
     {
         $user = User::factory()->create();
 
-        Sanctum::actingAs($user);
+        $this->authenticateUser($user);
 
         $favoriteData = [
             'nasa_type' => 'epic',
@@ -121,7 +121,7 @@ class FavoriteTest extends TestCase
             'title' => 'Favorito de outro utilizador',
         ]);
 
-        Sanctum::actingAs($user);
+        $this->authenticateUser($user);
 
         $response = $this->getJson('/api/favorites');
 
@@ -149,7 +149,7 @@ class FavoriteTest extends TestCase
             'title' => 'Evento DONKI',
         ]);
 
-        Sanctum::actingAs($user);
+        $this->authenticateUser($user);
 
         $response = $this->deleteJson(
             "/api/favorites/{$favorite->id}"
@@ -178,7 +178,7 @@ class FavoriteTest extends TestCase
             'title' => 'Asteroide de outro utilizador',
         ]);
 
-        Sanctum::actingAs($user);
+        $this->authenticateUser($user);
 
         $response = $this->deleteJson(
             "/api/favorites/{$favorite->id}"
@@ -196,6 +196,19 @@ class FavoriteTest extends TestCase
         ]);
     }
 
+    public function test_user_without_favorites_ability_cannot_access_favorites(): void
+    {
+        $user = User::factory()->create();
+
+        Sanctum::actingAs($user, [
+            'profile:read',
+        ]);
+
+        $this
+            ->getJson('/api/favorites')
+            ->assertForbidden();
+    }
+
     public function test_unauthenticated_user_cannot_access_favorites(): void
     {
         $this
@@ -208,5 +221,12 @@ class FavoriteTest extends TestCase
                 'nasa_id' => '2026-07-15',
             ])
             ->assertUnauthorized();
+    }
+
+    private function authenticateUser(User $user): void
+    {
+        Sanctum::actingAs($user, [
+            'favorites:manage',
+        ]);
     }
 }
