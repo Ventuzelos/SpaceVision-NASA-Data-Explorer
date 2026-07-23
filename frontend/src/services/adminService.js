@@ -1,6 +1,5 @@
 import backendApi from "./backendApi";
 
-
 const FAVORITE_CATEGORIES = [
   { value: "apod", label: "APOD" },
   { value: "donki", label: "DONKI" },
@@ -22,48 +21,19 @@ export async function getUsersStats() {
       error
     );
 
-    return { total: null, newLastMonth: 0 };
+    return {
+      total: null,
+      newLastMonth: 0,
+    };
   }
 }
-
-/*export async function getUsersCount() {
-  try {
-    const response = await backendApi.get("/admin/users/count");
-
-    return (
-      response.data?.count ??
-      response.data?.total ??
-      null
-    );
-  } catch (error) {
-    console.error(
-      "Não foi possível obter a contagem de utilizadores:",
-      error
-    );
-
-    return null;
-  }
-}*/
 
 export async function getUsersCount() {
   const { total } = await getUsersStats();
+
   return total;
 }
 
-/*function getFavoriteType(favorite) {
-  return String(
-    favorite.nasa_type ||
-      favorite.type ||
-      favorite.data?.nasa_type ||
-      favorite.data?.type ||
-      ""
-  ).toLowerCase();
-}*/
-
-/*
- * Estatísticas de favoritos agrupadas por categoria da NASA.
- * Usa o serviço de favoritos já ligado ao backend real.
- */
 export async function getFavoritesStats() {
   const response = await backendApi.get("/admin/favorites/stats");
   const data = response.data ?? {};
@@ -90,13 +60,6 @@ export async function getFavoritesStats() {
   };
 }
 
-
-/*
- * Mensagens de contacto enviadas pelos utilizadores.
- * Por agora vivem em localStorage (ver messagesService.js);
- * quando existir endpoint de contacto no backend, basta trocar
- * a implementação aqui.
- */
 export async function getMessagesStats() {
   const response = await backendApi.get("/admin/messages");
 
