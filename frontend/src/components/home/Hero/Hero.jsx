@@ -2,11 +2,10 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Icons } from "../../../constants/icons";
 import SearchInput from "../../common/SearchInput/SearchInput";
-import heroImage from "../../../assets/hero.webp";
+import heroImage from "../../../assets/lua2.webp";
 import { searchablePages } from "../../../constants/searchPages";
 
 import "./Hero.css";
-
 
 const searchIcons = {
   image: Icons.Image,
@@ -39,7 +38,8 @@ function Hero() {
         <div className="container hero__container">
           <div className="hero__content">
             <h1 className="hero__title">
-              Explora o Universo com dados reais da NASA
+              Bem-vindo ao{" "}
+              <span className="hero__title-accent">Space Vision</span>
             </h1>
 
             <p className="hero__description">
@@ -82,6 +82,10 @@ function Hero() {
                 </div>
               )}
             </div>
+
+            <Link to="/about" className="hero__link">
+              Saiba mais <span aria-hidden="true">→</span>
+            </Link>
           </div>
         </div>
       </div>

@@ -2,28 +2,12 @@
   margin-top: 3rem;
 }
 
-.home-history-section {
-  margin-top: 10rem;
-}
-
-.home-history-section .section__title {
-  font-size: 1.5rem;
-}
-
-.home-history-section .section__description {
-  font-size: .9375rem;
+.home-apod-section .section__eyebrow {
+  color: var(--color-text);
 }
 
 @media (max-width: 768px) {
   .home-apod-section {
     margin-top: 2rem;
-  }
-
-  .home-history-section {
-    margin-top: 3rem;
-  }
-
-  .home-history-section .section__title {
-    font-size: 1.3rem;
   }
 }

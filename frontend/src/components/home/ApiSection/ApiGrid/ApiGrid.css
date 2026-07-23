@@ -1,19 +1,11 @@
 .api-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-6);
-
-}
-
-/* Tablet */
-@media (max-width: 1024px) {
-  .api-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-5);
 }
 
 /* Mobile */
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .api-grid {
     grid-template-columns: 1fr;
   }

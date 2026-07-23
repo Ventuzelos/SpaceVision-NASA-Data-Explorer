@@ -2,21 +2,6 @@
   padding: var(--space-8) 0;
 }
 
-.api-section__container {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-}
-
-.api-section__title {
-  font-size: 2rem;
+.api-section .section__eyebrow {
   color: var(--color-text);
-}
-
-.api-card__link {
-  color: var(--color-link);
-}
-
-.api-card__link:hover {
-  color: var(--color-link-hover);
 }

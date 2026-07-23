@@ -1,21 +1,22 @@
-import "./ApiSection.css";
-// import ApiCard from "./ApiCard/ApiCard";
+import Section from "../../common/Section/Section";
 import ApiGrid from "./ApiGrid/ApiGrid";
 import { nasaApis } from "../../../data/nasaApis";
 
+import "./ApiSection.css";
 
 function ApiSection() {
-
     return (
-        <section className="api-section">
-            <div className="container api-section__container">
-                <h2 className="api-section__title">
-                    Explora NASA APIs
-                </h2>
-
-                <ApiGrid apis={nasaApis} />
+        <div className="api-section">
+            <div className="container">
+                <Section
+                    eyebrow="Base de dados cósmica"
+                    title="Explorações Cósmicas"
+                    description="Quatro APIs oficiais da NASA — cada uma com a sua própria página de dados ao vivo. Escolhe por onde começar."
+                >
+                    <ApiGrid apis={nasaApis} />
+                </Section>
             </div>
-        </section>
+        </div>
     );
 }
 
