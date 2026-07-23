@@ -63,9 +63,7 @@ class ContactAdminTest extends TestCase
 
     public function test_normal_user_cannot_access_admin_dashboard(): void
     {
-        $user = User::factory()->create([
-            'role' => 'user',
-        ]);
+        $user = User::factory()->create();
 
         $this->authenticateAdminRoute($user);
 
@@ -76,9 +74,7 @@ class ContactAdminTest extends TestCase
 
     public function test_admin_can_access_admin_dashboard(): void
     {
-        $admin = User::factory()->create([
-            'role' => 'admin',
-        ]);
+        $admin = User::factory()->admin()->create();
 
         $this->authenticateAdminRoute($admin);
 
@@ -93,9 +89,7 @@ class ContactAdminTest extends TestCase
 
     public function test_admin_can_list_contact_messages(): void
     {
-        $admin = User::factory()->create([
-            'role' => 'admin',
-        ]);
+        $admin = User::factory()->admin()->create();
 
         ContactMessage::create([
             'name' => 'Primeiro Utilizador',
@@ -126,9 +120,7 @@ class ContactAdminTest extends TestCase
 
     public function test_admin_can_mark_contact_message_as_read(): void
     {
-        $admin = User::factory()->create([
-            'role' => 'admin',
-        ]);
+        $admin = User::factory()->admin()->create();
 
         $message = ContactMessage::create([
             'name' => 'Utilizador Teste',
@@ -160,9 +152,7 @@ class ContactAdminTest extends TestCase
 
     public function test_admin_can_delete_contact_message(): void
     {
-        $admin = User::factory()->create([
-            'role' => 'admin',
-        ]);
+        $admin = User::factory()->admin()->create();
 
         $message = ContactMessage::create([
             'name' => 'Utilizador Teste',
@@ -191,9 +181,7 @@ class ContactAdminTest extends TestCase
 
     public function test_normal_user_cannot_manage_contact_messages(): void
     {
-        $user = User::factory()->create([
-            'role' => 'user',
-        ]);
+        $user = User::factory()->create();
 
         $message = ContactMessage::create([
             'name' => 'Utilizador Teste',
@@ -229,9 +217,7 @@ class ContactAdminTest extends TestCase
 
     public function test_admin_without_admin_ability_cannot_access_admin_routes(): void
     {
-        $admin = User::factory()->create([
-            'role' => 'admin',
-        ]);
+        $admin = User::factory()->admin()->create();
 
         Sanctum::actingAs($admin, [
             'profile:read',

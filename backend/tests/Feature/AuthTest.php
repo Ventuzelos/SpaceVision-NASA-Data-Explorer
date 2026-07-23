@@ -3,8 +3,12 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use App\Notifications\ExistingAccountRegistrationAttempted;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\URL;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -14,6 +18,8 @@ class AuthTest extends TestCase
 
     public function test_user_can_register_with_valid_data(): void
     {
+        Notification::fake();
+
         $response = $this->postJson('/api/register', [
             'name' => 'Ângela Pereira',
             'email' => 'angela@example.com',
@@ -23,20 +29,13 @@ class AuthTest extends TestCase
 
         $response
             ->assertCreated()
-            ->assertJsonStructure([
-                'user' => [
-                    'id',
-                    'name',
-                    'email',
-                ],
-                'token',
-            ])
-            ->assertJsonPath('user.name', 'Ângela Pereira')
-            ->assertJsonPath('user.email', 'angela@example.com');
+            ->assertJsonMissing(['token'])
+            ->assertJsonStructure(['message']);
 
         $this->assertDatabaseHas('users', [
             'name' => 'Ângela Pereira',
             'email' => 'angela@example.com',
+            'email_verified_at' => null,
         ]);
 
         $user = User::where('email', 'angela@example.com')->first();
@@ -45,11 +44,15 @@ class AuthTest extends TestCase
         $this->assertTrue(
             Hash::check('Password123', $user->password)
         );
+
+        Notification::assertSentTo($user, VerifyEmail::class);
     }
 
-    public function test_registration_rejects_duplicate_email(): void
+    public function test_registration_with_existing_email_does_not_duplicate_or_reveal(): void
     {
-        User::factory()->create([
+        Notification::fake();
+
+        $existingUser = User::factory()->create([
             'email' => 'angela@example.com',
         ]);
 
@@ -60,11 +63,92 @@ class AuthTest extends TestCase
             'password_confirmation' => 'Password123',
         ]);
 
+        // Mesma resposta (201 + mensagem genérica) quer o email já
+        // exista quer não - não deve dar para distinguir os dois
+        // casos (finding F5 da auditoria de segurança).
         $response
-            ->assertUnprocessable()
-            ->assertJsonValidationErrors('email');
+            ->assertCreated()
+            ->assertJsonMissing(['token'])
+            ->assertJsonStructure(['message']);
 
         $this->assertDatabaseCount('users', 1);
+
+        Notification::assertSentTo(
+            $existingUser,
+            ExistingAccountRegistrationAttempted::class
+        );
+    }
+
+    public function test_user_can_verify_email_with_valid_signed_link(): void
+    {
+        $user = User::factory()->unverified()->create();
+
+        $verificationUrl = URL::temporarySignedRoute(
+            'verification.verify',
+            now()->addMinutes(60),
+            [
+                'id' => $user->id,
+                'hash' => sha1($user->email),
+            ]
+        );
+
+        $response = $this->get($verificationUrl);
+
+        $response->assertRedirect(
+            rtrim((string) config('app.frontend_url'), '/')
+                .'/login?verified=1'
+        );
+
+        $this->assertNotNull($user->fresh()->email_verified_at);
+    }
+
+    public function test_email_verification_rejects_invalid_hash(): void
+    {
+        $user = User::factory()->unverified()->create();
+
+        $verificationUrl = URL::temporarySignedRoute(
+            'verification.verify',
+            now()->addMinutes(60),
+            [
+                'id' => $user->id,
+                'hash' => 'hash-errado',
+            ]
+        );
+
+        $response = $this->get($verificationUrl);
+
+        $response->assertForbidden();
+        $this->assertNull($user->fresh()->email_verified_at);
+    }
+
+    public function test_resend_verification_is_generic_for_unknown_email(): void
+    {
+        Notification::fake();
+
+        $response = $this->postJson('/api/email/resend-verification', [
+            'email' => 'nao-existe@example.com',
+        ]);
+
+        $response
+            ->assertOk()
+            ->assertJsonStructure(['message']);
+
+        Notification::assertNothingSent();
+    }
+
+    public function test_resend_verification_sends_for_unverified_account(): void
+    {
+        Notification::fake();
+
+        $user = User::factory()->unverified()->create();
+
+        $response = $this->postJson('/api/email/resend-verification', [
+            'email' => $user->email,
+        ]);
+
+        $response->assertOk();
+
+        Notification::assertSentTo($user, VerifyEmail::class);
     }
 
     public function test_registration_requires_valid_data(): void
