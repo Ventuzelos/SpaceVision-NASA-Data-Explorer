@@ -611,7 +611,31 @@ NASA_CACHE_TTL=3600
 php artisan migrate
 ```
 
-### 9. Iniciar o servidor Laravel
+### 9. Criar um utilizador de desenvolvimento
+
+No ficheiro `.env`, definir os dados do utilizador local:
+
+```env
+DEV_USER_NAME="Administrador"
+DEV_USER_EMAIL=admin@spacevision.test
+DEV_USER_PASSWORD=alterar_esta_password
+DEV_USER_ROLE=admin
+```
+
+Depois executar:
+
+```bash
+php artisan db:seed
+```
+
+O seeder apenas pode ser executado em ambiente local.
+
+O valor de `DEV_USER_ROLE` deve ser:
+
+- `user`, para um utilizador comum;
+- `admin`, para um administrador.
+
+### 10. Iniciar o servidor Laravel
 
 ```bash
 php artisan serve
@@ -627,7 +651,7 @@ http://127.0.0.1:8000
 
 ## Configuração do Front-End
 
-### 10. Entrar na pasta do Front-End
+### 11. Entrar na pasta do Front-End
 
 A partir da raiz do projeto:
 
@@ -635,13 +659,13 @@ A partir da raiz do projeto:
 cd frontend
 ```
 
-### 11. Instalar as dependências
+### 12. Instalar as dependências
 
 ```bash
 npm install
 ```
 
-### 12. Criar o ficheiro de ambiente
+### 13. Criar o ficheiro de ambiente
 
 Em Windows:
 
@@ -661,7 +685,7 @@ O ficheiro deve conter:
 VITE_API_URL=http://127.0.0.1:8000/api
 ```
 
-### 13. Iniciar o servidor de desenvolvimento
+### 14. Iniciar o servidor de desenvolvimento
 
 ```bash
 npm run dev
