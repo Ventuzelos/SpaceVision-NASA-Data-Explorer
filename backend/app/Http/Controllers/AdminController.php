@@ -6,12 +6,12 @@ use App\Models\ContactMessage;
 use App\Models\Favorite;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class AdminController extends Controller
 {
-    /**
-     * Devolve o número total de utilizadores registados.
-     */
+
     public function usersCount(): JsonResponse
     {
         return response()->json([
@@ -19,24 +19,26 @@ class AdminController extends Controller
         ]);
     }
 
-    /**
-     * Total de utilizadores registados e novos utilizadores no último mês.
-     */
+
     public function usersStats(): JsonResponse
     {
         return response()->json([
             'total' => User::count(),
-            'new_last_month' => User::where('created_at', '>=', now()->subMonth())->count(),
+            'new_last_month' => User::query()
+                ->where('created_at', '>=', now()->subMonth())
+                ->count(),
         ]);
     }
 
-    /**
-     * Estatísticas de favoritos de TODA a plataforma (todos os utilizadores),
-     * agrupadas por categoria da NASA, e os conteúdos mais guardados.
-     */
+
     public function favoritesStats(): JsonResponse
     {
-        $categories = ['apod', 'donki', 'epic', 'neows'];
+        $categories = [
+            'apod',
+            'donki',
+            'epic',
+            'neows',
+        ];
 
         $countsByType = Favorite::query()
             ->selectRaw('nasa_type, COUNT(*) as total')
@@ -44,21 +46,31 @@ class AdminController extends Controller
             ->pluck('total', 'nasa_type');
 
         $byCategory = collect($categories)
-            ->mapWithKeys(fn ($category) => [$category => (int) ($countsByType[$category] ?? 0)])
+            ->mapWithKeys(
+                fn (string $category): array => [
+                    $category => (int) (
+                        $countsByType[$category] ?? 0
+                    ),
+                ]
+            )
             ->toArray();
 
         $topSaved = Favorite::query()
-            ->selectRaw('nasa_type, nasa_id, MAX(title) as title, COUNT(*) as saves')
+            ->selectRaw(
+                'nasa_type, nasa_id, MAX(title) as title, COUNT(*) as saves'
+            )
             ->groupBy('nasa_type', 'nasa_id')
             ->orderByDesc('saves')
             ->limit(5)
             ->get()
-            ->map(fn ($row) => [
-                'nasa_type' => $row->nasa_type,
-                'nasa_id' => $row->nasa_id,
-                'title' => $row->title,
-                'saves' => (int) $row->saves,
-            ]);
+            ->map(
+                fn ($row): array => [
+                    'nasa_type' => $row->nasa_type,
+                    'nasa_id' => $row->nasa_id,
+                    'title' => $row->title,
+                    'saves' => (int) $row->saves,
+                ]
+            );
 
         return response()->json([
             'total' => Favorite::count(),
@@ -67,23 +79,114 @@ class AdminController extends Controller
         ]);
     }
 
-    /**
-     * Lista todas as mensagens de contacto.
-     */
-    public function contactMessages(): JsonResponse
+
+    public function contactMessages(Request $request): JsonResponse
     {
-        $messages = ContactMessage::latest()->get();
+        $validated = $request->validate([
+            'search' => [
+                'sometimes',
+                'nullable',
+                'string',
+                'max:100',
+            ],
+            'status' => [
+                'sometimes',
+                'string',
+                Rule::in([
+                    'all',
+                    'read',
+                    'unread',
+                ]),
+            ],
+            'per_page' => [
+                'sometimes',
+                'integer',
+                'min:5',
+                'max:50',
+            ],
+            'page' => [
+                'sometimes',
+                'integer',
+                'min:1',
+            ],
+        ]);
+
+        $search = trim($validated['search'] ?? '');
+        $status = $validated['status'] ?? 'all';
+        $perPage = (int) ($validated['per_page'] ?? 10);
+
+        $query = ContactMessage::query()
+            ->when(
+                $search !== '',
+                function ($query) use ($search): void {
+                    $query->where(
+                        function ($subQuery) use ($search): void {
+                            $subQuery
+                                ->where(
+                                    'name',
+                                    'like',
+                                    "%{$search}%"
+                                )
+                                ->orWhere(
+                                    'email',
+                                    'like',
+                                    "%{$search}%"
+                                )
+                                ->orWhere(
+                                    'subject',
+                                    'like',
+                                    "%{$search}%"
+                                )
+                                ->orWhere(
+                                    'message',
+                                    'like',
+                                    "%{$search}%"
+                                );
+                        }
+                    );
+                }
+            )
+            ->when(
+                $status === 'read',
+                fn ($query) => $query->where('is_read', true)
+            )
+            ->when(
+                $status === 'unread',
+                fn ($query) => $query->where('is_read', false)
+            )
+            ->latest();
+
+        $paginatedMessages = $query
+            ->paginate($perPage)
+            ->withQueryString();
 
         return response()->json([
             'total' => ContactMessage::count(),
-            'unread' => ContactMessage::where('is_read', false)->count(),
-            'messages' => $messages,
+            'unread' => ContactMessage::query()
+                ->where('is_read', false)
+                ->count(),
+
+            'filtered_total' => $paginatedMessages->total(),
+
+            'messages' => $paginatedMessages->items(),
+
+            'pagination' => [
+                'current_page' => $paginatedMessages->currentPage(),
+                'last_page' => $paginatedMessages->lastPage(),
+                'per_page' => $paginatedMessages->perPage(),
+                'from' => $paginatedMessages->firstItem(),
+                'to' => $paginatedMessages->lastItem(),
+                'total' => $paginatedMessages->total(),
+            ],
+
+            'filters' => [
+                'search' => $search,
+                'status' => $status,
+            ],
         ]);
     }
 
-    /**
-     * Marca uma mensagem de contacto como lida.
-     */
+
     public function markContactMessageAsRead(
         ContactMessage $message
     ): JsonResponse {
@@ -99,9 +202,7 @@ class AdminController extends Controller
         ]);
     }
 
-    /**
-     * Elimina uma mensagem de contacto.
-     */
+
     public function destroyContactMessage(
         ContactMessage $message
     ): JsonResponse {
