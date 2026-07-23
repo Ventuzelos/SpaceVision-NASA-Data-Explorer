@@ -8,9 +8,7 @@ use App\Http\Controllers\Api\NasaController;
 use App\Http\Controllers\Api\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-
-
-Route::middleware('throttle:auth')->group(function () {
+Route::middleware(['throttle:auth', 'throttle:auth-per-account'])->group(function () {
     Route::post(
         '/register',
         [AuthController::class, 'register']
@@ -30,15 +28,24 @@ Route::middleware('throttle:auth')->group(function () {
         '/reset-password',
         [AuthController::class, 'resetPassword']
     );
+
+    Route::post(
+        '/email/resend-verification',
+        [AuthController::class, 'resendVerification']
+    );
 });
 
+Route::get(
+    '/email/verify/{id}/{hash}',
+    [AuthController::class, 'verifyEmail']
+)
+    ->middleware(['signed'])
+    ->name('verification.verify');
 
 Route::post(
     '/contact',
     [ContactMessageController::class, 'store']
-)->middleware('throttle:5,1');
-
-
+)->middleware(['throttle:5,1', 'throttle:auth-per-account']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post(
@@ -46,16 +53,12 @@ Route::middleware('auth:sanctum')->group(function () {
         [AuthController::class, 'logout']
     );
 
-
-
     Route::middleware('abilities:profile:read')->group(function () {
         Route::get(
             '/user',
             [AuthController::class, 'user']
         );
     });
-
-
 
     Route::middleware('abilities:profile:update')->group(function () {
         Route::patch(
@@ -74,7 +77,6 @@ Route::middleware('auth:sanctum')->group(function () {
         )->middleware('throttle:5,1');
     });
 
-
     Route::middleware('abilities:favorites:manage')->group(function () {
         Route::get(
             '/favorites',
@@ -92,7 +94,6 @@ Route::middleware('auth:sanctum')->group(function () {
         );
     });
 });
-
 
 Route::prefix('nasa')
     ->middleware('throttle:60,1')
@@ -122,7 +123,6 @@ Route::prefix('nasa')
             [NasaController::class, 'donki']
         );
     });
-
 
 Route::prefix('admin')
     ->middleware([
