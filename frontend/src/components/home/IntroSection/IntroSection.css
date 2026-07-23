@@ -1,0 +1,128 @@
+.intro {
+  padding: var(--space-8) 0;
+}
+
+.intro__container {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  align-items: center;
+  gap: var(--space-7);
+}
+
+.intro__eyebrow {
+  margin: 0 0 var(--space-4);
+  color: var(--color-text);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.intro__title-accent {
+  color: var(--color-text);
+}
+
+.intro__description {
+  max-width: 460px;
+  margin-top: var(--space-5);
+  color: var(--color-text-secondary);
+}
+
+.intro__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-6);
+  color: var(--color-link);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-semibold);
+  text-decoration: none;
+  transition: var(--transition-fast);
+}
+
+.intro__link:hover {
+  color: var(--color-link-hover);
+  gap: var(--space-3);
+}
+
+.intro__collage {
+  position: relative;
+  height: 420px;
+}
+
+.intro__image {
+  position: absolute;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-lg);
+}
+
+.intro__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.intro__image--main {
+  right: 0;
+  top: 24px;
+  width: 82%;
+  height: 340px;
+}
+
+.intro__image--nebula {
+  left: 0;
+  top: 0;
+  width: 190px;
+  height: 150px;
+}
+
+.intro__image--planet {
+  right: 8%;
+  bottom: 0;
+  width: 210px;
+  height: 140px;
+}
+
+@media (max-width: 900px) {
+  .intro__container {
+    grid-template-columns: 1fr;
+  }
+
+  .intro__description {
+    max-width: none;
+  }
+
+  .intro__collage {
+    height: 340px;
+  }
+
+  .intro__image--main {
+    height: 260px;
+  }
+}
+
+@media (max-width: 560px) {
+  .intro__collage {
+    height: 260px;
+  }
+
+  .intro__image--main {
+    width: 100%;
+    height: 200px;
+  }
+
+  .intro__image--nebula {
+    width: 120px;
+    height: 100px;
+  }
+
+  .intro__image--planet {
+    width: 140px;
+    height: 100px;
+  }
+}

@@ -2,24 +2,79 @@
   padding: var(--space-8) 0;
 }
 
-.cta-section__container {
-  text-align: center;
-  background: var(--color-surface);
+.cta-section__card {
+  position: relative;
+  overflow: hidden;
+  padding: var(--space-8) var(--space-7);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding-block: var(--space-8);
-  box-shadow: var(--shadow-sm);
+  border-radius: var(--radius-xl);
+  background-position: center;
+  background-size: cover;
+  box-shadow: var(--shadow-lg);
 }
 
-.cta-section__container p {
-  max-width: 620px;
-  margin: var(--space-4) auto var(--space-6);
+.cta-section__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(11, 16, 32, 0.95) 0%,
+    rgba(11, 16, 32, 0.78) 45%,
+    rgba(11, 16, 32, 0.35) 100%
+  );
+}
+
+.cta-section__content {
+  position: relative;
+  max-width: 560px;
+}
+
+.cta-section__title {
+  margin-bottom: var(--space-4);
+}
+
+.cta-section__title-accent {
+  color: var(--color-accent);
+}
+
+.cta-section__description {
+  margin-bottom: var(--space-6);
   color: var(--color-text-secondary);
 }
 
-.cta-section__actions {
-  display: flex;
-  justify-content: center;
-  gap: var(--space-4);
-  flex-wrap: wrap;
+.cta-section__button {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.85rem 1.75rem;
+  border-radius: 999px;
+  background: var(--gradient-primary);
+  color: var(--color-text);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-fast);
+}
+
+.cta-section__button:hover {
+  filter: brightness(1.08);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.cta-section__button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+  .cta-section__card {
+    padding: var(--space-6) var(--space-5);
+  }
+
+  .cta-section__content {
+    max-width: none;
+  }
 }
