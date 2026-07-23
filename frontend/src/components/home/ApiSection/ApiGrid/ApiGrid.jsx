@@ -10,7 +10,10 @@ function ApiGrid({ apis }) {
           key={api.title}
           title={api.title}
           description={api.description}
+          category={api.category}
+          icon={api.icon}
           image={api.image}
+          imagePosition={api.imagePosition}
           link={api.link}
         />
       ))}

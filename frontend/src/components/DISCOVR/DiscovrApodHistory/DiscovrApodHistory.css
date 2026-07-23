@@ -1,0 +1,12 @@
+.discovr-apod-history__skeleton {
+  display: flex;
+  gap: 1rem;
+  overflow: hidden;
+  padding: 0.25rem 0 1rem;
+}
+
+.discovr-apod-history__skeleton-card {
+  flex: 0 0 260px;
+  height: 300px;
+  border-radius: 18px;
+}
