@@ -101,7 +101,10 @@ function Home() {
               )}
 
               {apod && !isLoading && !error && (
-                <APODCard apod={apod} />
+                <APODCard
+                  key={apod.date}
+                  apod={apod}
+                />
               )}
             </Section>
           </div>
