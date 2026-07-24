@@ -108,7 +108,7 @@
 .neo-date-filter button[type="submit"] {
   height: 40px;
   padding: 0 18px;
-  border-radius: 10px;
+  border-radius: var(--radius-btn);
   white-space: nowrap;
   display: inline-flex;
   align-items: center;

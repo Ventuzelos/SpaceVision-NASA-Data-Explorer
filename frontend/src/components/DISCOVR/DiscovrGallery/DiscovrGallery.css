@@ -34,6 +34,18 @@
   text-transform: uppercase;
 }
 
+.discovr-carousel__title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  width: 100%;
+}
+
+.discovr-carousel__title-row .favorite-button {
+  flex-shrink: 0;
+}
+
 .discovr-carousel__text h3 {
   margin: 0 0 var(--space-4);
   overflow-wrap: anywhere;
@@ -79,9 +91,9 @@
   width: 2.75rem;
   height: 2.75rem;
   border: 1px solid transparent;
-  border-radius: 50%;
-  background: var(--gradient-primary);
-  color: var(--color-text);
+  border-radius: var(--radius-btn);
+  background: var(--color-btn-bg);
+  color: var(--color-btn-text);
   box-shadow: var(--shadow-sm);
   text-decoration: none;
   transition:
@@ -91,7 +103,7 @@
 }
 
 .discovr-carousel__download:hover {
-  filter: brightness(1.08);
+  background: var(--color-btn-bg-hover);
   box-shadow: var(--shadow-md);
   transform: translateY(-2px);
 }

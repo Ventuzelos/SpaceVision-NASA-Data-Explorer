@@ -82,7 +82,7 @@
   font-weight: 600;
   background: transparent;
   border: 1px solid var(--color-border);
-  border-radius: 999px;
+  border-radius: var(--radius-btn);
   cursor: pointer;
   transition:
     color 0.2s ease,
@@ -92,14 +92,14 @@
 }
 
 .favorites-filter-button:hover {
-  border-color: var(--color-primary);
+  border-color: var(--color-btn-bg);
   transform: translateY(-1px);
 }
 
 .favorites-filter-button--active {
-  color: #ffffff;
-  background: var(--color-primary);
-  border-color: var(--color-primary);
+  color: var(--color-btn-text);
+  background: var(--color-btn-bg);
+  border-color: var(--color-btn-bg);
 }
 
 .favorites-filter-button:focus-visible {

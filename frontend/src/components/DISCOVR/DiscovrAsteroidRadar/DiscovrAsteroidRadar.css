@@ -91,6 +91,11 @@
   line-height: var(--line-height-tight);
 }
 
+.discovr-asteroid-card__favorite {
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
 .discovr-asteroid-card__hazard-badge {
   display: inline-flex;
   align-items: center;
