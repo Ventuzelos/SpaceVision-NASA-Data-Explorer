@@ -82,7 +82,7 @@ class AuthController extends Controller
      */
     private function localVerificationUrl(User $user): ?string
     {
-        if (! app()->isLocal()) {
+        if (!app()->isLocal()) {
             return null;
         }
 
@@ -168,7 +168,7 @@ class AuthController extends Controller
 
         $user = User::where('email', $validated['email'])->first();
 
-        if (! $user || ! Hash::check($validated['password'], $user->password)) {
+        if (!$user || ! Hash::check($validated['password'], $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['Os dados de acesso estão incorretos.'],
             ]);
@@ -284,7 +284,7 @@ class AuthController extends Controller
 
         $user = $request->user();
 
-        if (! Hash::check($validated['password'], $user->password)) {
+        if (!Hash::check($validated['password'], $user->password)) {
             throw ValidationException::withMessages([
                 'password' => [
                     'A palavra-passe está incorreta.',
