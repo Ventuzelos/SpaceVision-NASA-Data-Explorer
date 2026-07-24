@@ -3,61 +3,198 @@ import FavoriteButton from "../../common/FavoriteButton/FavoriteButton";
 
 import "./NeoCard.css";
 
+function parseNeoDate(value) {
+  if (
+    typeof value !== "string" ||
+    !value.trim()
+  ) {
+    return null;
+  }
+
+  const normalizedValue = value
+    .trim()
+    .replace(" ", "T");
+
+  const parsedDate = new Date(
+    normalizedValue
+  );
+
+  return Number.isNaN(
+    parsedDate.getTime()
+  )
+    ? null
+    : parsedDate;
+}
+
 function formatDate(value) {
   if (!value) {
     return "Data não disponível";
   }
 
-  const parsedDate = new Date(value);
+  const parsedDate =
+    parseNeoDate(value);
 
-  if (Number.isNaN(parsedDate.getTime())) {
+  if (!parsedDate) {
     return value;
   }
 
-  return parsedDate.toLocaleString("pt-PT", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  const hasTime =
+    typeof value === "string" &&
+    (value.includes(" ") ||
+      value.includes("T"));
+
+  return new Intl.DateTimeFormat(
+    "pt-PT",
+    {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      ...(hasTime
+        ? {
+            hour: "2-digit",
+            minute: "2-digit",
+          }
+        : {}),
+    }
+  ).format(parsedDate);
 }
 
-function formatNumber(value, unit = "") {
-  if (value == null || Number.isNaN(Number(value))) {
-    return "Não disponível";
-  }
-
-  return `${new Intl.NumberFormat("pt-PT", {
-    maximumFractionDigits: 0,
-  }).format(Number(value))}${unit}`;
-}
-
-function formatSingleDiameter(value) {
-  if (value == null || Number.isNaN(Number(value))) {
-    return "Não disponível";
-  }
-
-  const numericValue = Number(value);
-
-  return numericValue < 1
-    ? `${Math.round(numericValue * 1000)} m`
-    : `${numericValue.toFixed(2)} km`;
-}
-
-function formatDiameterRange(minimum, maximum) {
+function toFiniteNumber(value) {
   if (
-    minimum == null ||
-    maximum == null ||
-    Number.isNaN(Number(minimum)) ||
-    Number.isNaN(Number(maximum))
+    value === null ||
+    value === undefined ||
+    value === ""
+  ) {
+    return null;
+  }
+
+  const number = Number(value);
+
+  return Number.isFinite(number)
+    ? number
+    : null;
+}
+
+function formatNumber(
+  value,
+  unit = ""
+) {
+  const numericValue =
+    toFiniteNumber(value);
+
+  if (numericValue === null) {
+    return "Não disponível";
+  }
+
+  return `${new Intl.NumberFormat(
+    "pt-PT",
+    {
+      maximumFractionDigits: 0,
+    }
+  ).format(numericValue)}${unit}`;
+}
+
+function formatSingleDiameter(
+  value
+) {
+  const numericValue =
+    toFiniteNumber(value);
+
+  if (numericValue === null) {
+    return "Não disponível";
+  }
+
+  if (numericValue < 1) {
+    return `${Math.round(
+      numericValue * 1000
+    )} m`;
+  }
+
+  return `${new Intl.NumberFormat(
+    "pt-PT",
+    {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }
+  ).format(numericValue)} km`;
+}
+
+function formatDiameterRange(
+  minimum,
+  maximum
+) {
+  const numericMinimum =
+    toFiniteNumber(minimum);
+
+  const numericMaximum =
+    toFiniteNumber(maximum);
+
+  if (
+    numericMinimum === null ||
+    numericMaximum === null
   ) {
     return "Não disponível";
   }
 
   return `${formatSingleDiameter(
-    minimum
-  )} – ${formatSingleDiameter(maximum)}`;
+    numericMinimum
+  )} – ${formatSingleDiameter(
+    numericMaximum
+  )}`;
+}
+
+function formatLunarDistance(
+  value
+) {
+  const numericValue =
+    toFiniteNumber(value);
+
+  if (numericValue === null) {
+    return "Não disponível";
+  }
+
+  return `${new Intl.NumberFormat(
+    "pt-PT",
+    {
+      minimumFractionDigits: 1,
+      maximumFractionDigits: 1,
+    }
+  ).format(numericValue)} LD`;
+}
+
+function getSafeExternalUrl(
+  value
+) {
+  if (
+    typeof value !== "string" ||
+    !value.trim()
+  ) {
+    return "";
+  }
+
+  try {
+    const url = new URL(value);
+
+    if (
+      url.protocol !== "https:" &&
+      url.protocol !== "http:"
+    ) {
+      return "";
+    }
+
+    return url.href;
+  } catch {
+    return "";
+  }
+}
+
+function createSafeId(value) {
+  return String(
+    value || "desconhecido"
+  ).replace(
+    /[^a-zA-Z0-9_-]/g,
+    "-"
+  );
 }
 
 function NeoCard({
@@ -66,21 +203,53 @@ function NeoCard({
   isFavoriteLoading,
   onToggleFavorite,
 }) {
-  const objectName =
-    neo.name || "Objeto próximo da Terra";
+  if (!neo) {
+    return null;
+  }
 
-  const riskLabel = neo.isHazardous
+  const objectName =
+    typeof neo.name === "string" &&
+    neo.name.trim()
+      ? neo.name.trim()
+      : "Objeto próximo da Terra";
+
+  const hazardous = Boolean(
+    neo.isHazardous
+  );
+
+  const riskLabel = hazardous
     ? "Risco elevado"
     : "Risco baixo";
+
+  const cardTitleId =
+    `neo-card-title-${createSafeId(
+      neo.id
+    )}`;
+
+  const jplUrl =
+    getSafeExternalUrl(
+      neo.jplUrl
+    );
+
+  function handleFavoriteClick() {
+    if (
+      typeof onToggleFavorite ===
+      "function"
+    ) {
+      onToggleFavorite(neo);
+    }
+  }
 
   return (
     <article
       className={`neo-card${
-        neo.isHazardous
+        hazardous
           ? " neo-card--hazard"
           : ""
       }`}
-      aria-labelledby={`neo-card-title-${neo.id}`}
+      aria-labelledby={
+        cardTitleId
+      }
     >
       <div
         className="neo-card__avatar"
@@ -88,7 +257,7 @@ function NeoCard({
       >
         <Icon
           name={
-            neo.isHazardous
+            hazardous
               ? "AlertCircle"
               : "Satellite"
           }
@@ -99,13 +268,13 @@ function NeoCard({
       <div className="neo-card__main">
         <div className="neo-card__title-row">
           <h3
-            id={`neo-card-title-${neo.id}`}
+            id={cardTitleId}
             className="neo-card__title"
           >
             {objectName}
           </h3>
 
-          {neo.isHazardous && (
+          {hazardous && (
             <span className="neo-card__hazard-tag">
               <Icon
                 name="AlertCircle"
@@ -120,12 +289,17 @@ function NeoCard({
 
         <p className="neo-card__date">
           Aproximação:{" "}
-          {formatDate(neo.closeApproachDate)}
+          {formatDate(
+            neo.closeApproachDate
+          )}
         </p>
 
         <dl className="neo-card__metadata">
           <div className="neo-card__metadata-item">
-            <dt>Distância mínima</dt>
+            <dt>
+              Distância mínima
+            </dt>
+
             <dd>
               {formatNumber(
                 neo.missDistanceKm,
@@ -135,21 +309,22 @@ function NeoCard({
           </div>
 
           <div className="neo-card__metadata-item">
-            <dt>Distância lunar</dt>
+            <dt>
+              Distância lunar
+            </dt>
+
             <dd>
-              {neo.missDistanceLunar != null &&
-              !Number.isNaN(
-                Number(neo.missDistanceLunar)
-              )
-                ? `${Number(
-                    neo.missDistanceLunar
-                  ).toFixed(1)} LD`
-                : "Não disponível"}
+              {formatLunarDistance(
+                neo.missDistanceLunar
+              )}
             </dd>
           </div>
 
           <div className="neo-card__metadata-item">
-            <dt>Diâmetro estimado</dt>
+            <dt>
+              Diâmetro estimado
+            </dt>
+
             <dd>
               {formatDiameterRange(
                 neo.diameterMinKm,
@@ -159,7 +334,10 @@ function NeoCard({
           </div>
 
           <div className="neo-card__metadata-item">
-            <dt>Velocidade relativa</dt>
+            <dt>
+              Velocidade relativa
+            </dt>
+
             <dd>
               {formatNumber(
                 neo.velocityKmH,
@@ -169,10 +347,10 @@ function NeoCard({
           </div>
         </dl>
 
-        {neo.jplUrl && (
+        {jplUrl && (
           <a
             className="neo-card__link"
-            href={neo.jplUrl}
+            href={jplUrl}
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`Consultar ${objectName} no JPL da NASA, abre numa nova janela`}
@@ -194,9 +372,20 @@ function NeoCard({
 
       <div className="neo-card__side">
         <FavoriteButton
-          active={isFavorite}
-          disabled={isFavoriteLoading}
-          onClick={() => onToggleFavorite(neo)}
+          active={Boolean(
+            isFavorite
+          )}
+          disabled={
+            Boolean(
+              isFavoriteLoading
+            ) ||
+            neo.id === null ||
+            neo.id === undefined ||
+            neo.id === ""
+          }
+          onClick={
+            handleFavoriteClick
+          }
           size={16}
           ariaLabel={
             isFavorite
@@ -207,7 +396,7 @@ function NeoCard({
 
         <span
           className={`neo-card__risk ${
-            neo.isHazardous
+            hazardous
               ? "neo-card__risk--high"
               : "neo-card__risk--low"
           }`}

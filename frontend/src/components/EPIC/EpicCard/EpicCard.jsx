@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 
-import "./EpicCard.css";
-
 import FavoriteButton from "../../common/FavoriteButton/FavoriteButton";
 
 import useAuth from "../../../hooks/useAuth";
@@ -10,6 +8,14 @@ import {
   isFavorite,
   toggleFavorite,
 } from "../../../services/favoritesService";
+
+import "./EpicCard.css";
+
+function hasCoordinate(value) {
+  return value !== null &&
+    value !== undefined &&
+    value !== "";
+}
 
 export default function EpicCard({
   detail,
@@ -22,7 +28,7 @@ export default function EpicCard({
 
   const favoriteId = detail?.image
     ? `epic-${detail.image}`
-    : null;
+    : "";
 
   const [favorite, setFavorite] =
     useState(false);
@@ -32,12 +38,19 @@ export default function EpicCard({
     setIsFavoriteLoading,
   ] = useState(false);
 
-  const [failedImageUrl, setFailedImageUrl] =
-    useState("");
+  const [
+    failedImageUrl,
+    setFailedImageUrl,
+  ] = useState("");
+
+  const imageUrl =
+    typeof detail?.url === "string"
+      ? detail.url
+      : "";
 
   const imageError =
-    Boolean(detail?.url) &&
-    failedImageUrl === detail.url;
+    !imageUrl ||
+    failedImageUrl === imageUrl;
 
   useEffect(() => {
     let isMounted = true;
@@ -58,7 +71,7 @@ export default function EpicCard({
         );
 
         if (isMounted) {
-          setFavorite(result);
+          setFavorite(Boolean(result));
         }
       } catch (error) {
         if (
@@ -92,7 +105,6 @@ export default function EpicCard({
   }
 
   const {
-    url,
     caption,
     time,
     lat,
@@ -100,14 +112,32 @@ export default function EpicCard({
     date,
   } = detail;
 
+  const accessibleCaption =
+    caption ||
+    "Imagem da Terra captada pela câmara EPIC da NASA";
+
+  function handleOpenImage() {
+    if (
+      imageError ||
+      typeof onImageClick !== "function"
+    ) {
+      return;
+    }
+
+    onImageClick();
+  }
+
   async function handleFavoriteClick() {
     if (!isAuthenticated) {
       window.dispatchEvent(
-        new CustomEvent("epicFavoriteError", {
-          detail: {
-            status: 401,
-          },
-        })
+        new CustomEvent(
+          "epicFavoriteError",
+          {
+            detail: {
+              status: 401,
+            },
+          }
+        )
       );
 
       return;
@@ -115,6 +145,7 @@ export default function EpicCard({
 
     if (
       !favoriteId ||
+      !imageUrl ||
       isFavoriteLoading
     ) {
       return;
@@ -123,45 +154,52 @@ export default function EpicCard({
     try {
       setIsFavoriteLoading(true);
 
-      const result = await toggleFavorite({
-        id: favoriteId,
-        nasa_id: favoriteId,
-        source: "epic",
-        type: "epic",
-        nasa_type: "epic",
+      const result =
+        await toggleFavorite({
+          id: favoriteId,
+          nasa_id: favoriteId,
+          source: "epic",
+          type: "epic",
+          nasa_type: "epic",
 
-        title: `EPIC · Terra${
-          time ? ` (${time} UTC)` : ""
-        }`,
+          title: `EPIC · Terra${
+            time
+              ? ` (${time} UTC)`
+              : ""
+          }`,
 
-        date,
-
-        imageUrl: url,
-        image_url: url,
-
-        hdUrl: url,
-        description: caption,
-
-        data: {
-          ...detail,
           date,
-          time,
-          caption,
-          image: detail.image,
-          image_url: url,
-          url,
-          hd_url: url,
-          latitude: lat,
-          longitude: lon,
 
-          centroid_coordinates: {
-            lat,
-            lon,
+          imageUrl,
+          image_url: imageUrl,
+          hdUrl: imageUrl,
+          description:
+            caption || accessibleCaption,
+
+          data: {
+            ...detail,
+            date,
+            time,
+            caption:
+              caption ||
+              accessibleCaption,
+            image: detail.image,
+            image_url: imageUrl,
+            url: imageUrl,
+            hd_url: imageUrl,
+            latitude: lat,
+            longitude: lon,
+
+            centroid_coordinates: {
+              lat,
+              lon,
+            },
           },
-        },
-      });
+        });
 
-      setFavorite(result.isFavorite);
+      setFavorite(
+        Boolean(result.isFavorite)
+      );
 
       window.dispatchEvent(
         new CustomEvent(
@@ -198,12 +236,14 @@ export default function EpicCard({
 
   function handleImageKeyDown(event) {
     if (
-      event.key === "Enter" ||
-      event.key === " "
+      event.key !== "Enter" &&
+      event.key !== " "
     ) {
-      event.preventDefault();
-      onImageClick?.();
+      return;
     }
+
+    event.preventDefault();
+    handleOpenImage();
   }
 
   return (
@@ -213,9 +253,11 @@ export default function EpicCard({
           Terra — Disco Completo
         </h3>
 
-        <span className="epic-card__time">
-          {time ? `${time} UTC` : ""}
-        </span>
+        {time && (
+          <span className="epic-card__time">
+            {time} UTC
+          </span>
+        )}
       </div>
 
       <div className="epic-card__image-wrapper">
@@ -237,16 +279,19 @@ export default function EpicCard({
         ) : (
           <img
             className="epic-card__image"
-            src={url}
-            alt={caption}
+            src={imageUrl}
+            alt={accessibleCaption}
             role="button"
             tabIndex={0}
-            aria-label={`${caption}. Abrir imagem ampliada.`}
-            onClick={onImageClick}
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+            aria-label={`${accessibleCaption}. Abrir imagem ampliada.`}
+            onClick={handleOpenImage}
             onKeyDown={handleImageKeyDown}
-            onError={() =>
-              setFailedImageUrl(url)
-            }
+            onError={() => {
+              setFailedImageUrl(imageUrl);
+            }}
           />
         )}
 
@@ -255,13 +300,20 @@ export default function EpicCard({
             isAuthenticated &&
             favorite
           }
-          onClick={handleFavoriteClick}
-          disabled={isFavoriteLoading}
+          onClick={
+            handleFavoriteClick
+          }
+          disabled={
+            isFavoriteLoading ||
+            isAuthLoading ||
+            !favoriteId ||
+            !imageUrl
+          }
           size={18}
           ariaLabel={
             favorite
-              ? "Remover dos favoritos"
-              : "Adicionar aos favoritos"
+              ? "Remover esta imagem EPIC dos favoritos"
+              : "Adicionar esta imagem EPIC aos favoritos"
           }
         />
       </div>
@@ -273,14 +325,17 @@ export default function EpicCard({
           </p>
         )}
 
-        {lat && lon && (
-          <p>
-            Centro visível: {lat}° lat ·{" "}
-            {lon}° lon
-          </p>
-        )}
+        {hasCoordinate(lat) &&
+          hasCoordinate(lon) && (
+            <p>
+              Centro visível: {lat}° lat ·{" "}
+              {lon}° lon
+            </p>
+          )}
 
-        <p>Formato PNG 2048 × 2048 px</p>
+        <p>
+          Formato PNG 2048 × 2048 px
+        </p>
       </div>
     </article>
   );
