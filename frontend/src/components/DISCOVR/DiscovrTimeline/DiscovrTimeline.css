@@ -37,6 +37,7 @@
   cursor: grab;
   scroll-behavior: smooth;
   scrollbar-width: none;
+  touch-action: pan-y;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -46,6 +47,8 @@
 
 .discovr-timeline-scene__path.grabbing {
   cursor: grabbing;
+  scroll-behavior: auto;
+  user-select: none;
 }
 
 .discovr-timeline-scene__track {
@@ -188,10 +191,7 @@
   box-shadow: var(--shadow-lg);
   text-align: left;
   backdrop-filter: blur(10px);
-  animation:
-    discovr-timeline-card-in
-    0.18s
-    ease;
+  animation: discovr-timeline-card-in 0.18s ease;
 }
 
 .discovr-timeline-scene__info--above
@@ -275,6 +275,7 @@
       var(--space-6)
       var(--space-4);
     cursor: default;
+    touch-action: auto;
   }
 
   .discovr-timeline-scene__track {
@@ -288,9 +289,9 @@
 
   .discovr-timeline-scene__rail {
     top: 0;
+    right: auto;
     bottom: 0;
     left: 1rem;
-    right: auto;
     width: 1px;
     height: 100%;
   }
@@ -366,15 +367,18 @@
   }
 
   .discovr-timeline-scene__dot:hover,
-  .discovr-timeline-scene__dot--open,
-  .discovr-timeline-scene__year:hover {
+  .discovr-timeline-scene__dot--open {
     transform: none;
   }
 
-  @media (max-width: 900px) {
-    .discovr-timeline-scene__dot:hover,
-    .discovr-timeline-scene__dot--open {
-      transform: translateX(-50%);
-    }
+  .discovr-timeline-scene__year:hover {
+    transform: none;
+  }
+}
+
+@media (max-width: 900px) and (prefers-reduced-motion: reduce) {
+  .discovr-timeline-scene__dot:hover,
+  .discovr-timeline-scene__dot--open {
+    transform: translateX(-50%);
   }
 }
