@@ -38,7 +38,7 @@
 .hero__title {
   margin-bottom: var(--space-5);
   font-size: clamp(1.35rem, 3vw, 2.75rem);
-  white-space: nowrap;
+  
 }
 
 .hero__title-accent {

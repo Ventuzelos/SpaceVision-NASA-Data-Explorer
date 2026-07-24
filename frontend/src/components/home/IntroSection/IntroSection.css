@@ -104,6 +104,15 @@
   .intro__image--main {
     height: 260px;
   }
+  .intro__image--nebula {
+    width: 35%;
+    height: 40%;
+  }
+
+  .intro__image--planet {
+    width: 35%;
+    height: 40%;
+  }
 }
 
 @media (max-width: 560px) {
@@ -117,12 +126,12 @@
   }
 
   .intro__image--nebula {
-    width: 120px;
-    height: 100px;
+    width: 45%;
+    height: 50%;
   }
 
   .intro__image--planet {
-    width: 140px;
-    height: 100px;
+    width: 45%;
+    height: 50%;
   }
 }
