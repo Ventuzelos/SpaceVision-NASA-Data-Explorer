@@ -30,22 +30,22 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
-       $validated = $request->validate(
-    [
-        'name' => ['required', 'string', 'max:255'],
-        'email' => ['required', 'email', 'max:255'],
-        'password' => ['required', 'string', 'min:8', 'confirmed'],
-    ],
-    [
-        'name.required' => 'O nome é obrigatório.',
-        'name.max' => 'O nome não pode ter mais de 255 caracteres.',
-        'email.required' => 'O email é obrigatório.',
-        'email.email' => 'Introduz um email válido.',
-        'password.required' => 'A palavra-passe é obrigatória.',
-        'password.min' => 'A palavra-passe deve ter pelo menos 8 caracteres.',
-        'password.confirmed' => 'A confirmação da palavra-passe não coincide.',
-    ]
-);
+        $validated = $request->validate(
+            [
+                'name' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'email', 'max:255'],
+                'password' => ['required', 'string', 'min:8', 'confirmed'],
+            ],
+            [
+                'name.required' => 'O nome é obrigatório.',
+                'name.max' => 'O nome não pode ter mais de 255 caracteres.',
+                'email.required' => 'O email é obrigatório.',
+                'email.email' => 'Introduz um email válido.',
+                'password.required' => 'A palavra-passe é obrigatória.',
+                'password.min' => 'A palavra-passe deve ter pelo menos 8 caracteres.',
+                'password.confirmed' => 'A confirmação da palavra-passe não coincide.',
+            ]
+        );
 
         $existingUser = User::where('email', $validated['email'])->first();
 
@@ -82,7 +82,7 @@ class AuthController extends Controller
      */
     private function localVerificationUrl(User $user): ?string
     {
-        if (!app()->isLocal()) {
+        if (! app()->isLocal()) {
             return null;
         }
 
