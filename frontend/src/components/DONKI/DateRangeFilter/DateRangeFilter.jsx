@@ -7,8 +7,16 @@ const DATE_PRESETS = [
   { label: "Últimos 90 dias", days: 90 },
 ];
 
-function formatDate(date) {
-  return date.toISOString().split("T")[0];
+function padDatePart(value) {
+  return String(value).padStart(2, "0");
+}
+
+function formatLocalDate(date) {
+  const year = date.getFullYear();
+  const month = padDatePart(date.getMonth() + 1);
+  const day = padDatePart(date.getDate());
+
+  return `${year}-${month}-${day}`;
 }
 
 function getDateRange(daysBack) {
@@ -18,8 +26,8 @@ function getDateRange(daysBack) {
   startDate.setDate(startDate.getDate() - daysBack);
 
   return {
-    startDate: formatDate(startDate),
-    endDate: formatDate(endDate),
+    startDate: formatLocalDate(startDate),
+    endDate: formatLocalDate(endDate),
   };
 }
 
@@ -31,12 +39,19 @@ function DateRangeFilter({
   onSearch,
   loading,
 }) {
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSearch();
-  };
+  const today = formatLocalDate(new Date());
 
-  const handlePresetClick = (days) => {
+  function handleSubmit(event) {
+    event.preventDefault();
+
+    if (loading) {
+      return;
+    }
+
+    onSearch();
+  }
+
+  function handlePresetClick(days) {
     if (loading) {
       return;
     }
@@ -46,10 +61,14 @@ function DateRangeFilter({
     onStartDateChange(range.startDate);
     onEndDateChange(range.endDate);
     onSearch(range.startDate, range.endDate);
-  };
+  }
 
   return (
-    <form className="date-range-filter" onSubmit={handleSubmit}>
+    <form
+      className="date-range-filter"
+      onSubmit={handleSubmit}
+      aria-busy={loading}
+    >
       <div className="date-range-filter__left">
         <p
           id="date-range-filter-title"
@@ -68,9 +87,10 @@ function DateRangeFilter({
               key={preset.days}
               type="button"
               className="date-range-filter__preset"
-              onClick={() => handlePresetClick(preset.days)}
+              onClick={() => {
+                handlePresetClick(preset.days);
+              }}
               disabled={loading}
-              aria-disabled={loading}
             >
               {preset.label}
             </button>
@@ -80,29 +100,49 @@ function DateRangeFilter({
 
       <div className="date-range-filter__right">
         <div className="date-range-filter__field">
-          <label htmlFor="donki-start-date">Data inicial</label>
+          <label htmlFor="donki-start-date">
+            Data inicial
+          </label>
+
           <input
             id="donki-start-date"
             type="date"
             value={startDate}
-            max={endDate}
-            onChange={(e) => onStartDateChange(e.target.value)}
+            max={endDate || today}
+            onChange={(event) => {
+              onStartDateChange(event.target.value);
+            }}
+            disabled={loading}
+            required
           />
         </div>
 
         <div className="date-range-filter__field">
-          <label htmlFor="donki-end-date">Data final</label>
+          <label htmlFor="donki-end-date">
+            Data final
+          </label>
+
           <input
             id="donki-end-date"
             type="date"
             value={endDate}
             min={startDate}
-            onChange={(e) => onEndDateChange(e.target.value)}
+            max={today}
+            onChange={(event) => {
+              onEndDateChange(event.target.value);
+            }}
+            disabled={loading}
+            required
           />
         </div>
 
-        <Button type="submit" disabled={loading}>
-          {loading ? "A pesquisar..." : "Pesquisar eventos"}
+        <Button
+          type="submit"
+          disabled={loading}
+        >
+          {loading
+            ? "A pesquisar..."
+            : "Pesquisar eventos"}
         </Button>
       </div>
     </form>
