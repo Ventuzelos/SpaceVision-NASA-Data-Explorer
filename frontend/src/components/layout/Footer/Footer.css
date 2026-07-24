@@ -1,18 +1,20 @@
 .footer {
-  border-top: 1px solid var(--color-border);
-  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-bottom: none;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  background: var(--color-surface);
 }
 
 .footer__container {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-5);
-  padding-block: var(--space-6);
-  
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-7);
+  padding-block: var(--space-7);
 }
 
 .footer__brand {
-  max-width: 420px;
+  max-width: 320px;
 }
 
 .footer__description {
@@ -29,12 +31,9 @@
 }
 
 .footer__links {
-  display: inline-grid;
-  justify-content: center;
-  grid-template-columns: repeat(3, minmax(min(160px, 100%), 1fr));
-  gap: var(--space-6);
-
-  column-gap: 100px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(140px, auto));
+  gap: var(--space-7);
 }
 
 .footer__group {
@@ -45,10 +44,9 @@
 }
 
 .footer__group-links {
-  display: grid;
-  grid-template-columns: repeat(2, auto);
-  column-gap: var(--space-4);
-  row-gap: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
 }
 
 .footer__group h2 {
@@ -92,43 +90,21 @@
     justify-content:space-between;
     align-items:center;
 
-    padding:24px 0;
+    padding:20px 0;
     border-top:1px solid var(--color-border);
 
     gap:40px;
+
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-xs);
 }
 
 .footer__left{
-    flex:1;
     text-align:left;
 }
 
-.footer__center{
-    flex:1;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:14px;
-}
-
 .footer__right{
-    flex:1;
     text-align:right;
-}
-
-.footer__center a{
-    color:var(--color-text-secondary);
-    text-decoration:none;
-    transition:.2s;
-}
-
-.footer__center a:hover{
-    color:var(--color-primary);
-}
-
-.footer__center span{
-    color:var(--color-border);
 }
 
 .footer__copyright {
@@ -186,21 +162,15 @@
 }
 
 .footer__left,
-.footer__center,
 .footer__right{
-    flex:none;
     text-align:center;
-}
-
-.footer__center{
-    flex-wrap:wrap;
 }
 
 }
 
 @media (max-width: 1023px) {
   .footer__container {
-    grid-template-columns: 1fr;
+    flex-direction: column;
   }
 
   .footer__brand {
@@ -234,9 +204,4 @@
     text-align: center;
     padding-left: 0;
 }
-
-
-.footer__group-links {
-    grid-template-columns: 1fr;
-  }
 }
