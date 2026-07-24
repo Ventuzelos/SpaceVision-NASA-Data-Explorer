@@ -1,16 +1,46 @@
-import { useRef } from 'react';
-import { useModalA11y } from '../../../hooks/UseModalA11y';
-import './EpicLightbox.css';
+import { useRef, useState } from "react";
 
-export default function EpicLightbox({ photo, onClose }) {
+import { useModalA11y } from "../../../hooks/UseModalA11y";
+
+import "./EpicLightbox.css";
+
+export default function EpicLightbox({
+  photo,
+  onClose,
+}) {
   const closeButtonRef = useRef(null);
+
+  const [failedImageUrl, setFailedImageUrl] =
+    useState("");
+
+  const imageUrl =
+    typeof photo?.url === "string"
+      ? photo.url
+      : "";
+
+  const imageError =
+    !imageUrl ||
+    failedImageUrl === imageUrl;
+
+  function handleClose() {
+    if (typeof onClose === "function") {
+      onClose();
+    }
+  }
+
   const containerRef = useModalA11y({
     isOpen: Boolean(photo),
-    onClose,
+    onClose: handleClose,
     initialFocusRef: closeButtonRef,
   });
 
-  if (!photo) return null;
+  if (!photo) {
+    return null;
+  }
+
+  const caption =
+    photo.caption ||
+    "Imagem da Terra captada pela câmara EPIC da NASA";
 
   return (
     <div
@@ -18,13 +48,19 @@ export default function EpicLightbox({ photo, onClose }) {
       role="dialog"
       aria-modal="true"
       aria-labelledby="epic-lightbox-title"
-      aria-describedby="epic-lightbox-description"
-      onClick={onClose}
+      aria-describedby={
+        photo.caption
+          ? "epic-lightbox-description"
+          : undefined
+      }
+      onClick={handleClose}
       ref={containerRef}
     >
       <div
         className="epic-lightbox__content"
-        onClick={(event) => event.stopPropagation()}
+        onClick={(event) => {
+          event.stopPropagation();
+        }}
       >
         <h2
           id="epic-lightbox-title"
@@ -38,15 +74,33 @@ export default function EpicLightbox({ photo, onClose }) {
           className="epic-lightbox__close"
           type="button"
           aria-label="Fechar imagem ampliada"
-          onClick={onClose}
+          onClick={handleClose}
         >
           ×
         </button>
 
-        <img
-          src={photo.url}
-          alt={photo.caption || 'Imagem da Terra'}
-        />
+        {imageError ? (
+          <div
+            className="epic-lightbox__fallback"
+            role="img"
+            aria-label="A imagem EPIC ampliada não está disponível"
+          >
+            <strong>Imagem indisponível</strong>
+
+            <span>
+              Não foi possível carregar esta captura da Terra.
+            </span>
+          </div>
+        ) : (
+          <img
+            src={imageUrl}
+            alt={caption}
+            decoding="async"
+            onError={() => {
+              setFailedImageUrl(imageUrl);
+            }}
+          />
+        )}
 
         {photo.caption && (
           <p
