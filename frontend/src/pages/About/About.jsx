@@ -1,3 +1,6 @@
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+
 import {
   Code2,
   Database,
@@ -14,8 +17,9 @@ import {
 import Container from "../../components/common/Container/Container";
 import ContactForm from "../../components/common/ContactForm/ContactForm";
 import Breadcrumb from "../../components/common/Breadcrumb/Breadcrumb";
-import { teamMembers } from "../../data/team";
 import PageMeta from "../../components/common/PageMeta/PageMeta";
+
+import { teamMembers } from "../../data/team";
 
 import "./About.css";
 
@@ -64,12 +68,39 @@ const TECHNOLOGIES = [
 ];
 
 function About() {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (!location.hash) {
+      return;
+    }
+
+    const sectionId = location.hash.replace("#", "");
+    const section = document.getElementById(sectionId);
+
+    if (!section) {
+      return;
+    }
+
+    const animationFrame = window.requestAnimationFrame(() => {
+      section.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
+
+    return () => {
+      window.cancelAnimationFrame(animationFrame);
+    };
+  }, [location.hash]);
+
   return (
     <>
       <PageMeta
         title="Sobre o SpaceVision"
         description="Conhece o SpaceVision, um projeto que reúne dados oficiais da NASA numa experiência visual, educativa e acessível."
       />
+
       <main className="about-page">
         <Container>
           <Breadcrumb title="Sobre nós" />
@@ -365,6 +396,7 @@ function About() {
           </section>
 
           <section
+            id="contact"
             className="about-contact"
             aria-labelledby="about-contact-title"
           >
@@ -412,8 +444,8 @@ function About() {
           </section>
         </Container>
       </main>
-      </>
-      );
+    </>
+  );
 }
 
-      export default About;
+export default About;
