@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import Button from "../common/Button/Button";
 import Toast from "../common/Toast/Toast";
@@ -16,32 +16,42 @@ import {
 
 import "./APODCard.css";
 
+function formatApodDate(date) {
+  if (!date) {
+    return "Data indisponível";
+  }
+
+  const [year, month, day] = date.split("-").map(Number);
+
+  if (!year || !month || !day) {
+    return date;
+  }
+
+  return new Date(year, month - 1, day).toLocaleDateString("pt-PT", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
 function APODCard({ apod }) {
-  const {
-    isAuthenticated,
-    isAuthLoading,
-  } = useAuth();
+  const { isAuthenticated, isAuthLoading } = useAuth();
 
-  const [isExpanded, setIsExpanded] =
-    useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [favorite, setFavorite] = useState(false);
+  const [favoriteDatabaseId, setFavoriteDatabaseId] = useState(null);
+  const [isFavoriteLoading, setIsFavoriteLoading] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
 
-  const [favorite, setFavorite] =
-    useState(false);
-
-  const [
-    favoriteDatabaseId,
-    setFavoriteDatabaseId,
-  ] = useState(null);
-
-  const [
-    isFavoriteLoading,
-    setIsFavoriteLoading,
-  ] = useState(false);
-
-  const [toastMessage, setToastMessage] =
-    useState("");
+  const toastTimeoutRef = useRef(null);
 
   const favoriteId = `apod-${apod.date}`;
+  const formattedDate = formatApodDate(apod.date);
+
+  const isImage = apod.media_type === "image";
+  const mediaUrl = isSafeUrl(apod.url) ? apod.url : null;
+  const hdUrl = isSafeUrl(apod.hdurl) ? apod.hdurl : null;
+
 
   useEffect(() => {
     let isMounted = true;
@@ -52,38 +62,23 @@ function APODCard({ apod }) {
 
     async function checkFavorite() {
       try {
-        const favorites = await getFavorites(
-          "apod"
-        );
+        const favorites = await getFavorites("apod");
 
-        const existingFavorite =
-          favorites.find((item) => {
-            const itemId =
-              item.nasa_id || item.id;
+        const existingFavorite = favorites.find((item) => {
+          const itemId = item.nasa_id || item.id;
 
-            return (
-              String(itemId) ===
-              String(favoriteId)
-            );
-          });
+          return String(itemId) === String(favoriteId);
+        });
 
-        if (isMounted) {
-          setFavorite(
-            Boolean(existingFavorite)
-          );
-
-          setFavoriteDatabaseId(
-            existingFavorite?.id || null
-          );
+        if (!isMounted) {
+          return;
         }
+
+        setFavorite(Boolean(existingFavorite));
+        setFavoriteDatabaseId(existingFavorite?.id || null);
       } catch (error) {
-        if (
-          error.response?.status !== 401
-        ) {
-          console.error(
-            "Erro ao verificar favorito:",
-            error
-          );
+        if (error.response?.status !== 401) {
+          console.error("Erro ao verificar favorito:", error);
         }
 
         if (isMounted) {
@@ -98,34 +93,32 @@ function APODCard({ apod }) {
     return () => {
       isMounted = false;
     };
-  }, [
-    favoriteId,
-    isAuthenticated,
-    isAuthLoading,
-  ]);
+  }, [favoriteId, isAuthenticated, isAuthLoading]);
 
-  const formattedDate = new Date(
-    apod.date
-  ).toLocaleDateString("pt-PT", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  useEffect(() => {
+    return () => {
+      if (toastTimeoutRef.current) {
+        window.clearTimeout(toastTimeoutRef.current);
+      }
+    };
+  }, []);
 
   function showToast(message) {
+    if (toastTimeoutRef.current) {
+      window.clearTimeout(toastTimeoutRef.current);
+    }
+
     setToastMessage(message);
 
-    window.setTimeout(() => {
+    toastTimeoutRef.current = window.setTimeout(() => {
       setToastMessage("");
+      toastTimeoutRef.current = null;
     }, 2500);
   }
 
   async function handleFavoriteClick() {
     if (!isAuthenticated) {
-      showToast(
-        "Precisas de iniciar sessão para guardar favoritos"
-      );
-
+      showToast("Precisas de iniciar sessão para guardar favoritos");
       return;
     }
 
@@ -136,76 +129,41 @@ function APODCard({ apod }) {
     try {
       setIsFavoriteLoading(true);
 
-      if (
-        favorite &&
-        favoriteDatabaseId
-      ) {
-        await removeFavorite(
-          favoriteDatabaseId
-        );
+      if (favorite && favoriteDatabaseId) {
+        await removeFavorite(favoriteDatabaseId);
 
         setFavorite(false);
         setFavoriteDatabaseId(null);
 
-        showToast(
-          "Removido dos favoritos"
-        );
-
+        showToast("Removido dos favoritos");
         return;
       }
 
       const favoriteItem = {
         nasa_type: "apod",
         nasa_id: favoriteId,
-        title: apod.title,
-
-        image_url:
-          apod.media_type === "image"
-            ? apod.hdurl ||
-              apod.url ||
-              null
-            : null,
+        title: apod.title || "Imagem astronómica da NASA",
+        image_url: isImage ? hdUrl || mediaUrl : null,
 
         data: {
           ...apod,
-
-          image_url:
-            apod.media_type === "image"
-              ? apod.hdurl ||
-                apod.url ||
-                null
-              : null,
+          image_url: isImage ? hdUrl || mediaUrl : null,
         },
       };
 
-      const createdFavorite =
-        await addFavorite(favoriteItem);
+      const createdFavorite = await addFavorite(favoriteItem);
 
       setFavorite(true);
+      setFavoriteDatabaseId(createdFavorite.id);
 
-      setFavoriteDatabaseId(
-        createdFavorite.id
-      );
-
-      showToast(
-        "Adicionado aos favoritos"
-      );
+      showToast("Adicionado aos favoritos");
     } catch (error) {
-      console.error(
-        "Erro ao atualizar favorito:",
-        error
-      );
+      console.error("Erro ao atualizar favorito:", error);
 
-      if (
-        error.response?.status === 401
-      ) {
-        showToast(
-          "Precisas de iniciar sessão para guardar favoritos"
-        );
+      if (error.response?.status === 401) {
+        showToast("Precisas de iniciar sessão para guardar favoritos");
       } else {
-        showToast(
-          "Não foi possível atualizar o favorito"
-        );
+        showToast("Não foi possível atualizar o favorito");
       }
     } finally {
       setIsFavoriteLoading(false);
@@ -215,16 +173,31 @@ function APODCard({ apod }) {
   return (
     <article className="apod-card">
       <div className="apod-card__media">
-        {apod.media_type === "image" ? (
+        {!mediaUrl && (
+          <div className="apod-card__media-error" role="status">
+            <Icon name="ImageOff" size={32} />
+
+            <p>O conteúdo multimédia desta APOD não está disponível.</p>
+          </div>
+        )}
+
+        {mediaUrl && isImage && (
           <img
-            src={apod.url}
-            alt={apod.title}
+            src={mediaUrl}
+            alt={apod.title || "Imagem astronómica disponibilizada pela NASA"}
+            loading="lazy"
+            decoding="async"
           />
-        ) : (
+        )}
+
+        {mediaUrl && !isImage && (
           <iframe
-            src={apod.url}
-            title={apod.title}
+            src={mediaUrl}
+            title={apod.title || "Vídeo astronómico disponibilizado pela NASA"}
+            loading="lazy"
+            allow="accelerometer; autoplay; encrypted-media; picture-in-picture"
             allowFullScreen
+            referrerPolicy="strict-origin-when-cross-origin"
           />
         )}
       </div>
@@ -232,64 +205,34 @@ function APODCard({ apod }) {
       <div className="apod-card__content">
         <div className="apod-card__badges">
           <span className="badge">
-            <Icon
-              name="Calendar"
-              size={16}
-            />
-
+            <Icon name="Calendar" size={16} />
             {formattedDate}
           </span>
 
           {apod.copyright && (
             <span className="badge">
-              <Icon
-                name="Image"
-                size={16}
-              />
-
+              <Icon name="Copyright" size={16} />
               {apod.copyright}
             </span>
           )}
 
           <span className="badge">
-            {apod.media_type ===
-            "image" ? (
-              <>
-                <Icon
-                  name="Image"
-                  size={16}
-                />
+            <Icon
+              name={isImage ? "Image" : "Video"}
+              size={16}
+            />
 
-                Imagem
-              </>
-            ) : (
-              <>
-                <Icon
-                  name="Video"
-                  size={16}
-                />
-
-                Vídeo
-              </>
-            )}
+            {isImage ? "Imagem" : "Vídeo"}
           </span>
         </div>
 
         <div className="apod-card__header">
-          <h2>{apod.title}</h2>
+          <h2>{apod.title || "Imagem astronómica do dia"}</h2>
 
           <FavoriteButton
-            active={
-              isAuthenticated &&
-              favorite
-            }
-            onClick={
-              handleFavoriteClick
-            }
-            disabled={
-              isFavoriteLoading ||
-              isAuthLoading
-            }
+            active={isAuthenticated && favorite}
+            onClick={handleFavoriteClick}
+            disabled={isFavoriteLoading || isAuthLoading}
             ariaLabel={
               favorite
                 ? "Remover dos favoritos"
@@ -298,49 +241,49 @@ function APODCard({ apod }) {
           />
         </div>
 
-        <p
-          className={
-            isExpanded
-              ? "apod-card__text"
-              : "apod-card__text apod-card__text--collapsed"
-          }
-        >
-          {apod.explanation}
-        </p>
-
-        <div className="apod-card__actions">
-          <Button
-            variant="secondary"
-            onClick={() =>
-              setIsExpanded(
-                (current) => !current
-              )
-            }
-          >
-            {isExpanded
-              ? "Mostrar menos"
-              : "Ler mais"}
-          </Button>
-
-          {isSafeUrl(apod.hdurl) && (
-            <a
-              href={apod.hdurl}
-              target="_blank"
-              rel="noopener noreferrer"
+        {apod.explanation ? (
+          <>
+            <p
+              className={
+                isExpanded
+                  ? "apod-card__text"
+                  : "apod-card__text apod-card__text--collapsed"
+              }
             >
-              <Button>
-                <>
-                  <Icon
-                    name="Download"
-                    size={16}
-                  />
+              {apod.explanation}
+            </p>
 
-                  {" Ver imagem HD"}
-                </>
+            <div className="apod-card__actions">
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setIsExpanded((current) => !current);
+                }}
+                aria-expanded={isExpanded}
+              >
+                {isExpanded ? "Mostrar menos" : "Ler mais"}
               </Button>
-            </a>
-          )}
-        </div>
+
+              {isImage && hdUrl && (
+                <a
+                  href={hdUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="apod-card__hd-link"
+                >
+                  <Button>
+                    <Icon name="ExternalLink" size={16} />
+                    Ver imagem HD
+                  </Button>
+                </a>
+              )}
+            </div>
+          </>
+        ) : (
+          <p className="apod-card__text">
+            Não está disponível uma explicação para este conteúdo.
+          </p>
+        )}
       </div>
 
       <Toast message={toastMessage} />
