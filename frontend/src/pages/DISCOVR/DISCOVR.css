@@ -118,17 +118,22 @@
   border-radius: 50%;
 }
 
+/* Sistema solar */
+
+.discovr-solar-system-wrapper {
+  width: 100%;
+}
+
 .discovr-solar-system-placeholder {
   display: flex;
+  min-height: 26.25rem;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
-
-  min-height: 420px;
+  gap: var(--space-3);
   padding: var(--space-6);
-
   border: 1px solid var(--color-border);
-  border-radius: 20px;
-
+  border-radius: var(--radius-xl);
   background:
     radial-gradient(
       circle at center,
@@ -136,15 +141,93 @@
       transparent 55%
     ),
     var(--color-surface);
-
   text-align: center;
 }
 
-.discovr-solar-system-placeholder p {
-  margin: var(--space-3) 0 0;
+.discovr-solar-system-placeholder .discovr-section__title {
+  justify-content: center;
+  margin-bottom: 0;
+}
 
+.discovr-solar-system-placeholder p {
+  max-width: 34rem;
+  margin: 0;
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-normal);
+}
+
+.discovr-solar-system-placeholder__button {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--color-link);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-link);
+  font: inherit;
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    background-color var(--transition-fast),
+    color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.discovr-solar-system-placeholder__button:hover {
+  border-color: var(--color-link-hover);
+  background: var(--color-link);
+  color: var(--color-background);
+  transform: translateY(-1px);
+}
+
+.discovr-solar-system-placeholder__button:active {
+  transform: translateY(0);
+}
+
+.discovr-solar-system-placeholder__button:focus-visible {
+  outline: 2px solid var(--color-link);
+  outline-offset: 3px;
+}
+
+/* Fallback do import dinâmico */
+
+.discovr-solar-system-loading {
+  display: flex;
+  width: 100%;
+  min-height: 28.75rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background:
+    radial-gradient(
+      circle at 30% 20%,
+      #10182c 0%,
+      #05070c 70%
+    );
   color: var(--color-text-secondary);
 }
+
+.discovr-solar-system-loading p {
+  margin: 0;
+}
+
+.discovr-solar-system-loading__spinner {
+  width: 2.625rem;
+  height: 2.625rem;
+  border: 3px solid rgba(255, 255, 255, 0.12);
+  border-top-color: var(--color-link);
+  border-radius: 50%;
+  animation: discovr-loading-spin 0.8s linear infinite;
+}
+
+/* Animações */
 
 @keyframes discovr-shimmer {
   0% {
@@ -156,12 +239,15 @@
   }
 }
 
-@media (max-width: 600px) {
-
-  .discovr-solar-system-placeholder {
-    min-height: 320px;
-    padding: var(--space-5);
+@keyframes discovr-loading-spin {
+  to {
+    transform: rotate(360deg);
   }
+}
+
+/* Responsividade */
+
+@media (max-width: 600px) {
   .discovr-page {
     padding-block: var(--space-7);
   }
@@ -175,66 +261,40 @@
     margin-bottom: var(--space-5);
     font-size: 0.9375rem;
   }
+
+  .discovr-solar-system-placeholder {
+    min-height: 20rem;
+    padding: var(--space-5);
+    border-radius: var(--radius-lg);
+  }
+
+  .discovr-solar-system-placeholder__button {
+    width: 100%;
+    max-width: 18rem;
+  }
+
+  .discovr-solar-system-loading {
+    min-height: 20rem;
+    border-radius: var(--radius-lg);
+  }
 }
+
+/* Movimento reduzido */
 
 @media (prefers-reduced-motion: reduce) {
   .discovr-skeleton,
-  .discovr-skeleton-line {
-    animation: none;
-  }
-
-  .discovr-link {
-    transition: none;
-  }
-}
-
-/* Suspense fallback do sistema solar (import dinâmico) */
-
-.discovr-solar-system-loading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-3);
-
-  width: 100%;
-  height: 28.75rem;
-  margin-bottom: var(--space-3);
-
-  color: var(--color-text-secondary);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  background:
-    radial-gradient(
-      circle at 30% 20%,
-      #10182c 0%,
-      #05070c 70%
-    );
-}
-
-.discovr-solar-system-loading p {
-  margin: 0;
-}
-
-.discovr-solar-system-loading__spinner {
-  width: 42px;
-  height: 42px;
-
-  border: 3px solid rgba(255, 255, 255, 0.12);
-  border-top-color: var(--color-link);
-  border-radius: 50%;
-
-  animation: discovr-loading-spin 0.8s linear infinite;
-}
-
-@keyframes discovr-loading-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
+  .discovr-skeleton-line,
   .discovr-solar-system-loading__spinner {
     animation: none;
+  }
+
+  .discovr-link,
+  .discovr-solar-system-placeholder__button {
+    transition: none;
+  }
+
+  .discovr-solar-system-placeholder__button:hover,
+  .discovr-solar-system-placeholder__button:active {
+    transform: none;
   }
 }
