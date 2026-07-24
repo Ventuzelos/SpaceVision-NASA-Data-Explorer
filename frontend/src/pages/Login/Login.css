@@ -321,9 +321,9 @@
   min-height: 3.25rem;
   margin-top: var(--space-1);
   border: 0;
-  border-radius: var(--radius-md);
-  background: var(--gradient-primary);
-  color: #ffffff;
+  border-radius: var(--radius-btn);
+  background: var(--color-btn-bg);
+  color: var(--color-btn-text);
   cursor: pointer;
   font: inherit;
   font-size: var(--font-size-base);
@@ -335,9 +335,9 @@
 }
 
 .login-auth-submit:hover:not(:disabled) {
+  background: var(--color-btn-bg-hover);
   box-shadow:
-    0 0.875rem 2rem rgba(46, 111, 245, 0.32);
-  filter: brightness(1.08);
+    0 0.875rem 2rem rgba(0, 0, 0, 0.32);
   transform: translateY(-1px);
 }
 
