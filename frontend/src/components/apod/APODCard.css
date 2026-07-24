@@ -107,3 +107,25 @@
     max-height: 21.25rem;
   }
 }
+
+.apod-card__media-error {
+  display: flex;
+  min-height: 320px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+  text-align: center;
+  color: var(--color-text-secondary);
+  background: var(--color-surface);
+}
+
+.apod-card__media-error p {
+  margin: 0;
+}
+
+.apod-card__hd-link {
+  display: inline-flex;
+  text-decoration: none;
+}
