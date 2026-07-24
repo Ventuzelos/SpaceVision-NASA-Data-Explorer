@@ -82,7 +82,7 @@ class AuthController extends Controller
      */
     private function localVerificationUrl(User $user): ?string
     {
-        if (! app()->isLocal()) {
+        if (!app()->isLocal()) {
             return null;
         }
 
