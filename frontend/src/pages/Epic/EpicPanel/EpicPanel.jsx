@@ -16,6 +16,9 @@ import {
   toggleFavorite,
 } from "../../../services/favoritesService";
 
+const SOURCE = "epic";
+const ITEMS_PER_PAGE = 8;
+
 export default function EpicPanel({
   photos,
   loading,
@@ -30,17 +33,23 @@ export default function EpicPanel({
     isAuthLoading,
   } = useAuth();
 
+  const safePhotos = Array.isArray(photos)
+    ? photos
+    : [];
+
   const {
     paginatedItems,
     currentPage,
     totalPages,
     setPage,
     shouldShowPagination,
-  } = usePagination(photos || [], 8);
-
-  const [favoriteKeys, setFavoriteKeys] = useState(
-    () => new Set()
+  } = usePagination(
+    safePhotos,
+    ITEMS_PER_PAGE
   );
+
+  const [favoriteKeys, setFavoriteKeys] =
+    useState(() => new Set());
 
   const [
     favoriteLoadingKeys,
@@ -50,29 +59,36 @@ export default function EpicPanel({
   useEffect(() => {
     let isMounted = true;
 
-    if (isAuthLoading || !isAuthenticated) {
+    if (
+      isAuthLoading ||
+      !isAuthenticated
+    ) {
       return undefined;
     }
 
     async function loadFavoriteKeys() {
       try {
-        const favorites = await getFavorites(
-          "epic"
-        );
+        const favorites =
+          await getFavorites(SOURCE);
 
-        const keys = favorites.map((favorite) =>
-          String(
-            favorite.nasa_id ||
-              favorite.id
+        const keys = favorites
+          .map((favorite) =>
+            String(
+              favorite.nasa_id ||
+                favorite.id
+            )
           )
-        );
+          .filter(Boolean);
 
         if (isMounted) {
-          setFavoriteKeys(new Set(keys));
+          setFavoriteKeys(
+            new Set(keys)
+          );
         }
       } catch (favoritesError) {
         if (
-          favoritesError.response?.status !== 401
+          favoritesError.response
+            ?.status !== 401
         ) {
           console.error(
             "Erro ao carregar favoritos EPIC:",
@@ -81,7 +97,9 @@ export default function EpicPanel({
         }
 
         if (isMounted) {
-          setFavoriteKeys(new Set());
+          setFavoriteKeys(
+            new Set()
+          );
         }
       }
     }
@@ -91,7 +109,10 @@ export default function EpicPanel({
     return () => {
       isMounted = false;
     };
-  }, [isAuthenticated, isAuthLoading]);
+  }, [
+    isAuthenticated,
+    isAuthLoading,
+  ]);
 
   async function handleToggleFavorite(
     favoriteId,
@@ -99,43 +120,62 @@ export default function EpicPanel({
   ) {
     if (!isAuthenticated) {
       window.dispatchEvent(
-        new CustomEvent("epicFavoriteError", {
-          detail: {
-            status: 401,
-          },
-        })
+        new CustomEvent(
+          "epicFavoriteError",
+          {
+            detail: {
+              status: 401,
+            },
+          }
+        )
       );
 
       return;
     }
 
-    if (favoriteLoadingKeys.has(favoriteId)) {
+    if (
+      !favoriteId ||
+      !payload ||
+      favoriteLoadingKeys.has(
+        favoriteId
+      )
+    ) {
       return;
     }
 
-    setFavoriteLoadingKeys((current) => {
-      const next = new Set(current);
-      next.add(favoriteId);
+    setFavoriteLoadingKeys(
+      (currentKeys) => {
+        const nextKeys =
+          new Set(currentKeys);
 
-      return next;
-    });
+        nextKeys.add(favoriteId);
+
+        return nextKeys;
+      }
+    );
 
     try {
-      const result = await toggleFavorite(
-        payload
-      );
+      const result =
+        await toggleFavorite(payload);
 
-      setFavoriteKeys((current) => {
-        const next = new Set(current);
+      setFavoriteKeys(
+        (currentKeys) => {
+          const nextKeys =
+            new Set(currentKeys);
 
-        if (result.isFavorite) {
-          next.add(favoriteId);
-        } else {
-          next.delete(favoriteId);
+          if (result.isFavorite) {
+            nextKeys.add(
+              favoriteId
+            );
+          } else {
+            nextKeys.delete(
+              favoriteId
+            );
+          }
+
+          return nextKeys;
         }
-
-        return next;
-      });
+      );
 
       window.dispatchEvent(
         new CustomEvent(
@@ -167,12 +207,27 @@ export default function EpicPanel({
         )
       );
     } finally {
-      setFavoriteLoadingKeys((current) => {
-        const next = new Set(current);
-        next.delete(favoriteId);
+      setFavoriteLoadingKeys(
+        (currentKeys) => {
+          const nextKeys =
+            new Set(currentKeys);
 
-        return next;
-      });
+          nextKeys.delete(
+            favoriteId
+          );
+
+          return nextKeys;
+        }
+      );
+    }
+  }
+
+  function handleSelectPhoto(photo) {
+    if (
+      photo &&
+      typeof onSelect === "function"
+    ) {
+      onSelect(photo);
     }
   }
 
@@ -181,6 +236,7 @@ export default function EpicPanel({
       <div
         className="epic-panel"
         aria-busy="true"
+        aria-live="polite"
         aria-label="A carregar imagens EPIC"
       >
         <EpicSkeleton />
@@ -194,20 +250,27 @@ export default function EpicPanel({
         <ErrorState
           title="Não foi possível carregar as imagens"
           message={error}
-          onRetry={onRetry}
+          onRetry={
+            typeof onRetry === "function"
+              ? onRetry
+              : undefined
+          }
         />
       </div>
     );
   }
 
-  if (!photos?.length) {
+  if (safePhotos.length === 0) {
     return (
       <div className="epic-panel">
         <div
           className="epic-empty-state"
           role="status"
+          aria-live="polite"
         >
-          <h3>Nenhuma imagem disponível</h3>
+          <h3>
+            Nenhuma imagem disponível
+          </h3>
 
           <p>
             {emptyMessage ||
@@ -222,29 +285,44 @@ export default function EpicPanel({
     <div className="epic-panel">
       <div className="epic-panel__meta">
         <span className="epic-panel__tag epic-panel__tag--highlight">
-          {photos.length} CAPTURAS
+          {safePhotos.length}{" "}
+          {safePhotos.length === 1
+            ? "CAPTURA"
+            : "CAPTURAS"}
         </span>
 
         <EpicDscovrInfo />
 
         <span className="epic-panel__tag">
-          {date}
+          {date || "Data indisponível"}
         </span>
       </div>
 
       <div className="epic-panel__content">
-        <div className="epic-panel__grid">
+        <div
+          className="epic-panel__grid"
+          aria-label="Capturas EPIC disponíveis"
+        >
           {paginatedItems.map(
             (photo, index) => {
+              const imageId =
+                photo?.image ||
+                `${date || "sem-data"}-${index}`;
+
               const favoriteId =
-                `epic-${photo.image}`;
+                `epic-${imageId}`;
 
               return (
                 <EpicThumbnail
-                  key={`${photo.image}-${index}`}
+                  key={imageId}
                   photo={photo}
-                  date={date}
-                  onSelect={onSelect}
+                  date={
+                    photo?.date ||
+                    date
+                  }
+                  onSelect={
+                    handleSelectPhoto
+                  }
                   isFavorite={
                     isAuthenticated &&
                     favoriteKeys.has(

@@ -1,23 +1,102 @@
-import { useCallback, useState } from "react";
+import {
+  useCallback,
+  useRef,
+  useState,
+} from "react";
+
 import {
   buildImageUrl,
   fetchEpicByDate,
   fetchEpicLatest,
 } from "../services/epicService";
+
 import getApiErrorMessage from "../utils/getApiErrorMessage";
 
-function todayString() {
-  return new Date().toISOString().split("T")[0];
+const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+
+function padDatePart(value) {
+  return String(value).padStart(2, "0");
 }
 
-function toDetail(photo, date) {
+function todayString() {
+  const today = new Date();
+
+  const year = today.getFullYear();
+  const month = padDatePart(
+    today.getMonth() + 1
+  );
+  const day = padDatePart(
+    today.getDate()
+  );
+
+  return `${year}-${month}-${day}`;
+}
+
+function isValidDate(value) {
+  if (
+    !value ||
+    !DATE_PATTERN.test(value)
+  ) {
+    return false;
+  }
+
+  const [year, month, day] = value
+    .split("-")
+    .map(Number);
+
+  const parsedDate = new Date(
+    year,
+    month - 1,
+    day
+  );
+
+  return (
+    parsedDate.getFullYear() === year &&
+    parsedDate.getMonth() === month - 1 &&
+    parsedDate.getDate() === day
+  );
+}
+
+function getPhotoDate(photo, fallbackDate) {
+  const photoDate =
+    typeof photo?.date === "string"
+      ? photo.date.split(" ")[0]
+      : "";
+
+  return photoDate || fallbackDate;
+}
+
+function toDetail(photo, fallbackDate) {
+  if (!photo) {
+    return null;
+  }
+
+  const activeDate = getPhotoDate(
+    photo,
+    fallbackDate
+  );
+
   const time =
-    photo.date?.split(" ")[1]?.substring(0, 5) || "";
+    typeof photo.date === "string"
+      ? photo.date
+          .split(" ")[1]
+          ?.substring(0, 5) || ""
+      : "";
+
+  const latitude =
+    photo.centroid_coordinates?.lat;
+
+  const longitude =
+    photo.centroid_coordinates?.lon;
 
   return {
-    image: photo.image,
-    date,
-    url: buildImageUrl(photo, date),
+    ...photo,
+    image: photo.image || "",
+    date: activeDate,
+    url: buildImageUrl(
+      photo,
+      activeDate
+    ),
     caption:
       photo.caption ||
       `Vista completa da Terra captada pela EPIC${
@@ -25,20 +104,39 @@ function toDetail(photo, date) {
       }`,
     time,
     lat:
-      photo.centroid_coordinates?.lat?.toFixed(1) || "",
+      typeof latitude === "number"
+        ? latitude.toFixed(1)
+        : "",
     lon:
-      photo.centroid_coordinates?.lon?.toFixed(1) || "",
+      typeof longitude === "number"
+        ? longitude.toFixed(1)
+        : "",
   };
 }
 
 export function useEpicPhotos() {
   const [photos, setPhotos] = useState([]);
-  const [date, setDate] = useState(todayString());
-  const [selected, setSelected] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [emptyMessage, setEmptyMessage] = useState("");
-  const [lastRequest, setLastRequest] = useState({
+  const [date, setDate] = useState(
+    todayString()
+  );
+
+  const [selected, setSelected] =
+    useState(null);
+
+  const [loading, setLoading] =
+    useState(false);
+
+  const [error, setError] =
+    useState("");
+
+  const [
+    emptyMessage,
+    setEmptyMessage,
+  ] = useState("");
+
+  const requestIdRef = useRef(0);
+
+  const lastRequestRef = useRef({
     type: "latest",
     date: "",
   });
@@ -52,77 +150,187 @@ export function useEpicPhotos() {
 
   const applyPhotos = useCallback(
     (data, activeDate) => {
-      setPhotos(data);
+      const normalizedPhotos = data
+        .map((photo) =>
+          toDetail(photo, activeDate)
+        )
+        .filter(Boolean);
+
+      if (
+        normalizedPhotos.length === 0
+      ) {
+        setPhotos([]);
+        setSelected(null);
+        setDate(activeDate);
+        setError("");
+        setEmptyMessage(
+          "Não existem imagens EPIC válidas para apresentar."
+        );
+
+        return;
+      }
+
+      setPhotos(normalizedPhotos);
       setDate(activeDate);
-      setSelected(toDetail(data[0], activeDate));
+      setSelected(
+        normalizedPhotos[0]
+      );
       setError("");
       setEmptyMessage("");
     },
     []
   );
 
-  const loadLatest = useCallback(async () => {
-    setLastRequest({
-      type: "latest",
-      date: "",
-    });
+  const loadLatest = useCallback(
+    async () => {
+      const requestId =
+        ++requestIdRef.current;
 
-    setLoading(true);
-    resetResults();
+      lastRequestRef.current = {
+        type: "latest",
+        date: "",
+      };
 
-    try {
-      const data = await fetchEpicLatest();
+      setLoading(true);
+      resetResults();
 
-      if (!Array.isArray(data) || data.length === 0) {
-        setEmptyMessage(
-          "Ainda não existem imagens recentes disponíveis."
+      try {
+        const data =
+          await fetchEpicLatest();
+
+        if (
+          requestIdRef.current !==
+          requestId
+        ) {
+          return;
+        }
+
+        if (
+          !Array.isArray(data) ||
+          data.length === 0
+        ) {
+          setEmptyMessage(
+            "Ainda não existem imagens recentes disponíveis."
+          );
+
+          return;
+        }
+
+        const latestDate =
+          getPhotoDate(
+            data[0],
+            todayString()
+          );
+
+        applyPhotos(
+          data,
+          latestDate
         );
-        return;
+      } catch (requestError) {
+        if (
+          requestIdRef.current !==
+          requestId
+        ) {
+          return;
+        }
+
+        setError(
+          getApiErrorMessage(
+            requestError,
+            "Não foi possível carregar as imagens mais recentes da Terra."
+          )
+        );
+      } finally {
+        if (
+          requestIdRef.current ===
+          requestId
+        ) {
+          setLoading(false);
+        }
       }
-
-      const latestDate = data[0].date.split(" ")[0];
-
-      applyPhotos(data, latestDate);
-    } catch (requestError) {
-      setError(
-        getApiErrorMessage(
-          requestError,
-          "Não foi possível carregar as imagens mais recentes da Terra."
-        )
-      );
-    } finally {
-      setLoading(false);
-    }
-  }, [applyPhotos, resetResults]);
+    },
+    [
+      applyPhotos,
+      resetResults,
+    ]
+  );
 
   const loadByDate = useCallback(
     async (targetDate) => {
       if (!targetDate) {
-        setError("É necessário selecionar uma data.");
+        setError(
+          "É necessário selecionar uma data."
+        );
+
         return;
       }
 
-      setLastRequest({
+      if (!isValidDate(targetDate)) {
+        setError(
+          "A data selecionada não é válida."
+        );
+
+        return;
+      }
+
+      if (
+        targetDate > todayString()
+      ) {
+        setError(
+          "Não é possível consultar uma data futura."
+        );
+
+        return;
+      }
+
+      const requestId =
+        ++requestIdRef.current;
+
+      lastRequestRef.current = {
         type: "date",
         date: targetDate,
-      });
+      };
 
       setLoading(true);
       resetResults();
       setDate(targetDate);
 
       try {
-        const data = await fetchEpicByDate(targetDate);
-
-        if (!Array.isArray(data) || data.length === 0) {
-          setEmptyMessage(
-            "Não existem imagens EPIC para esta data. Experimenta selecionar outro dia."
+        const data =
+          await fetchEpicByDate(
+            targetDate
           );
+
+        if (
+          requestIdRef.current !==
+          requestId
+        ) {
           return;
         }
 
-        applyPhotos(data, targetDate);
+        if (
+          !Array.isArray(data) ||
+          data.length === 0
+        ) {
+          setEmptyMessage(
+            "Não existem imagens EPIC para esta data. Experimenta selecionar outro dia."
+          );
+
+          return;
+        }
+
+        applyPhotos(
+          data,
+          targetDate
+        );
       } catch (requestError) {
+        if (
+          requestIdRef.current !==
+          requestId
+        ) {
+          return;
+        }
+
         setError(
           getApiErrorMessage(
             requestError,
@@ -130,22 +338,39 @@ export function useEpicPhotos() {
           )
         );
       } finally {
-        setLoading(false);
+        if (
+          requestIdRef.current ===
+          requestId
+        ) {
+          setLoading(false);
+        }
       }
     },
-    [applyPhotos, resetResults]
+    [
+      applyPhotos,
+      resetResults,
+    ]
   );
 
-  const retryLastRequest = useCallback(() => {
-    if (
-      lastRequest.type === "date" &&
-      lastRequest.date
-    ) {
-      return loadByDate(lastRequest.date);
-    }
+  const retryLastRequest =
+    useCallback(() => {
+      const lastRequest =
+        lastRequestRef.current;
 
-    return loadLatest();
-  }, [lastRequest, loadByDate, loadLatest]);
+      if (
+        lastRequest.type === "date" &&
+        lastRequest.date
+      ) {
+        return loadByDate(
+          lastRequest.date
+        );
+      }
+
+      return loadLatest();
+    }, [
+      loadByDate,
+      loadLatest,
+    ]);
 
   return {
     photos,

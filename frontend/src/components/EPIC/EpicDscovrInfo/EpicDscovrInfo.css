@@ -48,18 +48,26 @@
 .epic-page .dscovr-info__popover {
   position: absolute;
   top: calc(100% + var(--space-2));
-  left: 0;
-  z-index: 10;
-  width: 17.5rem;
-  max-width: calc(100vw - (2 * var(--space-5)));
+  right: 0;
+  left: auto;
+  z-index: 50;
+
+  width: min(20rem, calc(100vw - (2 * var(--space-5))));
+  max-width: 20rem;
   padding: var(--space-4);
+
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
+
   background: var(--color-surface-light);
   box-shadow: var(--shadow-md);
+
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .epic-page .dscovr-info__popover p {
+  margin: 0;
   color: var(--color-text-secondary);
   font-size: var(--font-size-sm);
   line-height: var(--line-height-normal);
@@ -76,10 +84,22 @@
   margin-top: var(--space-2);
 }
 
+.epic-page .epic-panel,
+.epic-page .epic-panel__meta,
+.epic-page .epic-panel__content {
+  overflow: visible;
+}
+
 @media (max-width: 600px) {
   .epic-page .dscovr-info__popover {
-    left: auto;
-    right: 0;
-    width: min(17.5rem, calc(100vw - (2 * var(--space-5))));
+    position: fixed;
+    top: 50%;
+    right: var(--space-4);
+    left: var(--space-4);
+
+    width: auto;
+    max-width: none;
+
+    transform: translateY(-50%);
   }
 }
