@@ -31,10 +31,10 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ], [
+    'name' => ['required', 'string', 'max:255'],
+    'email' => ['required', 'email', 'max:255'],
+    'password' => ['required', 'string', 'min:8', 'confirmed'],
+], [
     'name.required' => 'O nome é obrigatório.',
     'name.max' => 'O nome não pode ter mais de 255 caracteres.',
     'email.required' => 'O email é obrigatório.',
