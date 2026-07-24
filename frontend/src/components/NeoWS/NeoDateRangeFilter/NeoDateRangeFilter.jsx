@@ -1,35 +1,73 @@
 import { useState } from "react";
 
 import Button from "../../common/Button/Button";
-import { MAX_RANGE_DAYS, clampDateRange } from "../../../services/neowsService";
+
+import {
+  MAX_RANGE_DAYS,
+  clampDateRange,
+} from "../../../services/neowsService";
 
 import "./NeoDateRangeFilter.css";
 
 const PRESETS = [
-  { label: "Hoje", days: 0 },
-  { label: "Próximos 3 dias", days: 3 },
+  {
+    label: "Hoje",
+    daysAhead: 0,
+  },
+  {
+    label: "Próximos 3 dias",
+    daysAhead: 3,
+  },
   {
     label: `Próximos ${MAX_RANGE_DAYS} dias`,
-    days: MAX_RANGE_DAYS,
+    daysAhead: MAX_RANGE_DAYS,
   },
 ];
 
-// toISOString() converte para UTC e desalinha o dia consoante o
-// fuso horário de quem corre o código; formata sempre em hora local.
+function padDatePart(value) {
+  return String(value).padStart(2, "0");
+}
+
 function toISODate(date) {
+  if (
+    !(date instanceof Date) ||
+    Number.isNaN(date.getTime())
+  ) {
+    return "";
+  }
+
   const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
+  const month = padDatePart(
+    date.getMonth() + 1
+  );
+  const day = padDatePart(
+    date.getDate()
+  );
 
   return `${year}-${month}-${day}`;
 }
 
-function getRangeFromToday(daysAhead) {
-  const startDate = new Date();
-  const endDate = new Date();
-  endDate.setDate(endDate.getDate() + daysAhead);
+function getLocalToday() {
+  return toISODate(new Date());
+}
 
-  return { startDate: toISODate(startDate), endDate: toISODate(endDate) };
+function getFutureRange(daysAhead) {
+  const startDate = new Date();
+  const endDate = new Date(startDate);
+
+  const safeDaysAhead = Math.min(
+    Math.max(Number(daysAhead) || 0, 0),
+    MAX_RANGE_DAYS
+  );
+
+  endDate.setDate(
+    endDate.getDate() + safeDaysAhead
+  );
+
+  return {
+    startDate: toISODate(startDate),
+    endDate: toISODate(endDate),
+  };
 }
 
 function NeoDateRangeFilter({
@@ -40,51 +78,107 @@ function NeoDateRangeFilter({
   onSearch,
   loading,
 }) {
-  const [rangeWarning, setRangeWarning] = useState(null);
+  const [
+    rangeWarning,
+    setRangeWarning,
+  ] = useState("");
 
-  const applyClamp = (nextStart, nextEnd) => {
-    const clamped = clampDateRange(nextStart, nextEnd);
+  const today = getLocalToday();
+
+  function applyClamp(
+    nextStartDate,
+    nextEndDate
+  ) {
+    const clampedRange =
+      clampDateRange(
+        nextStartDate,
+        nextEndDate
+      );
 
     setRangeWarning(
-      clamped.wasClamped
-        ? `O intervalo máximo permitido pela API é de ${MAX_RANGE_DAYS} dias. Ajustámos a data final.`
-        : null
+      clampedRange.wasClamped
+        ? `O intervalo máximo permitido pela API é de ${MAX_RANGE_DAYS} dias. A data final foi ajustada.`
+        : ""
     );
 
-    return clamped;
-  };
+    return clampedRange;
+  }
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  function handleSubmit(event) {
+    event.preventDefault();
 
-    const clamped = applyClamp(startDate, endDate);
-    onStartDateChange(clamped.startDate);
-    onEndDateChange(clamped.endDate);
-    onSearch(clamped.startDate, clamped.endDate);
-  };
+    if (
+      loading ||
+      typeof onSearch !== "function"
+    ) {
+      return;
+    }
 
-  const handlePresetClick = (days) => {
-    const range = getRangeFromToday(days);
+    const clampedRange =
+      applyClamp(
+        startDate,
+        endDate
+      );
 
-    setRangeWarning(null);
-    onStartDateChange(range.startDate);
-    onEndDateChange(range.endDate);
-    onSearch(range.startDate, range.endDate);
-  };
+    onStartDateChange?.(
+      clampedRange.startDate
+    );
 
-  const handleStartDateChange = (value) => {
-    const clamped = applyClamp(value, endDate);
-    onStartDateChange(clamped.startDate);
-    onEndDateChange(clamped.endDate);
-  };
+    onEndDateChange?.(
+      clampedRange.endDate
+    );
 
-  const handleEndDateChange = (value) => {
-    const clamped = applyClamp(startDate, value);
-    onEndDateChange(clamped.endDate);
-  };
+    onSearch(
+      clampedRange.startDate,
+      clampedRange.endDate
+    );
+  }
+
+  function handlePresetClick(
+    daysAhead
+  ) {
+    if (loading) {
+      return;
+    }
+
+    const range =
+      getFutureRange(daysAhead);
+
+    setRangeWarning("");
+
+    onStartDateChange?.(
+      range.startDate
+    );
+
+    onEndDateChange?.(
+      range.endDate
+    );
+
+    onSearch?.(
+      range.startDate,
+      range.endDate
+    );
+  }
+
+  function handleStartDateChange(
+    value
+  ) {
+    setRangeWarning("");
+    onStartDateChange?.(value);
+  }
+
+  function handleEndDateChange(
+    value
+  ) {
+    setRangeWarning("");
+    onEndDateChange?.(value);
+  }
 
   return (
-    <form className="neo-date-filter" onSubmit={handleSubmit}>
+    <form
+      className="neo-date-filter"
+      onSubmit={handleSubmit}
+    >
       <div className="neo-date-filter__left">
         <span className="neo-date-filter__title">
           Período de aproximação
@@ -96,8 +190,12 @@ function NeoDateRangeFilter({
               key={preset.label}
               type="button"
               className="neo-date-filter__preset"
-              onClick={() => handlePresetClick(preset.days)}
               disabled={loading}
+              onClick={() =>
+                handlePresetClick(
+                  preset.daysAhead
+                )
+              }
             >
               {preset.label}
             </button>
@@ -105,7 +203,10 @@ function NeoDateRangeFilter({
         </div>
 
         {rangeWarning && (
-          <p className="neo-date-filter__warning" role="alert">
+          <p
+            className="neo-date-filter__warning"
+            role="alert"
+          >
             {rangeWarning}
           </p>
         )}
@@ -113,28 +214,54 @@ function NeoDateRangeFilter({
 
       <div className="neo-date-filter__right">
         <div className="neo-date-filter__field">
-          <label htmlFor="neo-start-date">Data inicial</label>
+          <label htmlFor="neo-start-date">
+            Data inicial
+          </label>
+
           <input
             id="neo-start-date"
             type="date"
             value={startDate}
-            onChange={(e) => handleStartDateChange(e.target.value)}
+            min={today}
+            disabled={loading}
+            onChange={(event) =>
+              handleStartDateChange(
+                event.target.value
+              )
+            }
           />
         </div>
 
         <div className="neo-date-filter__field">
-          <label htmlFor="neo-end-date">Data final</label>
+          <label htmlFor="neo-end-date">
+            Data final
+          </label>
+
           <input
             id="neo-end-date"
             type="date"
             value={endDate}
-            min={startDate}
-            onChange={(e) => handleEndDateChange(e.target.value)}
+            min={startDate || today}
+            disabled={loading}
+            onChange={(event) =>
+              handleEndDateChange(
+                event.target.value
+              )
+            }
           />
         </div>
 
-        <Button type="submit" disabled={loading}>
-          {loading ? "A pesquisar..." : "Pesquisar objetos"}
+        <Button
+          type="submit"
+          disabled={
+            loading ||
+            !startDate ||
+            !endDate
+          }
+        >
+          {loading
+            ? "A pesquisar..."
+            : "Pesquisar objetos"}
         </Button>
       </div>
     </form>
