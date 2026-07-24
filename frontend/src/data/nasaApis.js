@@ -1,4 +1,9 @@
-import { Icons } from "../constants/icons";
+import {
+  RocketIcon,
+  MeteorIcon,
+  SunIcon,
+  WorldIcon,
+} from "../components/home/ApiSection/ApiIcons/customIcons";
 
 import earthImage from "../assets/hero.webp";
 
@@ -15,36 +20,40 @@ export const nasaApis = [
     description:
       "Curiosidades, missões icónicas e experiências interativas sobre o Universo.",
     category: "SPACEVISION · DESCOBRIR",
-    icon: Icons.Telescope,
+    icon: RocketIcon,
     image: discoverImage,
     imagePosition: "center 40%",
     link: "/discover",
+    isLiveApi: false,
   },
   {
     title: "Asteroides",
     description:
       "Rastreio em tempo real de objetos próximos da Terra, com distâncias e velocidades.",
     category: "NASA · NeoWs",
-    icon: Icons.Radar,
+    icon: MeteorIcon,
     image: asteroidImage,
     link: "/neowatch",
+    isLiveApi: true,
   },
   {
     title: "Meteorologia Espacial",
     description:
       "Notificações de tempestades solares, erupções e eventos meteorológicos espaciais.",
     category: "NASA · DONKI",
-    icon: Icons.Sun,
+    icon: SunIcon,
     image: sunImage,
     link: "/donki",
+    isLiveApi: true,
   },
   {
     title: "Terra",
     description:
       "Imagens diárias da Terra captadas pela câmara EPIC a bordo do satélite DSCOVR.",
     category: "NASA · EPIC",
-    icon: Icons.Globe,
+    icon: WorldIcon,
     image: earthImage,
     link: "/epic",
+    isLiveApi: true,
   },
 ];
