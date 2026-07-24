@@ -5,6 +5,7 @@ import SearchInput from "../../common/SearchInput/SearchInput";
 import heroImage from "../../../assets/lua2.webp";
 import { searchablePages } from "../../../constants/searchPages";
 
+import "../../common/Button/Button.css";
 import "./Hero.css";
 
 const searchIcons = {
@@ -83,8 +84,8 @@ function Hero() {
               )}
             </div>
 
-            <Link to="/about" className="hero__link">
-              Saiba mais <span aria-hidden="true">→</span>
+            <Link to="/about" className="btn btn--primary hero__link">
+              Saiba mais sobre nós <span aria-hidden="true">→</span>
             </Link>
           </div>
         </div>

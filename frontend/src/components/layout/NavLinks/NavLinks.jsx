@@ -2,14 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 
+import { nasaApis } from "../../../data/nasaApis";
+
 import "./NavLinks.css";
 
-const exploreRoutes = [
-  "/donki",
-  "/epic",
-  "/neowatch",
-  "/discover",
-];
+const liveApis = nasaApis.filter((api) => api.isLiveApi);
+const exploreRoutes = liveApis.map((api) => api.link);
 
 function NavLinks({ onNavigate }) {
   const [isExploreOpen, setIsExploreOpen] = useState(false);
@@ -97,7 +95,7 @@ function NavLinks({ onNavigate }) {
           aria-expanded={isExploreOpen}
           aria-controls="explore-navigation"
         >
-          <span>Explorar</span>
+          <span>Dados da NASA</span>
 
           <ChevronDown
             size={16}
@@ -120,41 +118,25 @@ function NavLinks({ onNavigate }) {
           aria-hidden={!isExploreOpen}
         >
           <div className="nav-links__dropdown-content">
-            <NavLink
-              to="/donki"
-              onClick={handleNavigate}
-              tabIndex={isExploreOpen ? 0 : -1}
-            >
-              <span>Meteorologia Espacial</span>
-              <small>Eventos espaciais DONKI</small>
-            </NavLink>
+            {liveApis.map(({ title, description, icon: Icon, link }) => (
+              <NavLink
+                key={link}
+                to={link}
+                onClick={handleNavigate}
+                tabIndex={isExploreOpen ? 0 : -1}
+              >
+                <Icon
+                  size={20}
+                  aria-hidden="true"
+                  className="nav-links__dropdown-item-icon"
+                />
 
-            <NavLink
-              to="/epic"
-              onClick={handleNavigate}
-              tabIndex={isExploreOpen ? 0 : -1}
-            >
-              <span>Terra</span>
-              <small>Imagens EPIC da NASA</small>
-            </NavLink>
-
-            <NavLink
-              to="/neowatch"
-              onClick={handleNavigate}
-              tabIndex={isExploreOpen ? 0 : -1}
-            >
-              <span>Asteroides</span>
-              <small>Objetos próximos da Terra</small>
-            </NavLink>
-
-            <NavLink
-              to="/discover"
-              onClick={handleNavigate}
-              tabIndex={isExploreOpen ? 0 : -1}
-            >
-              <span>Descobrir</span>
-              <small>Explora conteúdos espaciais</small>
-            </NavLink>
+                <span className="nav-links__dropdown-text">
+                  <span>{title}</span>
+                  <small>{description}</small>
+                </span>
+              </NavLink>
+            ))}
           </div>
         </div>
       </div>
