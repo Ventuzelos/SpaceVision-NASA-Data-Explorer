@@ -23,25 +23,25 @@
 
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-btn);
 
   cursor: pointer;
   transition: var(--transition-fast);
 }
 
 .pagination__button:hover:not(:disabled) {
-  border-color: var(--color-primary);
+  border-color: var(--color-btn-bg);
   color: var(--color-text);
 }
 
 .pagination__button--active {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
-  color: white;
+  background: var(--color-btn-bg);
+  border-color: var(--color-btn-bg);
+  color: var(--color-btn-text);
 }
 
 .pagination__button--active:hover {
-  color: white;
+  color: var(--color-btn-text);
 }
 
 .pagination__button--nav {

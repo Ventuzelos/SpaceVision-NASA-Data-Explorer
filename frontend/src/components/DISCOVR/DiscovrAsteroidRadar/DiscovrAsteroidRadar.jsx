@@ -3,19 +3,34 @@ import { Link } from "react-router-dom";
 
 import Icon from "../../common/Icon/Icon";
 import ErrorState from "../../common/ErrorState/ErrorState";
+import FavoriteButton from "../../common/FavoriteButton/FavoriteButton";
+import Toast from "../../common/Toast/Toast";
 
-
-
+import useAuth from "../../../hooks/useAuth";
 import {
   fetchNeoFeed,
   getDefaultDateRange,
   sortByMissDistance,
 } from "../../../services/neowsService";
+import {
+  getFavorites,
+  toggleFavorite,
+} from "../../../services/favoritesService";
 import getApiErrorMessage from "../../../utils/getApiErrorMessage";
 
 import "./DiscovrAsteroidRadar.css";
 
 const ASTEROID_LIST_SIZE = 5;
+const FAVORITES_SOURCE = "neows";
+
+function formatDiameterText(minKm, maxKm) {
+  if (minKm == null || maxKm == null) return "Não disponível";
+
+  const minM = Math.round(minKm * 1000);
+  const maxM = Math.round(maxKm * 1000);
+
+  return `${minM.toLocaleString("pt-PT")} – ${maxM.toLocaleString("pt-PT")} m`;
+}
 
 function formatDistanceKm(km) {
   if (km == null) return "Distância desconhecida";
@@ -46,13 +61,133 @@ function getClosenessPercent(km, min, max) {
 }
 
 function DiscovrAsteroidRadar() {
+  const { isAuthenticated, isAuthLoading } = useAuth();
+
   const [asteroids, setAsteroids] = useState([]);
   const [asteroidsLoading, setAsteroidsLoading] = useState(true);
   const [asteroidsError, setAsteroidsError] = useState("");
 
+  const [favoriteKeys, setFavoriteKeys] = useState(() => new Set());
+  const [favoriteLoadingKeys, setFavoriteLoadingKeys] = useState(
+    () => new Set()
+  );
+  const [toastMessage, setToastMessage] = useState("");
+
   useEffect(() => {
     loadAsteroids();
   }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    if (isAuthLoading || !isAuthenticated) {
+      return undefined;
+    }
+
+    async function loadFavoriteKeys() {
+      try {
+        const favorites = await getFavorites(FAVORITES_SOURCE, true);
+        const keys = favorites.map((favorite) =>
+          String(favorite.nasa_id || favorite.id)
+        );
+
+        if (isMounted) {
+          setFavoriteKeys(new Set(keys));
+        }
+      } catch (requestError) {
+        if (requestError.response?.status !== 401) {
+          console.error(
+            "Erro ao carregar favoritos do radar de asteroides:",
+            requestError
+          );
+        }
+
+        if (isMounted) {
+          setFavoriteKeys(new Set());
+        }
+      }
+    }
+
+    loadFavoriteKeys();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [isAuthenticated, isAuthLoading]);
+
+  function showToast(message) {
+    setToastMessage(message);
+
+    window.setTimeout(() => {
+      setToastMessage("");
+    }, 2500);
+  }
+
+  async function handleToggleFavorite(neo) {
+    if (!isAuthenticated) {
+      showToast("Precisas de iniciar sessão para guardar favoritos");
+      return;
+    }
+
+    const favoriteId = String(neo.id);
+
+    if (favoriteLoadingKeys.has(favoriteId)) {
+      return;
+    }
+
+    setFavoriteLoadingKeys((currentKeys) => {
+      const nextKeys = new Set(currentKeys);
+      nextKeys.add(favoriteId);
+      return nextKeys;
+    });
+
+    try {
+      const result = await toggleFavorite({
+        nasa_type: FAVORITES_SOURCE,
+        nasa_id: favoriteId,
+        title: neo.name || "Objeto próximo da Terra",
+        image_url: null,
+
+        data: {
+          ...neo,
+          date: neo.closeApproachDate,
+          lunarDistance: neo.missDistanceLunar,
+          diameter: formatDiameterText(neo.diameterMinKm, neo.diameterMaxKm),
+          risk: neo.isHazardous ? "Elevado" : "Baixo",
+        },
+      });
+
+      setFavoriteKeys((currentKeys) => {
+        const nextKeys = new Set(currentKeys);
+
+        if (result.isFavorite) {
+          nextKeys.add(favoriteId);
+        } else {
+          nextKeys.delete(favoriteId);
+        }
+
+        return nextKeys;
+      });
+
+      showToast(
+        result.isFavorite ? "Adicionado aos favoritos" : "Removido dos favoritos"
+      );
+    } catch (requestError) {
+      console.error("Erro ao atualizar favorito:", requestError);
+
+      if (requestError.response?.status === 401) {
+        showToast("Precisas de iniciar sessão para guardar favoritos");
+      } else {
+        showToast("Não foi possível atualizar o favorito");
+      }
+    } finally {
+      setFavoriteLoadingKeys((currentKeys) => {
+        const nextKeys = new Set(currentKeys);
+        nextKeys.delete(favoriteId);
+        return nextKeys;
+      });
+    }
+  }
 
   async function loadAsteroids() {
     setAsteroidsLoading(true);
@@ -155,6 +290,21 @@ function DiscovrAsteroidRadar() {
                       Potencialmente perigoso
                     </span>
                   )}
+
+                  <FavoriteButton
+                    className="discovr-asteroid-card__favorite"
+                    active={
+                      isAuthenticated && favoriteKeys.has(String(neo.id))
+                    }
+                    disabled={favoriteLoadingKeys.has(String(neo.id))}
+                    onClick={() => handleToggleFavorite(neo)}
+                    size={16}
+                    ariaLabel={
+                      favoriteKeys.has(String(neo.id))
+                        ? `Remover ${neo.name} dos favoritos`
+                        : `Adicionar ${neo.name} aos favoritos`
+                    }
+                  />
                 </div>
 
                 <div className="discovr-asteroid-card__distance">
@@ -212,6 +362,8 @@ function DiscovrAsteroidRadar() {
         Ver todos os asteroides
         <Icon name="ArrowRight" size={16} aria-hidden="true" />
       </Link>
+
+      <Toast message={toastMessage} />
     </section>
   );
 }

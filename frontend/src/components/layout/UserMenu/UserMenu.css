@@ -229,25 +229,6 @@
   display: none;
 }
 
-.user-menu__register-link {
-  color: var(--color-text-secondary);
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-decoration: none;
-
-  transition: color var(--transition-fast);
-}
-
-.user-menu__register-link:hover {
-  color: var(--color-text);
-}
-
-.user-menu__register-link:focus-visible {
-  border-radius: 4px;
-  outline: 2px solid var(--color-primary);
-  outline-offset: 4px;
-}
-
 /* Estado de carregamento da autenticação */
 
 .user-menu--loading {
@@ -454,7 +435,6 @@
 @media (prefers-reduced-motion: reduce) {
   .account-dropdown,
   .account-menu-trigger__icon,
-  .user-menu__register-link,
   .user-menu__skeleton {
     animation: none;
     transition: none;

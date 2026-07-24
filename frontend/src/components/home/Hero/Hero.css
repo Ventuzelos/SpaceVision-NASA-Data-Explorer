@@ -1,11 +1,12 @@
 .hero {
-  --hero-min-height: max(calc(100vh - 80px), 66.7vw);
+  --hero-min-height: clamp(560px, calc(100vh - 80px), 860px);
 
   min-height: var(--hero-min-height);
 
-  background-position: center;
+  background-color: var(--color-background);
+  background-position: right center;
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: contain;
 
   position: relative;
 }
