@@ -1,31 +1,18 @@
 .btn {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-
-  padding: var(--space-2) var(--space-5);
-
-  border: 1px solid transparent;
-  border-radius: var(--radius-md);
-
+  gap: 9px;
+  padding: 12px 22px;
+  border-radius: var(--radius-btn); /* cantos rectos */
   font-family: var(--font-family);
-  font-weight: 600;
-  line-height: 1.2;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .1em;
+  text-transform: uppercase;
   text-decoration: none;
-
+  border: 1px solid transparent;
   cursor: pointer;
-
-  transition:
-    transform var(--transition-fast),
-    box-shadow var(--transition-fast),
-    border-color var(--transition-fast),
-    background-color var(--transition-fast),
-    opacity var(--transition-fast);
-}
-
-.btn:hover:not(:disabled) {
-  transform: translateY(-2px);
+  transition: all .2s ease;
 }
 
 .btn:focus-visible {
@@ -33,35 +20,24 @@
   outline-offset: 3px;
 }
 
-.btn:disabled {
-  cursor: not-allowed;
-  opacity: 0.55;
-}
-
 /* Primary */
 
-.btn--primary {
-  background: var(--gradient-primary);
-  color: var(--color-text);
-
-  box-shadow: var(--shadow-sm);
-}
-
-.btn--primary:hover:not(:disabled) {
-  box-shadow: var(--shadow-md);
-  filter: brightness(1.08);
-}
+.btn--primary   { background: var(--color-btn-bg); color: var(--color-btn-text); }
+.btn--primary:hover { background: var(--color-btn-bg-hover); }
 
 /* Secondary */
 
-.btn--secondary {
-  border-color: var(--color-border);
+.btn--secondary { background: transparent; color: #E3E3E3; border-color: #7A7A7A; padding: 11px 22px; }
+.btn--secondary:hover { border-color: var(--color-btn-bg); color: var(--color-btn-bg); }
 
+/* Light */
+
+.btn--light     { background: #E3E3E3; color: #121212; }
+.btn--light:hover { background: #FFFFFF; }
+
+.btn:disabled, .btn--disabled {
+  border-color: rgba(122,122,122,.4);
+  color: #7A7A7A;
   background: transparent;
-  color: var(--color-text);
-}
-
-.btn--secondary:hover:not(:disabled) {
-  border-color: var(--color-accent);
-  background: rgba(255, 255, 255, 0.05);
+  pointer-events: none;
 }

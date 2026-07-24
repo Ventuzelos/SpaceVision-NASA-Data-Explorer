@@ -62,11 +62,11 @@
   padding: var(--space-3) var(--space-5);
 
   border: 1px solid transparent;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-btn);
 
-  background: var(--gradient-primary);
+  background: var(--color-btn-bg);
 
-  color: var(--color-text);
+  color: var(--color-btn-text);
   font-family: var(--font-family);
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-semibold);
@@ -84,18 +84,18 @@
 }
 
 .epic-page .epic-hero__button:visited {
-  color: var(--color-text);
+  color: var(--color-btn-text);
 }
 
 .epic-page .epic-hero__button:hover {
-  color: var(--color-text);
-  filter: brightness(1.1);
+  color: var(--color-btn-text);
+  background: var(--color-btn-bg-hover);
   box-shadow: var(--shadow-md);
   transform: translateY(-2px);
 }
 
 .epic-page .epic-hero__button:focus-visible {
-  color: var(--color-text);
+  color: var(--color-btn-text);
   outline: 2px solid var(--color-link-hover);
   outline-offset: 3px;
   box-shadow:

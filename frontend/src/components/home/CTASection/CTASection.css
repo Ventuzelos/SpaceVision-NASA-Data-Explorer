@@ -46,9 +46,9 @@
   display: inline-flex;
   align-items: center;
   padding: 0.85rem 1.75rem;
-  border-radius: 999px;
-  background: var(--gradient-primary);
-  color: var(--color-text);
+  border-radius: var(--radius-btn);
+  background: var(--color-btn-bg);
+  color: var(--color-btn-text);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-bold);
   text-transform: uppercase;
@@ -59,7 +59,7 @@
 }
 
 .cta-section__button:hover {
-  filter: brightness(1.08);
+  background: var(--color-btn-bg-hover);
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
 }

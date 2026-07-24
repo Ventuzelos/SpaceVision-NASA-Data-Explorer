@@ -14,6 +14,12 @@
       #2e6ff5 0%,
       #0033b8 100%);
 
+  /* Buttons */
+  --color-btn-bg: #ffffff;
+  --color-btn-bg-hover: #e2e8f0;
+  --color-btn-text: #121212;
+  --radius-btn: 0;
+
   /* Semantic Colors */
   --color-success: #10b981;
   --color-warning: #facc15;
