@@ -236,6 +236,7 @@
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
   text-decoration: none;
+  text-align: right;
 }
 
 .login-forgot-password:hover {

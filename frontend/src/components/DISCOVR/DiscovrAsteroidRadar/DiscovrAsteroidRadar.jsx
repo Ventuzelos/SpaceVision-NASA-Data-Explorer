@@ -81,7 +81,6 @@ function DiscovrAsteroidRadar() {
     let isMounted = true;
 
     if (isAuthLoading || !isAuthenticated) {
-      setFavoriteKeys(new Set());
       return undefined;
     }
 

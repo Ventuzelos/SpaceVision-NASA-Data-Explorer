@@ -247,8 +247,6 @@ function DiscovrGallery() {
     let isMounted = true;
 
     if (isAuthLoading || !isAuthenticated || !favoriteId) {
-      setFavorite(false);
-      setFavoriteDatabaseId(null);
       return undefined;
     }
 

@@ -190,12 +190,6 @@ function Login() {
                           Palavra-passe
                         </label>
 
-                        <Link
-                          className="login-forgot-password"
-                          to="/forgot-password"
-                        >
-                          Esqueceste-te?
-                        </Link>
                       </div>
 
                       <div className="login-password-input">
@@ -228,6 +222,12 @@ function Login() {
                           )}
                         </button>
                       </div>
+                      <Link
+                          className="login-forgot-password"
+                          to="/forgot-password"
+                        >
+                          Esqueceste-te?
+                        </Link>
                     </div>
 
                     {error && (
