@@ -3,6 +3,7 @@ import {
   Suspense,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -47,32 +48,91 @@ const BennuViewer = lazy(() =>
 
 const SOURCE = "neows";
 const OBJECTS_PER_PAGE = 8;
-const DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000;
+const DAY_IN_MILLISECONDS =
+  24 * 60 * 60 * 1000;
 
-function validateDateRange(startDate, endDate) {
-  if (!startDate || !endDate) {
+function parseDateTimestamp(
+  value
+) {
+  if (
+    typeof value !== "string" ||
+    !/^\d{4}-\d{2}-\d{2}$/.test(value)
+  ) {
+    return null;
+  }
+
+  const [year, month, day] = value
+    .split("-")
+    .map(Number);
+
+  const timestamp = Date.UTC(
+    year,
+    month - 1,
+    day
+  );
+
+  const date = new Date(
+    timestamp
+  );
+
+  if (
+    date.getUTCFullYear() !==
+      year ||
+    date.getUTCMonth() !==
+      month - 1 ||
+    date.getUTCDate() !==
+      day
+  ) {
+    return null;
+  }
+
+  return timestamp;
+}
+
+function validateDateRange(
+  startDate,
+  endDate
+) {
+  if (
+    !startDate ||
+    !endDate
+  ) {
     return "Seleciona uma data inicial e uma data final.";
   }
 
-  const start = new Date(`${startDate}T00:00:00`);
-  const end = new Date(`${endDate}T00:00:00`);
+  const startTimestamp =
+    parseDateTimestamp(
+      startDate
+    );
+
+  const endTimestamp =
+    parseDateTimestamp(
+      endDate
+    );
 
   if (
-    Number.isNaN(start.getTime()) ||
-    Number.isNaN(end.getTime())
+    startTimestamp === null ||
+    endTimestamp === null
   ) {
     return "O intervalo de datas não é válido.";
   }
 
-  if (end < start) {
+  if (
+    endTimestamp <
+    startTimestamp
+  ) {
     return "A data final não pode ser anterior à data inicial.";
   }
 
   const differenceInDays =
-    (end.getTime() - start.getTime()) /
+    (endTimestamp -
+      startTimestamp) /
     DAY_IN_MILLISECONDS;
 
-  if (differenceInDays > MAX_RANGE_DAYS) {
+  if (
+    differenceInDays >
+    MAX_RANGE_DAYS
+  ) {
     return `O intervalo máximo permitido é de ${MAX_RANGE_DAYS} dias.`;
   }
 
@@ -85,60 +145,129 @@ function NeoWS() {
     isAuthLoading,
   } = useAuth();
 
-  const [isMobileViewer, setIsMobileViewer] =
+  const [
+    isMobileViewer,
+    setIsMobileViewer,
+  ] = useState(() => {
+    if (
+      typeof window ===
+      "undefined"
+    ) {
+      return false;
+    }
+
+    return window.matchMedia(
+      "(max-width: 768px)"
+    ).matches;
+  });
+
+  const [
+    shouldLoadViewer,
+    setShouldLoadViewer,
+  ] = useState(() => {
+    if (
+      typeof window ===
+      "undefined"
+    ) {
+      return true;
+    }
+
+    return !window.matchMedia(
+      "(max-width: 768px)"
+    ).matches;
+  });
+
+  const [dateRange] =
     useState(() =>
-      window.matchMedia("(max-width: 768px)").matches
+      getDefaultDateRange()
     );
 
-  const [shouldLoadViewer, setShouldLoadViewer] =
-    useState(() =>
-      !window.matchMedia("(max-width: 768px)").matches
-    );
-
-  const [dateRange] = useState(() =>
-    getDefaultDateRange()
-  );
-
-  const [startDate, setStartDate] = useState(
+  const [
+    startDate,
+    setStartDate,
+  ] = useState(
     dateRange.startDate
   );
 
-  const [endDate, setEndDate] = useState(
+  const [
+    endDate,
+    setEndDate,
+  ] = useState(
     dateRange.endDate
   );
 
-  const [objects, setObjects] = useState([]);
+  const [
+    objects,
+    setObjects,
+  ] = useState([]);
 
-  const [sortDirection, setSortDirection] =
-    useState("asc");
+  const [
+    sortDirection,
+    setSortDirection,
+  ] = useState("asc");
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [
+    loading,
+    setLoading,
+  ] = useState(false);
 
-  const [validationError, setValidationError] =
-    useState("");
+  const [
+    error,
+    setError,
+  ] = useState("");
 
-  const [favoriteKeys, setFavoriteKeys] = useState(
+  const [
+    validationError,
+    setValidationError,
+  ] = useState("");
+
+  const [
+    favoriteKeys,
+    setFavoriteKeys,
+  ] = useState(
     () => new Set()
   );
 
   const [
     favoriteLoadingKeys,
     setFavoriteLoadingKeys,
-  ] = useState(() => new Set());
-
-  const [toastMessage, setToastMessage] =
-    useState("");
-
-  const stats = computeStats(objects);
-
-  const sortedObjects = sortByMissDistance(
-    objects,
-    sortDirection
+  ] = useState(
+    () => new Set()
   );
 
+  const [
+    toastMessage,
+    setToastMessage,
+  ] = useState("");
+
+  const requestIdRef =
+    useRef(0);
+
+  const toastTimeoutRef =
+    useRef(null);
+
+  const stats = useMemo(
+    () =>
+      computeStats(objects),
+    [objects]
+  );
+
+  const sortedObjects =
+    useMemo(
+      () =>
+        sortByMissDistance(
+          objects,
+          sortDirection
+        ),
+      [
+        objects,
+        sortDirection,
+      ]
+    );
+
   const {
-    paginatedItems: paginatedObjects,
+    paginatedItems:
+      paginatedObjects,
     currentPage,
     totalPages,
     setPage,
@@ -149,25 +278,51 @@ function NeoWS() {
   );
 
   function showToast(message) {
-    setToastMessage(message);
+    if (
+      toastTimeoutRef.current
+    ) {
+      window.clearTimeout(
+        toastTimeoutRef.current
+      );
+    }
 
-    window.setTimeout(() => {
-      setToastMessage("");
-    }, 2500);
-  }
-
-  const requestIdRef = useRef(0);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia(
-      "(max-width: 768px)"
+    setToastMessage(
+      message
     );
 
-    function handleViewportChange(event) {
-      setIsMobileViewer(event.matches);
+    toastTimeoutRef.current =
+      window.setTimeout(() => {
+        setToastMessage("");
+
+        toastTimeoutRef.current =
+          null;
+      }, 2500);
+  }
+
+  useEffect(() => {
+    if (
+      typeof window ===
+      "undefined"
+    ) {
+      return undefined;
+    }
+
+    const mediaQuery =
+      window.matchMedia(
+        "(max-width: 768px)"
+      );
+
+    function handleViewportChange(
+      event
+    ) {
+      setIsMobileViewer(
+        event.matches
+      );
 
       if (!event.matches) {
-        setShouldLoadViewer(true);
+        setShouldLoadViewer(
+          true
+        );
       }
     }
 
@@ -184,27 +339,56 @@ function NeoWS() {
     };
   }, []);
 
+  useEffect(() => {
+    return () => {
+      if (
+        toastTimeoutRef.current
+      ) {
+        window.clearTimeout(
+          toastTimeoutRef.current
+        );
+      }
+
+      requestIdRef.current += 1;
+    };
+  }, []);
+
   const loadFeed = useCallback(
     async (start, end) => {
-      const requestId = ++requestIdRef.current;
+      const requestId =
+        ++requestIdRef.current;
 
       setLoading(true);
       setError("");
       setObjects([]);
 
       try {
-        const { objects: results } =
-          await fetchNeoFeed(start, end);
+        const {
+          objects: results,
+        } = await fetchNeoFeed(
+          start,
+          end
+        );
 
-        if (requestIdRef.current !== requestId) {
+        if (
+          requestIdRef.current !==
+          requestId
+        ) {
           return;
         }
 
         setObjects(
-          Array.isArray(results) ? results : []
+          Array.isArray(results)
+            ? results
+            : []
         );
-      } catch (requestError) {
-        if (requestIdRef.current !== requestId) {
+      } catch (
+        requestError
+      ) {
+        if (
+          requestIdRef.current !==
+          requestId
+        ) {
           return;
         }
 
@@ -220,7 +404,10 @@ function NeoWS() {
           )
         );
       } finally {
-        if (requestIdRef.current === requestId) {
+        if (
+          requestIdRef.current ===
+          requestId
+        ) {
           setLoading(false);
         }
       }
@@ -243,30 +430,48 @@ function NeoWS() {
   useEffect(() => {
     let isMounted = true;
 
-    if (isAuthLoading || !isAuthenticated) {
+    if (
+      isAuthLoading ||
+      !isAuthenticated
+    ) {
       return undefined;
     }
 
     async function loadFavoriteKeys() {
       try {
-        const favorites = await getFavorites(
-          SOURCE,
-          true
-        );
+        const favorites =
+          await getFavorites(
+            SOURCE,
+            true
+          );
 
-        const keys = favorites.map((favorite) =>
-          String(
-            favorite.nasa_id ||
-            favorite.id
-          )
-        );
+        const keys =
+          favorites
+            .map(
+              (favorite) =>
+                favorite.nasa_id ??
+                favorite.id
+            )
+            .filter(
+              (value) =>
+                value !== null &&
+                value !==
+                  undefined &&
+                value !== ""
+            )
+            .map(String);
 
         if (isMounted) {
-          setFavoriteKeys(new Set(keys));
+          setFavoriteKeys(
+            new Set(keys)
+          );
         }
-      } catch (requestError) {
+      } catch (
+        requestError
+      ) {
         if (
-          requestError.response?.status !== 401
+          requestError.response
+            ?.status !== 401
         ) {
           console.error(
             "Erro ao carregar favoritos NeoWatch:",
@@ -275,7 +480,9 @@ function NeoWS() {
         }
 
         if (isMounted) {
-          setFavoriteKeys(new Set());
+          setFavoriteKeys(
+            new Set()
+          );
         }
       }
     }
@@ -285,28 +492,50 @@ function NeoWS() {
     return () => {
       isMounted = false;
     };
-  }, [isAuthenticated, isAuthLoading]);
+  }, [
+    isAuthenticated,
+    isAuthLoading,
+  ]);
 
   function handleSearch(
-    newStartDate = startDate,
-    newEndDate = endDate
+    newStartDate =
+      startDate,
+    newEndDate =
+      endDate
   ) {
-    const dateError = validateDateRange(
-      newStartDate,
-      newEndDate
-    );
+    const dateError =
+      validateDateRange(
+        newStartDate,
+        newEndDate
+      );
 
-    setValidationError(dateError);
+    setValidationError(
+      dateError
+    );
 
     if (dateError) {
       return;
     }
 
+    setStartDate(
+      newStartDate
+    );
+
+    setEndDate(
+      newEndDate
+    );
+
     setPage(1);
-    loadFeed(newStartDate, newEndDate);
+
+    loadFeed(
+      newStartDate,
+      newEndDate
+    );
   }
 
-  async function handleToggleFavorite(neo) {
+  async function handleToggleFavorite(
+    neo
+  ) {
     if (!isAuthenticated) {
       showToast(
         "Precisas de iniciar sessão para guardar favoritos"
@@ -315,92 +544,135 @@ function NeoWS() {
       return;
     }
 
-    const favoriteId = String(neo.id);
+    if (
+      neo?.id === null ||
+      neo?.id === undefined ||
+      neo?.id === ""
+    ) {
+      showToast(
+        "Não foi possível identificar este objeto."
+      );
 
-    if (favoriteLoadingKeys.has(favoriteId)) {
       return;
     }
 
-    setFavoriteLoadingKeys((currentKeys) => {
-      const nextKeys = new Set(currentKeys);
-      nextKeys.add(favoriteId);
+    const favoriteId =
+      String(neo.id);
 
-      return nextKeys;
-    });
+    if (
+      favoriteLoadingKeys.has(
+        favoriteId
+      )
+    ) {
+      return;
+    }
+
+    setFavoriteLoadingKeys(
+      (currentKeys) => {
+        const nextKeys =
+          new Set(
+            currentKeys
+          );
+
+        nextKeys.add(
+          favoriteId
+        );
+
+        return nextKeys;
+      }
+    );
 
     try {
       const rawNeo =
         neo.raw &&
-          typeof neo.raw === "object"
+        typeof neo.raw ===
+          "object"
           ? neo.raw
           : neo;
 
       const approach =
-        rawNeo.close_approach_data?.[0] ||
-        neo.close_approach_data?.[0] ||
+        rawNeo
+          .close_approach_data?.[0] ||
+        neo
+          .close_approach_data?.[0] ||
         null;
 
       const diameterKilometers =
-        rawNeo.estimated_diameter?.kilometers ||
-        neo.estimated_diameter?.kilometers ||
+        rawNeo
+          .estimated_diameter
+          ?.kilometers ||
+        neo
+          .estimated_diameter
+          ?.kilometers ||
         null;
 
       const diameterMeters =
-        rawNeo.estimated_diameter?.meters ||
-        neo.estimated_diameter?.meters ||
+        rawNeo
+          .estimated_diameter
+          ?.meters ||
+        neo
+          .estimated_diameter
+          ?.meters ||
         null;
 
       const missDistanceKm =
-        neo.missDistanceKm ||
-        neo.miss_distance_km ||
-        approach?.miss_distance?.kilometers ||
+        neo.missDistanceKm ??
+        neo.miss_distance_km ??
+        approach?.miss_distance
+          ?.kilometers ??
         null;
 
       const lunarDistance =
-        neo.missDistanceLunar ||
-        neo.lunarDistance ||
-        neo.lunar_distance ||
-        approach?.miss_distance?.lunar ||
+        neo.missDistanceLunar ??
+        neo.lunarDistance ??
+        neo.lunar_distance ??
+        approach?.miss_distance
+          ?.lunar ??
         null;
 
       const velocityKmH =
-        neo.velocityKmH ||
-        neo.velocity_km_h ||
-        neo.relative_velocity_kmh ||
-        approach?.relative_velocity
-          ?.kilometers_per_hour ||
+        neo.velocityKmH ??
+        neo.velocity_km_h ??
+        neo.relative_velocity_kmh ??
+        approach
+          ?.relative_velocity
+          ?.kilometers_per_hour ??
         null;
 
       const diameterMinKm =
-        neo.diameterMinKm ||
-        neo.diameter_min_km ||
+        neo.diameterMinKm ??
+        neo.diameter_min_km ??
         diameterKilometers
-          ?.estimated_diameter_min ||
+          ?.estimated_diameter_min ??
         null;
 
       const diameterMaxKm =
-        neo.diameterMaxKm ||
-        neo.diameter_max_km ||
+        neo.diameterMaxKm ??
+        neo.diameter_max_km ??
         diameterKilometers
-          ?.estimated_diameter_max ||
+          ?.estimated_diameter_max ??
         null;
 
       const diameterMinM =
-        neo.diameterMinM ||
-        neo.diameter_min_m ||
+        neo.diameterMinM ??
+        neo.diameter_min_m ??
         diameterMeters
-          ?.estimated_diameter_min ||
+          ?.estimated_diameter_min ??
         (diameterMinKm !== null
-          ? Number(diameterMinKm) * 1000
+          ? Number(
+              diameterMinKm
+            ) * 1000
           : null);
 
       const diameterMaxM =
-        neo.diameterMaxM ||
-        neo.diameter_max_m ||
+        neo.diameterMaxM ??
+        neo.diameter_max_m ??
         diameterMeters
-          ?.estimated_diameter_max ||
+          ?.estimated_diameter_max ??
         (diameterMaxKm !== null
-          ? Number(diameterMaxKm) * 1000
+          ? Number(
+              diameterMaxKm
+            ) * 1000
           : null);
 
       const jplUrl =
@@ -413,124 +685,174 @@ function NeoWS() {
       const closeApproachDate =
         neo.closeApproachDate ||
         neo.close_approach_date ||
-        approach?.close_approach_date_full ||
-        approach?.close_approach_date ||
+        approach
+          ?.close_approach_date_full ||
+        approach
+          ?.close_approach_date ||
         null;
 
       const isHazardous =
         neo.isHazardous ??
-        neo.is_potentially_hazardous_asteroid ??
-        rawNeo.is_potentially_hazardous_asteroid ??
+        neo
+          .is_potentially_hazardous_asteroid ??
+        rawNeo
+          .is_potentially_hazardous_asteroid ??
         false;
 
-      const result = await toggleFavorite({
-        nasa_type: SOURCE,
-        nasa_id: favoriteId,
-        title:
-          neo.name ||
-          rawNeo.name ||
-          "Objeto próximo da Terra",
-        image_url: null,
+      const result =
+        await toggleFavorite({
+          nasa_type: SOURCE,
+          nasa_id:
+            favoriteId,
 
-        data: {
-          ...neo,
-
-          id: favoriteId,
-
-          name:
+          title:
             neo.name ||
             rawNeo.name ||
             "Objeto próximo da Terra",
 
-          raw: rawNeo,
+          image_url: null,
 
-          date: closeApproachDate,
-          approach_date: closeApproachDate,
-          close_approach_date:
-            closeApproachDate,
+          data: {
+            ...neo,
 
-          miss_distance_km: missDistanceKm,
-          distance_km: missDistanceKm,
-          missDistanceKm,
+            id:
+              favoriteId,
 
-          lunar_distance: lunarDistance,
-          miss_distance_lunar:
+            name:
+              neo.name ||
+              rawNeo.name ||
+              "Objeto próximo da Terra",
+
+            raw: rawNeo,
+
+            date:
+              closeApproachDate,
+
+            approach_date:
+              closeApproachDate,
+
+            close_approach_date:
+              closeApproachDate,
+
+            miss_distance_km:
+              missDistanceKm,
+
+            distance_km:
+              missDistanceKm,
+
+            missDistanceKm,
+
+            lunar_distance:
+              lunarDistance,
+
+            miss_distance_lunar:
+              lunarDistance,
+
             lunarDistance,
-          lunarDistance,
 
-          relative_velocity_kmh:
+            relative_velocity_kmh:
+              velocityKmH,
+
+            velocity_km_h:
+              velocityKmH,
+
             velocityKmH,
-          velocity_km_h: velocityKmH,
-          velocityKmH,
 
-          estimated_diameter_min_m:
-            diameterMinM,
-          estimated_diameter_max_m:
-            diameterMaxM,
+            estimated_diameter_min_m:
+              diameterMinM,
 
-          diameter_min_km: diameterMinKm,
-          diameter_max_km: diameterMaxKm,
-          diameterMinKm,
-          diameterMaxKm,
+            estimated_diameter_max_m:
+              diameterMaxM,
 
-          estimated_diameter:
-            rawNeo.estimated_diameter ||
-            neo.estimated_diameter || {
-              kilometers: {
-                estimated_diameter_min:
-                  diameterMinKm,
-                estimated_diameter_max:
-                  diameterMaxKm,
+            diameter_min_km:
+              diameterMinKm,
+
+            diameter_max_km:
+              diameterMaxKm,
+
+            diameterMinKm,
+            diameterMaxKm,
+
+            estimated_diameter:
+              rawNeo
+                .estimated_diameter ||
+              neo
+                .estimated_diameter || {
+                kilometers: {
+                  estimated_diameter_min:
+                    diameterMinKm,
+
+                  estimated_diameter_max:
+                    diameterMaxKm,
+                },
+
+                meters: {
+                  estimated_diameter_min:
+                    diameterMinM,
+
+                  estimated_diameter_max:
+                    diameterMaxM,
+                },
               },
-              meters: {
-                estimated_diameter_min:
-                  diameterMinM,
-                estimated_diameter_max:
-                  diameterMaxM,
-              },
-            },
 
-          is_hazardous: isHazardous,
-          isHazardous,
+            is_hazardous:
+              isHazardous,
 
-          is_potentially_hazardous_asteroid:
             isHazardous,
 
-          risk: isHazardous
-            ? "Elevado"
-            : "Baixo",
+            is_potentially_hazardous_asteroid:
+              isHazardous,
 
-          link: jplUrl,
-          jpl_url: jplUrl,
-          nasa_jpl_url: jplUrl,
-        },
-      });
+            risk: isHazardous
+              ? "Elevado"
+              : "Baixo",
 
-      setFavoriteKeys((currentKeys) => {
-        const nextKeys = new Set(currentKeys);
+            link: jplUrl,
+            jpl_url: jplUrl,
+            nasa_jpl_url:
+              jplUrl,
+          },
+        });
 
-        if (result.isFavorite) {
-          nextKeys.add(favoriteId);
-        } else {
-          nextKeys.delete(favoriteId);
+      setFavoriteKeys(
+        (currentKeys) => {
+          const nextKeys =
+            new Set(
+              currentKeys
+            );
+
+          if (
+            result.isFavorite
+          ) {
+            nextKeys.add(
+              favoriteId
+            );
+          } else {
+            nextKeys.delete(
+              favoriteId
+            );
+          }
+
+          return nextKeys;
         }
-
-        return nextKeys;
-      });
+      );
 
       showToast(
         result.isFavorite
           ? "Adicionado aos favoritos"
           : "Removido dos favoritos"
       );
-    } catch (requestError) {
+    } catch (
+      requestError
+    ) {
       console.error(
         "Erro ao atualizar favorito NeoWatch:",
         requestError
       );
 
       if (
-        requestError.response?.status === 401
+        requestError.response
+          ?.status === 401
       ) {
         showToast(
           "Precisas de iniciar sessão para guardar favoritos"
@@ -541,12 +863,20 @@ function NeoWS() {
         );
       }
     } finally {
-      setFavoriteLoadingKeys((currentKeys) => {
-        const nextKeys = new Set(currentKeys);
-        nextKeys.delete(favoriteId);
+      setFavoriteLoadingKeys(
+        (currentKeys) => {
+          const nextKeys =
+            new Set(
+              currentKeys
+            );
 
-        return nextKeys;
-      });
+          nextKeys.delete(
+            favoriteId
+          );
+
+          return nextKeys;
+        }
+      );
     }
   }
 
@@ -560,13 +890,17 @@ function NeoWS() {
       <Container>
         <header className="neows-page__header">
           <div className="neows-page__intro">
-            <Breadcrumb title="NeoWatch" />
+            <Breadcrumb
+              title="NeoWatch"
+            />
 
             <span className="neows-page__eyebrow">
               NeoWs · Near-Earth Objects
             </span>
 
-            <h1>Objetos próximos da Terra</h1>
+            <h1>
+              Objetos próximos da Terra
+            </h1>
 
             <p>
               Consulta asteroides e cometas cuja órbita
@@ -610,7 +944,9 @@ function NeoWS() {
                     3D
                   </span>
 
-                  <h2>Explora o asteroide Bennu</h2>
+                  <h2>
+                    Explora o asteroide Bennu
+                  </h2>
 
                   <p>
                     Carrega a visualização interativa para
@@ -622,7 +958,9 @@ function NeoWS() {
                     type="button"
                     className="bennu-viewer-placeholder__button"
                     onClick={() =>
-                      setShouldLoadViewer(true)
+                      setShouldLoadViewer(
+                        true
+                      )
                     }
                   >
                     Carregar visualização 3D
@@ -641,18 +979,40 @@ function NeoWS() {
         </header>
 
         <NeoDateRangeFilter
-          startDate={startDate}
-          endDate={endDate}
-          onStartDateChange={(value) => {
-            setStartDate(value);
-            setValidationError("");
+          startDate={
+            startDate
+          }
+          endDate={
+            endDate
+          }
+          onStartDateChange={(
+            value
+          ) => {
+            setStartDate(
+              value
+            );
+
+            setValidationError(
+              ""
+            );
           }}
-          onEndDateChange={(value) => {
-            setEndDate(value);
-            setValidationError("");
+          onEndDateChange={(
+            value
+          ) => {
+            setEndDate(
+              value
+            );
+
+            setValidationError(
+              ""
+            );
           }}
-          onSearch={handleSearch}
-          loading={loading}
+          onSearch={
+            handleSearch
+          }
+          loading={
+            loading
+          }
         />
 
         {validationError && (
@@ -669,24 +1029,31 @@ function NeoWS() {
           loading={loading}
         />
 
-        {error && !loading && (
-          <ErrorState
-            title="Não foi possível carregar os asteroides"
-            message={error}
-            onRetry={() =>
-              handleSearch(startDate, endDate)
-            }
-          />
-        )}
+        {error &&
+          !loading && (
+            <ErrorState
+              title="Não foi possível carregar os asteroides"
+              message={error}
+              onRetry={() =>
+                handleSearch(
+                  startDate,
+                  endDate
+                )
+              }
+            />
+          )}
 
         {!loading &&
           !error &&
-          objects.length === 0 && (
+          objects.length ===
+            0 && (
             <div
               className="neows-page__empty"
               role="status"
             >
-              <h2>Nenhum objeto encontrado</h2>
+              <h2>
+                Nenhum objeto encontrado
+              </h2>
 
               <p>
                 Não foram encontrados objetos próximos
@@ -698,42 +1065,67 @@ function NeoWS() {
 
         {!loading &&
           !error &&
-          objects.length > 0 && (
+          objects.length >
+            0 && (
             <NeoSortControl
-              direction={sortDirection}
-              onChange={(direction) => {
-                setSortDirection(direction);
+              direction={
+                sortDirection
+              }
+              onChange={(
+                direction
+              ) => {
+                setSortDirection(
+                  direction
+                );
+
                 setPage(1);
               }}
-              count={objects.length}
+              count={
+                objects.length
+              }
             />
           )}
 
         {(loading ||
-          (!error && objects.length > 0)) && (
-            <section
-              className="neows-page__list-panel"
-              aria-label="Lista de objetos próximos da Terra"
-              aria-busy={loading}
-            >
-              <div className="neows-page__grid">
-                {loading &&
-                  Array.from({ length: 6 }).map(
-                    (_, index) => (
-                      <NeoSkeleton key={index} />
-                    )
-                  )}
+          (!error &&
+            objects.length >
+              0)) && (
+          <section
+            className="neows-page__list-panel"
+            aria-label="Lista de objetos próximos da Terra"
+            aria-busy={loading}
+          >
+            <div className="neows-page__grid">
+              {loading &&
+                Array.from({
+                  length: 6,
+                }).map(
+                  (
+                    _,
+                    index
+                  ) => (
+                    <NeoSkeleton
+                      key={
+                        index
+                      }
+                    />
+                  )
+                )}
 
-                {!loading &&
-                  !error &&
-                  paginatedObjects.map((neo) => {
-                    const favoriteId = String(
-                      neo.id
-                    );
+              {!loading &&
+                !error &&
+                paginatedObjects.map(
+                  (neo) => {
+                    const favoriteId =
+                      String(
+                        neo.id
+                      );
 
                     return (
                       <NeoCard
-                        key={neo.id}
+                        key={
+                          favoriteId
+                        }
                         neo={neo}
                         isFavorite={
                           isAuthenticated &&
@@ -751,23 +1143,34 @@ function NeoWS() {
                         }
                       />
                     );
-                  })}
-              </div>
-            </section>
-          )}
+                  }
+                )}
+            </div>
+          </section>
+        )}
 
         {!loading &&
           !error &&
           shouldShowPagination && (
             <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setPage}
+              currentPage={
+                currentPage
+              }
+              totalPages={
+                totalPages
+              }
+              onPageChange={
+                setPage
+              }
             />
           )}
       </Container>
 
-      <Toast message={toastMessage} />
+      <Toast
+        message={
+          toastMessage
+        }
+      />
     </main>
   );
 }
