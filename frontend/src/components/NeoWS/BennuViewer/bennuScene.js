@@ -2,186 +2,1287 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 /**
- * bennuScene
- * ----------
- * Motor 3D independente de framework para a visualização orbital do
- * asteroide 101955 Bennu. Recebe um elemento DOM (container) e devolve
- * um pequeno controlador { setPlaying, setSpeed, setShowOrbits,
- * setShowAxis, setFollow, dispose } para ser pilotado por React (ou
- * qualquer outra coisa).
+ * Motor 3D da visualização orbital do asteroide 101955 Bennu.
  *
- * Toda a geometria/órbita é baseada nos elementos reais de Bennu, mas as
- * distâncias e tamanhos são escalados para ficarem visíveis na mesma cena
- * (não está à escala real — como no "Eyes on Asteroids" da NASA/JPL).
+ * As distâncias e tamanhos são adaptados para visualização e não
+ * representam uma escala proporcional entre os corpos celestes.
  */
 
-/* ---- Ruído 3D (fBm) usado para deformar a superfície do asteroide ---- */
-function createNoise() {
-  const perm = new Uint8Array(512);
-  const p = new Uint8Array(256);
-  let seed = 1337;
-  function rand() {
-    seed |= 0;
-    seed = (seed + 0x6d2b79f5) | 0;
-    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  }
-  for (let i = 0; i < 256; i++) p[i] = i;
-  for (let i = 255; i > 0; i--) {
-    const j = Math.floor(rand() * (i + 1));
-    const tmp = p[i];
-    p[i] = p[j];
-    p[j] = tmp;
-  }
-  for (let i = 0; i < 512; i++) perm[i] = p[i & 255];
-
-  const fade = (t) => t * t * t * (t * (t * 6 - 15) + 10);
-  const lerp = (a, b, t) => a + t * (b - a);
-  function grad(hash, x, y, z) {
-    const h = hash & 15;
-    const u = h < 8 ? x : y;
-    const v = h < 4 ? y : h === 12 || h === 14 ? x : z;
-    return ((h & 1) === 0 ? u : -u) + ((h & 2) === 0 ? v : -v);
-  }
-  function noise3(x, y, z) {
-    const X = Math.floor(x) & 255,
-      Y = Math.floor(y) & 255,
-      Z = Math.floor(z) & 255;
-    x -= Math.floor(x);
-    y -= Math.floor(y);
-    z -= Math.floor(z);
-    const u = fade(x),
-      v = fade(y),
-      w = fade(z);
-    const A = perm[X] + Y,
-      AA = perm[A] + Z,
-      AB = perm[A + 1] + Z;
-    const B = perm[X + 1] + Y,
-      BA = perm[B] + Z,
-      BB = perm[B + 1] + Z;
-    return lerp(
-      lerp(
-        lerp(grad(perm[AA], x, y, z), grad(perm[BA], x - 1, y, z), u),
-        lerp(grad(perm[AB], x, y - 1, z), grad(perm[BB], x - 1, y - 1, z), u),
-        v
-      ),
-      lerp(
-        lerp(grad(perm[AA + 1], x, y, z - 1), grad(perm[BA + 1], x - 1, y, z - 1), u),
-        lerp(grad(perm[AB + 1], x, y - 1, z - 1), grad(perm[BB + 1], x - 1, y - 1, z - 1), u),
-        v
-      ),
-      w
-    );
-  }
-  function fbm(x, y, z, octaves) {
-    let total = 0,
-      amp = 1,
-      freq = 1,
-      maxAmp = 0;
-    for (let i = 0; i < octaves; i++) {
-      total += noise3(x * freq, y * freq, z * freq) * amp;
-      maxAmp += amp;
-      amp *= 0.5;
-      freq *= 2.05;
-    }
-    return total / maxAmp;
-  }
-  return { noise3, fbm };
-}
-
-/* ---- Constantes de escala e orbitais (valores reais de Bennu) ---- */
-const AU = 34; // 1 UA -> unidades de cena (menor que o protótipo cheio, cabe num card)
+const AU = 34;
 const SUN_RADIUS = 3.6;
 const EARTH_RADIUS = 0.95;
-const BENNU_VISUAL_RADIUS = 1.5; // exagerado para visibilidade (real: ~245 m de raio)
+const BENNU_VISUAL_RADIUS = 1.5;
 
-const BENNU_A = 1.126; // semi-eixo maior (UA)
-const BENNU_E = 0.2037; // excentricidade
-const BENNU_INC = 6.03; // inclinação (graus)
-const BENNU_OMEGA = 66.22; // argumento do periélio (aprox.)
-const BENNU_NODE = 2.06; // longitude do nodo ascendente (aprox.)
+const BENNU_A = 1.126;
+const BENNU_E = 0.2037;
+const BENNU_INC = 6.03;
+const BENNU_OMEGA = 66.22;
+const BENNU_NODE = 2.06;
 const BENNU_PERIOD_DAYS = 436.6;
+
 const EARTH_PERIOD_DAYS = 365.25;
-const ROTATION_PERIOD_HOURS = 4.297; // rotação sideral real
-const ROTATION_SLOWDOWN = 8; // suaviza o giro para leitura visual confortável
-const OBLIQUITY_DEG = 178; // eixo quase invertido -> rotação retrógrada
+const ROTATION_PERIOD_HOURS = 4.297;
+const ROTATION_SLOWDOWN = 8;
+const OBLIQUITY_DEG = 178;
 
-export function createBennuScene(container, options = {}) {
-  const NoiseGen = createNoise();
+const DEFAULT_SPEED = 0.6;
+const MAX_SPEED = 20;
+const MAX_PIXEL_RATIO = 2;
+const MAX_FRAME_DELTA = 0.05;
+const STATE_EMIT_INTERVAL = 100;
 
-  let daysPerSecond = options.initialSpeed ?? 0.6;
-  let playing = true;
-  let followBennu = true;
-  let simDays = 0;
-  let disposed = false;
+function createNoise() {
+  const permutation = new Uint8Array(512);
+  const values = new Uint8Array(256);
 
-  const listeners = new Set();
-  function emitState() {
-    const state = {
-      simDays,
-      elapsedYears: simDays / 365.25,
-      playing,
-    };
-    listeners.forEach((cb) => cb(state));
+  let seed = 1337;
+
+  function random() {
+    seed |= 0;
+    seed = (seed + 0x6d2b79f5) | 0;
+
+    let value = Math.imul(
+      seed ^ (seed >>> 15),
+      1 | seed
+    );
+
+    value =
+      value +
+        Math.imul(
+          value ^ (value >>> 7),
+          61 | value
+        ) ^
+      value;
+
+    return (
+      ((value ^ (value >>> 14)) >>> 0) /
+      4294967296
+    );
   }
 
-  /* ---- Scene / camera / renderer ---- */
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(48, 1, 0.1, 20000);
+  for (
+    let index = 0;
+    index < 256;
+    index += 1
+  ) {
+    values[index] = index;
+  }
 
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.15;
-  container.appendChild(renderer.domElement);
+  for (
+    let index = 255;
+    index > 0;
+    index -= 1
+  ) {
+    const randomIndex = Math.floor(
+      random() * (index + 1)
+    );
 
-  const controls = new OrbitControls(camera, renderer.domElement);
+    const temporaryValue =
+      values[index];
+
+    values[index] =
+      values[randomIndex];
+
+    values[randomIndex] =
+      temporaryValue;
+  }
+
+  for (
+    let index = 0;
+    index < 512;
+    index += 1
+  ) {
+    permutation[index] =
+      values[index & 255];
+  }
+
+  function fade(value) {
+    return (
+      value *
+      value *
+      value *
+      (value *
+        (value * 6 - 15) +
+        10)
+    );
+  }
+
+  function lerp(
+    start,
+    end,
+    amount
+  ) {
+    return (
+      start +
+      amount * (end - start)
+    );
+  }
+
+  function gradient(
+    hash,
+    x,
+    y,
+    z
+  ) {
+    const normalizedHash =
+      hash & 15;
+
+    const first =
+      normalizedHash < 8
+        ? x
+        : y;
+
+    const second =
+      normalizedHash < 4
+        ? y
+        : normalizedHash === 12 ||
+            normalizedHash === 14
+          ? x
+          : z;
+
+    return (
+      ((normalizedHash & 1) === 0
+        ? first
+        : -first) +
+      ((normalizedHash & 2) === 0
+        ? second
+        : -second)
+    );
+  }
+
+  function noise3(x, y, z) {
+    const floorX = Math.floor(x);
+    const floorY = Math.floor(y);
+    const floorZ = Math.floor(z);
+
+    const gridX = floorX & 255;
+    const gridY = floorY & 255;
+    const gridZ = floorZ & 255;
+
+    const localX = x - floorX;
+    const localY = y - floorY;
+    const localZ = z - floorZ;
+
+    const fadeX = fade(localX);
+    const fadeY = fade(localY);
+    const fadeZ = fade(localZ);
+
+    const first =
+      permutation[gridX] +
+      gridY;
+
+    const firstFirst =
+      permutation[first] +
+      gridZ;
+
+    const firstSecond =
+      permutation[first + 1] +
+      gridZ;
+
+    const second =
+      permutation[gridX + 1] +
+      gridY;
+
+    const secondFirst =
+      permutation[second] +
+      gridZ;
+
+    const secondSecond =
+      permutation[second + 1] +
+      gridZ;
+
+    return lerp(
+      lerp(
+        lerp(
+          gradient(
+            permutation[firstFirst],
+            localX,
+            localY,
+            localZ
+          ),
+          gradient(
+            permutation[secondFirst],
+            localX - 1,
+            localY,
+            localZ
+          ),
+          fadeX
+        ),
+        lerp(
+          gradient(
+            permutation[firstSecond],
+            localX,
+            localY - 1,
+            localZ
+          ),
+          gradient(
+            permutation[secondSecond],
+            localX - 1,
+            localY - 1,
+            localZ
+          ),
+          fadeX
+        ),
+        fadeY
+      ),
+      lerp(
+        lerp(
+          gradient(
+            permutation[
+              firstFirst + 1
+            ],
+            localX,
+            localY,
+            localZ - 1
+          ),
+          gradient(
+            permutation[
+              secondFirst + 1
+            ],
+            localX - 1,
+            localY,
+            localZ - 1
+          ),
+          fadeX
+        ),
+        lerp(
+          gradient(
+            permutation[
+              firstSecond + 1
+            ],
+            localX,
+            localY - 1,
+            localZ - 1
+          ),
+          gradient(
+            permutation[
+              secondSecond + 1
+            ],
+            localX - 1,
+            localY - 1,
+            localZ - 1
+          ),
+          fadeX
+        ),
+        fadeY
+      ),
+      fadeZ
+    );
+  }
+
+  function fbm(
+    x,
+    y,
+    z,
+    octaves
+  ) {
+    let total = 0;
+    let amplitude = 1;
+    let frequency = 1;
+    let maximumAmplitude = 0;
+
+    for (
+      let index = 0;
+      index < octaves;
+      index += 1
+    ) {
+      total +=
+        noise3(
+          x * frequency,
+          y * frequency,
+          z * frequency
+        ) * amplitude;
+
+      maximumAmplitude +=
+        amplitude;
+
+      amplitude *= 0.5;
+      frequency *= 2.05;
+    }
+
+    return total /
+      maximumAmplitude;
+  }
+
+  return {
+    noise3,
+    fbm,
+  };
+}
+
+function createGlowSprite(
+  size,
+  colorInner,
+  colorOuter,
+  opacity
+) {
+  const canvas =
+    document.createElement(
+      "canvas"
+    );
+
+  canvas.width = 256;
+  canvas.height = 256;
+
+  const context =
+    canvas.getContext("2d");
+
+  if (!context) {
+    throw new Error(
+      "Não foi possível criar o brilho do Sol."
+    );
+  }
+
+  const gradient =
+    context.createRadialGradient(
+      128,
+      128,
+      0,
+      128,
+      128,
+      128
+    );
+
+  gradient.addColorStop(
+    0,
+    colorInner
+  );
+
+  gradient.addColorStop(
+    0.4,
+    colorOuter
+  );
+
+  gradient.addColorStop(
+    1,
+    "rgba(0,0,0,0)"
+  );
+
+  context.fillStyle =
+    gradient;
+
+  context.fillRect(
+    0,
+    0,
+    256,
+    256
+  );
+
+  const texture =
+    new THREE.CanvasTexture(
+      canvas
+    );
+
+  texture.colorSpace =
+    THREE.SRGBColorSpace;
+
+  const material =
+    new THREE.SpriteMaterial({
+      map: texture,
+      transparent: true,
+      blending:
+        THREE.AdditiveBlending,
+      depthWrite: false,
+      opacity,
+    });
+
+  const sprite =
+    new THREE.Sprite(
+      material
+    );
+
+  sprite.scale.set(
+    size,
+    size,
+    1
+  );
+
+  return sprite;
+}
+
+function buildOrbitEllipsePoints(
+  semiMajorAxis,
+  eccentricity,
+  inclinationDegrees,
+  perihelionDegrees,
+  nodeDegrees,
+  segments
+) {
+  const inclination =
+    THREE.MathUtils.degToRad(
+      inclinationDegrees
+    );
+
+  const perihelion =
+    THREE.MathUtils.degToRad(
+      perihelionDegrees
+    );
+
+  const node =
+    THREE.MathUtils.degToRad(
+      nodeDegrees
+    );
+
+  const points = [];
+
+  for (
+    let index = 0;
+    index <= segments;
+    index += 1
+  ) {
+    const anomaly =
+      (index / segments) *
+      Math.PI *
+      2;
+
+    const radius =
+      (semiMajorAxis *
+        (1 -
+          eccentricity *
+            eccentricity)) /
+      (1 +
+        eccentricity *
+          Math.cos(anomaly));
+
+    const x =
+      radius *
+      Math.cos(anomaly);
+
+    const y =
+      radius *
+      Math.sin(anomaly);
+
+    const cosinePerihelion =
+      Math.cos(perihelion);
+
+    const sinePerihelion =
+      Math.sin(perihelion);
+
+    const rotatedX =
+      x *
+        cosinePerihelion -
+      y *
+        sinePerihelion;
+
+    const rotatedY =
+      x *
+        sinePerihelion +
+      y *
+        cosinePerihelion;
+
+    const cosineInclination =
+      Math.cos(inclination);
+
+    const sineInclination =
+      Math.sin(inclination);
+
+    const inclinedX =
+      rotatedX;
+
+    const inclinedZ =
+      rotatedY *
+      cosineInclination;
+
+    const inclinedY =
+      rotatedY *
+      sineInclination;
+
+    const cosineNode =
+      Math.cos(node);
+
+    const sineNode =
+      Math.sin(node);
+
+    const finalX =
+      inclinedX *
+        cosineNode -
+      inclinedZ *
+        sineNode;
+
+    const finalZ =
+      inclinedX *
+        sineNode +
+      inclinedZ *
+        cosineNode;
+
+    points.push(
+      new THREE.Vector3(
+        finalX * AU,
+        inclinedY * AU,
+        finalZ * AU
+      )
+    );
+  }
+
+  return points;
+}
+
+function setKeplerPosition(
+  target,
+  semiMajorAxis,
+  eccentricity,
+  inclinationDegrees,
+  perihelionDegrees,
+  nodeDegrees,
+  meanAnomaly
+) {
+  let eccentricAnomaly =
+    meanAnomaly;
+
+  for (
+    let index = 0;
+    index < 8;
+    index += 1
+  ) {
+    eccentricAnomaly -=
+      (eccentricAnomaly -
+        eccentricity *
+          Math.sin(
+            eccentricAnomaly
+          ) -
+        meanAnomaly) /
+      (1 -
+        eccentricity *
+          Math.cos(
+            eccentricAnomaly
+          ));
+  }
+
+  const trueAnomaly =
+    2 *
+    Math.atan2(
+      Math.sqrt(
+        1 + eccentricity
+      ) *
+        Math.sin(
+          eccentricAnomaly / 2
+        ),
+      Math.sqrt(
+        1 - eccentricity
+      ) *
+        Math.cos(
+          eccentricAnomaly / 2
+        )
+    );
+
+  const radius =
+    semiMajorAxis *
+    (1 -
+      eccentricity *
+        Math.cos(
+          eccentricAnomaly
+        ));
+
+  const x =
+    radius *
+    Math.cos(trueAnomaly);
+
+  const y =
+    radius *
+    Math.sin(trueAnomaly);
+
+  const inclination =
+    THREE.MathUtils.degToRad(
+      inclinationDegrees
+    );
+
+  const perihelion =
+    THREE.MathUtils.degToRad(
+      perihelionDegrees
+    );
+
+  const node =
+    THREE.MathUtils.degToRad(
+      nodeDegrees
+    );
+
+  const cosinePerihelion =
+    Math.cos(perihelion);
+
+  const sinePerihelion =
+    Math.sin(perihelion);
+
+  const rotatedX =
+    x *
+      cosinePerihelion -
+    y *
+      sinePerihelion;
+
+  const rotatedY =
+    x *
+      sinePerihelion +
+    y *
+      cosinePerihelion;
+
+  const cosineInclination =
+    Math.cos(inclination);
+
+  const sineInclination =
+    Math.sin(inclination);
+
+  const inclinedX =
+    rotatedX;
+
+  const inclinedZ =
+    rotatedY *
+    cosineInclination;
+
+  const inclinedY =
+    rotatedY *
+    sineInclination;
+
+  const cosineNode =
+    Math.cos(node);
+
+  const sineNode =
+    Math.sin(node);
+
+  const finalX =
+    inclinedX *
+      cosineNode -
+    inclinedZ *
+      sineNode;
+
+  const finalZ =
+    inclinedX *
+      sineNode +
+    inclinedZ *
+      cosineNode;
+
+  target.set(
+    finalX * AU,
+    inclinedY * AU,
+    finalZ * AU
+  );
+
+  return target;
+}
+
+function buildBennuGeometry(
+  radius,
+  noiseGenerator
+) {
+  const geometry =
+    new THREE.SphereGeometry(
+      radius,
+      96,
+      72
+    );
+
+  const positions =
+    geometry.attributes
+      .position;
+
+  const vertex =
+    new THREE.Vector3();
+
+  const normal =
+    new THREE.Vector3();
+
+  for (
+    let index = 0;
+    index < positions.count;
+    index += 1
+  ) {
+    vertex.fromBufferAttribute(
+      positions,
+      index
+    );
+
+    normal
+      .copy(vertex)
+      .normalize();
+
+    const latitude = Math.asin(
+      THREE.MathUtils.clamp(
+        normal.y,
+        -1,
+        1
+      )
+    );
+
+    const equatorBulge =
+      1 +
+      0.3 *
+        Math.cos(latitude) *
+        Math.cos(latitude) -
+      0.1;
+
+    const poleTaper =
+      1 -
+      0.22 *
+        Math.pow(
+          Math.abs(
+            Math.sin(latitude)
+          ),
+          1.6
+        );
+
+    const generalShape =
+      equatorBulge *
+      poleTaper;
+
+    const largeNoise =
+      noiseGenerator.fbm(
+        normal.x * 1.1 + 5.2,
+        normal.y * 1.1 + 1.3,
+        normal.z * 1.1 + 8.7,
+        3
+      ) * 0.18;
+
+    const boulders =
+      noiseGenerator.fbm(
+        normal.x * 4,
+        normal.y * 4,
+        normal.z * 4,
+        4
+      ) * 0.06;
+
+    const fineNoise =
+      noiseGenerator.fbm(
+        normal.x * 14 + 3.1,
+        normal.y * 14 + 7.4,
+        normal.z * 14 + 2.2,
+        3
+      ) * 0.018;
+
+    const craterField =
+      noiseGenerator.noise3(
+        normal.x * 6 + 11,
+        normal.y * 6 + 22,
+        normal.z * 6 + 33
+      );
+
+    const crater =
+      craterField > 0.62
+        ? -(
+            craterField -
+            0.62
+          ) * 0.35
+        : 0;
+
+    const displacement =
+      generalShape +
+      largeNoise +
+      boulders +
+      fineNoise +
+      crater;
+
+    vertex.multiplyScalar(
+      displacement
+    );
+
+    positions.setXYZ(
+      index,
+      vertex.x,
+      vertex.y,
+      vertex.z
+    );
+  }
+
+  positions.needsUpdate = true;
+
+  geometry.computeVertexNormals();
+  geometry.computeBoundingSphere();
+
+  return geometry;
+}
+
+function buildBennuTexture(
+  noiseGenerator
+) {
+  const width = 768;
+  const height = 384;
+
+  const canvas =
+    document.createElement(
+      "canvas"
+    );
+
+  canvas.width = width;
+  canvas.height = height;
+
+  const context =
+    canvas.getContext("2d");
+
+  if (!context) {
+    throw new Error(
+      "Não foi possível criar a textura de Bennu."
+    );
+  }
+
+  context.fillStyle =
+    "#3a332c";
+
+  context.fillRect(
+    0,
+    0,
+    width,
+    height
+  );
+
+  const imageData =
+    context.getImageData(
+      0,
+      0,
+      width,
+      height
+    );
+
+  const pixels =
+    imageData.data;
+
+  for (
+    let y = 0;
+    y < height;
+    y += 1
+  ) {
+    for (
+      let x = 0;
+      x < width;
+      x += 1
+    ) {
+      const pixelIndex =
+        (y * width + x) * 4;
+
+      const noiseX =
+        (x / width) * 8;
+
+      const noiseY =
+        (y / height) * 4;
+
+      const noise =
+        noiseGenerator.fbm(
+          noiseX,
+          noiseY,
+          4.2,
+          4
+        );
+
+      const shade =
+        1 + noise * 0.35;
+
+      pixels[pixelIndex] =
+        Math.max(
+          0,
+          Math.min(
+            255,
+            pixels[pixelIndex] *
+              shade
+          )
+        );
+
+      pixels[pixelIndex + 1] =
+        Math.max(
+          0,
+          Math.min(
+            255,
+            pixels[
+              pixelIndex + 1
+            ] * shade
+          )
+        );
+
+      pixels[pixelIndex + 2] =
+        Math.max(
+          0,
+          Math.min(
+            255,
+            pixels[
+              pixelIndex + 2
+            ] * shade
+          )
+        );
+    }
+  }
+
+  context.putImageData(
+    imageData,
+    0,
+    0
+  );
+
+  for (
+    let index = 0;
+    index < 110;
+    index += 1
+  ) {
+    const x =
+      Math.random() * width;
+
+    const y =
+      Math.random() * height;
+
+    const radius =
+      4 +
+      Math.random() * 22;
+
+    const gradient =
+      context.createRadialGradient(
+        x,
+        y,
+        0,
+        x,
+        y,
+        radius
+      );
+
+    const isDark =
+      Math.random() > 0.5;
+
+    gradient.addColorStop(
+      0,
+      isDark
+        ? "rgba(15,12,10,0.55)"
+        : "rgba(80,70,58,0.35)"
+    );
+
+    gradient.addColorStop(
+      1,
+      "rgba(0,0,0,0)"
+    );
+
+    context.fillStyle =
+      gradient;
+
+    context.beginPath();
+
+    context.arc(
+      x,
+      y,
+      radius,
+      0,
+      Math.PI * 2
+    );
+
+    context.fill();
+  }
+
+  const texture =
+    new THREE.CanvasTexture(
+      canvas
+    );
+
+  texture.colorSpace =
+    THREE.SRGBColorSpace;
+
+  texture.wrapS =
+    THREE.RepeatWrapping;
+
+  texture.wrapT =
+    THREE.ClampToEdgeWrapping;
+
+  texture.needsUpdate = true;
+
+  return texture;
+}
+
+function disposeMaterial(
+  material
+) {
+  const textureProperties = [
+    "map",
+    "alphaMap",
+    "aoMap",
+    "bumpMap",
+    "normalMap",
+    "roughnessMap",
+    "metalnessMap",
+    "emissiveMap",
+  ];
+
+  textureProperties.forEach(
+    (property) => {
+      material[property]?.dispose?.();
+    }
+  );
+
+  material.dispose?.();
+}
+
+export function createBennuScene(
+  container,
+  options = {}
+) {
+  if (
+    !container ||
+    typeof container.appendChild !==
+      "function"
+  ) {
+    throw new Error(
+      "O elemento da visualização 3D não é válido."
+    );
+  }
+
+  if (
+    typeof window === "undefined" ||
+    typeof document === "undefined"
+  ) {
+    throw new Error(
+      "A visualização 3D requer um navegador."
+    );
+  }
+
+  const noiseGenerator =
+    createNoise();
+
+  const listeners =
+    new Set();
+
+  const initialSpeed =
+    Number(
+      options.initialSpeed
+    );
+
+  let daysPerSecond =
+    Number.isFinite(
+      initialSpeed
+    )
+      ? THREE.MathUtils.clamp(
+          initialSpeed,
+          0,
+          MAX_SPEED
+        )
+      : DEFAULT_SPEED;
+
+  let playing = true;
+  let followBennu = true;
+  let simulationDays = 0;
+  let disposed = false;
+  let pageVisible =
+    !document.hidden;
+  let animationFrameId = null;
+  let resizeObserver = null;
+  let lastStateEmitTime = 0;
+
+  const scene =
+    new THREE.Scene();
+
+  const camera =
+    new THREE.PerspectiveCamera(
+      48,
+      1,
+      0.1,
+      20000
+    );
+
+  let renderer;
+
+  try {
+    renderer =
+      new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: true,
+        powerPreference:
+          "high-performance",
+      });
+  } catch {
+    throw new Error(
+      "O navegador não conseguiu iniciar o WebGL."
+    );
+  }
+
+  renderer.setPixelRatio(
+    Math.min(
+      window.devicePixelRatio || 1,
+      MAX_PIXEL_RATIO
+    )
+  );
+
+  renderer.outputColorSpace =
+    THREE.SRGBColorSpace;
+
+  renderer.toneMapping =
+    THREE.ACESFilmicToneMapping;
+
+  renderer.toneMappingExposure =
+    1.15;
+
+  renderer.domElement.setAttribute(
+    "aria-hidden",
+    "true"
+  );
+
+  container.appendChild(
+    renderer.domElement
+  );
+
+  const controls =
+    new OrbitControls(
+      camera,
+      renderer.domElement
+    );
+
   controls.enableDamping = true;
   controls.dampingFactor = 0.07;
   controls.minDistance = 4;
   controls.maxDistance = 260;
 
   function resize() {
-    const w = container.clientWidth;
-    const h = container.clientHeight;
-    if (w === 0 || h === 0) return;
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-    renderer.setSize(w, h);
-  }
-  const resizeObserver = new ResizeObserver(resize);
-  resizeObserver.observe(container);
-
-  /* ---- Estrelas ---- */
-  (function buildStarfield() {
-    const starCount = 4000;
-    const positions = new Float32Array(starCount * 3);
-    const colors = new Float32Array(starCount * 3);
-    const palette = [
-      new THREE.Color(0xffffff),
-      new THREE.Color(0xcfe0ff),
-      new THREE.Color(0xfff2d6),
-      new THREE.Color(0xbcd8ff),
-    ];
-    for (let i = 0; i < starCount; i++) {
-      const r = 500 + Math.random() * 1500;
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(2 * Math.random() - 1);
-      positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-      positions[i * 3 + 1] = r * Math.cos(phi);
-      positions[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
-      const c = palette[Math.floor(Math.random() * palette.length)];
-      const b = 0.5 + Math.random() * 0.5;
-      colors[i * 3] = c.r * b;
-      colors[i * 3 + 1] = c.g * b;
-      colors[i * 3 + 2] = c.b * b;
+    if (disposed) {
+      return;
     }
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-    geo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-    const mat = new THREE.PointsMaterial({
+
+    const width =
+      container.clientWidth;
+
+    const height =
+      container.clientHeight;
+
+    if (
+      width <= 0 ||
+      height <= 0
+    ) {
+      return;
+    }
+
+    camera.aspect =
+      width / height;
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(
+      width,
+      height,
+      false
+    );
+  }
+
+  if (
+    typeof ResizeObserver !==
+    "undefined"
+  ) {
+    resizeObserver =
+      new ResizeObserver(
+        resize
+      );
+
+    resizeObserver.observe(
+      container
+    );
+  } else {
+    window.addEventListener(
+      "resize",
+      resize
+    );
+  }
+
+  const starCount =
+    window.matchMedia(
+      "(max-width: 768px)"
+    ).matches
+      ? 2200
+      : 4000;
+
+  const starPositions =
+    new Float32Array(
+      starCount * 3
+    );
+
+  const starColors =
+    new Float32Array(
+      starCount * 3
+    );
+
+  const starPalette = [
+    new THREE.Color(
+      0xffffff
+    ),
+    new THREE.Color(
+      0xcfe0ff
+    ),
+    new THREE.Color(
+      0xfff2d6
+    ),
+    new THREE.Color(
+      0xbcd8ff
+    ),
+  ];
+
+  for (
+    let index = 0;
+    index < starCount;
+    index += 1
+  ) {
+    const radius =
+      500 +
+      Math.random() * 1500;
+
+    const theta =
+      Math.random() *
+      Math.PI *
+      2;
+
+    const phi =
+      Math.acos(
+        2 * Math.random() - 1
+      );
+
+    starPositions[index * 3] =
+      radius *
+      Math.sin(phi) *
+      Math.cos(theta);
+
+    starPositions[
+      index * 3 + 1
+    ] =
+      radius *
+      Math.cos(phi);
+
+    starPositions[
+      index * 3 + 2
+    ] =
+      radius *
+      Math.sin(phi) *
+      Math.sin(theta);
+
+    const color =
+      starPalette[
+        Math.floor(
+          Math.random() *
+            starPalette.length
+        )
+      ];
+
+    const brightness =
+      0.5 +
+      Math.random() * 0.5;
+
+    starColors[index * 3] =
+      color.r * brightness;
+
+    starColors[
+      index * 3 + 1
+    ] =
+      color.g * brightness;
+
+    starColors[
+      index * 3 + 2
+    ] =
+      color.b * brightness;
+  }
+
+  const starGeometry =
+    new THREE.BufferGeometry();
+
+  starGeometry.setAttribute(
+    "position",
+    new THREE.BufferAttribute(
+      starPositions,
+      3
+    )
+  );
+
+  starGeometry.setAttribute(
+    "color",
+    new THREE.BufferAttribute(
+      starColors,
+      3
+    )
+  );
+
+  const starMaterial =
+    new THREE.PointsMaterial({
       size: 1.4,
       sizeAttenuation: true,
       vertexColors: true,
@@ -189,311 +1290,614 @@ export function createBennuScene(container, options = {}) {
       opacity: 0.9,
       depthWrite: false,
     });
-    scene.add(new THREE.Points(geo, mat));
-  })();
 
-  /* ---- Sol ---- */
-  function makeGlowSprite(size, colorInner, colorOuter, opacity) {
-    const c = document.createElement("canvas");
-    c.width = c.height = 256;
-    const ctx = c.getContext("2d");
-    const grad = ctx.createRadialGradient(128, 128, 0, 128, 128, 128);
-    grad.addColorStop(0, colorInner);
-    grad.addColorStop(0.4, colorOuter);
-    grad.addColorStop(1, "rgba(0,0,0,0)");
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, 256, 256);
-    const tex = new THREE.CanvasTexture(c);
-    const mat = new THREE.SpriteMaterial({
-      map: tex,
-      transparent: true,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false,
-      opacity,
-    });
-    const sprite = new THREE.Sprite(mat);
-    sprite.scale.set(size, size, 1);
-    return sprite;
-  }
-
-  const sunGroup = new THREE.Group();
-  const sunMesh = new THREE.Mesh(
-    new THREE.SphereGeometry(SUN_RADIUS, 48, 48),
-    new THREE.MeshBasicMaterial({ color: 0xfff2c0 })
+  scene.add(
+    new THREE.Points(
+      starGeometry,
+      starMaterial
+    )
   );
+
+  const sunGroup =
+    new THREE.Group();
+
+  const sunMesh =
+    new THREE.Mesh(
+      new THREE.SphereGeometry(
+        SUN_RADIUS,
+        48,
+        48
+      ),
+      new THREE.MeshBasicMaterial({
+        color: 0xfff2c0,
+      })
+    );
+
   sunGroup.add(sunMesh);
-  sunGroup.add(makeGlowSprite(SUN_RADIUS * 9, "rgba(255,244,214,0.95)", "rgba(255,190,90,0.45)", 0.9));
-  sunGroup.add(makeGlowSprite(SUN_RADIUS * 20, "rgba(255,210,140,0.5)", "rgba(255,150,60,0.12)", 0.55));
+
+  sunGroup.add(
+    createGlowSprite(
+      SUN_RADIUS * 9,
+      "rgba(255,244,214,0.95)",
+      "rgba(255,190,90,0.45)",
+      0.9
+    )
+  );
+
+  sunGroup.add(
+    createGlowSprite(
+      SUN_RADIUS * 20,
+      "rgba(255,210,140,0.5)",
+      "rgba(255,150,60,0.12)",
+      0.55
+    )
+  );
+
   scene.add(sunGroup);
 
-  const sunLight = new THREE.PointLight(0xfff2d6, 3.4, 0, 1.6);
-  scene.add(sunLight);
-  scene.add(new THREE.AmbientLight(0x1a2230, 0.55));
-
-  /* ---- Órbitas (Kepler) ---- */
-  function buildOrbitEllipsePoints(aAU, e, incDeg, omegaDeg, nodeDeg, segments) {
-    const inc = THREE.MathUtils.degToRad(incDeg);
-    const omega = THREE.MathUtils.degToRad(omegaDeg);
-    const node = THREE.MathUtils.degToRad(nodeDeg);
-    const pts = [];
-    for (let i = 0; i <= segments; i++) {
-      const nu = (i / segments) * Math.PI * 2;
-      const r = (aAU * (1 - e * e)) / (1 + e * Math.cos(nu));
-      const x = r * Math.cos(nu);
-      const y = r * Math.sin(nu);
-      const cosW = Math.cos(omega),
-        sinW = Math.sin(omega);
-      const xw = x * cosW - y * sinW;
-      const yw = x * sinW + y * cosW;
-      const cosI = Math.cos(inc),
-        sinI = Math.sin(inc);
-      const xi = xw;
-      const zi = yw * cosI;
-      const yi = yw * sinI;
-      const cosN = Math.cos(node),
-        sinN = Math.sin(node);
-      const xf = xi * cosN - zi * sinN;
-      const zf = xi * sinN + zi * cosN;
-      pts.push(new THREE.Vector3(xf * AU, yi * AU, zf * AU));
-    }
-    return pts;
-  }
-
-  function keplerPosition(aAU, e, incDeg, omegaDeg, nodeDeg, meanAnomalyRad) {
-    let E = meanAnomalyRad;
-    for (let i = 0; i < 8; i++) {
-      E = E - (E - e * Math.sin(E) - meanAnomalyRad) / (1 - e * Math.cos(E));
-    }
-    const nu = 2 * Math.atan2(Math.sqrt(1 + e) * Math.sin(E / 2), Math.sqrt(1 - e) * Math.cos(E / 2));
-    const r = aAU * (1 - e * Math.cos(E));
-    const x = r * Math.cos(nu);
-    const y = r * Math.sin(nu);
-    const inc = THREE.MathUtils.degToRad(incDeg);
-    const omega = THREE.MathUtils.degToRad(omegaDeg);
-    const node = THREE.MathUtils.degToRad(nodeDeg);
-    const cosW = Math.cos(omega),
-      sinW = Math.sin(omega);
-    const xw = x * cosW - y * sinW;
-    const yw = x * sinW + y * cosW;
-    const cosI = Math.cos(inc),
-      sinI = Math.sin(inc);
-    const xi = xw;
-    const zi = yw * cosI;
-    const yi = yw * sinI;
-    const cosN = Math.cos(node),
-      sinN = Math.sin(node);
-    const xf = xi * cosN - zi * sinN;
-    const zf = xi * sinN + zi * cosN;
-    return new THREE.Vector3(xf * AU, yi * AU, zf * AU);
-  }
-
-  /* ---- Terra (referência de escala) ---- */
-  const earthOrbitPts = buildOrbitEllipsePoints(1.0, 0.0167, 0, 0, 0, 200);
-  const earthOrbitLine = new THREE.LineLoop(
-    new THREE.BufferGeometry().setFromPoints(earthOrbitPts),
-    new THREE.LineBasicMaterial({ color: 0x4f8fdb, transparent: true, opacity: 0.55 })
+  scene.add(
+    new THREE.PointLight(
+      0xfff2d6,
+      3.4,
+      0,
+      1.6
+    )
   );
-  scene.add(earthOrbitLine);
 
-  const earthMesh = new THREE.Mesh(
-    new THREE.SphereGeometry(EARTH_RADIUS, 32, 32),
-    new THREE.MeshStandardMaterial({ color: 0x2f6fb0, emissive: 0x0a1a2a, roughness: 0.7, metalness: 0.05 })
+  scene.add(
+    new THREE.AmbientLight(
+      0x1a2230,
+      0.55
+    )
   );
+
+  const earthOrbitLine =
+    new THREE.LineLoop(
+      new THREE.BufferGeometry().setFromPoints(
+        buildOrbitEllipsePoints(
+          1,
+          0.0167,
+          0,
+          0,
+          0,
+          200
+        )
+      ),
+      new THREE.LineBasicMaterial({
+        color: 0x4f8fdb,
+        transparent: true,
+        opacity: 0.55,
+      })
+    );
+
+  scene.add(
+    earthOrbitLine
+  );
+
+  const earthMesh =
+    new THREE.Mesh(
+      new THREE.SphereGeometry(
+        EARTH_RADIUS,
+        32,
+        32
+      ),
+      new THREE.MeshStandardMaterial({
+        color: 0x2f6fb0,
+        emissive: 0x0a1a2a,
+        roughness: 0.7,
+        metalness: 0.05,
+      })
+    );
+
   scene.add(earthMesh);
 
-  /* ---- Bennu: geometria deformada por ruído ---- */
-  function buildBennuGeometry(radius) {
-    const geo = new THREE.SphereGeometry(radius, 112, 84);
-    const pos = geo.attributes.position;
-    const v = new THREE.Vector3();
-    for (let i = 0; i < pos.count; i++) {
-      v.fromBufferAttribute(pos, i);
-      const n = v.clone().normalize();
-      const lat = Math.asin(THREE.MathUtils.clamp(n.y, -1, 1));
-      const equatorBulge = 1.0 + 0.3 * Math.cos(lat) * Math.cos(lat) - 0.1;
-      const poleTaper = 1.0 - 0.22 * Math.pow(Math.abs(Math.sin(lat)), 1.6);
-      const topShape = equatorBulge * poleTaper;
-      const large = NoiseGen.fbm(n.x * 1.1 + 5.2, n.y * 1.1 + 1.3, n.z * 1.1 + 8.7, 3) * 0.18;
-      const boulders = NoiseGen.fbm(n.x * 4.0, n.y * 4.0, n.z * 4.0, 4) * 0.06;
-      const fine = NoiseGen.fbm(n.x * 14.0 + 3.1, n.y * 14.0 + 7.4, n.z * 14.0 + 2.2, 3) * 0.018;
-      const craterField = NoiseGen.noise3(n.x * 6.0 + 11, n.y * 6.0 + 22, n.z * 6.0 + 33);
-      const crater = craterField > 0.62 ? -(craterField - 0.62) * 0.35 : 0;
-      const displacement = topShape + large + boulders + fine + crater;
-      v.multiplyScalar(displacement);
-      pos.setXYZ(i, v.x, v.y, v.z);
-    }
-    geo.computeVertexNormals();
-    return geo;
-  }
+  const bennuOrbitLine =
+    new THREE.LineLoop(
+      new THREE.BufferGeometry().setFromPoints(
+        buildOrbitEllipsePoints(
+          BENNU_A,
+          BENNU_E,
+          BENNU_INC,
+          BENNU_OMEGA,
+          BENNU_NODE,
+          220
+        )
+      ),
+      new THREE.LineBasicMaterial({
+        color: 0xb08a5a,
+        transparent: true,
+        opacity: 0.7,
+      })
+    );
 
-  function buildBennuTexture() {
-    const size = 1024;
-    const c = document.createElement("canvas");
-    c.width = size;
-    c.height = size / 2;
-    const ctx = c.getContext("2d");
-    ctx.fillStyle = "#3a332c";
-    ctx.fillRect(0, 0, c.width, c.height);
-    const imgData = ctx.getImageData(0, 0, c.width, c.height);
-    const data = imgData.data;
-    for (let y = 0; y < c.height; y++) {
-      for (let x = 0; x < c.width; x++) {
-        const idx = (y * c.width + x) * 4;
-        const nx = (x / c.width) * 8,
-          ny = (y / c.height) * 4;
-        const n = NoiseGen.fbm(nx, ny, 4.2, 4);
-        const shade = 1 + n * 0.35;
-        data[idx] = Math.max(0, Math.min(255, data[idx] * shade));
-        data[idx + 1] = Math.max(0, Math.min(255, data[idx + 1] * shade));
-        data[idx + 2] = Math.max(0, Math.min(255, data[idx + 2] * shade));
-      }
-    }
-    ctx.putImageData(imgData, 0, 0);
-    for (let i = 0; i < 140; i++) {
-      const x = Math.random() * c.width;
-      const y = Math.random() * c.height;
-      const r = 4 + Math.random() * 22;
-      const g = ctx.createRadialGradient(x, y, 0, x, y, r);
-      const dark = Math.random() > 0.5;
-      g.addColorStop(0, dark ? "rgba(15,12,10,0.55)" : "rgba(80,70,58,0.35)");
-      g.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = g;
-      ctx.beginPath();
-      ctx.arc(x, y, r, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    const tex = new THREE.CanvasTexture(c);
-    tex.wrapS = THREE.RepeatWrapping;
-    tex.wrapT = THREE.ClampToEdgeWrapping;
-    return tex;
-  }
-
-  const bennuOrbitPts = buildOrbitEllipsePoints(BENNU_A, BENNU_E, BENNU_INC, BENNU_OMEGA, BENNU_NODE, 220);
-  const bennuOrbitLine = new THREE.LineLoop(
-    new THREE.BufferGeometry().setFromPoints(bennuOrbitPts),
-    new THREE.LineBasicMaterial({ color: 0xb08a5a, transparent: true, opacity: 0.7 })
+  scene.add(
+    bennuOrbitLine
   );
-  scene.add(bennuOrbitLine);
 
-  const bennuPositionGroup = new THREE.Group();
-  scene.add(bennuPositionGroup);
+  const bennuPositionGroup =
+    new THREE.Group();
 
-  const bennuTiltPivot = new THREE.Group();
-  bennuTiltPivot.rotation.z = THREE.MathUtils.degToRad(OBLIQUITY_DEG - 90);
-  bennuPositionGroup.add(bennuTiltPivot);
-
-  const bennuMesh = new THREE.Mesh(
-    buildBennuGeometry(BENNU_VISUAL_RADIUS),
-    new THREE.MeshStandardMaterial({
-      map: buildBennuTexture(),
-      roughness: 0.97,
-      metalness: 0.0,
-    })
+  scene.add(
+    bennuPositionGroup
   );
-  bennuTiltPivot.add(bennuMesh);
 
-  const axisHelperGroup = new THREE.Group();
-  const axisLen = BENNU_VISUAL_RADIUS * 2.6;
-  const axisMesh = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.015, 0.015, axisLen, 8),
-    new THREE.MeshBasicMaterial({ color: 0x0ea5e9, transparent: true, opacity: 0.75 })
-  );
-  axisHelperGroup.add(axisMesh);
-  const coneTop = new THREE.Mesh(
-    new THREE.ConeGeometry(0.07, 0.22, 8),
-    new THREE.MeshBasicMaterial({ color: 0x0ea5e9 })
-  );
-  coneTop.position.y = axisLen / 2 + 0.11;
-  axisHelperGroup.add(coneTop);
-  bennuTiltPivot.add(axisHelperGroup);
+  const bennuTiltPivot =
+    new THREE.Group();
 
-  /* ---- Câmara inicial: já enquadrada no Bennu ---- */
-  const initialBennuPos = keplerPosition(BENNU_A, BENNU_E, BENNU_INC, BENNU_OMEGA, BENNU_NODE, 0);
-  controls.target.copy(initialBennuPos);
-  camera.position.copy(initialBennuPos).add(new THREE.Vector3(6, 3, 10));
+  bennuTiltPivot.rotation.z =
+    THREE.MathUtils.degToRad(
+      OBLIQUITY_DEG - 90
+    );
+
+  bennuPositionGroup.add(
+    bennuTiltPivot
+  );
+
+  const bennuTexture =
+    buildBennuTexture(
+      noiseGenerator
+    );
+
+  const bennuMesh =
+    new THREE.Mesh(
+      buildBennuGeometry(
+        BENNU_VISUAL_RADIUS,
+        noiseGenerator
+      ),
+      new THREE.MeshStandardMaterial({
+        map: bennuTexture,
+        roughness: 0.97,
+        metalness: 0,
+      })
+    );
+
+  bennuTiltPivot.add(
+    bennuMesh
+  );
+
+  const axisHelperGroup =
+    new THREE.Group();
+
+  const axisLength =
+    BENNU_VISUAL_RADIUS *
+    2.6;
+
+  const axisMaterial =
+    new THREE.MeshBasicMaterial({
+      color: 0x0ea5e9,
+      transparent: true,
+      opacity: 0.75,
+    });
+
+  const axisMesh =
+    new THREE.Mesh(
+      new THREE.CylinderGeometry(
+        0.015,
+        0.015,
+        axisLength,
+        8
+      ),
+      axisMaterial
+    );
+
+  axisHelperGroup.add(
+    axisMesh
+  );
+
+  const coneTop =
+    new THREE.Mesh(
+      new THREE.ConeGeometry(
+        0.07,
+        0.22,
+        8
+      ),
+      new THREE.MeshBasicMaterial({
+        color: 0x0ea5e9,
+      })
+    );
+
+  coneTop.position.y =
+    axisLength / 2 + 0.11;
+
+  axisHelperGroup.add(
+    coneTop
+  );
+
+  bennuTiltPivot.add(
+    axisHelperGroup
+  );
+
+  const earthPosition =
+    new THREE.Vector3();
+
+  const bennuPosition =
+    new THREE.Vector3();
+
+  const previousTarget =
+    new THREE.Vector3();
+
+  const targetDelta =
+    new THREE.Vector3();
+
+  const sceneCenter =
+    new THREE.Vector3();
+
+  setKeplerPosition(
+    bennuPosition,
+    BENNU_A,
+    BENNU_E,
+    BENNU_INC,
+    BENNU_OMEGA,
+    BENNU_NODE,
+    0
+  );
+
+  controls.target.copy(
+    bennuPosition
+  );
+
+  camera.position
+    .copy(bennuPosition)
+    .add(
+      new THREE.Vector3(
+        6,
+        3,
+        10
+      )
+    );
+
   resize();
   controls.update();
 
-  /* ---- Loop de animação ---- */
-  const clock = new THREE.Clock();
-  const rotationPeriodDaysEq = ROTATION_PERIOD_HOURS / 24;
-  let rafId = null;
+  const clock =
+    new THREE.Clock();
 
-  function tick() {
-    rafId = requestAnimationFrame(tick);
-    const dt = Math.min(clock.getDelta(), 0.05);
+  const rotationPeriodDays =
+    ROTATION_PERIOD_HOURS /
+    24;
 
-    if (playing) simDays += dt * daysPerSecond;
+  function emitState(
+    timestamp,
+    force = false
+  ) {
+    if (
+      !force &&
+      timestamp -
+        lastStateEmitTime <
+        STATE_EMIT_INTERVAL
+    ) {
+      return;
+    }
 
-    const earthM = ((simDays / EARTH_PERIOD_DAYS) * Math.PI * 2) % (Math.PI * 2);
-    const earthPos = keplerPosition(1.0, 0.0167, 0, 0, 0, earthM);
-    earthMesh.position.copy(earthPos);
-    earthMesh.rotation.y += dt * Math.PI * 2;
+    lastStateEmitTime =
+      timestamp;
 
-    const bennuM = ((simDays / BENNU_PERIOD_DAYS) * Math.PI * 2) % (Math.PI * 2);
-    const bennuPos = keplerPosition(BENNU_A, BENNU_E, BENNU_INC, BENNU_OMEGA, BENNU_NODE, bennuM);
-    bennuPositionGroup.position.copy(bennuPos);
+    const state = {
+      simDays:
+        simulationDays,
 
-    const simDaysThisFrame = playing ? dt * daysPerSecond : 0;
-    const spinAngle = (simDaysThisFrame / (rotationPeriodDaysEq * ROTATION_SLOWDOWN)) * Math.PI * 2;
-    bennuMesh.rotation.y += spinAngle;
+      elapsedYears:
+        simulationDays /
+        365.25,
+
+      playing,
+    };
+
+    listeners.forEach(
+      (callback) => {
+        try {
+          callback(state);
+        } catch (error) {
+          console.error(
+            "Erro no listener da simulação de Bennu:",
+            error
+          );
+        }
+      }
+    );
+  }
+
+  function renderFrame(
+    timestamp
+  ) {
+    if (disposed) {
+      return;
+    }
+
+    animationFrameId =
+      window.requestAnimationFrame(
+        renderFrame
+      );
+
+    if (!pageVisible) {
+      clock.getDelta();
+      return;
+    }
+
+    const deltaTime =
+      Math.min(
+        clock.getDelta(),
+        MAX_FRAME_DELTA
+      );
+
+    if (playing) {
+      simulationDays +=
+        deltaTime *
+        daysPerSecond;
+    }
+
+    const earthMeanAnomaly =
+      ((simulationDays /
+        EARTH_PERIOD_DAYS) *
+        Math.PI *
+        2) %
+      (Math.PI * 2);
+
+    setKeplerPosition(
+      earthPosition,
+      1,
+      0.0167,
+      0,
+      0,
+      0,
+      earthMeanAnomaly
+    );
+
+    earthMesh.position.copy(
+      earthPosition
+    );
+
+    if (playing) {
+      earthMesh.rotation.y +=
+        deltaTime *
+        Math.PI *
+        2;
+    }
+
+    const bennuMeanAnomaly =
+      ((simulationDays /
+        BENNU_PERIOD_DAYS) *
+        Math.PI *
+        2) %
+      (Math.PI * 2);
+
+    setKeplerPosition(
+      bennuPosition,
+      BENNU_A,
+      BENNU_E,
+      BENNU_INC,
+      BENNU_OMEGA,
+      BENNU_NODE,
+      bennuMeanAnomaly
+    );
+
+    bennuPositionGroup.position.copy(
+      bennuPosition
+    );
+
+    if (playing) {
+      const simulationDaysThisFrame =
+        deltaTime *
+        daysPerSecond;
+
+      const spinAngle =
+        (simulationDaysThisFrame /
+          (rotationPeriodDays *
+            ROTATION_SLOWDOWN)) *
+        Math.PI *
+        2;
+
+      bennuMesh.rotation.y +=
+        spinAngle;
+    }
 
     if (followBennu) {
-      const prevTarget = controls.target.clone();
-      controls.target.lerp(bennuPos, 0.06);
-      const delta = controls.target.clone().sub(prevTarget);
-      camera.position.add(delta);
+      previousTarget.copy(
+        controls.target
+      );
+
+      controls.target.lerp(
+        bennuPosition,
+        0.06
+      );
+
+      targetDelta
+        .copy(controls.target)
+        .sub(previousTarget);
+
+      camera.position.add(
+        targetDelta
+      );
     } else {
-      controls.target.lerp(new THREE.Vector3(0, 0, 0), 0.04);
+      controls.target.lerp(
+        sceneCenter,
+        0.04
+      );
     }
 
     controls.update();
-    renderer.render(scene, camera);
-    emitState();
+
+    renderer.render(
+      scene,
+      camera
+    );
+
+    emitState(timestamp);
   }
-  tick();
+
+  function handleVisibilityChange() {
+    pageVisible =
+      !document.hidden;
+
+    clock.getDelta();
+
+    if (pageVisible) {
+      resize();
+    }
+  }
+
+  document.addEventListener(
+    "visibilitychange",
+    handleVisibilityChange
+  );
+
+  animationFrameId =
+    window.requestAnimationFrame(
+      renderFrame
+    );
 
   return {
     setPlaying(value) {
-      playing = value;
+      playing = Boolean(value);
+
+      emitState(
+        performance.now(),
+        true
+      );
     },
+
     setSpeed(value) {
-      daysPerSecond = value;
-    },
-    setShowOrbits(value) {
-      earthOrbitLine.visible = value;
-      bennuOrbitLine.visible = value;
-    },
-    setShowAxis(value) {
-      axisHelperGroup.visible = value;
-    },
-    setFollow(value) {
-      followBennu = value;
-    },
-    onUpdate(cb) {
-      listeners.add(cb);
-      return () => listeners.delete(cb);
-    },
-    dispose() {
-      if (disposed) return;
-      disposed = true;
-      cancelAnimationFrame(rafId);
-      resizeObserver.disconnect();
-      controls.dispose();
-      scene.traverse((obj) => {
-        if (obj.geometry) obj.geometry.dispose();
-        if (obj.material) {
-          const materials = Array.isArray(obj.material) ? obj.material : [obj.material];
-          materials.forEach((m) => {
-            if (m.map) m.map.dispose();
-            m.dispose();
-          });
-        }
-      });
-      renderer.dispose();
-      if (renderer.domElement.parentNode === container) {
-        container.removeChild(renderer.domElement);
+      const numericValue =
+        Number(value);
+
+      if (
+        !Number.isFinite(
+          numericValue
+        )
+      ) {
+        return;
       }
+
+      daysPerSecond =
+        THREE.MathUtils.clamp(
+          numericValue,
+          0,
+          MAX_SPEED
+        );
+    },
+
+    setShowOrbits(value) {
+      const visible =
+        Boolean(value);
+
+      earthOrbitLine.visible =
+        visible;
+
+      bennuOrbitLine.visible =
+        visible;
+    },
+
+    setShowAxis(value) {
+      axisHelperGroup.visible =
+        Boolean(value);
+    },
+
+    setFollow(value) {
+      followBennu =
+        Boolean(value);
+    },
+
+    onUpdate(callback) {
+      if (
+        typeof callback !==
+        "function"
+      ) {
+        return () => {};
+      }
+
+      listeners.add(
+        callback
+      );
+
+      callback({
+        simDays:
+          simulationDays,
+
+        elapsedYears:
+          simulationDays /
+          365.25,
+
+        playing,
+      });
+
+      return () => {
+        listeners.delete(
+          callback
+        );
+      };
+    },
+
+    dispose() {
+      if (disposed) {
+        return;
+      }
+
+      disposed = true;
+
+      if (
+        animationFrameId !==
+        null
+      ) {
+        window.cancelAnimationFrame(
+          animationFrameId
+        );
+      }
+
+      document.removeEventListener(
+        "visibilitychange",
+        handleVisibilityChange
+      );
+
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      } else {
+        window.removeEventListener(
+          "resize",
+          resize
+        );
+      }
+
+      listeners.clear();
+
+      controls.dispose();
+
+      scene.traverse(
+        (object) => {
+          object.geometry?.dispose?.();
+
+          if (object.material) {
+            const materials =
+              Array.isArray(
+                object.material
+              )
+                ? object.material
+                : [
+                    object.material,
+                  ];
+
+            materials.forEach(
+              disposeMaterial
+            );
+          }
+        }
+      );
+
+      renderer.renderLists?.dispose?.();
+      renderer.dispose();
+
+      renderer.forceContextLoss?.();
+
+      if (
+        renderer.domElement
+          .parentNode ===
+        container
+      ) {
+        container.removeChild(
+          renderer.domElement
+        );
+      }
+
+      scene.clear();
     },
   };
 }

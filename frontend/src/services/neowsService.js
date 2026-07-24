@@ -1,138 +1,486 @@
 import nasaApi from "./nasaApi";
 
 const FEED_ENDPOINT = "/neo/feed";
+const DAY_IN_MILLISECONDS =
+  24 * 60 * 60 * 1000;
 
-// Limite imposto pela NASA NeoWS Feed API: máx. 7 dias por pesquisa (RF-06)
+// Limite da NASA NeoWS Feed API.
 export const MAX_RANGE_DAYS = 7;
 
-// toISOString() converte para UTC, o que desalinha o dia consoante o
-// fuso horário de quem corre o código (ex: passa em UTC+1, falha em
-// CI a correr em UTC). Formata sempre a partir dos getters locais.
+function padDatePart(value) {
+  return String(value).padStart(2, "0");
+}
+
 function toISODate(date) {
+  if (
+    !(date instanceof Date) ||
+    Number.isNaN(date.getTime())
+  ) {
+    return "";
+  }
+
   const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
+
+  const month = padDatePart(
+    date.getMonth() + 1
+  );
+
+  const day = padDatePart(
+    date.getDate()
+  );
 
   return `${year}-${month}-${day}`;
 }
 
-// new Date("YYYY-MM-DD") é interpretado como UTC pelo spec do JS,
-// o que voltaria a introduzir o mesmo desalinhamento ao misturar com
-// getDate()/setDate() (hora local). Construir sempre em hora local.
-function parseISODate(isoString) {
-  const [year, month, day] = isoString.split("-").map(Number);
+function isValidISODate(value) {
+  if (
+    typeof value !== "string" ||
+    !/^\d{4}-\d{2}-\d{2}$/.test(value)
+  ) {
+    return false;
+  }
 
-  return new Date(year, month - 1, day);
+  const [year, month, day] = value
+    .split("-")
+    .map(Number);
+
+  const date = new Date(
+    year,
+    month - 1,
+    day
+  );
+
+  return (
+    date.getFullYear() === year &&
+    date.getMonth() === month - 1 &&
+    date.getDate() === day
+  );
 }
 
-function diffInDays(startISO, endISO) {
-  const start = parseISODate(startISO);
-  const end = parseISODate(endISO);
-  return Math.round((end - start) / (1000 * 60 * 60 * 24));
+function parseISODate(value) {
+  if (!isValidISODate(value)) {
+    return null;
+  }
+
+  const [year, month, day] = value
+    .split("-")
+    .map(Number);
+
+  return new Date(
+    year,
+    month - 1,
+    day
+  );
+}
+
+function getUtcTimestamp(value) {
+  if (!isValidISODate(value)) {
+    return null;
+  }
+
+  const [year, month, day] = value
+    .split("-")
+    .map(Number);
+
+  return Date.UTC(
+    year,
+    month - 1,
+    day
+  );
+}
+
+function diffInDays(
+  startDate,
+  endDate
+) {
+  const startTimestamp =
+    getUtcTimestamp(startDate);
+
+  const endTimestamp =
+    getUtcTimestamp(endDate);
+
+  if (
+    startTimestamp === null ||
+    endTimestamp === null
+  ) {
+    return null;
+  }
+
+  return Math.round(
+    (endTimestamp -
+      startTimestamp) /
+      DAY_IN_MILLISECONDS
+  );
+}
+
+function toFiniteNumber(value) {
+  if (
+    value === null ||
+    value === undefined ||
+    value === ""
+  ) {
+    return null;
+  }
+
+  const number = Number(value);
+
+  return Number.isFinite(number)
+    ? number
+    : null;
+}
+
+function cleanName(value) {
+  if (
+    typeof value !== "string" ||
+    !value.trim()
+  ) {
+    return "Objeto desconhecido";
+  }
+
+  return (
+    value
+      .replace(/[()]/g, "")
+      .trim() ||
+    "Objeto desconhecido"
+  );
 }
 
 /**
- * Devolve um intervalo de datas por omissão, a partir de hoje.
+ * Devolve o intervalo inicial:
+ * hoje até aos próximos sete dias.
  */
-export function getDefaultDateRange(daysAhead = MAX_RANGE_DAYS) {
+export function getDefaultDateRange(
+  daysAhead = MAX_RANGE_DAYS
+) {
+  const safeDaysAhead = Math.min(
+    Math.max(
+      Number(daysAhead) || 0,
+      0
+    ),
+    MAX_RANGE_DAYS
+  );
+
   const startDate = new Date();
-  const endDate = new Date();
-  endDate.setDate(endDate.getDate() + Math.min(daysAhead, MAX_RANGE_DAYS));
+
+  const endDate = new Date(
+    startDate
+  );
+
+  endDate.setDate(
+    endDate.getDate() +
+      safeDaysAhead
+  );
 
   return {
-    startDate: toISODate(startDate),
-    endDate: toISODate(endDate),
+    startDate: toISODate(
+      startDate
+    ),
+
+    endDate: toISODate(
+      endDate
+    ),
   };
 }
 
 /**
- * Garante que o intervalo [startDate, endDate] nunca excede o limite da API (RF-06).
- * Se exceder, o endDate é "clampado" para startDate + MAX_RANGE_DAYS.
- * Devolve também um indicador de que o intervalo foi ajustado.
+ * Garante que o intervalo é válido e
+ * não excede o limite máximo da API.
+ *
+ * Datas futuras são permitidas.
  */
-export function clampDateRange(startDate, endDate) {
-  const start = parseISODate(startDate);
-  let end = parseISODate(endDate);
+export function clampDateRange(
+  startDate,
+  endDate
+) {
+  const today = new Date();
+
+  let start = parseISODate(
+    startDate
+  );
+
+  let end = parseISODate(
+    endDate
+  );
+
   let wasClamped = false;
+
+  if (!start) {
+    start = new Date(today);
+    wasClamped = true;
+  }
+
+  if (!end) {
+    end = new Date(start);
+    wasClamped = true;
+  }
 
   if (end < start) {
     end = new Date(start);
     wasClamped = true;
   }
 
-  const diffDays = diffInDays(toISODate(start), toISODate(end));
+  const differenceInDays =
+    diffInDays(
+      toISODate(start),
+      toISODate(end)
+    );
 
-  if (diffDays > MAX_RANGE_DAYS) {
+  if (
+    differenceInDays !== null &&
+    differenceInDays >
+      MAX_RANGE_DAYS
+  ) {
     end = new Date(start);
-    end.setDate(end.getDate() + MAX_RANGE_DAYS);
+
+    end.setDate(
+      end.getDate() +
+        MAX_RANGE_DAYS
+    );
+
     wasClamped = true;
   }
 
   return {
-    startDate: toISODate(start),
-    endDate: toISODate(end),
+    startDate: toISODate(
+      start
+    ),
+
+    endDate: toISODate(
+      end
+    ),
+
     wasClamped,
   };
 }
 
-function normalizeNeo(neo, closeApproach) {
-  const diameterKm = neo.estimated_diameter?.kilometers;
-  const diameterMin = diameterKm?.estimated_diameter_min ?? null;
-  const diameterMax = diameterKm?.estimated_diameter_max ?? null;
+function normalizeNeo(
+  neo,
+  closeApproach
+) {
+  const diameterKilometers =
+    neo?.estimated_diameter
+      ?.kilometers;
+
+  const diameterMeters =
+    neo?.estimated_diameter
+      ?.meters;
+
+  const diameterMinKm =
+    toFiniteNumber(
+      diameterKilometers
+        ?.estimated_diameter_min
+    );
+
+  const diameterMaxKm =
+    toFiniteNumber(
+      diameterKilometers
+        ?.estimated_diameter_max
+    );
+
+  const diameterMinM =
+    toFiniteNumber(
+      diameterMeters
+        ?.estimated_diameter_min
+    );
+
+  const diameterMaxM =
+    toFiniteNumber(
+      diameterMeters
+        ?.estimated_diameter_max
+    );
+
+  const missDistanceKm =
+    toFiniteNumber(
+      closeApproach
+        ?.miss_distance
+        ?.kilometers
+    );
+
+  const missDistanceLunar =
+    toFiniteNumber(
+      closeApproach
+        ?.miss_distance
+        ?.lunar
+    );
+
+  const velocityKmH =
+    toFiniteNumber(
+      closeApproach
+        ?.relative_velocity
+        ?.kilometers_per_hour
+    );
 
   return {
-    id: neo.id,
-    neoReferenceId: neo.neo_reference_id,
-    name: neo.name?.replace(/[()]/g, "") ?? "Objeto desconhecido",
-    isHazardous: Boolean(neo.is_potentially_hazardous_asteroid),
-    isSentryObject: Boolean(neo.is_sentry_object),
-    absoluteMagnitude: neo.absolute_magnitude_h ?? null,
-    diameterMinKm: diameterMin,
-    diameterMaxKm: diameterMax,
-    diameterAvgKm:
-      diameterMin != null && diameterMax != null
-        ? (diameterMin + diameterMax) / 2
-        : null,
-    jplUrl: neo.nasa_jpl_url,
-    closeApproachDate:
-      closeApproach?.close_approach_date_full ||
-      closeApproach?.close_approach_date ||
+    id:
+      neo?.id ??
+      neo?.neo_reference_id ??
       null,
-    missDistanceKm: closeApproach?.miss_distance?.kilometers
-      ? Number(closeApproach.miss_distance.kilometers)
-      : null,
-    missDistanceLunar: closeApproach?.miss_distance?.lunar
-      ? Number(closeApproach.miss_distance.lunar)
-      : null,
-    velocityKmH: closeApproach?.relative_velocity?.kilometers_per_hour
-      ? Number(closeApproach.relative_velocity.kilometers_per_hour)
-      : null,
-    orbitingBody: closeApproach?.orbiting_body || "Terra",
+
+    neoReferenceId:
+      neo?.neo_reference_id ??
+      neo?.id ??
+      null,
+
+    name: cleanName(
+      neo?.name
+    ),
+
+    isHazardous: Boolean(
+      neo
+        ?.is_potentially_hazardous_asteroid
+    ),
+
+    isSentryObject: Boolean(
+      neo?.is_sentry_object
+    ),
+
+    absoluteMagnitude:
+      toFiniteNumber(
+        neo?.absolute_magnitude_h
+      ),
+
+    diameterMinKm,
+    diameterMaxKm,
+
+    diameterAvgKm:
+      diameterMinKm !== null &&
+      diameterMaxKm !== null
+        ? (diameterMinKm +
+            diameterMaxKm) /
+          2
+        : null,
+
+    diameterMinM,
+    diameterMaxM,
+
+    jplUrl:
+      typeof neo?.nasa_jpl_url ===
+      "string"
+        ? neo.nasa_jpl_url
+        : null,
+
+    closeApproachDate:
+      closeApproach
+        ?.close_approach_date_full ||
+      closeApproach
+        ?.close_approach_date ||
+      null,
+
+    missDistanceKm,
+    missDistanceLunar,
+    velocityKmH,
+
+    orbitingBody:
+      closeApproach
+        ?.orbiting_body ||
+      "Terra",
+
+    raw: neo,
   };
 }
 
 /**
- * RF-06 — Vai buscar os objetos próximos da Terra num intervalo de datas.
- * O intervalo é sempre validado/limitado a MAX_RANGE_DAYS antes do pedido.
+ * Obtém os objetos próximos da Terra
+ * para o intervalo indicado.
  */
-export async function fetchNeoFeed(startDate, endDate) {
-  const { startDate: safeStart, endDate: safeEnd } = clampDateRange(
+export async function fetchNeoFeed(
+  startDate,
+  endDate
+) {
+  if (
+    !isValidISODate(startDate) ||
+    !isValidISODate(endDate)
+  ) {
+    throw new Error(
+      "O intervalo de datas da NeoWS não é válido."
+    );
+  }
+
+  const {
+    startDate: safeStart,
+    endDate: safeEnd,
+  } = clampDateRange(
     startDate,
     endDate
   );
 
-  const { data } = await nasaApi.get(FEED_ENDPOINT, {
-    params: { start_date: safeStart, end_date: safeEnd },
-  });
+  const { data } =
+    await nasaApi.get(
+      FEED_ENDPOINT,
+      {
+        params: {
+          start_date:
+            safeStart,
 
-  const byDate = data?.near_earth_objects || {};
+          end_date:
+            safeEnd,
+        },
+      }
+    );
 
-  const objects = Object.values(byDate)
-    .flat()
-    .map((neo) => normalizeNeo(neo, neo.close_approach_data?.[0]));
+  const objectsByDate =
+    data?.near_earth_objects;
+
+  const safeObjectsByDate =
+    objectsByDate &&
+    typeof objectsByDate ===
+      "object"
+      ? objectsByDate
+      : {};
+
+  const objects =
+    Object.values(
+      safeObjectsByDate
+    )
+      .filter(Array.isArray)
+      .flat()
+      .filter(
+        (neo) =>
+          neo &&
+          typeof neo === "object"
+      )
+      .map((neo) => {
+        const approaches =
+          Array.isArray(
+            neo.close_approach_data
+          )
+            ? neo.close_approach_data
+            : [];
+
+        const matchingApproach =
+          approaches.find(
+            (approach) => {
+              const approachDate =
+                approach
+                  ?.close_approach_date;
+
+              return (
+                approachDate >=
+                  safeStart &&
+                approachDate <=
+                  safeEnd
+              );
+            }
+          ) ||
+          approaches[0] ||
+          null;
+
+        return normalizeNeo(
+          neo,
+          matchingApproach
+        );
+      })
+      .filter(
+        (neo) =>
+          neo.id !== null
+      );
 
   return {
-    elementCount: data?.element_count ?? objects.length,
+    elementCount:
+      toFiniteNumber(
+        data?.element_count
+      ) ?? objects.length,
+
     startDate: safeStart,
     endDate: safeEnd,
     objects,
@@ -140,22 +488,84 @@ export async function fetchNeoFeed(startDate, endDate) {
 }
 
 /**
- * RF-08 — Ordena a lista por distância de aproximação ("miss distance").
+ * Ordena por distância de aproximação.
  */
-export function sortByMissDistance(objects, direction = "asc") {
-  return [...objects].sort((a, b) => {
-    const distA = a.missDistanceKm ?? Infinity;
-    const distB = b.missDistanceKm ?? Infinity;
-    return direction === "asc" ? distA - distB : distB - distA;
-  });
+export function sortByMissDistance(
+  objects,
+  direction = "asc"
+) {
+  const safeObjects =
+    Array.isArray(objects)
+      ? objects
+      : [];
+
+  const safeDirection =
+    direction === "desc"
+      ? "desc"
+      : "asc";
+
+  return [...safeObjects].sort(
+    (
+      firstObject,
+      secondObject
+    ) => {
+      const firstDistance =
+        firstObject
+          ?.missDistanceKm;
+
+      const secondDistance =
+        secondObject
+          ?.missDistanceKm;
+
+      const firstHasDistance =
+        firstDistance !== null &&
+        firstDistance !==
+          undefined;
+
+      const secondHasDistance =
+        secondDistance !== null &&
+        secondDistance !==
+          undefined;
+
+      if (
+        !firstHasDistance &&
+        !secondHasDistance
+      ) {
+        return 0;
+      }
+
+      if (!firstHasDistance) {
+        return 1;
+      }
+
+      if (!secondHasDistance) {
+        return -1;
+      }
+
+      return safeDirection ===
+        "asc"
+        ? firstDistance -
+            secondDistance
+        : secondDistance -
+            firstDistance;
+    }
+  );
 }
 
 /**
- * RF-07 — Estatísticas agregadas: total, contagem de perigosos,
- * objeto mais próximo e maior diâmetro estimado.
+ * Calcula as estatísticas agregadas.
  */
-export function computeStats(objects) {
-  if (!objects.length) {
+export function computeStats(
+  objects
+) {
+  const safeObjects =
+    Array.isArray(objects)
+      ? objects
+      : [];
+
+  if (
+    safeObjects.length === 0
+  ) {
     return {
       total: 0,
       hazardousCount: 0,
@@ -164,22 +574,76 @@ export function computeStats(objects) {
     };
   }
 
-  const hazardousCount = objects.filter((neo) => neo.isHazardous).length;
+  const hazardousCount =
+    safeObjects.filter(
+      (neo) =>
+        Boolean(
+          neo?.isHazardous
+        )
+    ).length;
 
-  const closest = objects.reduce((min, neo) => {
-    if (neo.missDistanceKm == null) return min;
-    if (!min || neo.missDistanceKm < min.missDistanceKm) return neo;
-    return min;
-  }, null);
+  const closest =
+    safeObjects.reduce(
+      (
+        closestObject,
+        neo
+      ) => {
+        if (
+          neo?.missDistanceKm ===
+            null ||
+          neo?.missDistanceKm ===
+            undefined
+        ) {
+          return closestObject;
+        }
 
-  const largest = objects.reduce((max, neo) => {
-    if (neo.diameterMaxKm == null) return max;
-    if (!max || neo.diameterMaxKm > max.diameterMaxKm) return neo;
-    return max;
-  }, null);
+        if (
+          !closestObject ||
+          neo.missDistanceKm <
+            closestObject
+              .missDistanceKm
+        ) {
+          return neo;
+        }
+
+        return closestObject;
+      },
+      null
+    );
+
+  const largest =
+    safeObjects.reduce(
+      (
+        largestObject,
+        neo
+      ) => {
+        if (
+          neo?.diameterMaxKm ===
+            null ||
+          neo?.diameterMaxKm ===
+            undefined
+        ) {
+          return largestObject;
+        }
+
+        if (
+          !largestObject ||
+          neo.diameterMaxKm >
+            largestObject
+              .diameterMaxKm
+        ) {
+          return neo;
+        }
+
+        return largestObject;
+      },
+      null
+    );
 
   return {
-    total: objects.length,
+    total:
+      safeObjects.length,
+
     hazardousCount,
     closest,
     largest,

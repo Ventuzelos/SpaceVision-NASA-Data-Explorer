@@ -1,14 +1,25 @@
-import EpicCard from '../../../components/EPIC/EpicCard/EpicCard';
+import EpicCard from "../../../components/EPIC/EpicCard/EpicCard";
 
-// EpicPanel passa a foto selecionada (já no formato "detail":
-// { url, caption, time, lat, lon }) como prop `photo`.
-export default function EpicDetail({ photo,  onOpenLightbox }) {
-  if (!photo) return null;
+export default function EpicDetail({
+  photo,
+  onOpenLightbox,
+}) {
+  if (!photo) {
+    return null;
+  }
+
+  function handleImageClick() {
+    if (
+      typeof onOpenLightbox === "function"
+    ) {
+      onOpenLightbox(photo);
+    }
+  }
 
   return (
     <EpicCard
       detail={photo}
-      onImageClick={() => onOpenLightbox?.(photo)}
+      onImageClick={handleImageClick}
     />
   );
 }
