@@ -9,17 +9,33 @@ import { Link } from "react-router-dom";
 
 import Icon from "../../common/Icon/Icon";
 import ErrorState from "../../common/ErrorState/ErrorState";
+import FavoriteButton from "../../common/FavoriteButton/FavoriteButton";
+import Toast from "../../common/Toast/Toast";
 
 import {
   fetchNeoFeed,
   getDefaultDateRange,
   sortByMissDistance,
 } from "../../../services/neowsService";
+import {
+  getFavorites,
+  toggleFavorite,
+} from "../../../services/favoritesService";
 import getApiErrorMessage from "../../../utils/getApiErrorMessage";
 
 import "./DiscovrAsteroidRadar.css";
 
 const ASTEROID_LIST_SIZE = 5;
+const FAVORITES_SOURCE = "neows";
+
+function formatDiameterText(minKm, maxKm) {
+  if (minKm == null || maxKm == null) return "Não disponível";
+
+  const minM = Math.round(minKm * 1000);
+  const maxM = Math.round(maxKm * 1000);
+
+  return `${minM.toLocaleString("pt-PT")} – ${maxM.toLocaleString("pt-PT")} m`;
+}
 
 function isFiniteNumber(value) {
   return Number.isFinite(Number(value));
@@ -301,6 +317,12 @@ function DiscovrAsteroidRadar() {
       }
     }, []);
 
+  const [favoriteKeys, setFavoriteKeys] = useState(() => new Set());
+  const [favoriteLoadingKeys, setFavoriteLoadingKeys] = useState(
+    () => new Set()
+  );
+  const [toastMessage, setToastMessage] = useState("");
+
   useEffect(() => {
     mountedRef.current = true;
 
@@ -558,6 +580,8 @@ function DiscovrAsteroidRadar() {
           aria-hidden="true"
         />
       </Link>
+
+      <Toast message={toastMessage} />
     </section>
   );
 }

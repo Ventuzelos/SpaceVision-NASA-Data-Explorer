@@ -12,43 +12,18 @@ function Footer() {
       <div className="container footer__container">
         <div className="footer__brand">
           <Logo />
+
+          <p className="footer__description">
+            Projeto académico que junta várias APIs públicas da NASA numa
+            única interface, para tornar os dados espaciais mais fáceis de
+            explorar e compreender.
+          </p>
         </div>
 
         <nav
           className="footer__links"
           aria-label="Navegação do rodapé"
         >
-          <section
-            className="footer__group"
-            aria-labelledby="footer-explore-title"
-          >
-            <h2 id="footer-explore-title">
-              Explorar
-            </h2>
-
-            <div className="footer__group-links">
-            <Link to="/donki">
-              Eventos espaciais
-            </Link>
-
-            <Link to="/epic">
-              Terra
-            </Link>
-
-            <Link to="/neowatch">
-              Asteroides
-            </Link>
-
-            <Link to="/discover">
-              Descobrir
-            </Link>
-
-            <Link to="/quiz">
-              Quiz
-            </Link>
-          </div>
-          </section>
-
           <section
             className="footer__group"
             aria-labelledby="footer-information-title"
@@ -69,14 +44,9 @@ function Footer() {
             <Link to="/about#contact">
               Contacto
             </Link>
-
-            <Link to="/accessibility">
-              Acessibilidade
-            </Link>
           </div>
           </section>
 
-      
           <section
             className="footer__group"
             aria-labelledby="footer-resources-title"
@@ -108,26 +78,45 @@ function Footer() {
               </span>
             </a>
           </section>
+
+          <section
+            className="footer__group"
+            aria-labelledby="footer-legal-title"
+          >
+            <h2 id="footer-legal-title">
+              Legal
+            </h2>
+
+            <div className="footer__group-links">
+              <Link to="/cookies">
+                Política de Cookies
+              </Link>
+
+              <Link to="/termos">
+                Termos e Condições
+              </Link>
+
+              <Link to="/privacidade">
+                Política de Privacidade
+              </Link>
+
+              <Link to="/accessibility">
+                Acessibilidade
+              </Link>
+            </div>
+          </section>
         </nav>
       </div>
 
       <div className="container footer__bottom">
-  <div className="footer__left">
-    © {currentYear} SpaceVision — NASA Data Explorer.
-  </div>
+        <div className="footer__left">
+          © {currentYear} SpaceVision — NASA Data Explorer.
+        </div>
 
-  <div className="footer__center">
-    <Link to="/cookies">Política de Cookies</Link>
-    <span>·</span>
-    <Link to="/termos">Termos e Condições</Link>
-    <span>·</span>
-    <Link to="/privacidade">Política de Privacidade</Link>
-  </div>
-
-  <div className="footer__right">
-    Projeto académico desenvolvido para fins educativos.
-  </div>
-</div>
+        <div className="footer__right">
+          Desenvolvido para fins educativos.
+        </div>
+      </div>
     </footer>
   );
 }

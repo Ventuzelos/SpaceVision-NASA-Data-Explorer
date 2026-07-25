@@ -140,7 +140,7 @@
   margin-top: 32px;
   padding: 12px 24px;
 
-  color: #ffffff;
+  color: var(--color-btn-text);
 
   font: inherit;
   font-weight: 700;
@@ -148,12 +148,12 @@
   cursor: pointer;
 
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 12px;
+  border-radius: var(--radius-btn);
 
-  background: var(--gradient-primary);
+  background: var(--color-btn-bg);
 
   box-shadow:
-    0 12px 26px rgba(46, 111, 245, 0.3);
+    0 12px 26px rgba(0, 0, 0, 0.3);
 
   transition:
     transform 160ms ease,
@@ -164,10 +164,10 @@
 .server-error-button:hover:not(:disabled) {
   transform: translateY(-2px);
 
-  box-shadow:
-    0 16px 34px rgba(0, 51, 184, 0.4);
+  background: var(--color-btn-bg-hover);
 
-  filter: brightness(1.06);
+  box-shadow:
+    0 16px 34px rgba(0, 0, 0, 0.4);
 }
 
 .server-error-button:focus-visible {

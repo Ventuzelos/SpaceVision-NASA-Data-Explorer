@@ -7,9 +7,17 @@ import {
 
 import Icon from "../../common/Icon/Icon";
 import ErrorState from "../../common/ErrorState/ErrorState";
+import FavoriteButton from "../../common/FavoriteButton/FavoriteButton";
+import Toast from "../../common/Toast/Toast";
 
 import { useParallax } from "../../../hooks/useParallax";
+import useAuth from "../../../hooks/useAuth";
 import { getApodByDate } from "../../../services/apodService";
+import {
+  addFavorite,
+  getFavorites,
+  removeFavorite,
+} from "../../../services/favoritesService";
 import getApiErrorMessage from "../../../utils/getApiErrorMessage";
 
 import "./DiscovrGallery.css";
@@ -719,6 +727,124 @@ function DiscovrGallery() {
       setFailedFullUrl(
         fullUrl
       );
+  const currentPhoto = carouselPhotos[carouselIndex];
+  const favoriteId = currentPhoto ? `apod-${currentPhoto.date}` : null;
+
+  useEffect(() => {
+    let isMounted = true;
+
+    if (isAuthLoading || !isAuthenticated || !favoriteId) {
+      return undefined;
+    }
+
+    async function checkFavorite() {
+      try {
+        const favorites = await getFavorites("apod");
+
+        const existingFavorite = favorites.find((item) => {
+          const itemId = item.nasa_id || item.id;
+
+          return String(itemId) === String(favoriteId);
+        });
+
+        if (!isMounted) {
+          return;
+        }
+
+        setFavorite(Boolean(existingFavorite));
+        setFavoriteDatabaseId(existingFavorite?.id || null);
+      } catch (error) {
+        if (error.response?.status !== 401) {
+          console.error("Erro ao verificar favorito:", error);
+        }
+
+        if (isMounted) {
+          setFavorite(false);
+          setFavoriteDatabaseId(null);
+        }
+      }
+    }
+
+    checkFavorite();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [favoriteId, isAuthenticated, isAuthLoading]);
+
+  useEffect(() => {
+    return () => {
+      if (toastTimeoutRef.current) {
+        window.clearTimeout(toastTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  function showToast(message) {
+    if (toastTimeoutRef.current) {
+      window.clearTimeout(toastTimeoutRef.current);
+    }
+
+    setToastMessage(message);
+
+    toastTimeoutRef.current = window.setTimeout(() => {
+      setToastMessage("");
+      toastTimeoutRef.current = null;
+    }, 2500);
+  }
+
+  async function handleFavoriteClick() {
+    if (!isAuthenticated) {
+      showToast("Precisas de iniciar sessão para guardar favoritos");
+      return;
+    }
+
+    if (isFavoriteLoading || !currentPhoto) {
+      return;
+    }
+
+    try {
+      setIsFavoriteLoading(true);
+
+      if (favorite && favoriteDatabaseId) {
+        await removeFavorite(favoriteDatabaseId);
+
+        setFavorite(false);
+        setFavoriteDatabaseId(null);
+
+        showToast("Removido dos favoritos");
+        return;
+      }
+
+      const favoriteItem = {
+        nasa_type: "apod",
+        nasa_id: favoriteId,
+        title: currentPhoto.title || "Imagem astronómica da NASA",
+        image_url: currentPhoto.url,
+
+        data: {
+          ...currentPhoto,
+          media_type: "image",
+          image_url: currentPhoto.url,
+        },
+      };
+
+      const createdFavorite = await addFavorite(favoriteItem);
+
+      setFavorite(true);
+      setFavoriteDatabaseId(createdFavorite.id);
+
+      showToast("Adicionado aos favoritos");
+    } catch (error) {
+      console.error("Erro ao atualizar favorito:", error);
+
+      if (error.response?.status === 401) {
+        showToast("Precisas de iniciar sessão para guardar favoritos");
+      } else {
+        showToast("Não foi possível atualizar o favorito");
+      }
+    } finally {
+      setIsFavoriteLoading(false);
     }
   }
 
@@ -926,6 +1052,45 @@ function DiscovrGallery() {
                   </a>
                 )}
               </div>
+      {!carouselLoading && carouselError && (
+        <ErrorState
+          title="Sinal perdido"
+          message={carouselError}
+          onRetry={() =>
+            loadCarouselPhotos(true)
+          }
+        />
+      )}
+
+      {!carouselLoading && !carouselError && currentPhoto && (
+        <div className="discovr-carousel">
+          <div className="discovr-carousel__card">
+            <div className="discovr-carousel__text">
+              <span className="discovr-carousel__eyebrow">
+                {formatApodEyebrow(currentPhoto.date)}
+              </span>
+
+              <div className="discovr-carousel__title-row">
+                <h3>{currentPhoto.title}</h3>
+
+                <FavoriteButton
+                  active={isAuthenticated && favorite}
+                  onClick={handleFavoriteClick}
+                  disabled={isFavoriteLoading || isAuthLoading}
+                  ariaLabel={
+                    favorite
+                      ? "Remover dos favoritos"
+                      : "Adicionar aos favoritos"
+                  }
+                />
+              </div>
+
+              <p>{truncateText(currentPhoto.explanation, 220)}</p>
+
+              <a href="#apod-historico" className="discovr-link">
+                Ver arquivo de imagens
+                <Icon name="ArrowRight" size={16} />
+              </a>
             </div>
 
             <div
@@ -1004,6 +1169,10 @@ function DiscovrGallery() {
             </div>
           </div>
         )}
+        </div>
+      )}
+
+      <Toast message={toastMessage} />
     </section>
   );
 }

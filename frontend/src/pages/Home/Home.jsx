@@ -77,9 +77,9 @@ function Home() {
       <main>
         <Hero />
 
-        <IntroSection />
-
         <ApiSection />
+
+        <IntroSection />
 
         <FilmStrip />
 
