@@ -204,7 +204,7 @@ describe("NeoDateRangeFilter", () => {
         expect(
             screen.getByRole("alert")
         ).toHaveTextContent(
-            "O intervalo máximo permitido pela API é de 7 dias. Ajustámos a data final."
+            "O intervalo máximo permitido pela API é de 7 dias. A data final foi ajustada."
         );
     });
 

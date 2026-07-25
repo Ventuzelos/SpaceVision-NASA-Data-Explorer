@@ -131,15 +131,22 @@ function NavLinks({ onNavigate }) {
                   className="nav-links__dropdown-item-icon"
                 />
 
-                <span className="nav-links__dropdown-text">
+                <div className="nav-links__dropdown-text">
                   <span>{title}</span>
                   <small>{description}</small>
-                </span>
+                </div>
               </NavLink>
             ))}
           </div>
         </div>
       </div>
+
+      <NavLink
+        to="/discover"
+        onClick={handleNavigate}
+      >
+        Descobrir
+      </NavLink>
 
       <NavLink
         to="/quiz"

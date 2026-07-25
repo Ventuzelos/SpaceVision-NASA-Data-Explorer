@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
-  ChevronDown,
   Heart,
   LogOut,
   Shield,
@@ -148,20 +147,11 @@ function UserMenu({ onMobileNavigate }) {
           aria-expanded={isAccountMenuOpen}
           aria-controls="account-dropdown"
         >
-          <span className="account-menu-trigger__text">
-            <small>Olá, {firstName}</small>
-            <strong>Minha conta</strong>
-          </span>
+          <User size={20} aria-hidden="true" />
 
-          <ChevronDown
-            size={18}
-            aria-hidden="true"
-            className={
-              isAccountMenuOpen
-                ? "account-menu-trigger__icon account-menu-trigger__icon--open"
-                : "account-menu-trigger__icon"
-            }
-          />
+          <span className="account-menu-trigger__greeting">
+            Olá, {firstName}
+          </span>
         </button>
 
         {isAccountMenuOpen && (
@@ -232,6 +222,19 @@ function UserMenu({ onMobileNavigate }) {
       </div>
 
       <div className="user-menu__mobile">
+        <div className="account-dropdown__header">
+          <span className="account-dropdown__avatar" aria-hidden="true">
+            {firstName.charAt(0).toUpperCase()}
+          </span>
+
+          <div>
+            <strong>Olá, {firstName}</strong>
+            <span>{user.email}</span>
+          </div>
+        </div>
+
+        <div className="account-dropdown__divider" />
+
         {isAdmin && (
           <Link
             to="/admin"

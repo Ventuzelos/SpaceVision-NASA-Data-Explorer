@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Icons } from "../../../constants/icons";
 import SearchInput from "../../common/SearchInput/SearchInput";
-import heroImage from "../../../assets/lua2.webp";
+import heroImage from "../../../assets/astronaut_nasa.jpg";
 import { searchablePages } from "../../../constants/searchPages";
 
 import "../../common/Button/Button.css";
@@ -33,21 +33,24 @@ function Hero() {
   return (
     <section
       className="hero"
-      style={{ backgroundImage: `url(${heroImage})` }}
+      style={{ "--hero-image": `url(${heroImage})` }}
     >
       <div className="hero__overlay">
         <div className="container hero__container">
           <div className="hero__content">
-            <h1 className="hero__title">
-              Bem-vindo ao{" "}
-              <span className="hero__title-accent">Space Vision</span>
-            </h1>
-
+            {/* Linha 1 */}
+            <span className="hero__welcome-text">Bem-vindo ao</span>
+            
+            {/* Linha 2 - H1 com texto em maiúsculas */}
+            <h1 className="hero__title">SPACE VISION</h1>
+            
+            {/* Linha 3 - Descrição */}
             <p className="hero__description">
               Imagens, missões e descobertas do espaço, tudo num só lugar.
               Uma forma interativa e educativa de explorar o Universo.
             </p>
 
+            {/* Secção de Pesquisa */}
             <div className="hero__search">
               <SearchInput
                 placeholder="Pesquisar imagens, missões ou planetas..."
@@ -84,9 +87,24 @@ function Hero() {
               )}
             </div>
 
-            <Link to="/about" className="btn btn--primary hero__link">
-              Saiba mais sobre nós <span aria-hidden="true">→</span>
-            </Link>
+            {/* Nova Secção de Estatísticas (Posicionada corretamente) */}
+            <div className="hero__stats">
+              <div className="hero__stat-item">
+                <span className="hero__stat-number">4</span>
+                <span className="hero__stat-label">APIS DA NASA</span>
+              </div>
+              
+              <div className="hero__stat-item">
+                <span className="hero__stat-number">&infin;</span>
+                <span className="hero__stat-label">OBJETOS CÓSMICOS</span>
+              </div>
+              
+              <div className="hero__stat-item">
+                <span className="hero__stat-number">24/7</span>
+                <span className="hero__stat-label">DADOS AO VIVO</span>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>

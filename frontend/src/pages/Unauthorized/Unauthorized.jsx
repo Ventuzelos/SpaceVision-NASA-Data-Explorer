@@ -31,6 +31,10 @@ function Unauthorized() {
                 <Icon name="ArrowLeft" size={18} />
                 Voltar ao início
               </Link>
+
+              <Link to="/login" className="unauthorized__btn unauthorized__btn--ghost">
+                Iniciar sessão
+              </Link>
             </div>
           </div>
         </Container>
