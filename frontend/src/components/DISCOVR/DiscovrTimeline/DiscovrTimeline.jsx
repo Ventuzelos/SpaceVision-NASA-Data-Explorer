@@ -6,7 +6,7 @@ import {
 
 import Icon from "../../common/Icon/Icon";
 
-import sceneImage from "../../../assets/hero1.webp";
+import sceneImage from "../../../assets/sky_stars.jpg";
 
 import "./DiscovrTimeline.css";
 

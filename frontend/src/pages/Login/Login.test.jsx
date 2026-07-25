@@ -21,13 +21,6 @@ import {
 import Login from "./Login";
 import useAuth from "../../hooks/useAuth";
 
-vi.mock(
-"../../components/common/GalaxyBackground/GalaxyBackground",
-  () => ({
-  default: () => null,
-})
-);
-
 vi.mock("../../hooks/useAuth", () => ({
   default: vi.fn(),
 }));

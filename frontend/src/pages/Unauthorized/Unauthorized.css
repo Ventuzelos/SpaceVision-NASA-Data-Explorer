@@ -76,3 +76,14 @@
 .unauthorized__btn--primary:hover {
   opacity: 0.9;
 }
+
+.unauthorized__btn--ghost {
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.unauthorized__btn--ghost:hover {
+  border-color: var(--color-primary);
+  color: var(--color-text);
+}

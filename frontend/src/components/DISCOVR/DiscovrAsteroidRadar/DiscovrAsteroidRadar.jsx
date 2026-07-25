@@ -1,8 +1,6 @@
 import {
   useCallback,
   useEffect,
-  useMemo,
-  useRef,
   useState,
 } from "react";
 import { Link } from "react-router-dom";
@@ -28,15 +26,6 @@ import "./DiscovrAsteroidRadar.css";
 const ASTEROID_LIST_SIZE = 5;
 const FAVORITES_SOURCE = "neows";
 
-function formatDiameterText(minKm, maxKm) {
-  if (minKm == null || maxKm == null) return "Não disponível";
-
-  const minM = Math.round(minKm * 1000);
-  const maxM = Math.round(maxKm * 1000);
-
-  return `${minM.toLocaleString("pt-PT")} – ${maxM.toLocaleString("pt-PT")} m`;
-}
-
 function isFiniteNumber(value) {
   return Number.isFinite(Number(value));
 }
@@ -46,544 +35,135 @@ function formatDistanceKm(value) {
     return "Distância desconhecida";
   }
 
-  const distance = Math.max(
-    0,
-    Number(value)
-  );
-
-  return `${Math.round(
-    distance
-  ).toLocaleString("pt-PT")} km`;
+  const distance = Math.max(0, Number(value));
+  return `${Math.round(distance).toLocaleString("pt-PT")} km`;
 }
 
-function formatDiameter(
-  minimumKilometres,
-  maximumKilometres
-) {
-  if (
-    !isFiniteNumber(
-      minimumKilometres
-    ) ||
-    !isFiniteNumber(
-      maximumKilometres
-    )
-  ) {
+function formatDiameter(minimumKilometres, maximumKilometres) {
+  if (!isFiniteNumber(minimumKilometres) || !isFiniteNumber(maximumKilometres)) {
     return "Diâmetro desconhecido";
   }
 
-  const minimumMetres =
-    Math.max(
-      0,
-      Number(minimumKilometres)
-    ) * 1000;
+  const minimumMetres = Math.max(0, Number(minimumKilometres)) * 1000;
+  const maximumMetres = Math.max(minimumMetres, Number(maximumKilometres) * 1000);
 
-  const maximumMetres =
-    Math.max(
-      minimumMetres,
-      Number(maximumKilometres) *
-        1000
-    );
-
-  return `${Math.round(
-    minimumMetres
-  ).toLocaleString(
-    "pt-PT"
-  )} – ${Math.round(
-    maximumMetres
-  ).toLocaleString("pt-PT")} m`;
+  return `${Math.round(minimumMetres).toLocaleString("pt-PT")} – ${Math.round(maximumMetres).toLocaleString("pt-PT")} m`;
 }
 
-function getClosenessPercent(
-  distance,
-  minimum,
-  maximum
-) {
-  if (
-    !isFiniteNumber(distance) ||
-    !isFiniteNumber(minimum) ||
-    !isFiniteNumber(maximum)
-  ) {
-    return 0;
-  }
-
-  const currentDistance =
-    Number(distance);
-
-  const minimumDistance =
-    Number(minimum);
-
-  const maximumDistance =
-    Number(maximum);
-
-  if (
-    maximumDistance ===
-    minimumDistance
-  ) {
-    return 100;
-  }
-
-  const normalizedCloseness =
-    1 -
-    (currentDistance -
-      minimumDistance) /
-      (maximumDistance -
-        minimumDistance);
-
-  const percentage =
-    18 +
-    normalizedCloseness * 82;
-
-  return Math.round(
-    Math.min(
-      100,
-      Math.max(0, percentage)
-    )
-  );
-}
-
-function normalizeAsteroid(asteroid) {
-  if (
-    !asteroid ||
-    typeof asteroid !== "object"
-  ) {
-    return null;
-  }
-
-  const id =
-    asteroid.id != null
-      ? String(asteroid.id)
-      : "";
-
-  if (!id) {
-    return null;
-  }
-
-  return {
-    ...asteroid,
-
-    id,
-
-    name:
-      typeof asteroid.name ===
-        "string" &&
-      asteroid.name.trim()
-        ? asteroid.name.trim()
-        : "Asteroide sem nome",
-
-    missDistanceKm:
-      isFiniteNumber(
-        asteroid.missDistanceKm
-      )
-        ? Number(
-            asteroid.missDistanceKm
-          )
-        : null,
-
-    diameterMinKm:
-      isFiniteNumber(
-        asteroid.diameterMinKm
-      )
-        ? Number(
-            asteroid.diameterMinKm
-          )
-        : null,
-
-    diameterMaxKm:
-      isFiniteNumber(
-        asteroid.diameterMaxKm
-      )
-        ? Number(
-            asteroid.diameterMaxKm
-          )
-        : null,
-
-    isHazardous:
-      Boolean(
-        asteroid.isHazardous
-      ),
-  };
-}
-
-function DiscovrAsteroidRadar() {
-  const [
-    asteroids,
-    setAsteroids,
-  ] = useState([]);
-
-  const [
-    asteroidsLoading,
-    setAsteroidsLoading,
-  ] = useState(true);
-
-  const [
-    asteroidsError,
-    setAsteroidsError,
-  ] = useState("");
-
-  const mountedRef =
-    useRef(true);
-
-  const requestIdRef =
-    useRef(0);
-
-  const loadAsteroids =
-    useCallback(async () => {
-      const requestId =
-        ++requestIdRef.current;
-
-      if (mountedRef.current) {
-        setAsteroidsLoading(true);
-        setAsteroidsError("");
-      }
-
-      try {
-        const {
-          startDate,
-          endDate,
-        } =
-          getDefaultDateRange();
-
-        const feed =
-          await fetchNeoFeed(
-            startDate,
-            endDate
-          );
-
-        if (
-          !mountedRef.current ||
-          requestIdRef.current !==
-            requestId
-        ) {
-          return;
-        }
-
-        const objects =
-          Array.isArray(
-            feed?.objects
-          )
-            ? feed.objects
-                .map(
-                  normalizeAsteroid
-                )
-                .filter(Boolean)
-            : [];
-
-        const closest =
-          sortByMissDistance(
-            objects,
-            "asc"
-          ).slice(
-            0,
-            ASTEROID_LIST_SIZE
-          );
-
-        setAsteroids(
-          closest
-        );
-      } catch (
-        requestError
-      ) {
-        if (
-          !mountedRef.current ||
-          requestIdRef.current !==
-            requestId
-        ) {
-          return;
-        }
-
-        console.error(
-          "Erro ao carregar asteroides:",
-          requestError
-        );
-
-        setAsteroids([]);
-
-        setAsteroidsError(
-          getApiErrorMessage(
-            requestError,
-            "Não foi possível carregar os dados de asteroides."
-          )
-        );
-      } finally {
-        if (
-          mountedRef.current &&
-          requestIdRef.current ===
-            requestId
-        ) {
-          setAsteroidsLoading(
-            false
-          );
-        }
-      }
-    }, []);
-
-  const [favoriteKeys, setFavoriteKeys] = useState(() => new Set());
-  const [favoriteLoadingKeys, setFavoriteLoadingKeys] = useState(
-    () => new Set()
-  );
+export default function DiscovrAsteroidRadar() {
+  const [favoriteKeys, setFavoriteKeys] = useState([]);
+  const [favoriteLoadingKeys, setFavoriteLoadingKeys] = useState({});
   const [toastMessage, setToastMessage] = useState("");
+  
+  const [asteroids, setAsteroids] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    mountedRef.current = true;
+    async function initializeComponent() {
+      try {
+        setLoading(true);
+        
+        const currentFavs = await getFavorites(FAVORITES_SOURCE);
+        if (currentFavs && Array.isArray(currentFavs)) {
+          setFavoriteKeys(currentFavs.map((fav) => fav.id || fav.asteroidId));
+        }
 
-    const initialLoadTimeoutId =
-      window.setTimeout(() => {
-        loadAsteroids();
-      }, 0);
+        const { startDate, endDate } = getDefaultDateRange();
+        const data = await fetchNeoFeed(startDate, endDate);
+        
+        const sortedData = sortByMissDistance(data).slice(0, ASTEROID_LIST_SIZE);
+        setAsteroids(sortedData);
+      } catch (err) {
+        setError(getApiErrorMessage(err));
+        setToastMessage("Erro ao sincronizar informações com a NASA.");
+      } finally {
+        setLoading(false);
+      }
+    }
 
-    return () => {
-      mountedRef.current =
-        false;
+    initializeComponent();
+  }, []);
 
-      requestIdRef.current +=
-        1;
+  const handleToggleFavorite = useCallback(async (asteroid) => {
+    if (!asteroid || !asteroid.id) return;
+    const asteroidId = asteroid.id;
 
-      window.clearTimeout(
-        initialLoadTimeoutId
+    setFavoriteLoadingKeys((prev) => ({ ...prev, [asteroidId]: true }));
+
+    try {
+      const isNowFavorite = await toggleFavorite(FAVORITES_SOURCE, asteroid);
+      
+      setFavoriteKeys((prev) =>
+        isNowFavorite 
+          ? [...prev, asteroidId] 
+          : prev.filter((id) => id !== asteroidId)
       );
-    };
-  }, [loadAsteroids]);
 
-  const validDistances =
-    useMemo(
-      () =>
-        asteroids
-          .map(
-            (asteroid) =>
-              asteroid.missDistanceKm
-          )
-          .filter(
-            isFiniteNumber
-          )
-          .map(Number),
-      [asteroids]
+      setToastMessage(
+        isNowFavorite 
+          ? "Asteroide adicionado aos favoritos!" 
+          : "Asteroide removido dos favoritos."
+      );
+    } catch (err) {
+      setError(getApiErrorMessage(err));
+      setToastMessage("Não foi possível atualizar o status do favorito.");
+    } finally {
+      setFavoriteLoadingKeys((prev) => ({ ...prev, [asteroidId]: false }));
+    }
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="asteroid-radar-container loading">
+        <Icon name="spinner" className="spin-animation" />
+        <p>Carregando radar de asteroides da NASA...</p>
+      </div>
     );
+  }
 
-  const minDistance =
-    validDistances.length > 0
-      ? Math.min(
-          ...validDistances
-        )
-      : null;
-
-  const maxDistance =
-    validDistances.length > 0
-      ? Math.max(
-          ...validDistances
-        )
-      : null;
+  if (error) {
+    return <ErrorState message={error} />;
+  }
 
   return (
-    <section
-      id="radar"
-      className="discovr-section"
-      aria-labelledby="discovr-asteroid-radar-title"
-    >
-      <h2
-        id="discovr-asteroid-radar-title"
-        className="discovr-section__title"
-      >
-        <Icon
-          name="Radar"
-          size={22}
-          aria-hidden="true"
-        />
+    <div className="asteroid-radar-container">
+      <header className="radar-header">
+        <h1><Icon name="radar" /> Radar de Asteroides DISCOVR</h1>
+        <Link to="/favorites" className="back-link">Ver Todos os Favoritos</Link>
+      </header>
 
-        Radar de asteroides
-      </h2>
+      <div className="asteroid-list">
+        {asteroids.map((asteroid) => {
+          const isFavorite = favoriteKeys.includes(asteroid.id);
+          const isLoading = !!favoriteLoadingKeys[asteroid.id];
 
-      <p className="discovr-section__subtitle">
-        Objetos próximos da Terra detetados pela NASA nos próximos dias, ordenados pela distância de aproximação.
-      </p>
-
-      {asteroidsLoading && (
-        <div
-          className="discovr-asteroid-list"
-          role="status"
-          aria-live="polite"
-          aria-busy="true"
-          aria-label="A carregar asteroides próximos da Terra"
-        >
-          {Array.from({
-            length:
-              ASTEROID_LIST_SIZE,
-          }).map(
-            (_, index) => (
-              <div
-                key={index}
-                className="discovr-asteroid-card discovr-asteroid-card--skeleton"
-                aria-hidden="true"
-              >
-                <span className="discovr-skeleton discovr-asteroid-card__radar" />
-
-                <div className="discovr-asteroid-card__info">
-                  <div className="discovr-skeleton-line discovr-skeleton-line--title" />
-
-                  <div className="discovr-skeleton-line discovr-skeleton-line--short" />
-                </div>
+          return (
+            <div key={asteroid.id} className="asteroid-card">
+              <div className="card-header">
+                <h3>{asteroid.name}</h3>
+                <FavoriteButton
+                  isFavorite={isFavorite}
+                  isLoading={isLoading}
+                  onClick={() => handleToggleFavorite(asteroid)}
+                />
               </div>
-            )
-          )}
-        </div>
-      )}
 
-      {!asteroidsLoading &&
-        asteroidsError && (
-          <ErrorState
-            title="Radar offline"
-            message={
-              asteroidsError
-            }
-            onRetry={
-              loadAsteroids
-            }
-          />
-        )}
+              <div className="card-body">
+                <p><strong>Distância:</strong> {formatDistanceKm(asteroid.close_approach_data?.[0]?.miss_distance?.kilometers)}</p>
+                <p><strong>Diâmetro Estimado:</strong> {formatDiameter(asteroid.estimated_diameter?.kilometers?.estimated_diameter_min, asteroid.estimated_diameter?.kilometers?.estimated_diameter_max)}</p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
 
-      {!asteroidsLoading &&
-        !asteroidsError &&
-        asteroids.length ===
-          0 && (
-          <div
-            className="discovr-empty"
-            role="status"
-          >
-            <Icon
-              name="Radar"
-              size={28}
-              aria-hidden="true"
-            />
-
-            <p>
-              Sem objetos próximos detetados nesta janela temporal.
-            </p>
-          </div>
-        )}
-
-      {!asteroidsLoading &&
-        !asteroidsError &&
-        asteroids.length >
-          0 && (
-          <div className="discovr-asteroid-list">
-            {asteroids.map(
-              (asteroid) => {
-                const closeness =
-                  getClosenessPercent(
-                    asteroid.missDistanceKm,
-                    minDistance,
-                    maxDistance
-                  );
-
-                return (
-                  <article
-                    key={
-                      asteroid.id
-                    }
-                    className={`discovr-asteroid-card${
-                      asteroid.isHazardous
-                        ? " discovr-asteroid-card--hazard"
-                        : ""
-                    }`}
-                  >
-                    <span
-                      className="discovr-asteroid-card__radar"
-                      aria-hidden="true"
-                    >
-                      <span className="discovr-asteroid-card__radar-pulse" />
-                    </span>
-
-                    <div className="discovr-asteroid-card__info">
-                      <div className="discovr-asteroid-card__header">
-                        <h3>
-                          {
-                            asteroid.name
-                          }
-                        </h3>
-
-                        {asteroid.isHazardous && (
-                          <span className="discovr-asteroid-card__hazard-badge">
-                            <Icon
-                              name="AlertCircle"
-                              size={12}
-                              aria-hidden="true"
-                            />
-
-                            Potencialmente perigoso
-                          </span>
-                        )}
-                      </div>
-
-                      <div className="discovr-asteroid-card__distance">
-                        <div className="discovr-asteroid-card__distance-labels">
-                          <span className="discovr-asteroid-card__stat-label">
-                            Distância da Terra
-                          </span>
-
-                          <span className="discovr-asteroid-card__stat-value">
-                            {formatDistanceKm(
-                              asteroid.missDistanceKm
-                            )}
-                          </span>
-                        </div>
-
-                        <div
-                          className="discovr-asteroid-card__distance-track"
-                          role="progressbar"
-                          aria-label={`Proximidade relativa de ${asteroid.name}`}
-                          aria-valuemin="0"
-                          aria-valuemax="100"
-                          aria-valuenow={
-                            closeness
-                          }
-                          aria-valuetext={`${closeness}% de proximidade relativa entre os objetos apresentados`}
-                        >
-                          <div
-                            className="discovr-asteroid-card__distance-fill"
-                            style={{
-                              width: `${closeness}%`,
-                            }}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="discovr-asteroid-card__stats">
-                        <div className="discovr-asteroid-card__stat">
-                          <span className="discovr-asteroid-card__stat-label">
-                            Diâmetro estimado
-                          </span>
-
-                          <span className="discovr-asteroid-card__stat-value">
-                            {formatDiameter(
-                              asteroid.diameterMinKm,
-                              asteroid.diameterMaxKm
-                            )}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </article>
-                );
-              }
-            )}
-          </div>
-        )}
-
-      <Link
-        to="/neowatch"
-        className="discovr-link discovr-asteroid-list__link"
-      >
-        Ver todos os asteroides
-
-        <Icon
-          name="ArrowRight"
-          size={16}
-          aria-hidden="true"
+      {toastMessage && (
+        <Toast 
+          message={toastMessage} 
+          onClose={() => setToastMessage("")} 
         />
-      </Link>
-
-      <Toast message={toastMessage} />
-    </section>
+      )}
+    </div>
   );
 }
-
-export default DiscovrAsteroidRadar;

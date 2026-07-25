@@ -7,11 +7,9 @@ import {
 
 import { Eye, EyeOff } from "lucide-react";
 
-import Container from "../../components/common/Container/Container";
-import GalaxyBackground from "../../components/common/GalaxyBackground/GalaxyBackground";
+import AuthGalaxyLayout from "../../components/common/AuthGalaxyLayout/AuthGalaxyLayout";
 import useAuth from "../../hooks/useAuth";
 
-import logo from "../../assets/logos/logo.svg";
 import PageMeta from "../../components/common/PageMeta/PageMeta";
 
 import "./Login.css";
@@ -79,191 +77,134 @@ function Login() {
         title="Entrar — SpaceVision"
         description="Inicia sessão no SpaceVision para guardares favoritos e gerires a tua conta."
       />
-      <main className="login-page">
-        <GalaxyBackground
-          className="login-page__galaxy"
-          density={1200}
-          speed={0.35}
-          interactive
-        />
+      <AuthGalaxyLayout
+        title="Explora o Universo através de dados reais."
+        description="Descobre imagens, eventos espaciais, aproximações de asteroides e observações da Terra através das APIs da NASA."
+        sectionLabel="Iniciar sessão no SpaceVision"
+      >
+        <div className="login-auth-card">
+          <div className="login-auth-card__header">
+            <p className="login-auth-card__eyebrow">
+              Bem-vindo de volta
+            </p>
 
-        <div
-          className="login-page__overlay"
-          aria-hidden="true"
-        />
+            <h1 id="login-title">
+              Entrar na tua conta
+            </h1>
 
-        <div className="login-page__content">
-          <Container>
-            <div className="login-page__layout">
-              <section
-                className="login-intro"
-                aria-label="Apresentação do SpaceVision"
-              >
-                <div className="login-intro__content">
-                  <img
-                    src={logo}
-                    alt="SpaceVision"
-                    className="login-logo"
-                  />
+            <p className="login-auth-card__description">
+              Acede aos teus favoritos e continua a tua
+              exploração do Universo.
+            </p>
+          </div>
 
-                  <p className="login-intro__eyebrow">
-                    NASA Data Explorer
-                  </p>
+          {wasEmailJustVerified && (
+            <p
+              className="login-auth-verified-banner"
+              role="status"
+            >
+              Email confirmado com sucesso. Já podes
+              iniciar sessão.
+            </p>
+          )}
 
-                  <p className="login-intro__title">
-                    Explora o Universo através de dados reais.
-                  </p>
+          <form
+            className="login-auth-form"
+            onSubmit={handleSubmit}
+          >
+            <div className="login-auth-field">
+              <label htmlFor="email">
+                Email
+              </label>
 
-                  <p className="login-intro__description">
-                    Descobre imagens, eventos espaciais,
-                    aproximações de asteroides e observações da
-                    Terra através das APIs da NASA.
-                  </p>
-
-                  <div
-                    className="login-intro__status"
-                    aria-hidden="true"
-                  >
-                    <span className="login-intro__status-dot" />
-
-                    <span>
-                      Dados científicos. Exploração sem limites.
-                    </span>
-                  </div>
-                </div>
-              </section>
-
-              <section
-                className="login-panel"
-                aria-labelledby="login-title"
-              >
-                <div className="login-auth-card">
-                  <div className="login-auth-card__header">
-                    <p className="login-auth-card__eyebrow">
-                      Bem-vindo de volta
-                    </p>
-
-                    <h1 id="login-title">
-                      Entrar na tua conta
-                    </h1>
-
-                    <p className="login-auth-card__description">
-                      Acede aos teus favoritos e continua a tua
-                      exploração do Universo.
-                    </p>
-                  </div>
-
-                  {wasEmailJustVerified && (
-                    <p
-                      className="login-auth-verified-banner"
-                      role="status"
-                    >
-                      Email confirmado com sucesso. Já podes
-                      iniciar sessão.
-                    </p>
-                  )}
-
-                  <form
-                    className="login-auth-form"
-                    onSubmit={handleSubmit}
-                  >
-                    <div className="login-auth-field">
-                      <label htmlFor="email">
-                        Email
-                      </label>
-
-                      <input
-                        id="email"
-                        name="email"
-                        type="email"
-                        placeholder="o-teu-email@exemplo.com"
-                        value={formData.email}
-                        onChange={handleChange}
-                        autoComplete="email"
-                        required
-                      />
-                    </div>
-
-                    <div className="login-auth-field">
-                      <div className="login-auth-field__heading">
-                        <label htmlFor="password">
-                          Palavra-passe
-                        </label>
-
-                      </div>
-
-                      <div className="login-password-input">
-                        <input
-                          id="password"
-                          name="password"
-                          type={showPassword ? "text" : "password"}
-                          placeholder="••••••••"
-                          value={formData.password}
-                          onChange={handleChange}
-                          autoComplete="current-password"
-                          required
-                        />
-
-                        <button
-                          type="button"
-                          className="login-password-toggle"
-                          onClick={() => setShowPassword((current) => !current)}
-                          aria-label={
-                            showPassword
-                              ? "Ocultar palavra-passe"
-                              : "Mostrar palavra-passe"
-                          }
-                          aria-pressed={showPassword}
-                        >
-                          {showPassword ? (
-                            <EyeOff size={20} aria-hidden="true" />
-                          ) : (
-                            <Eye size={20} aria-hidden="true" />
-                          )}
-                        </button>
-                      </div>
-                      <Link
-                          className="login-forgot-password"
-                          to="/forgot-password"
-                        >
-                          Esqueceste-te?
-                        </Link>
-                    </div>
-
-                    {error && (
-                      <p
-                        className="login-auth-error"
-                        role="alert"
-                      >
-                        {error}
-                      </p>
-                    )}
-
-                    <button
-                      className="login-auth-submit"
-                      type="submit"
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting
-                        ? "A entrar..."
-                        : "Entrar"}
-                    </button>
-                  </form>
-
-                  <p className="login-auth-switch">
-                    Novo no SpaceVision?{" "}
-                    <Link to="/register">
-                      Criar conta
-                    </Link>
-                  </p>
-                </div>
-              </section>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="o-teu-email@exemplo.com"
+                value={formData.email}
+                onChange={handleChange}
+                autoComplete="email"
+                required
+              />
             </div>
-          </Container>
+
+            <div className="login-auth-field">
+              <div className="login-auth-field__heading">
+                <label htmlFor="password">
+                  Palavra-passe
+                </label>
+
+              </div>
+
+              <div className="login-password-input">
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  value={formData.password}
+                  onChange={handleChange}
+                  autoComplete="current-password"
+                  required
+                />
+
+                <button
+                  type="button"
+                  className="login-password-toggle"
+                  onClick={() => setShowPassword((current) => !current)}
+                  aria-label={
+                    showPassword
+                      ? "Ocultar palavra-passe"
+                      : "Mostrar palavra-passe"
+                  }
+                  aria-pressed={showPassword}
+                >
+                  {showPassword ? (
+                    <EyeOff size={20} aria-hidden="true" />
+                  ) : (
+                    <Eye size={20} aria-hidden="true" />
+                  )}
+                </button>
+              </div>
+              <Link
+                  className="login-forgot-password"
+                  to="/forgot-password"
+                >
+                  Esqueceste-te?
+                </Link>
+            </div>
+
+            {error && (
+              <p
+                className="login-auth-error"
+                role="alert"
+              >
+                {error}
+              </p>
+            )}
+
+            <button
+              className="login-auth-submit"
+              type="submit"
+              disabled={isSubmitting}
+            >
+              {isSubmitting
+                ? "A entrar..."
+                : "Entrar"}
+            </button>
+          </form>
+
+          <p className="login-auth-switch">
+            Novo no SpaceVision?{" "}
+            <Link to="/register">
+              Criar conta
+            </Link>
+          </p>
         </div>
-      </main>
-      </>
-      );
+      </AuthGalaxyLayout>
+    </>
+  );
 }
 
-      export default Login;
+export default Login;
