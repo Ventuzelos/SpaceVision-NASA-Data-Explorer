@@ -57,7 +57,7 @@
 .hero__welcome-text {
   display: block;
   font-size: 1.1rem;
-  color: #6ea1f3;
+  color: #b1b7be;
   margin-bottom: 0.5rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -152,7 +152,7 @@
 .hero__stat-number {
   font-size: clamp(1.8rem, 4vw, 2.1rem);    
   font-weight: var(--font-weight-bold);        
-  color: #6ea1f3; 
+  color: #b1b7be; 
   line-height: 1;          
 }
 
