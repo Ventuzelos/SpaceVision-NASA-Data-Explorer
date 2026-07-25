@@ -23,31 +23,56 @@ const DiscovrSolarSystem = lazy(() =>
   )
 );
 
-function DISCOVR() {
-  const solarSystemTriggerRef = useRef(null);
+function supportsIntersectionObserver() {
+  return (
+    typeof window !== "undefined" &&
+    "IntersectionObserver" in window
+  );
+}
 
-  const [shouldLoadSolarSystem, setShouldLoadSolarSystem] =
-    useState(false);
+function DISCOVR() {
+  const solarSystemTriggerRef =
+    useRef(null);
+
+  const [
+    shouldLoadSolarSystem,
+    setShouldLoadSolarSystem,
+  ] = useState(
+    () =>
+      !supportsIntersectionObserver()
+  );
 
   useEffect(() => {
-    const trigger = solarSystemTriggerRef.current;
+    const trigger =
+      solarSystemTriggerRef.current;
 
-    if (!trigger || shouldLoadSolarSystem) {
+    if (
+      !trigger ||
+      shouldLoadSolarSystem ||
+      !supportsIntersectionObserver()
+    ) {
       return undefined;
     }
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setShouldLoadSolarSystem(true);
+    const observer =
+      new window.IntersectionObserver(
+        ([entry]) => {
+          if (!entry?.isIntersecting) {
+            return;
+          }
+
+          setShouldLoadSolarSystem(
+            true
+          );
+
           observer.disconnect();
+        },
+        {
+          root: null,
+          rootMargin: "300px 0px",
+          threshold: 0.01,
         }
-      },
-      {
-        rootMargin: "300px 0px",
-        threshold: 0.01,
-      }
-    );
+      );
 
     observer.observe(trigger);
 
@@ -56,10 +81,14 @@ function DISCOVR() {
     };
   }, [shouldLoadSolarSystem]);
 
+  function handleLoadSolarSystem() {
+    setShouldLoadSolarSystem(true);
+  }
+
   return (
     <>
       <PageMeta
-        title="Descobrir o Espaço — SpaceVision"
+        title="Descobrir o Espaço"
         description="Explora conteúdos visuais, curiosidades e experiências interativas sobre o Universo com dados e recursos da NASA."
       />
 
@@ -71,7 +100,10 @@ function DISCOVR() {
 
           <DiscovrApodHistory />
 
-          <div ref={solarSystemTriggerRef}>
+          <div
+            ref={solarSystemTriggerRef}
+            className="discovr-solar-system-wrapper"
+          >
             {shouldLoadSolarSystem ? (
               <Suspense
                 fallback={
@@ -80,12 +112,16 @@ function DISCOVR() {
                     role="status"
                     aria-live="polite"
                     aria-busy="true"
+                    aria-label="A carregar sistema solar interativo"
                   >
                     <h2 className="discovr-section__title">
                       Sistema solar
                     </h2>
 
-                    <p>A preparar a simulação 3D...</p>
+                    <p>
+                      A preparar a simulação
+                      3D...
+                    </p>
                   </section>
                 }
               >
@@ -94,22 +130,39 @@ function DISCOVR() {
             ) : (
               <section
                 className="discovr-section discovr-solar-system-placeholder"
-                aria-label="Sistema solar interativo"
+                aria-labelledby="discovr-solar-system-title"
               >
-                <h2 className="discovr-section__title">
+                <h2
+                  id="discovr-solar-system-title"
+                  className="discovr-section__title"
+                >
                   Sistema solar
                 </h2>
 
                 <p>
-                  A simulação 3D será carregada quando
-                  estiveres perto desta secção.
+                  A simulação 3D será
+                  carregada automaticamente
+                  quando estiveres perto desta
+                  secção.
                 </p>
+
+                <button
+                  type="button"
+                  className="discovr-solar-system-placeholder__button"
+                  onClick={
+                    handleLoadSolarSystem
+                  }
+                >
+                  Carregar simulação 3D
+                </button>
               </section>
             )}
           </div>
 
           <DiscovrTimeline />
+
           <DiscovrAsteroidRadar />
+
           <DiscovrMissionStatus />
         </Container>
       </main>
