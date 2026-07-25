@@ -8,13 +8,14 @@ function FavoriteButton({
   onClick,
   size = 18,
   ariaLabel,
+  className = "",
 }) {
   return (
     <button
       type="button"
       className={`favorite-button ${
         active ? "favorite-button--active" : ""
-      }`}
+      } ${className}`.trim()}
       onClick={onClick}
       disabled={disabled}
       aria-label={ariaLabel}

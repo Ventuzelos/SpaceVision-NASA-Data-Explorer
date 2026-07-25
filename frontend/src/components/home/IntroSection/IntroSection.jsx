@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 
 import nebulaImage from "../../../assets/hero1.webp";
 
+import "../../common/Button/Button.css";
 import "./IntroSection.css";
 
 const MAIN_IMAGE =
@@ -26,7 +27,7 @@ function IntroSection() {
             diretamente através do teu navegador de internet.
           </p>
 
-          <Link to="/about" className="intro__link">
+          <Link to="/about" className="btn btn--primary intro__link">
             Ler mais <span aria-hidden="true">→</span>
           </Link>
         </div>
