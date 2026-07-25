@@ -1,7 +1,7 @@
 import Container from "../Container/Container";
-import GalaxyBackground from "../GalaxyBackground/GalaxyBackground";
 
 import logo from "../../../assets/logos/logo.svg";
+import galaxyImage from "../../../assets/ceu_noturno.jpg";
 
 import "./AuthGalaxyLayout.css";
 
@@ -15,11 +15,19 @@ function AuthGalaxyLayout({
 }) {
   return (
     <main className="auth-galaxy">
-      <GalaxyBackground
-        className="auth-galaxy__background"
-        density={1200}
-        speed={0.35}
-        interactive
+      <div
+        className="auth-galaxy__photo"
+        aria-hidden="true"
+      >
+        <img
+          src={galaxyImage}
+          alt=""
+        />
+      </div>
+
+      <div
+        className="auth-galaxy__fade"
+        aria-hidden="true"
       />
 
       <div

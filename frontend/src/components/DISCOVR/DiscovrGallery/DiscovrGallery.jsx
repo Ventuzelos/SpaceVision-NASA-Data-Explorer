@@ -345,6 +345,15 @@ function saveGalleryToCache(
 }
 
 function DiscovrGallery() {
+  const { isAuthenticated, isAuthLoading } = useAuth();
+
+  const [favorite, setFavorite] = useState(false);
+  const [favoriteDatabaseId, setFavoriteDatabaseId] = useState(null);
+  const [isFavoriteLoading, setIsFavoriteLoading] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+
+  const toastTimeoutRef = useRef(null);
+
   const [initialGallery] =
     useState(getCachedGallery);
 
@@ -677,6 +686,10 @@ function DiscovrGallery() {
       carouselIndex
     ] || null;
 
+  const favoriteId = currentPhoto
+    ? `apod-${currentPhoto.date}`
+    : null;
+
   const previewUrl =
     currentPhoto?.previewUrl ||
     currentPhoto?.url ||
@@ -727,8 +740,8 @@ function DiscovrGallery() {
       setFailedFullUrl(
         fullUrl
       );
-  const currentPhoto = carouselPhotos[carouselIndex];
-  const favoriteId = currentPhoto ? `apod-${currentPhoto.date}` : null;
+    }
+  }
 
   useEffect(() => {
     let isMounted = true;
@@ -944,9 +957,22 @@ function DiscovrGallery() {
                   )}
                 </span>
 
-                <h3>
-                  {currentPhoto.title}
-                </h3>
+                <div className="discovr-carousel__title-row">
+                  <h3>
+                    {currentPhoto.title}
+                  </h3>
+
+                  <FavoriteButton
+                    active={isAuthenticated && favorite}
+                    onClick={handleFavoriteClick}
+                    disabled={isFavoriteLoading || isAuthLoading}
+                    ariaLabel={
+                      favorite
+                        ? "Remover dos favoritos"
+                        : "Adicionar aos favoritos"
+                    }
+                  />
+                </div>
 
                 <p>
                   {truncateText(
@@ -1052,45 +1078,6 @@ function DiscovrGallery() {
                   </a>
                 )}
               </div>
-      {!carouselLoading && carouselError && (
-        <ErrorState
-          title="Sinal perdido"
-          message={carouselError}
-          onRetry={() =>
-            loadCarouselPhotos(true)
-          }
-        />
-      )}
-
-      {!carouselLoading && !carouselError && currentPhoto && (
-        <div className="discovr-carousel">
-          <div className="discovr-carousel__card">
-            <div className="discovr-carousel__text">
-              <span className="discovr-carousel__eyebrow">
-                {formatApodEyebrow(currentPhoto.date)}
-              </span>
-
-              <div className="discovr-carousel__title-row">
-                <h3>{currentPhoto.title}</h3>
-
-                <FavoriteButton
-                  active={isAuthenticated && favorite}
-                  onClick={handleFavoriteClick}
-                  disabled={isFavoriteLoading || isAuthLoading}
-                  ariaLabel={
-                    favorite
-                      ? "Remover dos favoritos"
-                      : "Adicionar aos favoritos"
-                  }
-                />
-              </div>
-
-              <p>{truncateText(currentPhoto.explanation, 220)}</p>
-
-              <a href="#apod-historico" className="discovr-link">
-                Ver arquivo de imagens
-                <Icon name="ArrowRight" size={16} />
-              </a>
             </div>
 
             <div
@@ -1169,8 +1156,6 @@ function DiscovrGallery() {
             </div>
           </div>
         )}
-        </div>
-      )}
 
       <Toast message={toastMessage} />
     </section>

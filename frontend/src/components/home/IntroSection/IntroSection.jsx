@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-import nebulaImage from "../../../assets/hero1.webp";
+import nebulaImage from "../../../assets/lua2.webp";
 
 import "../../common/Button/Button.css";
 import "./IntroSection.css";

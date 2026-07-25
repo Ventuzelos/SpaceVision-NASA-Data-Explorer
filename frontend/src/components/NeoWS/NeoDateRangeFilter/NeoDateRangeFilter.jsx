@@ -163,8 +163,20 @@ function NeoDateRangeFilter({
   function handleStartDateChange(
     value
   ) {
-    setRangeWarning("");
-    onStartDateChange?.(value);
+    const clampedRange = applyClamp(
+      value,
+      endDate
+    );
+
+    onStartDateChange?.(
+      clampedRange.startDate
+    );
+
+    if (clampedRange.wasClamped) {
+      onEndDateChange?.(
+        clampedRange.endDate
+      );
+    }
   }
 
   function handleEndDateChange(
