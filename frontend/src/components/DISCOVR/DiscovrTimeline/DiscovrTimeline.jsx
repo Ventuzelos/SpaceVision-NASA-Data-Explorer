@@ -327,12 +327,6 @@ function DiscovrTimeline() {
         id="discovr-timeline-title"
         className="discovr-section__title"
       >
-        <Icon
-          name="Calendar"
-          size={22}
-          aria-hidden="true"
-        />
-
         Linha do tempo interativa
       </h2>
 

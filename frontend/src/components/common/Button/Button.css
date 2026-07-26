@@ -27,7 +27,7 @@
 
 /* Secondary */
 
-.btn--secondary { background: transparent; color: #E3E3E3; border-color: #7A7A7A; padding: 11px 22px; }
+.btn--secondary { background: transparent; color: #E3E3E3; border-color: #7A7A7A; }
 .btn--secondary:hover { border-color: var(--color-btn-bg); color: var(--color-btn-bg); }
 
 /* Light */
