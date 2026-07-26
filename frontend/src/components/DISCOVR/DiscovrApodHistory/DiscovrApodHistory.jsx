@@ -299,12 +299,6 @@ function DiscovrApodHistory() {
         id="discovr-apod-history-title"
         className="discovr-section__title"
       >
-        <Icon
-          name="Calendar"
-          size={22}
-          aria-hidden="true"
-        />
-
         Imagens anteriores
       </h2>
 

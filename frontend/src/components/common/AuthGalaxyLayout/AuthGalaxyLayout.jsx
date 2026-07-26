@@ -22,6 +22,8 @@ function AuthGalaxyLayout({
         <img
           src={galaxyImage}
           alt=""
+          width="2200"
+          height="1468"
         />
       </div>
 
