@@ -10,6 +10,7 @@ import ErrorState from "../../common/ErrorState/ErrorState";
 import FavoriteButton from "../../common/FavoriteButton/FavoriteButton";
 import Toast from "../../common/Toast/Toast";
 
+import useAuth from "../../../hooks/useAuth";
 import {
   fetchNeoFeed,
   getDefaultDateRange,
@@ -51,28 +52,25 @@ function formatDiameter(minimumKilometres, maximumKilometres) {
 }
 
 export default function DiscovrAsteroidRadar() {
+  const { isAuthenticated, isAuthLoading } = useAuth();
+
   const [favoriteKeys, setFavoriteKeys] = useState([]);
   const [favoriteLoadingKeys, setFavoriteLoadingKeys] = useState({});
   const [toastMessage, setToastMessage] = useState("");
-  
+
   const [asteroids, setAsteroids] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    async function initializeComponent() {
+    async function loadAsteroids() {
       try {
         setLoading(true);
-        
-        const currentFavs = await getFavorites(FAVORITES_SOURCE);
-        if (currentFavs && Array.isArray(currentFavs)) {
-          setFavoriteKeys(currentFavs.map((fav) => fav.id || fav.asteroidId));
-        }
 
         const { startDate, endDate } = getDefaultDateRange();
         const data = await fetchNeoFeed(startDate, endDate);
-        
-        const sortedData = sortByMissDistance(data).slice(0, ASTEROID_LIST_SIZE);
+
+        const sortedData = sortByMissDistance(data.objects).slice(0, ASTEROID_LIST_SIZE);
         setAsteroids(sortedData);
       } catch (err) {
         setError(getApiErrorMessage(err));
@@ -82,8 +80,25 @@ export default function DiscovrAsteroidRadar() {
       }
     }
 
-    initializeComponent();
+    loadAsteroids();
   }, []);
+
+  useEffect(() => {
+    if (isAuthLoading || !isAuthenticated) return;
+
+    async function loadFavorites() {
+      try {
+        const currentFavs = await getFavorites(FAVORITES_SOURCE);
+        if (Array.isArray(currentFavs)) {
+          setFavoriteKeys(currentFavs.map((fav) => fav.nasa_id || fav.id));
+        }
+      } catch {
+        setFavoriteKeys([]);
+      }
+    }
+
+    loadFavorites();
+  }, [isAuthenticated, isAuthLoading]);
 
   const handleToggleFavorite = useCallback(async (asteroid) => {
     if (!asteroid || !asteroid.id) return;
@@ -92,17 +107,22 @@ export default function DiscovrAsteroidRadar() {
     setFavoriteLoadingKeys((prev) => ({ ...prev, [asteroidId]: true }));
 
     try {
-      const isNowFavorite = await toggleFavorite(FAVORITES_SOURCE, asteroid);
-      
+      const result = await toggleFavorite({
+        nasa_type: FAVORITES_SOURCE,
+        nasa_id: asteroidId,
+        title: asteroid.name,
+        data: asteroid,
+      });
+
       setFavoriteKeys((prev) =>
-        isNowFavorite 
-          ? [...prev, asteroidId] 
+        result.isFavorite
+          ? [...prev, asteroidId]
           : prev.filter((id) => id !== asteroidId)
       );
 
       setToastMessage(
-        isNowFavorite 
-          ? "Asteroide adicionado aos favoritos!" 
+        result.isFavorite
+          ? "Asteroide adicionado aos favoritos!"
           : "Asteroide removido dos favoritos."
       );
     } catch (err) {
@@ -115,8 +135,8 @@ export default function DiscovrAsteroidRadar() {
 
   if (loading) {
     return (
-      <div className="asteroid-radar-container loading">
-        <Icon name="spinner" className="spin-animation" />
+      <div className="discovr-empty">
+        <Icon name="LoaderCircle" className="spin-animation" />
         <p>Carregando radar de asteroides da NASA...</p>
       </div>
     );
@@ -127,43 +147,46 @@ export default function DiscovrAsteroidRadar() {
   }
 
   return (
-    <div className="asteroid-radar-container">
-      <header className="radar-header">
-        <h1><Icon name="radar" /> Radar de Asteroides DISCOVR</h1>
-        <Link to="/favorites" className="back-link">Ver Todos os Favoritos</Link>
-      </header>
+    <section className="discovr-section">
+      <h1 className="discovr-section__title">
+        Radar de Asteroides DISCOVR
+      </h1>
 
-      <div className="asteroid-list">
+      <div className="discovr-asteroid-list">
         {asteroids.map((asteroid) => {
           const isFavorite = favoriteKeys.includes(asteroid.id);
           const isLoading = !!favoriteLoadingKeys[asteroid.id];
 
           return (
-            <div key={asteroid.id} className="asteroid-card">
-              <div className="card-header">
-                <h3>{asteroid.name}</h3>
-                <FavoriteButton
-                  isFavorite={isFavorite}
-                  isLoading={isLoading}
-                  onClick={() => handleToggleFavorite(asteroid)}
-                />
-              </div>
+            <div key={asteroid.id} className="discovr-asteroid-card">
+              <div className="discovr-asteroid-card__info">
+                <div className="discovr-asteroid-card__header">
+                  <h3>{asteroid.name}</h3>
+                  <FavoriteButton
+                    active={isFavorite}
+                    disabled={isLoading}
+                    onClick={() => handleToggleFavorite(asteroid)}
+                  />
+                </div>
 
-              <div className="card-body">
-                <p><strong>Distância:</strong> {formatDistanceKm(asteroid.close_approach_data?.[0]?.miss_distance?.kilometers)}</p>
-                <p><strong>Diâmetro Estimado:</strong> {formatDiameter(asteroid.estimated_diameter?.kilometers?.estimated_diameter_min, asteroid.estimated_diameter?.kilometers?.estimated_diameter_max)}</p>
+                <div className="discovr-asteroid-card__body">
+                  <p><strong>Distância:</strong> {formatDistanceKm(asteroid.missDistanceKm)}</p>
+                  <p><strong>Diâmetro Estimado:</strong> {formatDiameter(asteroid.diameterMinKm, asteroid.diameterMaxKm)}</p>
+                </div>
               </div>
             </div>
           );
         })}
       </div>
 
+      <Link to="/favorites" className="discovr-link">Ver Todos os Favoritos</Link>
+
       {toastMessage && (
-        <Toast 
-          message={toastMessage} 
-          onClose={() => setToastMessage("")} 
+        <Toast
+          message={toastMessage}
+          onClose={() => setToastMessage("")}
         />
       )}
-    </div>
+    </section>
   );
 }

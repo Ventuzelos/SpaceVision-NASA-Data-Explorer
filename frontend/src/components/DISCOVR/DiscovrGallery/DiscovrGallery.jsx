@@ -19,6 +19,7 @@ import {
   removeFavorite,
 } from "../../../services/favoritesService";
 import getApiErrorMessage from "../../../utils/getApiErrorMessage";
+import isSafeUrl from "../../../utils/isSafeUrl";
 
 import "./DiscovrGallery.css";
 
@@ -176,26 +177,6 @@ function isValidDateString(value) {
   );
 }
 
-function isSafeHttpUrl(value) {
-  if (
-    typeof value !== "string" ||
-    !value.trim()
-  ) {
-    return false;
-  }
-
-  try {
-    const url = new URL(value);
-
-    return (
-      url.protocol === "https:" ||
-      url.protocol === "http:"
-    );
-  } catch {
-    return false;
-  }
-}
-
 function buildApodPageUrl(
   dateString
 ) {
@@ -222,7 +203,7 @@ function normalizePhoto(result) {
   if (
     !result ||
     result.media_type !== "image" ||
-    !isSafeHttpUrl(result.url) ||
+    !isSafeUrl(result.url) ||
     !isValidDateString(
       result.date
     )
@@ -231,7 +212,7 @@ function normalizePhoto(result) {
   }
 
   const fullUrl =
-    isSafeHttpUrl(result.hdurl)
+    isSafeUrl(result.hdurl)
       ? result.hdurl
       : result.url;
 
@@ -264,10 +245,10 @@ function isValidCachedPhoto(
 ) {
   return Boolean(
     photo &&
-      isSafeHttpUrl(
+      isSafeUrl(
         photo.url
       ) &&
-      isSafeHttpUrl(
+      isSafeUrl(
         photo.previewUrl ||
           photo.url
       ) &&
@@ -871,12 +852,6 @@ function DiscovrGallery() {
         id="discovr-gallery-title"
         className="discovr-section__title"
       >
-        <Icon
-          name="Image"
-          size={22}
-          aria-hidden="true"
-        />
-
         Galeria aleatória da NASA
       </h2>
 
