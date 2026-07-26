@@ -76,6 +76,12 @@
   min-width: 0;
 }
 
+.discovr-asteroid-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
 .discovr-asteroid-card__header {
   display: flex;
   align-items: center;

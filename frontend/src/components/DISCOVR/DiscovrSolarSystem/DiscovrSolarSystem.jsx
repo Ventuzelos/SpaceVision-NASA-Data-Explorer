@@ -295,12 +295,6 @@ function DiscovrSolarSystem() {
         id="discovr-solar-system-title"
         className="discovr-section__title"
       >
-        <Icon
-          name="Orbit"
-          size={22}
-          aria-hidden="true"
-        />
-
         Sistema solar
       </h2>
 

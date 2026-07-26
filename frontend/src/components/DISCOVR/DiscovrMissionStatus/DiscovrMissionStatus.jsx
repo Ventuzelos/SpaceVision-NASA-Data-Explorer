@@ -60,12 +60,6 @@ function DiscovrMissionStatus() {
         id="discovr-missions-title"
         className="discovr-section__title"
       >
-        <Icon
-          name="Satellite"
-          size={22}
-          aria-hidden="true"
-        />
-
         Estado das missões
       </h2>
 

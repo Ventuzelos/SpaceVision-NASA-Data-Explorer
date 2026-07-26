@@ -2,16 +2,12 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 import {
-  Code2,
-  Database,
+  Cog,
   ExternalLink,
-  Globe2,
-  Heart,
   Mail,
   Rocket,
-  Satellite,
-  Sparkles,
-  Users,
+  Target,
+  User,
 } from "lucide-react";
 
 import Container from "../../components/common/Container/Container";
@@ -19,7 +15,14 @@ import ContactForm from "../../components/common/ContactForm/ContactForm";
 import Breadcrumb from "../../components/common/Breadcrumb/Breadcrumb";
 import PageMeta from "../../components/common/PageMeta/PageMeta";
 
+import ApiSection from "../../components/home/ApiSection/ApiSection";
+import CTASection from "../../components/home/CTASection/CTASection";
+
 import { teamMembers } from "../../data/team";
+
+import aboutHeroImage from "../../assets/galaxy-night-panorama.webp";
+import projectMainImage from "../../assets/milky-way.jpg";
+import projectNebulaImage from "../../assets/jeremy-perkins-uhjiu8FjnsQ-unsplash.jpg";
 
 import "./About.css";
 
@@ -27,22 +30,18 @@ const PROJECT_STATS = [
   {
     value: "4",
     label: "Elementos na equipa",
-    icon: Users,
   },
   {
     value: "4",
     label: "APIs principais da NASA",
-    icon: Satellite,
   },
   {
     value: "2",
     label: "Tecnologias principais",
-    icon: Code2,
   },
   {
     value: "100%",
     label: "Dados reais da NASA",
-    icon: Globe2,
   },
 ];
 
@@ -51,19 +50,16 @@ const TECHNOLOGIES = [
     name: "React",
     description:
       "Interface responsiva, componentes reutilizáveis e experiência interativa.",
-    icon: Code2,
   },
   {
     name: "Laravel",
     description:
       "API, autenticação, segurança, cache e ligação à base de dados.",
-    icon: Database,
   },
   {
     name: "NASA Open APIs",
     description:
       "Dados astronómicos, meteorologia espacial e observação da Terra.",
-    icon: Rocket,
   },
 ];
 
@@ -102,88 +98,58 @@ function About() {
       />
 
       <main className="about-page">
-        <Container>
-          <Breadcrumb title="Sobre nós" />
+        <section
+          className="about-hero"
+          style={{ "--about-hero-image": `url(${aboutHeroImage})` }}
+          aria-labelledby="about-page-title"
+        >
+          <div className="about-hero__overlay">
+            <Container>
+              <Breadcrumb title="Sobre nós" />
 
-          <section
-            className="about-hero"
-            aria-labelledby="about-page-title"
-          >
-            <div className="about-hero__content">
-              <p className="about-page__eyebrow">
-                O projeto por detrás da exploração
-              </p>
+              <div className="about-hero__content">
+                <p className="about-page__eyebrow">
+                  O projeto por detrás da exploração
+                </p>
 
-              <h1 id="about-page-title">
-                Tornamos os dados da NASA mais próximos de todos.
-              </h1>
+                <h1
+                  id="about-page-title"
+                  className="about-hero__title"
+                >
+                  Tornamos os dados da NASA mais próximos de todos.
+                </h1>
 
-              <p className="about-hero__description">
-                O SpaceVision é um explorador digital criado para transformar
-                informação científica complexa numa experiência simples,
-                visual e acessível.
-              </p>
+                <p className="about-hero__subtitle">
+                  O SpaceVision descomplica a ciência espacial. Uma plataforma
+                  interativa e acessível que transforma os dados mais
+                  complexos da NASA numa experiência puramente visual e
+                  intuitiva.
+                </p>
 
-              <p className="about-hero__context">
-                Desenvolvido por quatro alunas do curso de Software Developer
-                do CESAE Digital.
-              </p>
-            </div>
-
-            <div
-              className="about-hero__visual"
-              aria-hidden="true"
-            >
-              <div className="about-orbit about-orbit--outer">
-                <div className="about-orbit__planet" />
-              </div>
-
-              <div className="about-orbit about-orbit--inner">
-                <div className="about-orbit__satellite">
-                  <Satellite size={26} />
+                <div
+                  className="about-hero__stats"
+                  aria-label="Informação geral do projeto"
+                >
+                  {PROJECT_STATS.map(({ value, label }) => (
+                    <div
+                      key={label}
+                      className="about-hero__stat-item"
+                    >
+                      <span className="about-hero__stat-number">
+                        {value}
+                      </span>
+                      <span className="about-hero__stat-label">
+                        {label}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               </div>
+            </Container>
+          </div>
+        </section>
 
-              <div className="about-hero__core">
-                <Sparkles size={42} />
-                <span>SpaceVision</span>
-              </div>
-            </div>
-          </section>
-
-          <section
-            className="about-stats"
-            aria-labelledby="about-stats-title"
-          >
-            <h2
-              id="about-stats-title"
-              className="sr-only"
-            >
-              Informação geral do projeto
-            </h2>
-
-            {PROJECT_STATS.map(
-              ({ value, label, icon: StatIcon }) => (
-                <article
-                  key={label}
-                  className="about-stat"
-                >
-                  <div
-                    className="about-stat__icon"
-                    aria-hidden="true"
-                  >
-                    <StatIcon size={20} />
-                  </div>
-
-                  <div className="about-stat__content">
-                    <strong>{value}</strong>
-                    <span>{label}</span>
-                  </div>
-                </article>
-              )
-            )}
-          </section>
-
+        <Container>
           <section
             className="about-section"
             aria-labelledby="about-mission-title"
@@ -191,59 +157,142 @@ function About() {
             <div className="about-section__heading">
               <div>
                 <p className="about-page__eyebrow">
-                  A nossa missão
+                  01 / A Nossa Missão
                 </p>
 
-                <h2 id="about-mission-title">
-                  Do dado científico à descoberta
+                <h2
+                  id="about-mission-title"
+                  className="sr-only"
+                >
+                  A nossa missão
                 </h2>
               </div>
-
-              <p>
-                O SpaceVision organiza diferentes fontes da NASA numa única
-                plataforma, permitindo explorar imagens, eventos espaciais,
-                o planeta Terra e objetos próximos da sua órbita.
-              </p>
             </div>
 
             <div className="about-mission-grid">
-              <article className="about-mission-card">
-                <Globe2 size={24} aria-hidden="true" />
+              <div className="about-mission-item">
+                <span
+                  className="about-mission-item__icon"
+                  aria-hidden="true"
+                >
+                  <Target size={20} />
+                </span>
 
-                <h3>Acessível</h3>
+                <div>
+                  <h3>O que fazemos</h3>
+                  <p>
+                    Democratizar o acesso à ciência espacial para todos os
+                    utilizadores.
+                  </p>
+                </div>
+              </div>
 
-                <p>
-                  Informação apresentada com linguagem clara, navegação simples
-                  e uma interface adaptada a diferentes dispositivos.
-                </p>
-              </article>
+              <div className="about-mission-item">
+                <span
+                  className="about-mission-item__icon"
+                  aria-hidden="true"
+                >
+                  <Cog size={20} />
+                </span>
 
-              <article className="about-mission-card">
-                <Satellite size={24} aria-hidden="true" />
+                <div>
+                  <h3>Como fazemos</h3>
+                  <p>
+                    Traduzir dados brutos da NASA em aplicações práticas,
+                    visuais e de fácil compreensão.
+                  </p>
+                </div>
+              </div>
 
-                <h3>Baseado em dados reais</h3>
+              <div className="about-mission-item">
+                <span
+                  className="about-mission-item__icon"
+                  aria-hidden="true"
+                >
+                  <Rocket size={20} />
+                </span>
 
-                <p>
-                  Conteúdos obtidos através das APIs públicas da NASA e
-                  apresentados com contexto e significado.
-                </p>
-              </article>
-
-              <article className="about-mission-card">
-                <Heart size={24} aria-hidden="true" />
-
-                <h3>Criado para despertar curiosidade</h3>
-
-                <p>
-                  Uma experiência pensada para aproximar ciência, tecnologia
-                  e exploração espacial de diferentes públicos.
-                </p>
-              </article>
+                <div>
+                  <h3>Porque o fazemos</h3>
+                  <p>
+                    Inspirar a próxima geração de exploradores, cientistas
+                    e entusiastas do universo.
+                  </p>
+                </div>
+              </div>
             </div>
           </section>
 
           <section
-            className="about-section"
+            className="about-section about-project"
+            aria-labelledby="about-project-title"
+          >
+            <div className="about-project__content">
+              <p className="about-page__eyebrow">
+                02 / O Projeto
+              </p>
+
+              <h2 id="about-project-title">
+                Uma ponte digital para a{" "}
+                <span className="about-project__accent">
+                  ciência espacial
+                </span>
+                .
+              </h2>
+
+              <p>
+                Este projeto nasceu do fascínio profundo pelas ciências do
+                espaço e da oportunidade incrível aberta pelo programa
+                oficial{" "}
+                <a
+                  href="https://api.nasa.gov"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  NASA Open APIs
+                </a>
+                .
+              </p>
+
+              <p>
+                Sabemos que os dados científicos e astronómicos podem ser
+                intimidantes para o público geral. Por isso, criámos uma
+                ponte digital que organiza, filtra e ilustra estas
+                informações de forma simples, rápida e intuitiva.
+              </p>
+            </div>
+
+            <div
+              className="about-project__collage"
+              aria-hidden="true"
+            >
+              <div className="about-project__image about-project__image--main">
+                <img
+                  src={projectMainImage}
+                  alt=""
+                  loading="lazy"
+                />
+              </div>
+
+              <div className="about-project__image about-project__image--nebula">
+                <img
+                  src={projectNebulaImage}
+                  alt=""
+                  loading="lazy"
+                />
+              </div>
+            </div>
+          </section>
+        </Container>
+
+        <ApiSection
+          title="O que Vai Encontrar Aqui"
+          subtitle="Ferramentas ao teu alcance"
+        />
+
+        <Container>
+          <section
+            className="about-section about-technology-section"
             aria-labelledby="about-technology-title"
           >
             <div className="about-section__heading">
@@ -264,30 +313,19 @@ function About() {
             </div>
 
             <div className="about-technologies">
-              {TECHNOLOGIES.map(
-                ({
-                  name,
-                  description,
-                  icon: TechnologyIcon,
-                }) => (
-                  <article
-                    key={name}
-                    className="about-technology-card"
-                  >
-                    <div
-                      className="about-technology-card__icon"
-                      aria-hidden="true"
-                    >
-                      <TechnologyIcon size={24} />
-                    </div>
-
-                    <div>
-                      <h3>{name}</h3>
-                      <p>{description}</p>
-                    </div>
-                  </article>
-                )
-              )}
+              {TECHNOLOGIES.map(({ name, description }) => (
+                <div
+                  key={name}
+                  className="about-hero__stat-item"
+                >
+                  <span className="about-hero__stat-number">
+                    {name}
+                  </span>
+                  <span className="about-hero__stat-label">
+                    {description}
+                  </span>
+                </div>
+              ))}
             </div>
           </section>
 
@@ -302,59 +340,44 @@ function About() {
                 </p>
 
                 <h2 id="about-team-title">
-                  Quatro pessoas, uma missão
+                  Por Trás do Projeto
                 </h2>
               </div>
 
               <p>
-                Cada elemento ficou responsável pela integração de uma API
-                principal, participando também no desenvolvimento frontend e
-                backend da plataforma.
+                Conheça as mentes que desenharam a rota entre a Terra e os
+                dados da NASA.
               </p>
             </div>
 
             <div className="about-team-grid">
-              {teamMembers.map((member, index) => (
+              {teamMembers.map((member) => (
                 <article
                   key={member.name}
                   className="about-team-card"
                 >
-                  <div className="about-team-card__top">
-                    <div
-                      className="about-team-card__avatar"
-                      aria-hidden="true"
-                    >
-                      {member.name.charAt(0).toUpperCase()}
-                    </div>
-
-                    <span
-                      className="about-team-card__number"
-                      aria-hidden="true"
-                    >
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                  </div>
-
-                  <div className="about-team-card__content">
-                    <h3>{member.name}</h3>
-
-                    <p className="about-team-card__role">
-                      {member.role}
-                    </p>
-
-                    {member.api && (
-                      <p className="about-team-card__api">
-                        API principal: {member.api}
-                      </p>
+                  <div
+                    className="about-team-card__photo"
+                    aria-hidden="true"
+                  >
+                    {member.photo ? (
+                      <img
+                        src={member.photo}
+                        alt=""
+                        loading="lazy"
+                      />
+                    ) : (
+                      <User size={36} />
                     )}
-
-                    <p className="about-team-card__description">
-                      {member.description ||
-                        "Responsável pela integração de uma API da NASA e pelo desenvolvimento frontend e backend das funcionalidades associadas."}
-                    </p>
                   </div>
 
-                  {(member.github || member.linkedin) && (
+                  <h3 className="about-team-card__name">
+                    {member.name}
+                  </h3>
+
+                  {(member.github ||
+                    member.linkedin ||
+                    member.portfolio) && (
                     <div
                       className="about-team-card__links"
                       aria-label={`Perfis profissionais de ${member.name}`}
@@ -388,13 +411,32 @@ function About() {
                           />
                         </a>
                       )}
+
+                      {member.portfolio && (
+                        <a
+                          href={member.portfolio}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`Abrir o portfólio de ${member.name} numa nova janela`}
+                          title={`Portfólio de ${member.name}`}
+                        >
+                          <ExternalLink
+                            size={18}
+                            aria-hidden="true"
+                          />
+                        </a>
+                      )}
                     </div>
                   )}
                 </article>
               ))}
             </div>
           </section>
+        </Container>
 
+        <CTASection />
+
+        <Container>
           <section
             id="contact"
             className="about-contact"

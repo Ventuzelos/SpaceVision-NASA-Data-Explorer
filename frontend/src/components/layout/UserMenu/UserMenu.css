@@ -209,10 +209,6 @@
   font-size: 0.7rem;
 }
 
-.user-menu__guest-desktop .btn--secondary {
-  padding: 7px 16px;
-}
-
 .user-menu__guest-mobile {
   display: none;
 }
