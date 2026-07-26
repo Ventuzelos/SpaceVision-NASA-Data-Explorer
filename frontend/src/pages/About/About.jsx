@@ -213,7 +213,7 @@ function About() {
                 </span>
 
                 <div>
-                  <h3>Porque o fazemos</h3>
+                  <h3>Porquê o fazemos</h3>
                   <p>
                     Inspirar a próxima geração de exploradores, cientistas
                     e entusiastas do universo.
@@ -286,7 +286,7 @@ function About() {
         </Container>
 
         <ApiSection
-          title="O que Vai Encontrar Aqui"
+          title="O que Vais Encontrar Aqui"
           subtitle="Ferramentas ao teu alcance"
         />
 
@@ -345,7 +345,7 @@ function About() {
               </div>
 
               <p>
-                Conheça as mentes que desenharam a rota entre a Terra e os
+                Conhece as mentes que desenharam a rota entre a Terra e os
                 dados da NASA.
               </p>
             </div>
