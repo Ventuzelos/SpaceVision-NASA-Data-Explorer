@@ -28,94 +28,77 @@ function Footer() {
             className="footer__group"
             aria-labelledby="footer-information-title"
           >
-            <h2 id="footer-information-title">
-              Informação
-            </h2>
+            <h2 id="footer-information-title">Informação</h2>
 
             <div className="footer__group-links">
-              <Link to="/about">
-                Sobre o projeto
-              </Link>
+              <Link to="/about">Sobre o projeto</Link>
 
-            <Link to="/faq">
-              Perguntas frequentes
-            </Link>
+              <Link to="/faq">Perguntas frequentes</Link>
 
-            <Link to="/about#contact">
-              Contacto
-            </Link>
-          </div>
+              <Link to="/about#contact">Contacto</Link>
+            </div>
           </section>
 
           <section
             className="footer__group"
             aria-labelledby="footer-resources-title"
           >
-            <h2 id="footer-resources-title">
-              Fontes oficiais
-            </h2>
+            <h2 id="footer-resources-title">Fontes oficiais</h2>
 
+            <div className="footer__group-links">
+              <a
+                href="https://api.nasa.gov/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                NASA Open APIs
+                <span className="sr-only">
+                  {" "}
+                  — abre numa nova janela
+                </span>
+              </a>
 
-            <a
-              href="https://api.nasa.gov/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              NASA Open APIs
-              <span className="sr-only">
-                {" "}— abre numa nova janela
-              </span>
-            </a>
-
-            <a
-              href="https://www.nasa.gov/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              NASA
-              <span className="sr-only">
-                {" "}— abre numa nova janela
-              </span>
-            </a>
+              <a
+                href="https://www.nasa.gov/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                NASA
+                <span className="sr-only">
+                  {" "}
+                  — abre numa nova janela
+                </span>
+              </a>
+            </div>
           </section>
 
           <section
             className="footer__group"
             aria-labelledby="footer-legal-title"
           >
-            <h2 id="footer-legal-title">
-              Legal
-            </h2>
+            <h2 id="footer-legal-title">Legal</h2>
 
             <div className="footer__group-links">
-              <Link to="/cookies">
-                Política de Cookies
-              </Link>
+              <Link to="/cookies">Política de Cookies</Link>
 
-              <Link to="/termos">
-                Termos e Condições
-              </Link>
+              <Link to="/termos">Termos e Condições</Link>
 
-              <Link to="/privacidade">
-                Política de Privacidade
-              </Link>
+              <Link to="/privacidade">Política de Privacidade</Link>
 
-              <Link to="/accessibility">
-                Acessibilidade
-              </Link>
+              <Link to="/accessibility">Acessibilidade</Link>
             </div>
           </section>
         </nav>
       </div>
 
       <div className="container footer__bottom">
-        <div className="footer__left">
+        <p className="footer__copyright">
           © {currentYear} SpaceVision — NASA Data Explorer.
-        </div>
+        </p>
 
-        <div className="footer__right">
+        <p className="footer__note">
           Desenvolvido para fins educativos.
-        </div>
+        </p>
       </div>
     </footer>
   );
