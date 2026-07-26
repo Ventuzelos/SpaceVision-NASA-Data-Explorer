@@ -185,7 +185,8 @@ function DiscovrTimeline() {
   function handlePointerDown(event) {
     if (
       isMobile ||
-      event.button !== 0
+      event.button !== 0 ||
+      event.target.closest("button")
     ) {
       return;
     }

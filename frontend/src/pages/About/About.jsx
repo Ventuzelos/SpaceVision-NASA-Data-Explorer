@@ -23,6 +23,8 @@ import { teamMembers } from "../../data/team";
 import aboutHeroImage from "../../assets/galaxy-night-panorama.webp";
 import projectMainImage from "../../assets/milky-way.jpg";
 import projectNebulaImage from "../../assets/jeremy-perkins-uhjiu8FjnsQ-unsplash.jpg";
+import linkedinIcon from "../../assets/linkedin-icon.avif";
+import githubIcon from "../../assets/github-icon.png";
 
 import "./About.css";
 
@@ -213,7 +215,7 @@ function About() {
                 </span>
 
                 <div>
-                  <h3>Porque o fazemos</h3>
+                  <h3>Porquê o fazemos</h3>
                   <p>
                     Inspirar a próxima geração de exploradores, cientistas
                     e entusiastas do universo.
@@ -286,7 +288,7 @@ function About() {
         </Container>
 
         <ApiSection
-          title="O que Vai Encontrar Aqui"
+          title="O que Vais Encontrar Aqui"
           subtitle="Ferramentas ao teu alcance"
         />
 
@@ -345,7 +347,7 @@ function About() {
               </div>
 
               <p>
-                Conheça as mentes que desenharam a rota entre a Terra e os
+                Conhece as mentes que desenharam a rota entre a Terra e os
                 dados da NASA.
               </p>
             </div>
@@ -375,6 +377,12 @@ function About() {
                     {member.name}
                   </h3>
 
+                  {member.role && (
+                    <p className="about-team-card__role">
+                      {member.role}
+                    </p>
+                  )}
+
                   {(member.github ||
                     member.linkedin ||
                     member.portfolio) && (
@@ -390,9 +398,11 @@ function About() {
                           aria-label={`Abrir o GitHub de ${member.name} numa nova janela`}
                           title={`GitHub de ${member.name}`}
                         >
-                          <ExternalLink
-                            size={18}
-                            aria-hidden="true"
+                          <img
+                            src={githubIcon}
+                            alt=""
+                            width={18}
+                            height={18}
                           />
                         </a>
                       )}
@@ -405,9 +415,11 @@ function About() {
                           aria-label={`Abrir o LinkedIn de ${member.name} numa nova janela`}
                           title={`LinkedIn de ${member.name}`}
                         >
-                          <ExternalLink
-                            size={18}
-                            aria-hidden="true"
+                          <img
+                            src={linkedinIcon}
+                            alt=""
+                            width={18}
+                            height={18}
                           />
                         </a>
                       )}
