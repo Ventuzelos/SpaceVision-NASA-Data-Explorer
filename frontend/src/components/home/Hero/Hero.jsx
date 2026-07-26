@@ -9,10 +9,9 @@ import "../../common/Button/Button.css";
 import "./Hero.css";
 
 const searchIcons = {
-  image: Icons.Image,
   sun: Icons.Sun,
-  earth: Icons.Globe,
-  meteor: Icons.Satellite,
+  globe: Icons.Globe,
+  asteroid: Icons.Orbit,
 };
 
 function Hero() {
@@ -65,22 +64,25 @@ function Hero() {
 
                     return (
                       <Link
-                        key={page.path}
-                        to={page.path}
-                        className="hero__search-result"
-                      >
-                        <div className="hero__search-result-header">
-                          {Icon && (
-                            <Icon
-                              className="hero__search-result-icon"
-                              size={18}
-                            />
-                          )}
-                          <strong>{page.title}</strong>
-                        </div>
+                      key={page.path}
+                      to={page.path}
+                      className="hero__search-result"
+                    >
+                      <span className="hero__search-result-icon-wrapper">
+                        {Icon && (
+                          <Icon
+                            className="hero__search-result-icon"
+                            size={18}
+                            aria-hidden="true"
+                          />
+                        )}
+                      </span>
 
+                      <span className="hero__search-result-content">
+                        <strong>{page.title}</strong>
                         <span>{page.subtitle}</span>
-                      </Link>
+                      </span>
+                    </Link>
                     );
                   })}
                 </div>
