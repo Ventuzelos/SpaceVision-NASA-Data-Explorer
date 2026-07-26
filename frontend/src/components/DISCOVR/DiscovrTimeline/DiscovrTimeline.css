@@ -82,6 +82,9 @@
   border: 2px solid var(--color-background);
   border-radius: 50%;
   background: var(--color-link);
+  box-shadow:
+    0 0 0 4px rgba(11, 16, 32, 0.65),
+    0 0 14px rgba(110, 168, 255, 0.75);
   cursor: pointer;
   transition:
     width var(--transition-fast),
