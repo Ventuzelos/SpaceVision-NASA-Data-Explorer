@@ -3,15 +3,7 @@
   min-height: 70vh;
 }
 
-.legal-page .breadcrumb {
-  max-width: 640px;
-  margin-left: auto;
-  margin-right: auto;
-}
 
-.legal-page .breadcrumb__list {
-  justify-content: center;
-}
 
 /* ---- hero ---- */
 .legal-hero {
