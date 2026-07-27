@@ -371,7 +371,7 @@ function Profile() {
 
       showToast(
         response.message ||
-          "Perfil atualizado com sucesso."
+        "Perfil atualizado com sucesso."
       );
     } catch (error) {
       setFormError(
@@ -418,7 +418,7 @@ function Profile() {
 
       showToast(
         response.message ||
-          "Chave da NASA guardada com sucesso."
+        "Chave da NASA guardada com sucesso."
       );
     } catch (error) {
       setNasaKeyError(
@@ -457,7 +457,7 @@ function Profile() {
 
       showToast(
         response.message ||
-          "Chave da NASA removida com sucesso."
+        "Chave da NASA removida com sucesso."
       );
     } catch (error) {
       setNasaKeyError(
@@ -1020,10 +1020,18 @@ function Profile() {
                       </h2>
 
                       <p className="profile-card__intro">
-                        Adiciona uma chave
-                        pessoal para utilizar os
-                        teus próprios limites de
-                        pedidos às APIs da NASA.
+                        Adiciona uma chave pessoal para utilizar os teus próprios
+                        limites de pedidos às APIs da NASA. Podes obter a tua chave
+                        gratuitamente em{" "}
+                        <a
+                          href="https://api.nasa.gov/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="profile-card__link"
+                        >
+                          api.nasa.gov
+                        </a>
+                        .
                       </p>
 
                       <div
