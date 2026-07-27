@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import logo from "../../../assets/logos/logo-horizontal-planet.svg";
+import logo from "../../../assets/logos/logo-horizontal-planet -02.webp";
 
 import "./Logo.css";
 

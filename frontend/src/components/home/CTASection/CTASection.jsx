@@ -29,9 +29,25 @@ function CTASection() {
               cósmica.
             </p>
 
-            <Link to="/discover" className="cta-section__button">
-              Explorar o Universo
-            </Link>
+            <div className="cta-section__actions">
+              <Link to="/discover" className="cta-section__button">
+                Explorar o Universo
+              </Link>
+
+              <div className="cta-section__secondary-links">
+                <Link to="/neowatch" className="cta-section__secondary-link">
+                  Asteroides
+                </Link>
+
+                <Link to="/donki" className="cta-section__secondary-link">
+                  Meteorologia Espacial
+                </Link>
+
+                <Link to="/epic" className="cta-section__secondary-link">
+                  Terra
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </div>

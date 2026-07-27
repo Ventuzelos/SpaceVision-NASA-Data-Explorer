@@ -1,6 +1,6 @@
 import Container from "../Container/Container";
 
-import logo from "../../../assets/logos/logo.svg";
+import logo from "../../../assets/logos/logo-horizontal-planet -02.webp";
 import galaxyImage from "../../../assets/ceu_noturno.jpg";
 
 import "./AuthGalaxyLayout.css";
