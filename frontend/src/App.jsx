@@ -6,7 +6,7 @@ import {
 import {
   Routes,
   Route,
-} from "react-router-dom";
+} from "react-router";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 

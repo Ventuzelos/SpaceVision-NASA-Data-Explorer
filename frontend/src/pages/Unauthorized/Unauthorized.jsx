@@ -1,5 +1,5 @@
 // src/pages/Unauthorized/Unauthorized.jsx
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 import Container from "../../components/common/Container/Container";
 import Icon from "../../components/common/Icon/Icon";

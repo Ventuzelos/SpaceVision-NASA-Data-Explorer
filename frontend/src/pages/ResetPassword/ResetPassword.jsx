@@ -8,7 +8,7 @@ import {
   Link,
   useNavigate,
   useSearchParams,
-} from "react-router-dom";
+} from "react-router";
 
 import AuthGalaxyLayout from "../../components/common/AuthGalaxyLayout/AuthGalaxyLayout";
 import { resetPassword } from "../../services/authService";

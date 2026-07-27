@@ -4,7 +4,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate } from "react-router";
 
 import Container from "../../components/common/Container/Container";
 import Breadcrumb from "../../components/common/Breadcrumb/Breadcrumb";

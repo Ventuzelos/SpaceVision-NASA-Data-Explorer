@@ -3,7 +3,7 @@ import {
   Link,
   useLocation,
   useNavigate,
-} from "react-router-dom";
+} from "react-router";
 
 import { Eye, EyeOff } from "lucide-react";
 
