@@ -1,6 +1,7 @@
 .faq-page {
   min-height: 70vh;
-  padding-block: var(--space-8);
+  padding-top: var(--space-6);
+  padding-bottom: var(--space-8);
 }
 
 .faq-hero,
