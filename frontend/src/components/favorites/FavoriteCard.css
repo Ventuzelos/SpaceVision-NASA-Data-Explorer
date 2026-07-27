@@ -40,6 +40,11 @@
   color: var(--color-text-secondary);
 }
 
+.favorite-card__actions {
+  display: flex;
+  gap: var(--space-3);
+}
+
 .favorite-card__content button {
   margin-top: auto;
 }

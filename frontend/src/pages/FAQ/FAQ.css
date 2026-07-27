@@ -3,16 +3,13 @@
   padding-block: var(--space-8);
 }
 
-.faq-page .breadcrumb,
 .faq-hero,
 .faq-tools {
   max-width: 40rem;
   margin-inline: auto;
 }
 
-.faq-page .breadcrumb__list {
-  justify-content: center;
-}
+
 
 .faq-hero {
   margin-bottom: var(--space-7);
