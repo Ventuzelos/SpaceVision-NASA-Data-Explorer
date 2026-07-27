@@ -27,11 +27,14 @@ function formatApodDate(date) {
     return date;
   }
 
-  return new Date(year, month - 1, day).toLocaleDateString("pt-PT", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  return new Date(year, month - 1, day).toLocaleDateString(
+    "pt-PT",
+    {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }
+  );
 }
 
 function APODCard({ apod }) {
@@ -39,8 +42,10 @@ function APODCard({ apod }) {
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [favorite, setFavorite] = useState(false);
-  const [favoriteDatabaseId, setFavoriteDatabaseId] = useState(null);
-  const [isFavoriteLoading, setIsFavoriteLoading] = useState(false);
+  const [favoriteDatabaseId, setFavoriteDatabaseId] =
+    useState(null);
+  const [isFavoriteLoading, setIsFavoriteLoading] =
+    useState(false);
   const [toastMessage, setToastMessage] = useState("");
 
   const toastTimeoutRef = useRef(null);
@@ -52,6 +57,20 @@ function APODCard({ apod }) {
   const mediaUrl = isSafeUrl(apod.url) ? apod.url : null;
   const hdUrl = isSafeUrl(apod.hdurl) ? apod.hdurl : null;
 
+  const displayTitle =
+    apod.translated_title ||
+    apod.title ||
+    "Imagem astronómica do dia";
+
+  const displayExplanation =
+    apod.translated_explanation ||
+    apod.explanation ||
+    "";
+
+  const hasAutomaticTranslation =
+    Boolean(apod.translated_explanation) &&
+    apod.translated_explanation !==
+      (apod.original_explanation || apod.explanation);
 
   useEffect(() => {
     let isMounted = true;
@@ -78,7 +97,10 @@ function APODCard({ apod }) {
         setFavoriteDatabaseId(existingFavorite?.id || null);
       } catch (error) {
         if (error.response?.status !== 401) {
-          console.error("Erro ao verificar favorito:", error);
+          console.error(
+            "Erro ao verificar favorito:",
+            error
+          );
         }
 
         if (isMounted) {
@@ -93,7 +115,11 @@ function APODCard({ apod }) {
     return () => {
       isMounted = false;
     };
-  }, [favoriteId, isAuthenticated, isAuthLoading]);
+  }, [
+    favoriteId,
+    isAuthenticated,
+    isAuthLoading,
+  ]);
 
   useEffect(() => {
     return () => {
@@ -118,7 +144,9 @@ function APODCard({ apod }) {
 
   async function handleFavoriteClick() {
     if (!isAuthenticated) {
-      showToast("Precisas de iniciar sessão para guardar favoritos");
+      showToast(
+        "Precisas de iniciar sessão para guardar favoritos"
+      );
       return;
     }
 
@@ -142,28 +170,40 @@ function APODCard({ apod }) {
       const favoriteItem = {
         nasa_type: "apod",
         nasa_id: favoriteId,
-        title: apod.title || "Imagem astronómica da NASA",
-        image_url: isImage ? hdUrl || mediaUrl : null,
+        title: displayTitle,
+        image_url: isImage
+          ? hdUrl || mediaUrl
+          : null,
 
         data: {
           ...apod,
-          image_url: isImage ? hdUrl || mediaUrl : null,
+          image_url: isImage
+            ? hdUrl || mediaUrl
+            : null,
         },
       };
 
-      const createdFavorite = await addFavorite(favoriteItem);
+      const createdFavorite =
+        await addFavorite(favoriteItem);
 
       setFavorite(true);
       setFavoriteDatabaseId(createdFavorite.id);
 
       showToast("Adicionado aos favoritos");
     } catch (error) {
-      console.error("Erro ao atualizar favorito:", error);
+      console.error(
+        "Erro ao atualizar favorito:",
+        error
+      );
 
       if (error.response?.status === 401) {
-        showToast("Precisas de iniciar sessão para guardar favoritos");
+        showToast(
+          "Precisas de iniciar sessão para guardar favoritos"
+        );
       } else {
-        showToast("Não foi possível atualizar o favorito");
+        showToast(
+          "Não foi possível atualizar o favorito"
+        );
       }
     } finally {
       setIsFavoriteLoading(false);
@@ -174,17 +214,30 @@ function APODCard({ apod }) {
     <article className="apod-card">
       <div className="apod-card__media">
         {!mediaUrl && (
-          <div className="apod-card__media-error" role="status">
-            <Icon name="ImageOff" size={32} />
+          <div
+            className="apod-card__media-error"
+            role="status"
+          >
+            <Icon
+              name="ImageOff"
+              size={32}
+              aria-hidden="true"
+            />
 
-            <p>O conteúdo multimédia desta APOD não está disponível.</p>
+            <p>
+              O conteúdo multimédia desta APOD não está
+              disponível.
+            </p>
           </div>
         )}
 
         {mediaUrl && isImage && (
           <img
             src={mediaUrl}
-            alt={apod.title || "Imagem astronómica disponibilizada pela NASA"}
+            alt={
+              displayTitle ||
+              "Imagem astronómica disponibilizada pela NASA"
+            }
             loading="lazy"
             decoding="async"
           />
@@ -193,7 +246,10 @@ function APODCard({ apod }) {
         {mediaUrl && !isImage && (
           <iframe
             src={mediaUrl}
-            title={apod.title || "Vídeo astronómico disponibilizado pela NASA"}
+            title={
+              displayTitle ||
+              "Vídeo astronómico disponibilizado pela NASA"
+            }
             loading="lazy"
             allow="accelerometer; autoplay; encrypted-media; picture-in-picture"
             allowFullScreen
@@ -203,36 +259,17 @@ function APODCard({ apod }) {
       </div>
 
       <div className="apod-card__content">
-        <div className="apod-card__badges">
-          <span className="badge">
-            <Icon name="Calendar" size={16} />
-            {formattedDate}
-          </span>
-
-          {apod.copyright && (
-            <span className="badge">
-              <Icon name="Copyright" size={16} />
-              {apod.copyright}
-            </span>
-          )}
-
-          <span className="badge">
-            <Icon
-              name={isImage ? "Image" : "Video"}
-              size={16}
-            />
-
-            {isImage ? "Imagem" : "Vídeo"}
-          </span>
-        </div>
+        
 
         <div className="apod-card__header">
-          <h2>{apod.title || "Imagem astronómica do dia"}</h2>
+          <h2>{displayTitle}</h2>
 
           <FavoriteButton
             active={isAuthenticated && favorite}
             onClick={handleFavoriteClick}
-            disabled={isFavoriteLoading || isAuthLoading}
+            disabled={
+              isFavoriteLoading || isAuthLoading
+            }
             ariaLabel={
               favorite
                 ? "Remover dos favoritos"
@@ -241,7 +278,41 @@ function APODCard({ apod }) {
           />
         </div>
 
-        {apod.explanation ? (
+        <div className="apod-card__badges">
+          <span className="badge">
+            <Icon
+              name="Calendar"
+              size={16}
+              aria-hidden="true"
+            />
+
+            {formattedDate}
+          </span>
+
+          {apod.copyright && (
+            <span className="badge">
+              <Icon
+                name="Copyright"
+                size={16}
+                aria-hidden="true"
+              />
+
+              {apod.copyright}
+            </span>
+          )}
+
+          <span className="badge">
+            <Icon
+              name={isImage ? "Image" : "Video"}
+              size={16}
+              aria-hidden="true"
+            />
+
+            {isImage ? "Imagem" : "Vídeo"}
+          </span>
+        </div>
+
+        {displayExplanation ? (
           <>
             <p
               className={
@@ -250,18 +321,29 @@ function APODCard({ apod }) {
                   : "apod-card__text apod-card__text--collapsed"
               }
             >
-              {apod.explanation}
+              {displayExplanation}
             </p>
+
+            {hasAutomaticTranslation && (
+              <p className="apod-card__translation-note">
+                Tradução automática. O conteúdo original foi
+                fornecido pela NASA.
+              </p>
+            )}
 
             <div className="apod-card__actions">
               <Button
                 variant="secondary"
                 onClick={() => {
-                  setIsExpanded((current) => !current);
+                  setIsExpanded(
+                    (current) => !current
+                  );
                 }}
                 aria-expanded={isExpanded}
               >
-                {isExpanded ? "Mostrar menos" : "Ler mais"}
+                {isExpanded
+                  ? "Mostrar menos"
+                  : "Ler mais"}
               </Button>
 
               {isImage && hdUrl && (
@@ -272,7 +354,12 @@ function APODCard({ apod }) {
                   className="apod-card__hd-link"
                 >
                   <Button>
-                    <Icon name="ExternalLink" size={16} />
+                    <Icon
+                      name="ExternalLink"
+                      size={16}
+                      aria-hidden="true"
+                    />
+
                     Ver imagem HD
                   </Button>
                 </a>
@@ -281,7 +368,8 @@ function APODCard({ apod }) {
           </>
         ) : (
           <p className="apod-card__text">
-            Não está disponível uma explicação para este conteúdo.
+            Não está disponível uma explicação para este
+            conteúdo.
           </p>
         )}
       </div>
