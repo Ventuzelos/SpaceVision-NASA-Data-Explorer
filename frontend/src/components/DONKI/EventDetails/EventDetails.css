@@ -124,3 +124,12 @@
 .event-details__source-link:hover {
   gap: var(--space-3);
 }
+
+.event-details__translation-note {
+  margin-top: var(--space-3);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  font-style: italic;
+  line-height: var(--line-height-normal);
+  opacity: 0.85;
+}

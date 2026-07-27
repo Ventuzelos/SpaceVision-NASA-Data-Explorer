@@ -11,7 +11,10 @@ function formatFullDate(value) {
   if (!value) return "Data não disponível";
 
   const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) return value;
+
+  if (Number.isNaN(parsed.getTime())) {
+    return value;
+  }
 
   return parsed.toLocaleString("pt-PT", {
     weekday: "long",
@@ -31,13 +34,16 @@ function EventDetails({
   onBack,
 }) {
   const backButtonRef = useRef(null);
+
   const containerRef = useModalA11y({
     isOpen: Boolean(event),
     onClose: onBack,
     initialFocusRef: backButtonRef,
   });
 
-  if (!event) return null;
+  if (!event) {
+    return null;
+  }
 
   return (
     <div
@@ -50,7 +56,9 @@ function EventDetails({
     >
       <div
         className="event-details__card"
-        onClick={(clickEvent) => clickEvent.stopPropagation()}
+        onClick={(clickEvent) => {
+          clickEvent.stopPropagation();
+        }}
       >
         <button
           ref={backButtonRef}
@@ -58,7 +66,12 @@ function EventDetails({
           className="event-details__back"
           onClick={onBack}
         >
-          <Icon name="ArrowLeft" size={18} />
+          <Icon
+            name="ArrowLeft"
+            size={18}
+            aria-hidden="true"
+          />
+
           Voltar à lista
         </button>
 
@@ -86,7 +99,9 @@ function EventDetails({
             <FavoriteButton
               active={isFavorite}
               disabled={isFavoriteLoading}
-              onClick={() => onToggleFavorite(event)}
+              onClick={() => {
+                onToggleFavorite(event);
+              }}
               ariaLabel={
                 isFavorite
                   ? "Remover dos favoritos"
@@ -114,6 +129,13 @@ function EventDetails({
           </p>
         )}
 
+        {event.hasAutomaticTranslation && (
+          <p className="event-details__translation-note">
+            Tradução automática. O conteúdo original foi
+            fornecido pela NASA.
+          </p>
+        )}
+
         {isSafeUrl(event.link) && (
           <div className="event-details__actions">
             <a
@@ -123,7 +145,12 @@ function EventDetails({
               className="event-details__source-link"
             >
               Ver fonte na NASA
-              <Icon name="ExternalLink" size={16} />
+
+              <Icon
+                name="ExternalLink"
+                size={16}
+                aria-hidden="true"
+              />
             </a>
           </div>
         )}

@@ -225,13 +225,21 @@ function normalizeEvent(type, event, index) {
   );
 
   switch (type) {
-    case "FLR":
+    case "FLR": {
+      const originalNote =
+        event.original_note || event.note || "";
+
+      const translatedNote =
+        event.translated_note || "";
+
+      const displayNote =
+        translatedNote || originalNote;
+
       return {
         id: event.flrID || fallbackId,
         type,
-        title: `Erupção Solar ${
-          event.classType ?? ""
-        }`.trim(),
+        title: `Erupção Solar ${event.classType ?? ""
+          }`.trim(),
         date:
           event.peakTime ||
           event.beginTime ||
@@ -268,10 +276,15 @@ function normalizeEvent(type, event, index) {
             ),
           },
         ],
+
+        body: displayNote || null,
+        hasAutomaticTranslation:
+          Boolean(translatedNote) &&
+          translatedNote !== originalNote,
         link: event.link || null,
         raw: event,
       };
-
+    }
     case "CME": {
       const analysis =
         event.cmeAnalyses?.find(
@@ -327,7 +340,7 @@ function normalizeEvent(type, event, index) {
       const maxKp = kpIndexes.reduce(
         (maximum, current) =>
           current.kpIndex >
-          (maximum?.kpIndex ?? -Infinity)
+            (maximum?.kpIndex ?? -Infinity)
             ? current
             : maximum,
         null
