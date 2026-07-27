@@ -7,7 +7,7 @@ import {
 import {
   Navigate,
   useNavigate,
-} from "react-router-dom";
+} from "react-router";
 
 import {
   AlertTriangle,
