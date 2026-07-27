@@ -31,9 +31,10 @@
 
 .about-hero__overlay {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   min-height: var(--about-hero-min-height);
-  padding-block: var(--space-7);
+  padding-top: var(--space-8);
+  padding-bottom: var(--space-7);
   background:
     linear-gradient(
       180deg,
@@ -41,6 +42,12 @@
       rgba(11, 16, 32, 0.82) 60%,
       rgba(11, 16, 32, 0.98) 100%
     );
+}
+
+.about-hero__center {
+  display: flex;
+  flex: 1;
+  align-items: center;
 }
 
 .about-hero__content {

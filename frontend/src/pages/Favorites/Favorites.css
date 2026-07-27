@@ -3,7 +3,7 @@
 }
 
 .favorites-hero {
-  padding: 96px 0 64px;
+  padding: var(--space-8) 0;
 }
 
 .favorites-hero__label {
