@@ -39,7 +39,7 @@ export const nasaApis = [
   {
     title: "Meteorologia Espacial",
     description:
-      "Notificações de tempestades solares, erupções e eventos meteorológicos espaciais.",
+      "Monitorize o clima espacial em tempo real e saiba quando ocorrem as maiores tempestades solares",
     category: "NASA · DONKI",
     icon: SunIcon,
     image: sunImage,

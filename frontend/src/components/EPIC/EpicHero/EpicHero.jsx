@@ -9,7 +9,7 @@ export default function EpicHero() {
       className="epic-hero"
       aria-labelledby="epic-page-title"
     >
-      <Breadcrumb title="EPIC" />
+      <Breadcrumb title="Terra" />
 
       <div className="epic-hero__grid">
         <div className="epic-hero__content">

@@ -609,7 +609,7 @@ function FAQ() {
       />
       <main className="faq-page">
         <Container>
-          <Breadcrumb title="FAQ" />
+          <Breadcrumb title="Perguntas Frequentes" />
 
           <header className="faq-hero">
             <p className="faq-hero__eyebrow">

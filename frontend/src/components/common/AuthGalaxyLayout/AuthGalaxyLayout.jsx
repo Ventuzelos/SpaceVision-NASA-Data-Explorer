@@ -1,12 +1,11 @@
 import Container from "../Container/Container";
 
-import logo from "../../../assets/logos/logo-horizontal-planet -02.webp";
+import logo from "../../../assets/logos/logo-horizontal-planet _favicon-03.webp";
 import galaxyImage from "../../../assets/ceu_noturno.jpg";
 
 import "./AuthGalaxyLayout.css";
 
 function AuthGalaxyLayout({
-  eyebrow = "NASA Data Explorer",
   title,
   description,
   status = "Dados científicos. Exploração sem limites.",
@@ -50,10 +49,6 @@ function AuthGalaxyLayout({
                   alt="SpaceVision"
                   className="auth-galaxy__logo"
                 />
-
-                <p className="auth-galaxy__eyebrow">
-                  {eyebrow}
-                </p>
 
                 <p className="auth-galaxy__title">
                   {title}
