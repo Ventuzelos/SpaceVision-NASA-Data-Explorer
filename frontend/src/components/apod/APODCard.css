@@ -41,6 +41,7 @@
   flex-wrap: wrap;
   gap: 12px;
   margin-bottom: 24px;
+  
 }
 
 .badge {
@@ -51,7 +52,7 @@
   border-radius: 999px;
   background: rgba(46, 111, 245, 0.15);
   color: var(--color-text);
-  font-size: 0.875rem;
+  font-size: var(--font-size-xs);
   font-weight: 500;
 }
 
@@ -88,6 +89,15 @@
 
 .apod-card__actions a {
   text-decoration: none;
+}
+
+.apod-card__translation-note {
+  margin: var(--space-3) 0 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  font-style: italic;
+  line-height: var(--line-height-normal);
+  opacity: 0.85;
 }
 
 @media (max-width: 900px) {

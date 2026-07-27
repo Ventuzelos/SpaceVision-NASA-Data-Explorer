@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Services\NasaApiService;
+use App\Services\TranslationService;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\JsonResponse;
@@ -13,7 +14,8 @@ use RuntimeException;
 class NasaController extends Controller
 {
     public function __construct(
-        private readonly NasaApiService $nasaApiService
+        private readonly NasaApiService $nasaApiService,
+        private readonly TranslationService $translationService
     ) {}
 
     public function apod(Request $request): JsonResponse
@@ -58,10 +60,20 @@ class NasaController extends Controller
 
         $validated = $validator->validate();
 
-        return $this->getNasaResponse(
+        $response = $this->getNasaResponse(
             'planetary/apod',
             $validated,
             $request
+        );
+
+        if ($response->getStatusCode() !== 200) {
+            return $response;
+        }
+
+        $data = $response->getData(true);
+
+        return response()->json(
+            $this->translateApodData($data)
         );
     }
 
@@ -149,16 +161,50 @@ class NasaController extends Controller
         );
     }
 
+    private function translateApodData(array $data): array
+    {
+        if (array_is_list($data)) {
+            return array_map(
+                fn(array $item): array =>
+                $this->translateApodItem($item),
+                $data
+            );
+        }
+
+        return $this->translateApodItem($data);
+    }
+
+    private function translateApodItem(array $item): array
+    {
+        $originalTitle = $item['title'] ?? null;
+        $originalExplanation = $item['explanation'] ?? null;
+
+        $item['original_title'] = $originalTitle;
+        $item['original_explanation'] = $originalExplanation;
+
+        $item['translated_title'] =
+            $this->translationService
+            ->translateToPortuguese($originalTitle);
+
+        $item['translated_explanation'] =
+            $this->translationService
+            ->translateToPortuguese($originalExplanation);
+
+        return $item;
+    }
+
     private function getNasaResponse(
         string $endpoint,
         array $query,
         Request $request
     ): JsonResponse {
         try {
+            $user = $request->user('sanctum');
+
             $data = $this->nasaApiService->get(
                 $endpoint,
                 $query,
-                $request->user()
+                $user
             );
 
             return response()->json($data);
@@ -167,7 +213,7 @@ class NasaController extends Controller
 
             if ($response->status() === 429) {
                 $hasPersonalKey = filled(
-                    $request->user()?->nasa_api_key
+                    $request->user('sanctum')?->nasa_api_key
                 );
 
                 return response()->json([
