@@ -355,24 +355,21 @@ function DiscovrSolarSystem() {
                 <button
                   type="button"
                   className="discovr-solar-system__play"
-                  onClick={
-                    handleTogglePlaying
-                  }
+                  onClick={handleTogglePlaying}
                   aria-label={
                     playing
                       ? "Pausar simulação"
                       : "Retomar simulação"
                   }
-                  aria-pressed={
-                    !playing
+                  title={
+                    playing
+                      ? "Pausar simulação"
+                      : "Retomar simulação"
                   }
+                  aria-pressed={!playing}
                 >
                   <Icon
-                    name={
-                      playing
-                        ? "Pause"
-                        : "Play"
-                    }
+                    name={playing ? "Pause" : "Play"}
                     size={16}
                     aria-hidden="true"
                   />
@@ -458,7 +455,7 @@ function DiscovrSolarSystem() {
                   type="button"
                   className={
                     focusId ===
-                    planet.id
+                      planet.id
                       ? "is-active"
                       : ""
                   }
