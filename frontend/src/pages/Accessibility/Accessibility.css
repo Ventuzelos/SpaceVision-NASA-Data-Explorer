@@ -1,6 +1,6 @@
 .accessibility-page {
   min-height: 100vh;
-  padding: var(--space-12, 3rem) 0 var(--space-16, 4rem);
+  padding: var(--space-8) 0 var(--space-16, 4rem);
   background:
     radial-gradient(
       circle at top right,

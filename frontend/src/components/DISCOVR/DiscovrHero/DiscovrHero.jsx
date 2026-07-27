@@ -12,9 +12,6 @@ function DiscovrHero() {
     <section
       className="discovr-hero"
       aria-labelledby="discovr-page-title"
-      style={{
-        backgroundImage: `url(${heroImage})`,
-      }}
     >
       <div
         className="discovr-hero__overlay"

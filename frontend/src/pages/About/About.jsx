@@ -108,46 +108,50 @@ function About() {
           <div className="about-hero__overlay">
             <Container>
               <Breadcrumb title="Sobre nós" />
-
-              <div className="about-hero__content">
-                <p className="about-page__eyebrow">
-                  O projeto por detrás da exploração
-                </p>
-
-                <h1
-                  id="about-page-title"
-                  className="about-hero__title"
-                >
-                  Tornamos os dados da NASA mais próximos de todos.
-                </h1>
-
-                <p className="about-hero__subtitle">
-                  O SpaceVision descomplica a ciência espacial. Uma plataforma
-                  interativa e acessível que transforma os dados mais
-                  complexos da NASA numa experiência puramente visual e
-                  intuitiva.
-                </p>
-
-                <div
-                  className="about-hero__stats"
-                  aria-label="Informação geral do projeto"
-                >
-                  {PROJECT_STATS.map(({ value, label }) => (
-                    <div
-                      key={label}
-                      className="about-hero__stat-item"
-                    >
-                      <span className="about-hero__stat-number">
-                        {value}
-                      </span>
-                      <span className="about-hero__stat-label">
-                        {label}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
             </Container>
+
+            <div className="about-hero__center">
+              <Container>
+                <div className="about-hero__content">
+                  <p className="about-page__eyebrow">
+                    O projeto por detrás da exploração
+                  </p>
+
+                  <h1
+                    id="about-page-title"
+                    className="about-hero__title"
+                  >
+                    Tornamos os dados da NASA mais próximos de todos.
+                  </h1>
+
+                  <p className="about-hero__subtitle">
+                    O SpaceVision descomplica a ciência espacial. Uma plataforma
+                    interativa e acessível que transforma os dados mais
+                    complexos da NASA numa experiência puramente visual e
+                    intuitiva.
+                  </p>
+
+                  <div
+                    className="about-hero__stats"
+                    aria-label="Informação geral do projeto"
+                  >
+                    {PROJECT_STATS.map(({ value, label }) => (
+                      <div
+                        key={label}
+                        className="about-hero__stat-item"
+                      >
+                        <span className="about-hero__stat-number">
+                          {value}
+                        </span>
+                        <span className="about-hero__stat-label">
+                          {label}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </Container>
+            </div>
           </div>
         </section>
 
