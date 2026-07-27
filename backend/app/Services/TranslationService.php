@@ -30,7 +30,7 @@ class TranslationService
                             rtrim(
                                 config('services.libretranslate.url'),
                                 '/'
-                            ) . '/translate',
+                            ).'/translate',
                             [
                                 'q' => $text,
                                 'source' => 'en',

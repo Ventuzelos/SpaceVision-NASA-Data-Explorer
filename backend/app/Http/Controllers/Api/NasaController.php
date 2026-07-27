@@ -165,8 +165,7 @@ class NasaController extends Controller
     {
         if (array_is_list($data)) {
             return array_map(
-                fn(array $item): array =>
-                $this->translateApodItem($item),
+                fn (array $item): array => $this->translateApodItem($item),
                 $data
             );
         }
@@ -184,11 +183,11 @@ class NasaController extends Controller
 
         $item['translated_title'] =
             $this->translationService
-            ->translateToPortuguese($originalTitle);
+                ->translateToPortuguese($originalTitle);
 
         $item['translated_explanation'] =
             $this->translationService
-            ->translateToPortuguese($originalExplanation);
+                ->translateToPortuguese($originalExplanation);
 
         return $item;
     }
