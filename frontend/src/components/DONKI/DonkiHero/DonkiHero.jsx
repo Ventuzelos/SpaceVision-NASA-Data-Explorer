@@ -9,7 +9,7 @@ export default function DonkiHero() {
       className="donki-hero"
       aria-labelledby="donki-page-title"
     >
-      <Breadcrumb title="DONKI" />
+      <Breadcrumb title="Meteorologia Espacial" />
 
       <div className="donki-hero__grid">
         <div className="donki-hero__content">
