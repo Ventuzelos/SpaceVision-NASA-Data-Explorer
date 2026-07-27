@@ -45,6 +45,8 @@ import {
   Server,
   Lightbulb,
   Cookie,
+  KeyRound,
+  HelpCircle,
 } from "lucide-react";
 
 export const Icons = {
@@ -94,4 +96,6 @@ export const Icons = {
   Server,
   Lightbulb,
   Cookie,
+  KeyRound,
+  HelpCircle,
 };
