@@ -361,13 +361,15 @@
       rgba(225, 29, 72, 0.9));
 
   color: var(--color-text);
-min-height: 44px;
+  min-height: 44px;
   box-shadow:
     0 6px 18px rgba(190, 24, 93, 0.18);
 }
-.profile-content .btn{
+
+.profile-content .btn {
   min-height: 44px;
 }
+
 .profile-card--danger .btn--danger {
   min-width: 240px;
 }
@@ -509,7 +511,7 @@ min-height: 44px;
 }
 
 .profile-feature__icon--danger {
-   background:
+  background:
     linear-gradient(135deg,
       rgba(190, 24, 93, 0.22),
       rgba(225, 29, 72, 0.12));
@@ -557,9 +559,7 @@ min-height: 44px;
   line-height: 1.5;
 }
 
-.profile-feature__content
-  .profile-nasa-key-status
-  + .profile-form {
+.profile-feature__content .profile-nasa-key-status+.profile-form {
   margin-top: 0;
 }
 
@@ -681,8 +681,26 @@ min-height: 44px;
     align-self: stretch;
     width: 100%;
   }
+
   .profile-card--danger .btn--danger {
     width: 100%;
     min-width: 0;
   }
+}
+
+.profile-card__link {
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.profile-card__link:hover {
+  text-decoration-thickness: 2px;
+}
+
+.profile-card__link:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+  border-radius: 4px;
 }
