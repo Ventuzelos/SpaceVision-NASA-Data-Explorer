@@ -18,7 +18,7 @@
   --color-btn-bg: #ffffff;
   --color-btn-bg-hover: #e2e8f0;
   --color-btn-text: #121212;
-  --radius-btn: 0;
+  --radius-btn: 5px;
 
   /* Semantic Colors */
   --color-success: #10b981;
@@ -62,8 +62,8 @@
   --space-4: 1rem;
   --space-5: 1.5rem;
   --space-6: 2rem;
-  --space-7: 3rem;
-  --space-8: 4rem;
+  --space-7: 4rem;
+  --space-8: 8rem;
 
   /* Radius */
   --radius-sm: 0.5rem;

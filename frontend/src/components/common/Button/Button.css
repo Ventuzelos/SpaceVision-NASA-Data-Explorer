@@ -3,7 +3,7 @@
   align-items: center;
   gap: 9px;
   padding: 12px 22px;
-  border-radius: var(--radius-btn); /* cantos rectos */
+  /*border-radius: var(--radius-btn);  cantos rectos */
   font-family: var(--font-family);
   font-size: 12px;
   font-weight: 700;
@@ -13,6 +13,8 @@
   border: 1px solid transparent;
   cursor: pointer;
   transition: all .2s ease;
+  border-radius: 5px;
+
 }
 
 .btn:focus-visible {
