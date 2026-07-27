@@ -1,5 +1,5 @@
 .cookies-page {
-  padding: var(--space-8) 0 clamp(4rem, 8vw, 6rem);
+  padding: var(--space-6) 0 clamp(4rem, 8vw, 6rem);
   min-height: 70vh;
 }
 

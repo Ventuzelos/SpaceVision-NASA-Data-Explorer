@@ -23,7 +23,7 @@ function DiscovrHero() {
 
         <div className="discovr-hero__grid">
           <div className="discovr-hero__content">
-            <p className="discovr-hero__badge">
+            <p className="discovr-hero__eyebrow">
               <span>Descobrir</span>
             </p>
 
