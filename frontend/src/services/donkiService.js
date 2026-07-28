@@ -487,7 +487,23 @@ function normalizeEvent(type, event, index) {
         raw: event,
       };
 
-    case "NOTIFICATIONS":
+    case "NOTIFICATIONS": {
+      const originalBody =
+        event.original_message_body ||
+        event.messageBody ||
+        null;
+
+      const translatedBody =
+        event.translated_message_body ||
+        originalBody;
+
+      const hasAutomaticTranslation =
+        Boolean(
+          event.translated_message_body &&
+          event.translated_message_body !==
+          originalBody
+        );
+
       return {
         id: event.messageID || fallbackId,
         type,
@@ -510,21 +526,12 @@ function normalizeEvent(type, event, index) {
               event.messageID || "N/D",
           },
         ],
-        body: event.messageBody || null,
+        body: translatedBody,
+        originalBody,
+        hasAutomaticTranslation,
         link: event.messageURL || null,
         raw: event,
       };
-
-    default:
-      return {
-        id: fallbackId,
-        type,
-        title: "Evento DONKI",
-        date: null,
-        badge: null,
-        meta: [],
-        link: null,
-        raw: event,
-      };
+    }
   }
 }

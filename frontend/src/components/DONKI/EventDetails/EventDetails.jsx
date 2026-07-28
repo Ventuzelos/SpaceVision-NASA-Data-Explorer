@@ -26,6 +26,18 @@ function formatFullDate(value) {
   });
 }
 
+function extractUrls(value) {
+  if (!value) {
+    return [];
+  }
+
+  return [
+    ...new Set(
+      value.match(/https?:\/\/[^\s]+/g) || []
+    ),
+  ];
+}
+
 function EventDetails({
   event,
   isFavorite,
@@ -44,6 +56,11 @@ function EventDetails({
   if (!event) {
     return null;
   }
+
+  const nasaLinks = extractUrls(
+    event.originalBody ||
+      event.raw?.messageBody
+  );
 
   return (
     <div
@@ -134,6 +151,32 @@ function EventDetails({
             Tradução automática. O conteúdo original foi
             fornecido pela NASA.
           </p>
+        )}
+
+        {nasaLinks.length > 0 && (
+          <div className="event-details__embedded-links">
+            <h3>Recursos relacionados</h3>
+
+            <ul>
+              {nasaLinks.map((url, index) => (
+                <li key={url}>
+                  <a
+                    href={url}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Abrir recurso {index + 1}
+
+                    <Icon
+                      name="ExternalLink"
+                      size={15}
+                      aria-hidden="true"
+                    />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
 
         {isSafeUrl(event.link) && (
