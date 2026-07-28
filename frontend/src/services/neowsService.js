@@ -310,6 +310,32 @@ function normalizeNeo(
         ?.kilometers_per_hour
     );
 
+  const originalOrbitingBody =
+    closeApproach
+      ?.original_orbiting_body ||
+    closeApproach
+      ?.orbiting_body ||
+    "Earth";
+
+  const translatedOrbitingBody =
+    closeApproach
+      ?.translated_orbiting_body ||
+    closeApproach
+      ?.orbiting_body ||
+    "Terra";
+
+  const hasAutomaticTranslation =
+    Boolean(
+      closeApproach
+        ?.translated_orbiting_body &&
+      closeApproach
+        ?.original_orbiting_body &&
+      closeApproach
+        .translated_orbiting_body !==
+        closeApproach
+          .original_orbiting_body
+    );
+
   return {
     id:
       neo?.id ??
@@ -370,10 +396,13 @@ function normalizeNeo(
     missDistanceLunar,
     velocityKmH,
 
+    originalOrbitingBody,
+    translatedOrbitingBody,
+
     orbitingBody:
-      closeApproach
-        ?.orbiting_body ||
-      "Terra",
+      translatedOrbitingBody,
+
+    hasAutomaticTranslation,
 
     raw: neo,
   };

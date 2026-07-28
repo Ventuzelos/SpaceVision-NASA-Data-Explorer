@@ -83,7 +83,7 @@ class NasaController extends Controller
             'EPIC/api/natural',
             [],
             $request,
-            fn (array $data): array => $this->translateEpicData($data)
+            fn(array $data): array => $this->translateEpicData($data)
         );
     }
 
@@ -100,7 +100,7 @@ class NasaController extends Controller
             "EPIC/api/natural/date/{$date}",
             [],
             $request,
-            fn (array $data): array => $this->translateEpicData($data)
+            fn(array $data): array => $this->translateEpicData($data)
         );
     }
 
@@ -121,7 +121,9 @@ class NasaController extends Controller
         return $this->getNasaResponse(
             'neo/rest/v1/feed',
             $validated,
-            $request
+            $request,
+            fn(array $data): array =>
+            $this->translateNeoData($data)
         );
     }
 
@@ -160,7 +162,7 @@ class NasaController extends Controller
             "DONKI/{$type}",
             $validated,
             $request,
-            fn (array $data): array => $this->translateDonkiData($data, $type)
+            fn(array $data): array => $this->translateDonkiData($data, $type)
         );
     }
 
@@ -216,9 +218,9 @@ class NasaController extends Controller
 
         $item['translated_note'] =
             $this->translationService
-                ->translateToPortuguese(
-                    $originalNote
-                );
+            ->translateToPortuguese(
+                $originalNote
+            );
 
         if (
             $type === 'CME'
@@ -235,9 +237,9 @@ class NasaController extends Controller
 
                     $analysis['translated_note'] =
                         $this->translationService
-                            ->translateToPortuguese(
-                                $originalAnalysisNote
-                            );
+                        ->translateToPortuguese(
+                            $originalAnalysisNote
+                        );
 
                     return $analysis;
                 },
@@ -273,17 +275,79 @@ class NasaController extends Controller
 
         $translatedText =
             $this->translationService
-                ->translateToPortuguese(
-                    $textWithoutUrls
-                );
+            ->translateToPortuguese(
+                $textWithoutUrls
+            );
 
         if ($urls === []) {
             return $translatedText;
         }
 
         return rtrim($translatedText)
-            ."\n\nLinks originais da NASA:\n"
-            .implode("\n", $urls);
+            . "\n\nLinks originais da NASA:\n"
+            . implode("\n", $urls);
+    }
+
+    private function translateNeoData(array $data): array
+    {
+        if (
+            ! isset($data['near_earth_objects'])
+            || ! is_array($data['near_earth_objects'])
+        ) {
+            return $data;
+        }
+
+        foreach (
+            $data['near_earth_objects']
+            as $date => $asteroids
+        ) {
+            if (! is_array($asteroids)) {
+                continue;
+            }
+
+            $data['near_earth_objects'][$date] =
+                array_map(
+                    fn(array $asteroid): array =>
+                    $this->translateNeoItem($asteroid),
+                    $asteroids
+                );
+        }
+
+        return $data;
+    }
+
+    private function translateNeoItem(array $asteroid): array
+    {
+        if (
+            ! isset($asteroid['close_approach_data'])
+            || ! is_array(
+                $asteroid['close_approach_data']
+            )
+        ) {
+            return $asteroid;
+        }
+
+        $asteroid['close_approach_data'] =
+            array_map(
+                function (array $approach): array {
+                    $originalOrbitingBody =
+                        $approach['orbiting_body']
+                        ?? null;
+
+                    $approach['original_orbiting_body'] = $originalOrbitingBody;
+
+                    $approach['translated_orbiting_body'] =
+                        $this->translationService
+                        ->translateToPortuguese(
+                            $originalOrbitingBody
+                        );
+
+                    return $approach;
+                },
+                $asteroid['close_approach_data']
+            );
+
+        return $asteroid;
     }
 
     private function translateEpicData(array $data): array
@@ -293,7 +357,7 @@ class NasaController extends Controller
         }
 
         return array_map(
-            fn (array $item): array => $this->translateEpicItem($item),
+            fn(array $item): array => $this->translateEpicItem($item),
             $data
         );
     }
@@ -308,9 +372,9 @@ class NasaController extends Controller
 
         $item['translated_caption'] =
             $this->translationService
-                ->translateToPortuguese(
-                    $originalCaption
-                );
+            ->translateToPortuguese(
+                $originalCaption
+            );
 
         return $item;
     }
@@ -319,7 +383,7 @@ class NasaController extends Controller
     {
         if (array_is_list($data)) {
             return array_map(
-                fn (array $item): array => $this->translateApodItem($item),
+                fn(array $item): array => $this->translateApodItem($item),
                 $data
             );
         }
@@ -337,11 +401,11 @@ class NasaController extends Controller
 
         $item['translated_title'] =
             $this->translationService
-                ->translateToPortuguese($originalTitle);
+            ->translateToPortuguese($originalTitle);
 
         $item['translated_explanation'] =
             $this->translationService
-                ->translateToPortuguese($originalExplanation);
+            ->translateToPortuguese($originalExplanation);
 
         return $item;
     }
