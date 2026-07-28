@@ -228,6 +228,15 @@
   .neo-card__hazard-tag {
     white-space: normal;
   }
+
+    .neo-card__metadata-item {
+    flex-direction: column;  
+    gap: var(--space-1);
+  }
+
+  .neo-card__metadata-item dd {
+    text-align: left;        
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
