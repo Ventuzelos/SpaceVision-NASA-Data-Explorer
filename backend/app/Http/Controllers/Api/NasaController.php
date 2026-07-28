@@ -82,7 +82,8 @@ class NasaController extends Controller
         return $this->getNasaResponse(
             'EPIC/api/natural',
             [],
-            $request
+            $request,
+            fn (array $data): array => $this->translateEpicData($data)
         );
     }
 
@@ -98,7 +99,8 @@ class NasaController extends Controller
         return $this->getNasaResponse(
             "EPIC/api/natural/date/{$date}",
             [],
-            $request
+            $request,
+            fn (array $data): array => $this->translateEpicData($data)
         );
     }
 
@@ -284,6 +286,35 @@ class NasaController extends Controller
             .implode("\n", $urls);
     }
 
+    private function translateEpicData(array $data): array
+    {
+        if (! array_is_list($data)) {
+            return $data;
+        }
+
+        return array_map(
+            fn (array $item): array => $this->translateEpicItem($item),
+            $data
+        );
+    }
+
+    private function translateEpicItem(array $item): array
+    {
+        $originalCaption =
+            $item['caption'] ?? null;
+
+        $item['original_caption'] =
+            $originalCaption;
+
+        $item['translated_caption'] =
+            $this->translationService
+                ->translateToPortuguese(
+                    $originalCaption
+                );
+
+        return $item;
+    }
+
     private function translateApodData(array $data): array
     {
         if (array_is_list($data)) {
@@ -329,6 +360,7 @@ class NasaController extends Controller
                 $query,
                 $user
             );
+
             if ($transformer !== null) {
                 $data = $transformer($data);
             }

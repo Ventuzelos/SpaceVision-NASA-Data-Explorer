@@ -59,7 +59,7 @@ class NasaControllerTest extends TestCase
 
         $nasaRequests = collect(Http::recorded())
             ->filter(
-                fn (array $record): bool => str_contains(
+                fn(array $record): bool => str_contains(
                     $record[0]->url(),
                     'api.nasa.gov'
                 )
@@ -98,8 +98,8 @@ class NasaControllerTest extends TestCase
 
         $response = $this->getJson(
             '/api/nasa/donki/INVALID'
-                .'?startDate=2024-01-01'
-                .'&endDate=2024-01-02'
+                . '?startDate=2024-01-01'
+                . '&endDate=2024-01-02'
         );
 
         $response
@@ -122,19 +122,32 @@ class NasaControllerTest extends TestCase
                     'date' => '2026-07-15 00:00:00',
                 ],
             ], 200),
+
+            '*' => Http::response([
+                'translatedText' => 'Terra vista pela EPIC',
+            ], 200),
         ]);
 
         $response = $this->getJson('/api/nasa/epic');
 
         $response
             ->assertOk()
-            ->assertJsonPath('0.caption', 'Earth from EPIC')
+            ->assertJsonPath(
+                '0.caption',
+                'Earth from EPIC'
+            )
+            ->assertJsonPath(
+                '0.original_caption',
+                'Earth from EPIC'
+            )
+            ->assertJsonPath(
+                '0.translated_caption',
+                'Terra vista pela EPIC'
+            )
             ->assertJsonPath(
                 '0.image',
                 'epic_1b_20260715000000'
             );
-
-        Http::assertSentCount(1);
 
         Http::assertSent(function (Request $request): bool {
             return str_starts_with(
@@ -212,8 +225,8 @@ class NasaControllerTest extends TestCase
 
         $response = $this->getJson(
             '/api/nasa/neo/feed'
-                .'?start_date=2026-07-15'
-                .'&end_date=2026-07-16'
+                . '?start_date=2026-07-15'
+                . '&end_date=2026-07-16'
         );
 
         $response
@@ -257,8 +270,8 @@ class NasaControllerTest extends TestCase
 
         $response = $this->getJson(
             '/api/nasa/neo/feed'
-                .'?start_date=2026-07-16'
-                .'&end_date=2026-07-15'
+                . '?start_date=2026-07-16'
+                . '&end_date=2026-07-15'
         );
 
         $response
@@ -282,8 +295,8 @@ class NasaControllerTest extends TestCase
 
         $response = $this->getJson(
             '/api/nasa/donki/CME'
-                .'?startDate=2026-07-15'
-                .'&endDate=2026-07-16'
+                . '?startDate=2026-07-15'
+                . '&endDate=2026-07-16'
         );
 
         $response
@@ -332,8 +345,8 @@ class NasaControllerTest extends TestCase
 
         $response = $this->getJson(
             '/api/nasa/donki/GST'
-                .'?startDate=2026-07-16'
-                .'&endDate=2026-07-15'
+                . '?startDate=2026-07-16'
+                . '&endDate=2026-07-15'
         );
 
         $response

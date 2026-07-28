@@ -112,8 +112,26 @@ export default function EpicCard({
     date,
   } = detail;
 
-  const accessibleCaption =
+  const originalCaption =
+    detail.original_caption ||
+    detail.originalCaption ||
     caption ||
+    "";
+
+  const translatedCaption =
+    detail.translated_caption ||
+    detail.translatedCaption ||
+    originalCaption;
+
+  const hasAutomaticTranslation =
+    Boolean(
+      translatedCaption &&
+      originalCaption &&
+      translatedCaption !== originalCaption
+    );
+
+  const accessibleCaption =
+    translatedCaption ||
     "Imagem da Terra captada pela câmara EPIC da NASA";
 
   function handleOpenImage() {
@@ -162,27 +180,25 @@ export default function EpicCard({
           type: "epic",
           nasa_type: "epic",
 
-          title: `EPIC · Terra${
-            time
-              ? ` (${time} UTC)`
-              : ""
-          }`,
+          title: `EPIC · Terra${time
+            ? ` (${time} UTC)`
+            : ""
+            }`,
 
           date,
 
           imageUrl,
           image_url: imageUrl,
           hdUrl: imageUrl,
-          description:
-            caption || accessibleCaption,
+          description: accessibleCaption,
 
           data: {
             ...detail,
             date,
             time,
-            caption:
-              caption ||
-              accessibleCaption,
+            caption: accessibleCaption,
+            original_caption: originalCaption,
+            translated_caption: translatedCaption,
             image: detail.image,
             image_url: imageUrl,
             url: imageUrl,
@@ -319,10 +335,19 @@ export default function EpicCard({
       </div>
 
       <div className="epic-card__metadata">
-        {caption && (
-          <p className="epic-card__caption">
-            {caption}
-          </p>
+        {translatedCaption && (
+          <>
+            <p className="epic-card__caption">
+              {translatedCaption}
+            </p>
+
+            {hasAutomaticTranslation && (
+              <p className="epic-card__translation-note">
+                Tradução automática. A legenda original foi
+                fornecida pela NASA.
+              </p>
+            )}
+          </>
         )}
 
         {hasCoordinate(lat) &&
