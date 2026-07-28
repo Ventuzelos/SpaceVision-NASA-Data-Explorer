@@ -1,4 +1,4 @@
-// Serviço EPIC para obter metadados e construir URLs de imagens
+
 
 import nasaApi from "./nasaApi";
 
@@ -35,6 +35,36 @@ function getPhotoDate(photo, date) {
   return isValidDate(photoDate)
     ? photoDate
     : "";
+}
+
+function normalizeEpicPhoto(photo) {
+  if (!photo || typeof photo !== "object") {
+    return photo;
+  }
+
+  const originalCaption =
+    photo.original_caption ||
+    photo.caption ||
+    "";
+
+  const translatedCaption =
+    photo.translated_caption ||
+    originalCaption;
+
+  return {
+    ...photo,
+    caption: translatedCaption,
+    original_caption: originalCaption,
+    translated_caption: translatedCaption,
+  };
+}
+
+function normalizeEpicPhotos(data) {
+  if (!Array.isArray(data)) {
+    return [];
+  }
+
+  return data.map(normalizeEpicPhoto);
 }
 
 function buildEpicArchiveUrl(
@@ -74,9 +104,7 @@ export async function fetchEpicLatest() {
     "/epic"
   );
 
-  return Array.isArray(data)
-    ? data
-    : [];
+  return normalizeEpicPhotos(data);
 }
 
 export async function fetchEpicByDate(date) {
@@ -96,9 +124,7 @@ export async function fetchEpicByDate(date) {
     `/epic/${encodeURIComponent(date)}`
   );
 
-  return Array.isArray(data)
-    ? data
-    : [];
+  return normalizeEpicPhotos(data);
 }
 
 export function buildImageUrl(photo, date) {
