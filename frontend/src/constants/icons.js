@@ -47,6 +47,8 @@ import {
   Cookie,
   KeyRound,
   HelpCircle,
+  Play,
+  Pause,
 } from "lucide-react";
 
 export const Icons = {
@@ -98,4 +100,6 @@ export const Icons = {
   Cookie,
   KeyRound,
   HelpCircle,
+  Play,
+  Pause,
 };

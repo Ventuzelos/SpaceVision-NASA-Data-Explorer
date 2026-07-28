@@ -90,20 +90,10 @@
 
 .auth-galaxy__logo {
   display: block;
-  width: clamp(6rem, 7vw, 7rem);
+  width: clamp(7.5rem, 9vw, 9.5rem);
   max-width: 100%;
   height: auto;
   margin-bottom: clamp(1.5rem, 3vh, 2rem);
-}
-
-.auth-galaxy__eyebrow {
-  margin: 0 0 var(--space-2);
-  color: var(--color-link);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-bold);
-  line-height: var(--line-height-tight);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
 }
 
 .auth-galaxy__title {
@@ -211,27 +201,12 @@
   }
 
   .auth-galaxy__layout {
-    gap: var(--space-6);
-    padding-block:
-      var(--space-6)
-      var(--space-8);
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding-block: var(--space-6);
   }
 
-  .auth-galaxy__logo {
-    width: 6rem;
-    margin-bottom: var(--space-4);
-  }
-
-  .auth-galaxy__eyebrow {
-    margin-bottom: var(--space-2);
-  }
-
-  .auth-galaxy__title {
-    font-size: clamp(1.5rem, 7vw, 1.9rem);
-  }
-
-  .auth-galaxy__description,
-  .auth-galaxy__status {
+  .auth-galaxy__intro {
     display: none;
   }
 

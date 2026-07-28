@@ -4,6 +4,8 @@ import {
   useState,
 } from "react";
 
+import { Pause, Play } from "lucide-react";
+
 import Icon from "../../common/Icon/Icon";
 
 import { createBennuScene } from "./bennuScene";
@@ -217,12 +219,7 @@ function BennuViewer() {
     setSpeed(nextSpeed);
   }
 
-  function handleTogglePlaying() {
-    setPlaying(
-      (currentPlaying) =>
-        !currentPlaying
-    );
-  }
+ 
 
   if (sceneError) {
     return (
@@ -294,27 +291,23 @@ function BennuViewer() {
         <button
           type="button"
           className="bennu-viewer__play"
-          onClick={
-            handleTogglePlaying
-          }
+          onClick={() => setPlaying((current) => !current)}
           aria-label={
             playing
               ? "Pausar simulação"
               : "Retomar simulação"
           }
-          aria-pressed={
-            !playing
+          title={
+            playing
+              ? "Pausar simulação"
+              : "Retomar simulação"
           }
         >
-          <Icon
-            name={
-              playing
-                ? "Pause"
-                : "Play"
-            }
-            size={16}
-            aria-hidden="true"
-          />
+          {playing ? (
+            <Pause size={17} aria-hidden="true" />
+          ) : (
+            <Play size={17} aria-hidden="true" />
+          )}
         </button>
 
         <div className="bennu-viewer__speed">

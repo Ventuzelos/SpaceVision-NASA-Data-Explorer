@@ -891,7 +891,7 @@ function NeoWS() {
         <header className="neows-page__header">
           <div className="neows-page__intro">
             <Breadcrumb
-              title="NeoWatch"
+              title="Asteroides"
             />
 
             <span className="neows-page__eyebrow">

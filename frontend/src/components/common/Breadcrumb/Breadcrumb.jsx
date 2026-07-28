@@ -4,15 +4,15 @@ import { ChevronRight, Home } from "lucide-react";
 import "./Breadcrumb.css";
 
 const routeNames = {
-  apod: "APOD",
-  donki: "DONKI",
-  epic: "EPIC",
-  neowatch: "NeoWatch",
+  apod: "Imagem do Dia",
+  donki: "Meteorologia Espacial",
+  epic: "Terra",
+  neowatch: "Asteroides",
   discover: "Descobrir",
   quiz: "Quiz",
   favorites: "Favoritos",
   about: "Sobre nós",
-  faq: "FAQ",
+  faq: "Perguntas Frequentes",
   cookies: "Política de Cookies",
   profile: "Perfil",
   admin: "Administração",

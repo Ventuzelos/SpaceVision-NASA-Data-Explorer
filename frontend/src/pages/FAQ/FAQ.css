@@ -1,6 +1,7 @@
 .faq-page {
   min-height: 70vh;
-  padding-block: var(--space-8);
+  padding-top: var(--space-6);
+  padding-bottom: var(--space-8);
 }
 
 .faq-hero,
@@ -303,4 +304,21 @@
   .faq-item__chevron {
     transition: none;
   }
+}
+
+.faq-callout a {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.faq-callout a:hover {
+  text-decoration-thickness: 2px;
+}
+
+.faq-callout a:focus-visible {
+  border-radius: 4px;
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
 }

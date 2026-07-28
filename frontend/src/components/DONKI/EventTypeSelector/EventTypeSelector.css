@@ -2,7 +2,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
   gap: var(--space-4);
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-7);
 }
 
 .event-type-card {
@@ -102,7 +102,7 @@
   .event-type-selector {
     grid-template-columns: repeat(2, 1fr);
     gap: var(--space-3);
-    margin-bottom: var(--space-5);
+    margin-bottom: var(--space-6);
   }
 
   .event-type-card {

@@ -1,5 +1,20 @@
 export const searchablePages = [
- 
+
+  {
+    title: "Descobrir",
+    subtitle: "Curiosidades, missões e o estado atual dos exploradores",
+    path: "/discover",
+    icon: "rocket",
+    keywords: ["discover", "descobrir", "curiosidades", "missões",
+      "exploradores", "universo"],
+  },
+  {
+    title: "Quiz",
+    subtitle: "Testa os teus conhecimentos sobre o espaço",
+    path: "/quiz",
+    icon: "help",
+    keywords: ["quiz", "questionário", "teste", "jogo", "conhecimentos"],
+  },
   {
     title: "Meteorologia Espacial",
     subtitle: "Eventos solares e clima espacial",

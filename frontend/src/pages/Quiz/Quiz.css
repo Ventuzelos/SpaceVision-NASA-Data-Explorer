@@ -1,5 +1,6 @@
 .quiz-page {
-  padding-block: var(--space-8);
+  padding-top: var(--space-6);
+  padding-bottom: var(--space-8);
 }
 
 /* Motion */

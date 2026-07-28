@@ -49,6 +49,49 @@
   color: var(--color-accent);
 }
 
+.api-icons__live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  padding-inline: var(--space-2);
+  min-height: 1.375rem;
+  border: 1px solid rgba(16, 185, 129, 0.45);
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--color-success);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.api-icons__live-pulse {
+  flex-shrink: 0;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: currentColor;
+  animation: api-icons-live-pulse 2s ease-in-out infinite;
+}
+
+@keyframes api-icons-live-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .api-icons__live-pulse {
+    animation: none;
+  }
+}
+
 .api-icons__category {
   margin-top: 2px;
   color: var(--color-text-secondary);

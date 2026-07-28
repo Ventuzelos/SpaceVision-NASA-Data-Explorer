@@ -1,5 +1,6 @@
 .neows-page {
-  padding-block: var(--space-8);
+  padding-top: var(--space-6);
+  padding-bottom: var(--space-8);
 }
 
 .neows-page__header {
@@ -25,11 +26,13 @@
   line-height: var(--line-height-tight);
   letter-spacing: 0.04em;
   text-transform: uppercase;
+  margin-bottom: var(--space-6);
+
 }
 
 .neows-page__header h1 {
   max-width: 14ch;
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-6);
 }
 
 .neows-page__header p {
@@ -40,6 +43,7 @@
 }
 
 .neows-page__viewer {
+  padding-top: var(--space-6);
   display: flex;
   width: 100%;
   min-width: 0;

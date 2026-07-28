@@ -33,7 +33,7 @@
   display: flex;
   flex-direction: column;
   min-height: var(--about-hero-min-height);
-  padding-top: var(--space-8);
+  padding-top: var(--space-6);
   padding-bottom: var(--space-7);
   background:
     linear-gradient(
@@ -75,7 +75,8 @@
 /* Estatísticas (hero) */
 
 .about-hero__stats {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   flex-direction: row;
   gap: var(--space-8);
   margin-top: var(--space-7);
@@ -472,6 +473,7 @@
   }
 
   .about-hero__stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--space-5);
   }
 
@@ -493,6 +495,21 @@
 
   .about-project__collage {
     height: 16.25rem;
+  }
+}
+
+@media (max-width: 340px) {
+  .about-hero__stats {
+    gap: var(--space-4);
+  }
+
+  .about-hero__stat-number {
+    font-size: 1.5rem;
+  }
+
+  .about-hero__stat-label {
+    font-size: 0.55rem;
+    letter-spacing: 0.08em;
   }
 }
 

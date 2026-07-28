@@ -23,7 +23,7 @@ function DiscovrHero() {
 
         <div className="discovr-hero__grid">
           <div className="discovr-hero__content">
-            <p className="discovr-hero__badge">
+            <p className="discovr-hero__eyebrow">
               <span>Descobrir</span>
             </p>
 
@@ -41,6 +41,23 @@ function DiscovrHero() {
             </p>
 
             <SurpriseCard />
+
+            <dl className="discovr-hero__readout">
+              <div className="discovr-hero__readout-item">
+                <dt>Secções interativas</dt>
+                <dd>6</dd>
+              </div>
+
+              <div className="discovr-hero__readout-item">
+                <dt>Atualização</dt>
+                <dd>Diária (APOD)</dd>
+              </div>
+
+              <div className="discovr-hero__readout-item">
+                <dt>Sistema solar</dt>
+                <dd>Simulação 3D</dd>
+              </div>
+            </dl>
           </div>
 
           <div

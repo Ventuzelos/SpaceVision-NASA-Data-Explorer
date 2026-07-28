@@ -97,11 +97,15 @@
   background: transparent;
   color: var(--color-accent);
   cursor: pointer;
-  font-size: 0.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.bennu-viewer__play svg {
+  display: block;
+  pointer-events: none;
 }
 
 .bennu-viewer__play:hover {

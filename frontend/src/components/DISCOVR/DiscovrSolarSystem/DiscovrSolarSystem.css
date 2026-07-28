@@ -131,6 +131,11 @@
     box-shadow var(--transition-fast);
 }
 
+.discovr-solar-system__play svg {
+  display: block;
+  pointer-events: none;
+}
+
 .discovr-solar-system__play:hover {
   background: var(--color-link);
   color: var(--color-background);

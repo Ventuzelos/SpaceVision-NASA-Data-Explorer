@@ -18,6 +18,19 @@
   pointer-events: none;
 }
 
+.discovr-hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: var(--space-4) 0 var(--space-4);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-tight);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 .discovr-hero .container {
   position: relative;
   z-index: 1;
@@ -34,7 +47,7 @@
     minmax(0, 1fr)
     minmax(24rem, 0.9fr);
   align-items: center;
-  gap: var(--space-7);
+  gap: var(--space-8);
   min-height: 32rem;
   padding-top: var(--space-6);
 }
@@ -69,7 +82,7 @@
 
 .discovr-hero__description {
   max-width: 46rem;
-  margin-top: var(--space-4);
+  margin-top: var(--space-5);
   color: var(--color-text-secondary);
   font-size: var(--font-size-base);
   line-height: var(--line-height-relaxed);
@@ -79,11 +92,43 @@
   margin-top: var(--space-6);
 }
 
+.discovr-hero__readout {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--space-5);
+  margin: var(--space-7) 0 0;
+  padding-top: var(--space-6);
+}
+
+.discovr-hero__readout-item {
+  min-width: 0;
+}
+
+.discovr-hero__readout dt {
+  margin: var(--space-1) 0 0;
+  color: var(--color-text-secondary);
+  font-size: calc(var(--font-size-xs) - 0.13rem);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  opacity: 0.65;
+  white-space: nowrap;
+}
+
+.discovr-hero__readout dd {
+  margin: 0;
+  color: #b1b7be;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
 .discovr-hero__media {
   position: relative;
   width: 100%;
   min-width: 0;
-  aspect-ratio: 4 / 3;
+  height: 100%;
+  align-self: stretch;
   overflow: hidden;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
@@ -117,6 +162,8 @@
   }
 
   .discovr-hero__media {
+    height: auto;
+    aspect-ratio: 4 / 3;
     max-width: 40rem;
     margin-inline: auto;
   }
@@ -144,6 +191,18 @@
   .discovr-hero__description {
     font-size: 0.9375rem;
     line-height: var(--line-height-normal);
+  }
+
+  .discovr-hero__readout {
+    flex-direction: column;
+    gap: var(--space-4);
+    margin-top: var(--space-6);
+    padding-top: var(--space-5);
+  }
+
+  .discovr-hero__readout dt,
+  .discovr-hero__readout dd {
+    white-space: normal;
   }
 
   .discovr-hero__media {

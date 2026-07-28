@@ -12,6 +12,8 @@ const searchIcons = {
   sun: Icons.Sun,
   globe: Icons.Globe,
   asteroid: Icons.Orbit,
+  rocket: Icons.Rocket,
+  help: Icons.HelpCircle,
 };
 
 function Hero() {

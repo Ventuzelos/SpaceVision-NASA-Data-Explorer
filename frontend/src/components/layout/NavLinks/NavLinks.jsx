@@ -27,44 +27,44 @@ function NavLinks({ onNavigate }) {
     onNavigate?.();
   }
 
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target)
-      ) {
-        closeExploreMenu();
-      }
+useEffect(() => {
+  function handleClickOutside(event) {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target)
+    ) {
+      closeExploreMenu();
     }
+  }
 
-    function handleEscape(event) {
-      if (event.key === "Escape") {
-        closeExploreMenu();
-      }
+  function handleEscape(event) {
+    if (event.key === "Escape") {
+      closeExploreMenu();
     }
+  }
 
-    document.addEventListener(
-      "mousedown",
+  document.addEventListener(
+    "click",
+    handleClickOutside
+  );
+
+  document.addEventListener(
+    "keydown",
+    handleEscape
+  );
+
+  return () => {
+    document.removeEventListener(
+      "click",
       handleClickOutside
     );
 
-    document.addEventListener(
+    document.removeEventListener(
       "keydown",
       handleEscape
     );
-
-    return () => {
-      document.removeEventListener(
-        "mousedown",
-        handleClickOutside
-      );
-
-      document.removeEventListener(
-        "keydown",
-        handleEscape
-      );
-    };
-  }, []);
+  };
+}, []);
 
   return (
     <div className="nav-links">
