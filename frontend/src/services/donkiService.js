@@ -225,13 +225,21 @@ function normalizeEvent(type, event, index) {
   );
 
   switch (type) {
-    case "FLR":
+    case "FLR": {
+      const originalNote =
+        event.original_note || event.note || "";
+
+      const translatedNote =
+        event.translated_note || "";
+
+      const displayNote =
+        translatedNote || originalNote;
+
       return {
         id: event.flrID || fallbackId,
         type,
-        title: `Erupção Solar ${
-          event.classType ?? ""
-        }`.trim(),
+        title: `Erupção Solar ${event.classType ?? ""
+          }`.trim(),
         date:
           event.peakTime ||
           event.beginTime ||
@@ -268,10 +276,15 @@ function normalizeEvent(type, event, index) {
             ),
           },
         ],
+
+        body: displayNote || null,
+        hasAutomaticTranslation:
+          Boolean(translatedNote) &&
+          translatedNote !== originalNote,
         link: event.link || null,
         raw: event,
       };
-
+    }
     case "CME": {
       const analysis =
         event.cmeAnalyses?.find(
@@ -279,6 +292,50 @@ function normalizeEvent(type, event, index) {
         ) ||
         event.cmeAnalyses?.[0] ||
         null;
+
+      const originalNote =
+        event.original_note ||
+        event.note ||
+        "";
+
+      const translatedNote =
+        event.translated_note ||
+        "";
+
+      const displayNote =
+        translatedNote ||
+        originalNote;
+
+      const originalAnalysisNote =
+        analysis?.original_note ||
+        analysis?.note ||
+        "";
+
+      const translatedAnalysisNote =
+        analysis?.translated_note ||
+        "";
+
+      const displayAnalysisNote =
+        translatedAnalysisNote ||
+        originalAnalysisNote;
+
+      const body = [
+        displayNote,
+        displayAnalysisNote,
+      ]
+        .filter(Boolean)
+        .join("\n\n");
+
+      const hasAutomaticTranslation =
+        (
+          Boolean(translatedNote) &&
+          translatedNote !== originalNote
+        ) ||
+        (
+          Boolean(translatedAnalysisNote) &&
+          translatedAnalysisNote !==
+          originalAnalysisNote
+        );
 
       return {
         id: event.activityID || fallbackId,
@@ -312,6 +369,8 @@ function normalizeEvent(type, event, index) {
             ),
           },
         ],
+        body: body || null,
+        hasAutomaticTranslation,
         link: event.link || null,
         raw: event,
       };
@@ -327,7 +386,7 @@ function normalizeEvent(type, event, index) {
       const maxKp = kpIndexes.reduce(
         (maximum, current) =>
           current.kpIndex >
-          (maximum?.kpIndex ?? -Infinity)
+            (maximum?.kpIndex ?? -Infinity)
             ? current
             : maximum,
         null
@@ -428,7 +487,23 @@ function normalizeEvent(type, event, index) {
         raw: event,
       };
 
-    case "NOTIFICATIONS":
+    case "NOTIFICATIONS": {
+      const originalBody =
+        event.original_message_body ||
+        event.messageBody ||
+        null;
+
+      const translatedBody =
+        event.translated_message_body ||
+        originalBody;
+
+      const hasAutomaticTranslation =
+        Boolean(
+          event.translated_message_body &&
+          event.translated_message_body !==
+          originalBody
+        );
+
       return {
         id: event.messageID || fallbackId,
         type,
@@ -451,21 +526,12 @@ function normalizeEvent(type, event, index) {
               event.messageID || "N/D",
           },
         ],
-        body: event.messageBody || null,
+        body: translatedBody,
+        originalBody,
+        hasAutomaticTranslation,
         link: event.messageURL || null,
         raw: event,
       };
-
-    default:
-      return {
-        id: fallbackId,
-        type,
-        title: "Evento DONKI",
-        date: null,
-        badge: null,
-        meta: [],
-        link: null,
-        raw: event,
-      };
+    }
   }
 }

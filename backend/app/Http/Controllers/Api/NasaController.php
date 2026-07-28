@@ -157,8 +157,131 @@ class NasaController extends Controller
         return $this->getNasaResponse(
             "DONKI/{$type}",
             $validated,
-            $request
+            $request,
+            fn (array $data): array => $this->translateDonkiData($data, $type)
         );
+    }
+
+    private function translateDonkiData(
+        array $data,
+        string $type
+    ): array {
+        if (! array_is_list($data)) {
+            return $data;
+        }
+
+        return array_map(
+            function ($item) use ($type): mixed {
+                if (! is_array($item)) {
+                    return $item;
+                }
+
+                return $this->translateDonkiItem(
+                    $item,
+                    $type
+                );
+            },
+            $data
+        );
+    }
+
+    private function translateDonkiItem(
+        array $item,
+        string $type
+    ): array {
+        if ($type === 'notifications') {
+            $originalMessageBody =
+                $item['messageBody'] ?? '';
+
+            $item['original_message_body'] =
+                $originalMessageBody;
+
+            $item['translated_message_body'] =
+                $this->translatePreservingUrls(
+                    $originalMessageBody
+                );
+
+            return $item;
+        }
+
+        if (! in_array($type, ['FLR', 'CME'], true)) {
+            return $item;
+        }
+
+        $originalNote = $item['note'] ?? '';
+
+        $item['original_note'] = $originalNote;
+
+        $item['translated_note'] =
+            $this->translationService
+                ->translateToPortuguese(
+                    $originalNote
+                );
+
+        if (
+            $type === 'CME'
+            && isset($item['cmeAnalyses'])
+            && is_array($item['cmeAnalyses'])
+        ) {
+            $item['cmeAnalyses'] = array_map(
+                function (array $analysis): array {
+                    $originalAnalysisNote =
+                        $analysis['note'] ?? '';
+
+                    $analysis['original_note'] =
+                        $originalAnalysisNote;
+
+                    $analysis['translated_note'] =
+                        $this->translationService
+                            ->translateToPortuguese(
+                                $originalAnalysisNote
+                            );
+
+                    return $analysis;
+                },
+                $item['cmeAnalyses']
+            );
+        }
+
+        return $item;
+    }
+
+    private function translatePreservingUrls(
+        string $text
+    ): string {
+        preg_match_all(
+            '/https?:\/\/[^\s]+/',
+            $text,
+            $matches
+        );
+
+        $urls = array_values(
+            array_unique($matches[0] ?? [])
+        );
+
+        $textWithoutUrls = preg_replace(
+            '/https?:\/\/[^\s]+/',
+            '',
+            $text
+        );
+
+        if ($textWithoutUrls === null) {
+            return $text;
+        }
+
+        $translatedText =
+            $this->translationService
+                ->translateToPortuguese(
+                    $textWithoutUrls
+                );
+
+        if ($urls === []) {
+            return $translatedText;
+        }
+
+        return rtrim($translatedText)
+            ."\n\nLinks originais da NASA:\n"
+            .implode("\n", $urls);
     }
 
     private function translateApodData(array $data): array
@@ -195,7 +318,8 @@ class NasaController extends Controller
     private function getNasaResponse(
         string $endpoint,
         array $query,
-        Request $request
+        Request $request,
+        ?callable $transformer = null
     ): JsonResponse {
         try {
             $user = $request->user('sanctum');
@@ -205,6 +329,9 @@ class NasaController extends Controller
                 $query,
                 $user
             );
+            if ($transformer !== null) {
+                $data = $transformer($data);
+            }
 
             return response()->json($data);
         } catch (RequestException $exception) {
