@@ -305,3 +305,20 @@
     transition: none;
   }
 }
+
+.faq-callout a {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.faq-callout a:hover {
+  text-decoration-thickness: 2px;
+}
+
+.faq-callout a:focus-visible {
+  border-radius: 4px;
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}

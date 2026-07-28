@@ -5,6 +5,7 @@ import Icon from "../../components/common/Icon/Icon";
 import Breadcrumb from "../../components/common/Breadcrumb/Breadcrumb";
 import SearchInput from "../../components/common/SearchInput/SearchInput";
 import PageMeta from "../../components/common/PageMeta/PageMeta";
+import Pagination from "../../components/common/Pagination/Pagination";
 
 import "./FAQ.css";
 
@@ -357,15 +358,53 @@ const FAQ_ITEMS = [
   {
     category: "Chave NASA",
     icon: "KeyRound",
-    question: "Preciso de uma chave pessoal para utilizar o SpaceVision?",
-    keywords: "demokey api key obrigatória limite pedidos",
+    question:
+      "Como funciona a chave da API da NASA e porque devo utilizar uma chave pessoal?",
+    keywords:
+      "nasa api key chave pessoal chave geral limite pedidos bloqueio conta perfil obter criar",
     answer: (
-      <p>
-        Não. A aplicação pode utilizar uma chave geral para aceder aos dados.
-        No entanto, essa chave é partilhada entre todos os utilizadores e pode
-        atingir o limite de pedidos. Adicionar uma chave pessoal no Perfil
-        reduz a probabilidade de encontrares esse bloqueio.
-      </p>
+      <>
+        <p>
+          O SpaceVision utiliza uma chave geral da API da NASA para permitir que
+          os visitantes consultem os conteúdos sem terem de configurar uma chave
+          própria. No entanto, essa chave é partilhada por todos os utilizadores
+          da plataforma e possui um limite de pedidos.
+        </p>
+
+        <p>
+          Quando muitas pessoas utilizam o site ao mesmo tempo, esse limite pode
+          ser atingido temporariamente. Nessa situação, algumas imagens, eventos
+          ou outros dados da NASA podem deixar de carregar até o limite ficar
+          novamente disponível.
+        </p>
+
+        <p>
+          Para evitar depender da chave partilhada, podes obter gratuitamente uma
+          chave pessoal no portal oficial das APIs da NASA. Depois de iniciares
+          sessão no SpaceVision, podes inserir essa chave na área dedicada à
+          <strong> Chave NASA</strong> da página de Perfil.
+        </p>
+
+        <div className="faq-callout">
+          <Icon
+            name="ExternalLink"
+            size={16}
+            aria-hidden="true"
+          />
+
+          <span>
+            Obtém uma chave pessoal no{" "}
+            <a
+              href="https://api.nasa.gov/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              portal oficial das APIs da NASA
+            </a>
+            .
+          </span>
+        </div>
+      </>
     ),
   },
   {
@@ -563,32 +602,47 @@ function FAQItem({
   );
 }
 
+const ITEMS_PER_PAGE = 8;
+
 function FAQ() {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] =
     useState("Todas");
   const [openIndex, setOpenIndex] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const term = search.trim().toLowerCase();
 
-  const visibleItems = FAQ_ITEMS.filter((item) => {
-    const matchesCategory =
-      activeCategory === "Todas" ||
-      item.category === activeCategory;
+ const visibleItems = FAQ_ITEMS.filter((item) => {
+  const matchesCategory =
+    activeCategory === "Todas" ||
+    item.category === activeCategory;
 
-    const searchableText = [
-      item.question,
-      item.category,
-      item.keywords ?? "",
-    ]
-      .join(" ")
-      .toLowerCase();
+  const searchableText = [
+    item.question,
+    item.category,
+    item.keywords ?? "",
+  ]
+    .join(" ")
+    .toLowerCase();
 
-    const matchesSearch =
-      !term || searchableText.includes(term);
+  const matchesSearch =
+    !term || searchableText.includes(term);
 
-    return matchesCategory && matchesSearch;
-  });
+  return matchesCategory && matchesSearch;
+});
+
+const totalPages = Math.ceil(
+  visibleItems.length / ITEMS_PER_PAGE
+);
+
+const startIndex =
+  (currentPage - 1) * ITEMS_PER_PAGE;
+
+const paginatedItems = visibleItems.slice(
+  startIndex,
+  startIndex + ITEMS_PER_PAGE
+);
 
   function handleToggle(index) {
     setOpenIndex((current) =>
@@ -599,6 +653,7 @@ function FAQ() {
   function handleCategoryChange(category) {
     setActiveCategory(category);
     setOpenIndex(null);
+    setCurrentPage(1);
   }
 
   return (
@@ -633,7 +688,11 @@ function FAQ() {
               <SearchInput
                 placeholder="Pesquisar por imagem do dia, asteroides, favoritos ou acesso à NASA..."
                 value={search}
-                onChange={(event) => setSearch(event.target.value)}
+                onChange={(event) => {
+                  setSearch(event.target.value);
+                  setCurrentPage(1);
+                  setOpenIndex(null);
+                }}
               />
             </div>
 
@@ -671,7 +730,7 @@ function FAQ() {
             aria-label="Perguntas frequentes"
             aria-live="polite"
           >
-            {visibleItems.map((item) => {
+            {paginatedItems.map((item) => {
               const index = FAQ_ITEMS.indexOf(item);
               const panelId = `faq-panel-${index}`;
               const triggerId = `faq-trigger-${index}`;
@@ -688,6 +747,22 @@ function FAQ() {
               );
             })}
           </section>
+
+          {totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={(page) => {
+                setCurrentPage(page);
+                setOpenIndex(null);
+
+                window.scrollTo({
+                  top: 0,
+                  behavior: "smooth",
+                });
+              }}
+            />
+          )}
 
           {visibleItems.length === 0 && (
             <div
