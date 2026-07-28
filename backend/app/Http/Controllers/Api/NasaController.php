@@ -16,8 +16,7 @@ class NasaController extends Controller
     public function __construct(
         private readonly NasaApiService $nasaApiService,
         private readonly TranslationService $translationService
-    ) {
-    }
+    ) {}
 
     public function apod(Request $request): JsonResponse
     {
@@ -84,8 +83,7 @@ class NasaController extends Controller
             'EPIC/api/natural',
             [],
             $request,
-            fn (array $data): array =>
-                $this->translateEpicData($data)
+            fn (array $data): array => $this->translateEpicData($data)
         );
     }
 
@@ -102,8 +100,7 @@ class NasaController extends Controller
             "EPIC/api/natural/date/{$date}",
             [],
             $request,
-            fn (array $data): array =>
-                $this->translateEpicData($data)
+            fn (array $data): array => $this->translateEpicData($data)
         );
     }
 
@@ -163,8 +160,7 @@ class NasaController extends Controller
             "DONKI/{$type}",
             $validated,
             $request,
-            fn (array $data): array =>
-                $this->translateDonkiData($data, $type)
+            fn (array $data): array => $this->translateDonkiData($data, $type)
         );
     }
 
@@ -286,8 +282,8 @@ class NasaController extends Controller
         }
 
         return rtrim($translatedText)
-            . "\n\nLinks originais da NASA:\n"
-            . implode("\n", $urls);
+            ."\n\nLinks originais da NASA:\n"
+            .implode("\n", $urls);
     }
 
     private function translateEpicData(array $data): array
@@ -297,8 +293,7 @@ class NasaController extends Controller
         }
 
         return array_map(
-            fn (array $item): array =>
-                $this->translateEpicItem($item),
+            fn (array $item): array => $this->translateEpicItem($item),
             $data
         );
     }
@@ -324,8 +319,7 @@ class NasaController extends Controller
     {
         if (array_is_list($data)) {
             return array_map(
-                fn (array $item): array =>
-                    $this->translateApodItem($item),
+                fn (array $item): array => $this->translateApodItem($item),
                 $data
             );
         }
