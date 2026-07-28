@@ -158,8 +158,7 @@ class NasaController extends Controller
             "DONKI/{$type}",
             $validated,
             $request,
-            fn(array $data): array =>
-            $this->translateDonkiData($data, $type)
+            fn (array $data): array => $this->translateDonkiData($data, $type)
         );
     }
 
@@ -190,7 +189,22 @@ class NasaController extends Controller
         array $item,
         string $type
     ): array {
-        if ($type !== 'FLR') {
+        if ($type === 'notifications') {
+            $originalMessageBody =
+                $item['messageBody'] ?? '';
+
+            $item['original_message_body'] =
+                $originalMessageBody;
+
+            $item['translated_message_body'] =
+                $this->translatePreservingUrls(
+                    $originalMessageBody
+                );
+
+            return $item;
+        }
+
+        if (! in_array($type, ['FLR', 'CME'], true)) {
             return $item;
         }
 
@@ -200,17 +214,81 @@ class NasaController extends Controller
 
         $item['translated_note'] =
             $this->translationService
-            ->translateToPortuguese($originalNote);
+                ->translateToPortuguese(
+                    $originalNote
+                );
+
+        if (
+            $type === 'CME'
+            && isset($item['cmeAnalyses'])
+            && is_array($item['cmeAnalyses'])
+        ) {
+            $item['cmeAnalyses'] = array_map(
+                function (array $analysis): array {
+                    $originalAnalysisNote =
+                        $analysis['note'] ?? '';
+
+                    $analysis['original_note'] =
+                        $originalAnalysisNote;
+
+                    $analysis['translated_note'] =
+                        $this->translationService
+                            ->translateToPortuguese(
+                                $originalAnalysisNote
+                            );
+
+                    return $analysis;
+                },
+                $item['cmeAnalyses']
+            );
+        }
 
         return $item;
+    }
+
+    private function translatePreservingUrls(
+        string $text
+    ): string {
+        preg_match_all(
+            '/https?:\/\/[^\s]+/',
+            $text,
+            $matches
+        );
+
+        $urls = array_values(
+            array_unique($matches[0] ?? [])
+        );
+
+        $textWithoutUrls = preg_replace(
+            '/https?:\/\/[^\s]+/',
+            '',
+            $text
+        );
+
+        if ($textWithoutUrls === null) {
+            return $text;
+        }
+
+        $translatedText =
+            $this->translationService
+                ->translateToPortuguese(
+                    $textWithoutUrls
+                );
+
+        if ($urls === []) {
+            return $translatedText;
+        }
+
+        return rtrim($translatedText)
+            ."\n\nLinks originais da NASA:\n"
+            .implode("\n", $urls);
     }
 
     private function translateApodData(array $data): array
     {
         if (array_is_list($data)) {
             return array_map(
-                fn(array $item): array =>
-                $this->translateApodItem($item),
+                fn (array $item): array => $this->translateApodItem($item),
                 $data
             );
         }
@@ -228,11 +306,11 @@ class NasaController extends Controller
 
         $item['translated_title'] =
             $this->translationService
-            ->translateToPortuguese($originalTitle);
+                ->translateToPortuguese($originalTitle);
 
         $item['translated_explanation'] =
             $this->translationService
-            ->translateToPortuguese($originalExplanation);
+                ->translateToPortuguese($originalExplanation);
 
         return $item;
     }
@@ -256,7 +334,6 @@ class NasaController extends Controller
             }
 
             return response()->json($data);
-
         } catch (RequestException $exception) {
             $response = $exception->response;
 
