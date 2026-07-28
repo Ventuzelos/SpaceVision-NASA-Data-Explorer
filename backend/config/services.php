@@ -2,7 +2,6 @@
 
 return [
 
-
     'postmark' => [
         'key' => env('POSTMARK_API_KEY'),
     ],
@@ -29,7 +28,6 @@ return [
         'base_url' => env('NASA_BASE_URL', 'https://api.nasa.gov'),
         'cache_ttl' => (int) env('NASA_CACHE_TTL', 3600),
     ],
-
 
     'libretranslate' => [
         'url' => env(

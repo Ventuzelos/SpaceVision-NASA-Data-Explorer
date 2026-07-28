@@ -82,7 +82,9 @@ class NasaController extends Controller
         return $this->getNasaResponse(
             'EPIC/api/natural',
             [],
-            $request
+            $request,
+            fn(array $data): array =>
+            $this->translateEpicData($data)
         );
     }
 
@@ -98,7 +100,9 @@ class NasaController extends Controller
         return $this->getNasaResponse(
             "EPIC/api/natural/date/{$date}",
             [],
-            $request
+            $request,
+            fn(array $data): array =>
+            $this->translateEpicData($data)
         );
     }
 
@@ -161,6 +165,36 @@ class NasaController extends Controller
         );
     }
 
+    private function translateEpicData(array $data): array
+    {
+        if (! array_is_list($data)) {
+            return $data;
+        }
+
+        return array_map(
+            fn(array $item): array =>
+            $this->translateEpicItem($item),
+            $data
+        );
+    }
+
+    private function translateEpicItem(array $item): array
+    {
+        $originalCaption =
+            $item['caption'] ?? null;
+
+        $item['original_caption'] =
+            $originalCaption;
+
+        $item['translated_caption'] =
+            $this->translationService
+            ->translateToPortuguese(
+                $originalCaption
+            );
+
+        return $item;
+    }
+
     private function translateApodData(array $data): array
     {
         if (array_is_list($data)) {
@@ -184,11 +218,15 @@ class NasaController extends Controller
 
         $item['translated_title'] =
             $this->translationService
-            ->translateToPortuguese($originalTitle);
+            ->translateToPortuguese(
+                $originalTitle
+            );
 
         $item['translated_explanation'] =
             $this->translationService
-            ->translateToPortuguese($originalExplanation);
+            ->translateToPortuguese(
+                $originalExplanation
+            );
 
         return $item;
     }
@@ -196,7 +234,8 @@ class NasaController extends Controller
     private function getNasaResponse(
         string $endpoint,
         array $query,
-        Request $request
+        Request $request,
+        ?callable $transformer = null
     ): JsonResponse {
         try {
             $user = $request->user('sanctum');
@@ -206,6 +245,10 @@ class NasaController extends Controller
                 $query,
                 $user
             );
+
+            if ($transformer !== null) {
+                $data = $transformer($data);
+            }
 
             return response()->json($data);
         } catch (RequestException $exception) {
