@@ -293,6 +293,50 @@ function normalizeEvent(type, event, index) {
         event.cmeAnalyses?.[0] ||
         null;
 
+      const originalNote =
+        event.original_note ||
+        event.note ||
+        "";
+
+      const translatedNote =
+        event.translated_note ||
+        "";
+
+      const displayNote =
+        translatedNote ||
+        originalNote;
+
+      const originalAnalysisNote =
+        analysis?.original_note ||
+        analysis?.note ||
+        "";
+
+      const translatedAnalysisNote =
+        analysis?.translated_note ||
+        "";
+
+      const displayAnalysisNote =
+        translatedAnalysisNote ||
+        originalAnalysisNote;
+
+      const body = [
+        displayNote,
+        displayAnalysisNote,
+      ]
+        .filter(Boolean)
+        .join("\n\n");
+
+      const hasAutomaticTranslation =
+        (
+          Boolean(translatedNote) &&
+          translatedNote !== originalNote
+        ) ||
+        (
+          Boolean(translatedAnalysisNote) &&
+          translatedAnalysisNote !==
+          originalAnalysisNote
+        );
+
       return {
         id: event.activityID || fallbackId,
         type,
@@ -325,6 +369,8 @@ function normalizeEvent(type, event, index) {
             ),
           },
         ],
+        body: body || null,
+        hasAutomaticTranslation,
         link: event.link || null,
         raw: event,
       };
