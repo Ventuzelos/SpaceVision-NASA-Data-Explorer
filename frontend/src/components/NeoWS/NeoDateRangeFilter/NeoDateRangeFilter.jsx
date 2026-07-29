@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import Button from "../../common/Button/Button";
 
@@ -11,15 +12,19 @@ import "./NeoDateRangeFilter.css";
 
 const PRESETS = [
   {
-    label: "Hoje",
+    id: "today",
+    labelKey: "neows.dateRange.today",
     daysAhead: 0,
   },
   {
-    label: "Próximos 3 dias",
+    id: "next3Days",
+    labelKey: "neows.dateRange.next3Days",
     daysAhead: 3,
   },
   {
-    label: `Próximos ${MAX_RANGE_DAYS} dias`,
+    id: "nextMaximumDays",
+    labelKey:
+      "neows.dateRange.nextMaximumDays",
     daysAhead: MAX_RANGE_DAYS,
   },
 ];
@@ -37,9 +42,11 @@ function toISODate(date) {
   }
 
   const year = date.getFullYear();
+
   const month = padDatePart(
     date.getMonth() + 1
   );
+
   const day = padDatePart(
     date.getDate()
   );
@@ -56,17 +63,23 @@ function getFutureRange(daysAhead) {
   const endDate = new Date(startDate);
 
   const safeDaysAhead = Math.min(
-    Math.max(Number(daysAhead) || 0, 0),
+    Math.max(
+      Number(daysAhead) || 0,
+      0
+    ),
     MAX_RANGE_DAYS
   );
 
   endDate.setDate(
-    endDate.getDate() + safeDaysAhead
+    endDate.getDate() +
+      safeDaysAhead
   );
 
   return {
-    startDate: toISODate(startDate),
-    endDate: toISODate(endDate),
+    startDate:
+      toISODate(startDate),
+    endDate:
+      toISODate(endDate),
   };
 }
 
@@ -78,6 +91,8 @@ function NeoDateRangeFilter({
   onSearch,
   loading,
 }) {
+  const { t } = useTranslation();
+
   const [
     rangeWarning,
     setRangeWarning,
@@ -97,7 +112,13 @@ function NeoDateRangeFilter({
 
     setRangeWarning(
       clampedRange.wasClamped
-        ? `O intervalo máximo permitido pela API é de ${MAX_RANGE_DAYS} dias. A data final foi ajustada.`
+        ? t(
+            "neows.dateRange.rangeAdjusted",
+            {
+              count:
+                MAX_RANGE_DAYS,
+            }
+          )
         : ""
     );
 
@@ -109,7 +130,8 @@ function NeoDateRangeFilter({
 
     if (
       loading ||
-      typeof onSearch !== "function"
+      typeof onSearch !==
+        "function"
     ) {
       return;
     }
@@ -142,7 +164,9 @@ function NeoDateRangeFilter({
     }
 
     const range =
-      getFutureRange(daysAhead);
+      getFutureRange(
+        daysAhead
+      );
 
     setRangeWarning("");
 
@@ -163,16 +187,19 @@ function NeoDateRangeFilter({
   function handleStartDateChange(
     value
   ) {
-    const clampedRange = applyClamp(
-      value,
-      endDate
-    );
+    const clampedRange =
+      applyClamp(
+        value,
+        endDate
+      );
 
     onStartDateChange?.(
       clampedRange.startDate
     );
 
-    if (clampedRange.wasClamped) {
+    if (
+      clampedRange.wasClamped
+    ) {
       onEndDateChange?.(
         clampedRange.endDate
       );
@@ -183,35 +210,56 @@ function NeoDateRangeFilter({
     value
   ) {
     setRangeWarning("");
-    onEndDateChange?.(value);
+
+    onEndDateChange?.(
+      value
+    );
   }
 
   return (
     <form
       className="neo-date-filter"
       onSubmit={handleSubmit}
+      aria-busy={loading}
     >
       <div className="neo-date-filter__left">
-        <span className="neo-date-filter__title">
-          Período de aproximação
+        <span
+          id="neo-date-filter-title"
+          className="neo-date-filter__title"
+        >
+          {t(
+            "neows.dateRange.period"
+          )}
         </span>
 
-        <div className="neo-date-filter__presets">
-          {PRESETS.map((preset) => (
-            <button
-              key={preset.label}
-              type="button"
-              className="neo-date-filter__preset"
-              disabled={loading}
-              onClick={() =>
-                handlePresetClick(
-                  preset.daysAhead
-                )
-              }
-            >
-              {preset.label}
-            </button>
-          ))}
+        <div
+          className="neo-date-filter__presets"
+          role="group"
+          aria-labelledby="neo-date-filter-title"
+        >
+          {PRESETS.map(
+            (preset) => (
+              <button
+                key={preset.id}
+                type="button"
+                className="neo-date-filter__preset"
+                disabled={loading}
+                onClick={() =>
+                  handlePresetClick(
+                    preset.daysAhead
+                  )
+                }
+              >
+                {t(
+                  preset.labelKey,
+                  {
+                    count:
+                      MAX_RANGE_DAYS,
+                  }
+                )}
+              </button>
+            )
+          )}
         </div>
 
         {rangeWarning && (
@@ -227,7 +275,9 @@ function NeoDateRangeFilter({
       <div className="neo-date-filter__right">
         <div className="neo-date-filter__field">
           <label htmlFor="neo-start-date">
-            Data inicial
+            {t(
+              "neows.dateRange.startDate"
+            )}
           </label>
 
           <input
@@ -241,12 +291,15 @@ function NeoDateRangeFilter({
                 event.target.value
               )
             }
+            required
           />
         </div>
 
         <div className="neo-date-filter__field">
           <label htmlFor="neo-end-date">
-            Data final
+            {t(
+              "neows.dateRange.endDate"
+            )}
           </label>
 
           <input
@@ -260,6 +313,7 @@ function NeoDateRangeFilter({
                 event.target.value
               )
             }
+            required
           />
         </div>
 
@@ -272,8 +326,12 @@ function NeoDateRangeFilter({
           }
         >
           {loading
-            ? "A pesquisar..."
-            : "Pesquisar objetos"}
+            ? t(
+                "neows.dateRange.searching"
+              )
+            : t(
+                "neows.dateRange.searchObjects"
+              )}
         </Button>
       </div>
     </form>

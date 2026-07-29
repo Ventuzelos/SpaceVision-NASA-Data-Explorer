@@ -25,8 +25,14 @@ function padDatePart(value) {
 
 function formatLocalDate(date) {
   const year = date.getFullYear();
-  const month = padDatePart(date.getMonth() + 1);
-  const day = padDatePart(date.getDate());
+
+  const month = padDatePart(
+    date.getMonth() + 1
+  );
+
+  const day = padDatePart(
+    date.getDate()
+  );
 
   return `${year}-${month}-${day}`;
 }
@@ -55,7 +61,9 @@ function DateRangeFilter({
 }) {
   const { t } = useTranslation();
 
-  const today = formatLocalDate(new Date());
+  const today = formatLocalDate(
+    new Date()
+  );
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -74,8 +82,14 @@ function DateRangeFilter({
 
     const range = getDateRange(days);
 
-    onStartDateChange(range.startDate);
-    onEndDateChange(range.endDate);
+    onStartDateChange(
+      range.startDate
+    );
+
+    onEndDateChange(
+      range.endDate
+    );
+
     onSearch(
       range.startDate,
       range.endDate
@@ -93,7 +107,9 @@ function DateRangeFilter({
           id="date-range-filter-title"
           className="date-range-filter__title"
         >
-          {t("donki.dateRange.period")}
+          {t(
+            "donki.dateRange.period"
+          )}
         </p>
 
         <div
@@ -101,28 +117,34 @@ function DateRangeFilter({
           role="group"
           aria-labelledby="date-range-filter-title"
         >
-          {DATE_PRESETS.map((preset) => (
-            <button
-              key={preset.days}
-              type="button"
-              className="date-range-filter__preset"
-              onClick={() => {
-                handlePresetClick(
-                  preset.days
-                );
-              }}
-              disabled={loading}
-            >
-              {t(preset.labelKey)}
-            </button>
-          ))}
+          {DATE_PRESETS.map(
+            (preset) => (
+              <button
+                key={preset.days}
+                type="button"
+                className="date-range-filter__preset"
+                onClick={() => {
+                  handlePresetClick(
+                    preset.days
+                  );
+                }}
+                disabled={loading}
+              >
+                {t(
+                  preset.labelKey
+                )}
+              </button>
+            )
+          )}
         </div>
       </div>
 
       <div className="date-range-filter__right">
         <div className="date-range-filter__field">
           <label htmlFor="donki-start-date">
-            {t("donki.dateRange.startDate")}
+            {t(
+              "donki.dateRange.startDate"
+            )}
           </label>
 
           <input
@@ -142,7 +164,9 @@ function DateRangeFilter({
 
         <div className="date-range-filter__field">
           <label htmlFor="donki-end-date">
-            {t("donki.dateRange.endDate")}
+            {t(
+              "donki.dateRange.endDate"
+            )}
           </label>
 
           <input
@@ -166,8 +190,12 @@ function DateRangeFilter({
           disabled={loading}
         >
           {loading
-            ? t("donki.dateRange.searching")
-            : t("donki.dateRange.searchEvents")}
+            ? t(
+                "donki.dateRange.searching"
+              )
+            : t(
+                "donki.dateRange.searchEvents"
+              )}
         </Button>
       </div>
     </form>

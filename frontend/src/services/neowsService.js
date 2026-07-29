@@ -134,15 +134,12 @@ function cleanName(value) {
     typeof value !== "string" ||
     !value.trim()
   ) {
-    return "Objeto desconhecido";
+    return "";
   }
 
-  return (
-    value
-      .replace(/[()]/g, "")
-      .trim() ||
-    "Objeto desconhecido"
-  );
+  return value
+    .replace(/[()]/g, "")
+    .trim();
 }
 
 /**

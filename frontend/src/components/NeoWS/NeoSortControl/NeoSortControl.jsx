@@ -1,37 +1,65 @@
+import { useTranslation } from "react-i18next";
+
 import "./NeoSortControl.css";
 
-function NeoSortControl({ direction, onChange, count }) {
+function NeoSortControl({
+  direction,
+  onChange,
+  count,
+}) {
+  const { t } = useTranslation();
+
   return (
     <div className="neo-sort">
       <span className="neo-sort__count">
-        {count} objeto{count === 1 ? "" : "s"} encontrado{count === 1 ? "" : "s"}
+        {t("neows.sort.resultsCount", {
+          count,
+        })}
       </span>
 
       <div
         className="neo-sort__toggle"
         role="group"
-        aria-label="Ordenar por distância de aproximação"
+        aria-label={t(
+          "neows.sort.ariaLabel"
+        )}
       >
         <button
           type="button"
           className={`neo-sort__btn ${
-            direction === "asc" ? "neo-sort__btn--active" : ""
+            direction === "asc"
+              ? "neo-sort__btn--active"
+              : ""
           }`}
-          onClick={() => onChange("asc")}
-          aria-pressed={direction === "asc"}
+          onClick={() =>
+            onChange("asc")
+          }
+          aria-pressed={
+            direction === "asc"
+          }
         >
-          Mais próximo primeiro
+          {t(
+            "neows.sort.closestFirst"
+          )}
         </button>
 
         <button
           type="button"
           className={`neo-sort__btn ${
-            direction === "desc" ? "neo-sort__btn--active" : ""
+            direction === "desc"
+              ? "neo-sort__btn--active"
+              : ""
           }`}
-          onClick={() => onChange("desc")}
-          aria-pressed={direction === "desc"}
+          onClick={() =>
+            onChange("desc")
+          }
+          aria-pressed={
+            direction === "desc"
+          }
         >
-          Mais distante primeiro
+          {t(
+            "neows.sort.farthestFirst"
+          )}
         </button>
       </div>
     </div>

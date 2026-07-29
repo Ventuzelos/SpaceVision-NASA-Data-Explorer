@@ -7,6 +7,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { useTranslation } from "react-i18next";
 
 import Container from "../../components/common/Container/Container";
 import ErrorState from "../../components/common/ErrorState/ErrorState";
@@ -51,9 +52,7 @@ const OBJECTS_PER_PAGE = 8;
 const DAY_IN_MILLISECONDS =
   24 * 60 * 60 * 1000;
 
-function parseDateTimestamp(
-  value
-) {
+function parseDateTimestamp(value) {
   if (
     typeof value !== "string" ||
     !/^\d{4}-\d{2}-\d{2}$/.test(value)
@@ -71,17 +70,13 @@ function parseDateTimestamp(
     day
   );
 
-  const date = new Date(
-    timestamp
-  );
+  const date = new Date(timestamp);
 
   if (
-    date.getUTCFullYear() !==
-      year ||
+    date.getUTCFullYear() !== year ||
     date.getUTCMonth() !==
       month - 1 ||
-    date.getUTCDate() !==
-      day
+    date.getUTCDate() !== day
   ) {
     return null;
   }
@@ -91,37 +86,36 @@ function parseDateTimestamp(
 
 function validateDateRange(
   startDate,
-  endDate
+  endDate,
+  t
 ) {
-  if (
-    !startDate ||
-    !endDate
-  ) {
-    return "Seleciona uma data inicial e uma data final.";
+  if (!startDate || !endDate) {
+    return t(
+      "neows.validation.requiredDates"
+    );
   }
 
   const startTimestamp =
-    parseDateTimestamp(
-      startDate
-    );
+    parseDateTimestamp(startDate);
 
   const endTimestamp =
-    parseDateTimestamp(
-      endDate
-    );
+    parseDateTimestamp(endDate);
 
   if (
     startTimestamp === null ||
     endTimestamp === null
   ) {
-    return "O intervalo de datas não é válido.";
+    return t(
+      "neows.validation.invalidRange"
+    );
   }
 
   if (
-    endTimestamp <
-    startTimestamp
+    endTimestamp < startTimestamp
   ) {
-    return "A data final não pode ser anterior à data inicial.";
+    return t(
+      "neows.validation.endBeforeStart"
+    );
   }
 
   const differenceInDays =
@@ -133,13 +127,20 @@ function validateDateRange(
     differenceInDays >
     MAX_RANGE_DAYS
   ) {
-    return `O intervalo máximo permitido é de ${MAX_RANGE_DAYS} dias.`;
+    return t(
+      "neows.validation.maximumRange",
+      {
+        count: MAX_RANGE_DAYS,
+      }
+    );
   }
 
   return "";
 }
 
 function NeoWS() {
+  const { t } = useTranslation();
+
   const {
     isAuthenticated,
     isAuthLoading,
@@ -286,9 +287,7 @@ function NeoWS() {
       );
     }
 
-    setToastMessage(
-      message
-    );
+    setToastMessage(message);
 
     toastTimeoutRef.current =
       window.setTimeout(() => {
@@ -393,14 +392,16 @@ function NeoWS() {
         }
 
         console.error(
-          "Erro ao carregar objetos NeoWS:",
+          "Error loading NeoWS objects:",
           requestError
         );
 
         setError(
           getApiErrorMessage(
             requestError,
-            "Não foi possível carregar os objetos próximos da Terra."
+            t(
+              "neows.errors.loadFallback"
+            )
           )
         );
       } finally {
@@ -412,7 +413,7 @@ function NeoWS() {
         }
       }
     },
-    []
+    [t]
   );
 
   useEffect(() => {
@@ -474,7 +475,7 @@ function NeoWS() {
             ?.status !== 401
         ) {
           console.error(
-            "Erro ao carregar favoritos NeoWatch:",
+            "Error loading NeoWS favourites:",
             requestError
           );
         }
@@ -506,7 +507,8 @@ function NeoWS() {
     const dateError =
       validateDateRange(
         newStartDate,
-        newEndDate
+        newEndDate,
+        t
       );
 
     setValidationError(
@@ -538,7 +540,9 @@ function NeoWS() {
   ) {
     if (!isAuthenticated) {
       showToast(
-        "Precisas de iniciar sessão para guardar favoritos"
+        t(
+          "neows.favorites.loginRequired"
+        )
       );
 
       return;
@@ -550,7 +554,9 @@ function NeoWS() {
       neo?.id === ""
     ) {
       showToast(
-        "Não foi possível identificar este objeto."
+        t(
+          "neows.favorites.invalidObject"
+        )
       );
 
       return;
@@ -699,6 +705,11 @@ function NeoWS() {
           .is_potentially_hazardous_asteroid ??
         false;
 
+      const defaultObjectTitle =
+        t(
+          "neows.object.defaultTitle"
+        );
+
       const result =
         await toggleFavorite({
           nasa_type: SOURCE,
@@ -708,7 +719,7 @@ function NeoWS() {
           title:
             neo.name ||
             rawNeo.name ||
-            "Objeto próximo da Terra",
+            defaultObjectTitle,
 
           image_url: null,
 
@@ -721,7 +732,7 @@ function NeoWS() {
             name:
               neo.name ||
               rawNeo.name ||
-              "Objeto próximo da Terra",
+              defaultObjectTitle,
 
             raw: rawNeo,
 
@@ -804,8 +815,12 @@ function NeoWS() {
               isHazardous,
 
             risk: isHazardous
-              ? "Elevado"
-              : "Baixo",
+              ? t(
+                  "neows.risk.high"
+                )
+              : t(
+                  "neows.risk.low"
+                ),
 
             link: jplUrl,
             jpl_url: jplUrl,
@@ -839,14 +854,18 @@ function NeoWS() {
 
       showToast(
         result.isFavorite
-          ? "Adicionado aos favoritos"
-          : "Removido dos favoritos"
+          ? t(
+              "neows.favorites.added"
+            )
+          : t(
+              "neows.favorites.removed"
+            )
       );
     } catch (
       requestError
     ) {
       console.error(
-        "Erro ao atualizar favorito NeoWatch:",
+        "Error updating NeoWS favourite:",
         requestError
       );
 
@@ -855,11 +874,15 @@ function NeoWS() {
           ?.status === 401
       ) {
         showToast(
-          "Precisas de iniciar sessão para guardar favoritos"
+          t(
+            "neows.favorites.loginRequired"
+          )
         );
       } else {
         showToast(
-          "Não foi possível atualizar o favorito"
+          t(
+            "neows.favorites.updateError"
+          )
         );
       }
     } finally {
@@ -883,31 +906,39 @@ function NeoWS() {
   return (
     <main className="neows-page">
       <PageMeta
-        title="NeoWatch"
-        description="Consulta asteroides e cometas próximos da Terra monitorizados pela NASA."
+        title={t(
+          "neows.meta.title"
+        )}
+        description={t(
+          "neows.meta.description"
+        )}
       />
 
       <Container>
         <header className="neows-page__header">
           <div className="neows-page__intro">
             <Breadcrumb
-              title="Asteroides"
+              title={t(
+                "neows.header.breadcrumb"
+              )}
             />
 
             <span className="neows-page__eyebrow">
-              NeoWs · Near-Earth Objects
+              {t(
+                "neows.header.eyebrow"
+              )}
             </span>
 
             <h1>
-              Objetos próximos da Terra
+              {t(
+                "neows.header.title"
+              )}
             </h1>
 
             <p>
-              Consulta asteroides e cometas cuja órbita
-              os traz perto da Terra, com estatísticas
-              agregadas e destaque para os objetos
-              potencialmente perigosos monitorizados
-              pela NASA.
+              {t(
+                "neows.header.description"
+              )}
             </p>
           </div>
 
@@ -927,7 +958,9 @@ function NeoWS() {
                     />
 
                     <p>
-                      A carregar visualização 3D...
+                      {t(
+                        "neows.viewer.loading"
+                      )}
                     </p>
                   </div>
                 }
@@ -945,13 +978,15 @@ function NeoWS() {
                   </span>
 
                   <h2>
-                    Explora o asteroide Bennu
+                    {t(
+                      "neows.viewer.title"
+                    )}
                   </h2>
 
                   <p>
-                    Carrega a visualização interativa para
-                    observar o asteroide, as órbitas e a sua
-                    aproximação à Terra.
+                    {t(
+                      "neows.viewer.description"
+                    )}
                   </p>
 
                   <button
@@ -963,13 +998,16 @@ function NeoWS() {
                       )
                     }
                   >
-                    Carregar visualização 3D
+                    {t(
+                      "neows.viewer.loadButton"
+                    )}
                   </button>
 
                   {isMobileViewer && (
                     <small>
-                      O carregamento manual ajuda a melhorar o
-                      desempenho em dispositivos móveis.
+                      {t(
+                        "neows.viewer.mobileNote"
+                      )}
                     </small>
                   )}
                 </div>
@@ -1032,7 +1070,9 @@ function NeoWS() {
         {error &&
           !loading && (
             <ErrorState
-              title="Não foi possível carregar os asteroides"
+              title={t(
+                "neows.errors.title"
+              )}
               message={error}
               onRetry={() =>
                 handleSearch(
@@ -1052,13 +1092,15 @@ function NeoWS() {
               role="status"
             >
               <h2>
-                Nenhum objeto encontrado
+                {t(
+                  "neows.empty.title"
+                )}
               </h2>
 
               <p>
-                Não foram encontrados objetos próximos
-                da Terra para este período. Experimenta
-                selecionar outro intervalo de datas.
+                {t(
+                  "neows.empty.description"
+                )}
               </p>
             </div>
           )}
@@ -1092,7 +1134,9 @@ function NeoWS() {
               0)) && (
           <section
             className="neows-page__list-panel"
-            aria-label="Lista de objetos próximos da Terra"
+            aria-label={t(
+              "neows.list.ariaLabel"
+            )}
             aria-busy={loading}
           >
             <div className="neows-page__grid">

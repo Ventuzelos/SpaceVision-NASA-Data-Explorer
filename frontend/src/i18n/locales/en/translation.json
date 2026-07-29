@@ -505,6 +505,124 @@
             "description": "The main milestones of the DSCOVR mission and the EPIC camera, from launch to the present day."
         }
     },
+    "neows": {
+        "meta": {
+            "title": "NeoWatch",
+            "description": "Explore near-Earth asteroids and comets monitored by NASA."
+        },
+        "header": {
+            "breadcrumb": "Asteroids",
+            "eyebrow": "NeoWS · Near-Earth Objects",
+            "title": "Near-Earth objects",
+            "description": "Explore asteroids and comets whose orbits bring them close to Earth, with aggregated statistics and highlights of potentially hazardous objects monitored by NASA."
+        },
+        "validation": {
+            "requiredDates": "Select a start date and an end date.",
+            "invalidRange": "The date range is invalid.",
+            "endBeforeStart": "The end date cannot be earlier than the start date.",
+            "maximumRange": "The maximum permitted range is {{count}} days."
+        },
+        "viewer": {
+            "loading": "Loading 3D visualisation...",
+            "title": "Explore asteroid Bennu",
+            "description": "Load the interactive visualisation to observe the asteroid, its orbits and its approach to Earth.",
+            "loadButton": "Load 3D visualisation",
+            "mobileNote": "Manual loading helps improve performance on mobile devices."
+        },
+        "errors": {
+            "title": "The asteroids could not be loaded",
+            "loadFallback": "The near-Earth objects could not be loaded."
+        },
+        "empty": {
+            "title": "No objects found",
+            "description": "No near-Earth objects were found for this period. Try selecting a different date range."
+        },
+        "list": {
+            "ariaLabel": "List of near-Earth objects"
+        },
+        "object": {
+            "defaultTitle": "Near-Earth object"
+        },
+        "risk": {
+            "high": "High",
+            "low": "Low"
+        },
+        "favorites": {
+            "loginRequired": "You need to sign in to save favourites",
+            "invalidObject": "This object could not be identified.",
+            "added": "Added to favourites",
+            "removed": "Removed from favourites",
+            "updateError": "The favourite could not be updated"
+        },
+        "dateRange": {
+            "period": "Approach period",
+            "today": "Today",
+            "next3Days": "Next 3 days",
+            "nextMaximumDays": "Next {{count}} days",
+            "startDate": "Start date",
+            "endDate": "End date",
+            "searchObjects": "Search objects",
+            "searching": "Searching...",
+            "rangeAdjusted": "The maximum range allowed by the API is {{count}} days. The end date has been adjusted."
+        },
+        "stats": {
+            "sectionTitle": "Near-Earth object statistics",
+            "totalObjects": "Total objects",
+            "hazardousObjects": "Potentially hazardous",
+            "closestObject": "Closest object",
+            "largestDiameter": "Largest estimated diameter",
+            "unavailable": "Unavailable",
+            "updating": "Updating statistics.",
+            "summary": "{{total}} objects were found, of which {{hazardous}} are potentially hazardous."
+        },
+        "sort": {
+            "resultsCount_one": "{{count}} object found",
+            "resultsCount_other": "{{count}} objects found",
+            "ariaLabel": "Sort by approach distance",
+            "closestFirst": "Closest first",
+            "farthestFirst": "Farthest first"
+        },
+        "card": {
+            "unavailable": "Unavailable",
+            "dateUnavailable": "Date unavailable",
+            "potentiallyHazardous": "Potentially hazardous",
+            "highRisk": "High risk",
+            "lowRisk": "Low risk",
+            "approach": "Approach",
+            "minimumDistance": "Minimum distance",
+            "lunarDistance": "Lunar distance",
+            "estimatedDiameter": "Estimated diameter",
+            "relativeVelocity": "Relative velocity",
+            "viewOnJpl": "View on JPL",
+            "jplAria": "View {{name}} on NASA JPL, opens in a new window",
+            "newWindow": ", opens in a new window",
+            "addFavoriteAria": "Add {{name}} to favourites",
+            "removeFavoriteAria": "Remove {{name}} from favourites"
+        },
+        "bennuViewer": {
+            "sectionAria": "3D orbital visualisation of asteroid Bennu",
+            "canvasAria": "Three-dimensional simulation of the Sun, Earth and the orbit of asteroid Bennu",
+            "notToScale": "Not to scale",
+            "interactionHint": "Drag to orbit · use the scroll wheel to zoom",
+            "telemetry": "T+ {{count}} simulated days",
+            "errors": {
+                "title": "Visualisation unavailable",
+                "initialization": "The 3D visualisation could not be started.",
+                "load": "The 3D visualisation of Bennu could not be loaded."
+            },
+            "controls": {
+                "ariaLabel": "Simulation controls",
+                "pause": "Pause simulation",
+                "resume": "Resume simulation",
+                "speedLabel": "Speed — {{speed}} days per second",
+                "speedValue": "{{speed}} days per second",
+                "visibleElements": "Visible elements",
+                "orbits": "Orbits",
+                "axis": "Axis",
+                "followBennu": "Follow Bennu"
+            }
+        }
+    },
     "common": {
         "loading": "Loading...",
         "error": "Something went wrong",
