@@ -41,15 +41,13 @@ function EventTypeSelector({
             type="button"
             role="tab"
             aria-selected={activeType === type.id}
-            className={`event-type-card ${
-              type.id === "NOTIFICATIONS"
+            className={`event-type-card ${type.id === "NOTIFICATIONS"
                 ? "event-type-card--feed"
                 : ""
-            } ${
-              activeType === type.id
+              } ${activeType === type.id
                 ? "event-type-card--active"
                 : ""
-            }`}
+              }`}
             style={{ "--type-color": type.color }}
             onClick={() => onSelect(type.id)}
           >
@@ -72,11 +70,15 @@ function EventTypeSelector({
             </span>
 
             <span className="event-type-card__label">
-              {t(type.shortLabelKey)}
+              {type.shortLabelKey
+                ? t(type.shortLabelKey)
+                : type.shortLabel || ""}
             </span>
 
             <span className="event-type-card__description">
-              {t(type.descriptionKey)}
+              {type.descriptionKey
+                ? t(type.descriptionKey)
+                : type.description || ""}
             </span>
           </button>
         );

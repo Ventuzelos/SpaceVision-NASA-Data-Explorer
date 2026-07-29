@@ -4,39 +4,56 @@ import {
   screen,
 } from "@testing-library/react";
 import {
+  beforeEach,
   describe,
   expect,
   it,
   vi,
 } from "vitest";
 
+import i18n from "../../../i18n";
+
 import EventTypeSelector from "./EventTypeSelector";
 
-vi.mock("../../../services/donkiService", () => ({
-  donkiEventTypes: [
-    {
-      id: "FLR",
-      shortLabel: "Erupções solares",
-      description: "Eventos de erupção solar",
-      icon: "sun",
-      color: "#f59e0b",
-    },
-    {
-      id: "CME",
-      shortLabel: "Ejeções de massa coronal",
-      description: "Eventos CME",
-      icon: "waves",
-      color: "#3b82f6",
-    },
-  ],
-}));
+vi.mock(
+  "../../../services/donkiService",
+  () => ({
+    donkiEventTypes: [
+      {
+        id: "FLR",
+        shortLabelKey:
+          "donki.eventTypes.flr.label",
+        descriptionKey:
+          "donki.eventTypes.flr.description",
+        icon: "sun",
+        color: "#f59e0b",
+      },
+      {
+        id: "CME",
+        shortLabelKey:
+          "donki.eventTypes.cme.label",
+        descriptionKey:
+          "donki.eventTypes.cme.description",
+        icon: "waves",
+        color: "#3b82f6",
+      },
+    ],
+  })
+);
 
 describe("EventTypeSelector", () => {
+  const onSelect = vi.fn();
+
+  beforeEach(async () => {
+    await i18n.changeLanguage("pt");
+    vi.clearAllMocks();
+  });
+
   it("apresenta os tipos de eventos DONKI", () => {
     render(
       <EventTypeSelector
         activeType="FLR"
-        onSelect={() => {}}
+        onSelect={onSelect}
       />
     );
 
@@ -57,7 +74,7 @@ describe("EventTypeSelector", () => {
     render(
       <EventTypeSelector
         activeType="FLR"
-        onSelect={() => {}}
+        onSelect={onSelect}
       />
     );
 
@@ -81,12 +98,10 @@ describe("EventTypeSelector", () => {
   });
 
   it("executa onSelect com o tipo escolhido", () => {
-    const handleSelect = vi.fn();
-
     render(
       <EventTypeSelector
         activeType="FLR"
-        onSelect={handleSelect}
+        onSelect={onSelect}
       />
     );
 
@@ -96,10 +111,12 @@ describe("EventTypeSelector", () => {
       })
     );
 
-    expect(handleSelect).toHaveBeenCalledWith(
-      "CME"
+    expect(onSelect).toHaveBeenCalledTimes(
+      1
     );
 
-    expect(handleSelect).toHaveBeenCalledTimes(1);
+    expect(onSelect).toHaveBeenCalledWith(
+      "CME"
+    );
   });
 });
