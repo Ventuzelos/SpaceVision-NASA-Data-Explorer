@@ -7,10 +7,13 @@ import { Link } from "react-router-dom";
 
 import Icon from "../common/Icon/Icon";
 
+
 import {
   findAssistantResponse,
   QUICK_QUESTIONS,
 } from "./assistantData";
+
+import "./SpaceVisionAssistant.css";
 
 const INITIAL_MESSAGE = {
   id: "welcome",
