@@ -1,5 +1,9 @@
 import { useRef } from "react";
-import { ExternalLink, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import {
+  ExternalLink,
+  X,
+} from "lucide-react";
 
 import { useModalA11y } from "../../hooks/UseModalA11y";
 
@@ -30,94 +34,245 @@ function parseFavoriteData(data) {
   return {};
 }
 
-function formatDate(value) {
-  if (!value) {
-    return "Data não disponível";
-  }
-
-  const parsedDate = new Date(value);
-
-  if (Number.isNaN(parsedDate.getTime())) {
-    return String(value);
-  }
-
-  return parsedDate.toLocaleDateString("pt-PT", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+function normalizeLabel(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(
+      /[\u0300-\u036f]/g,
+      ""
+    );
 }
 
-function formatDateTime(value) {
-  if (!value) {
-    return "Data não disponível";
+function getDonkiMetaLabel(
+  label,
+  t
+) {
+  const normalizedLabel =
+    normalizeLabel(label);
+
+  const labelKeys = {
+    inicio: "start",
+    start: "start",
+
+    pico: "peak",
+    peak: "peak",
+
+    fim: "end",
+    end: "end",
+
+    "regiao ativa":
+      "activeRegion",
+    "active region":
+      "activeRegion",
+
+    instrumentos:
+      "instruments",
+    instruments:
+      "instruments",
+
+    tipo: "type",
+    type: "type",
+
+    localizacao:
+      "location",
+    location:
+      "location",
+
+    velocidade:
+      "speed",
+    speed:
+      "speed",
+
+    duracao: "duration",
+    duration: "duration",
+  };
+
+  const translationKey =
+    labelKeys[
+      normalizedLabel
+    ];
+
+  if (!translationKey) {
+    return label;
   }
 
-  const parsedDate = new Date(value);
-
-  if (Number.isNaN(parsedDate.getTime())) {
-    return String(value);
-  }
-
-  const date = parsedDate.toLocaleDateString("pt-PT", {
-    weekday: "long",
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  });
-
-  const time = parsedDate.toLocaleTimeString("pt-PT", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-
-  return `${date} às ${time}`;
+  return t(
+    `favoriteModal.donki.labels.${translationKey}`
+  );
 }
 
-function formatShortDateTime(value) {
-  if (!value) {
-    return "Data não disponível";
+function getLocalizedRisk(
+  risk,
+  isHazardous,
+  t
+) {
+  const normalizedRisk =
+    normalizeLabel(risk);
+
+  const lowValues = [
+    "baixo",
+    "baixa",
+    "low",
+  ];
+
+  const highValues = [
+    "elevado",
+    "elevada",
+    "alto",
+    "alta",
+    "high",
+  ];
+
+  if (
+    lowValues.includes(
+      normalizedRisk
+    )
+  ) {
+    return t(
+      "favoriteModal.neows.riskLow"
+    );
   }
 
-  const parsedDate = new Date(value);
+  if (
+    highValues.includes(
+      normalizedRisk
+    )
+  ) {
+    return t(
+      "favoriteModal.neows.riskHigh"
+    );
+  }
 
-  if (Number.isNaN(parsedDate.getTime())) {
+  if (risk) {
+    return String(risk);
+  }
+
+  return isHazardous
+    ? t(
+        "favoriteModal.neows.riskHigh"
+      )
+    : t(
+        "favoriteModal.neows.riskLow"
+      );
+}
+
+function formatDate(
+  value,
+  locale,
+  unavailableText
+) {
+  if (!value) {
+    return unavailableText;
+  }
+
+  const parsedDate =
+    new Date(value);
+
+  if (
+    Number.isNaN(
+      parsedDate.getTime()
+    )
+  ) {
     return String(value);
   }
 
-  const date = parsedDate.toLocaleDateString("pt-PT");
+  return parsedDate.toLocaleDateString(
+    locale,
+    {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }
+  );
+}
 
-  const time = parsedDate.toLocaleTimeString("pt-PT", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+function formatDateTime(
+  value,
+  locale,
+  unavailableText,
+  separator
+) {
+  if (!value) {
+    return unavailableText;
+  }
+
+  const parsedDate =
+    new Date(value);
+
+  if (
+    Number.isNaN(
+      parsedDate.getTime()
+    )
+  ) {
+    return String(value);
+  }
+
+  const date =
+    parsedDate.toLocaleDateString(
+      locale,
+      {
+        weekday: "long",
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      }
+    );
+
+  const time =
+    parsedDate.toLocaleTimeString(
+      locale,
+      {
+        hour: "2-digit",
+        minute: "2-digit",
+      }
+    );
+
+  return `${date} ${separator} ${time}`;
+}
+
+function formatShortDateTime(
+  value,
+  locale,
+  unavailableText
+) {
+  if (!value) {
+    return unavailableText;
+  }
+
+  const parsedDate =
+    new Date(value);
+
+  if (
+    Number.isNaN(
+      parsedDate.getTime()
+    )
+  ) {
+    return String(value);
+  }
+
+  const date =
+    parsedDate.toLocaleDateString(
+      locale
+    );
+
+  const time =
+    parsedDate.toLocaleTimeString(
+      locale,
+      {
+        hour: "2-digit",
+        minute: "2-digit",
+      }
+    );
 
   return `${date}, ${time}`;
 }
 
-function formatNumber(value, maximumFractionDigits = 0) {
-  if (
-    value === null ||
-    value === undefined ||
-    value === ""
-  ) {
-    return "Não disponível";
-  }
-
-  const number = Number(value);
-
-  if (Number.isNaN(number)) {
-    return String(value);
-  }
-
-  return number.toLocaleString("pt-PT", {
-    maximumFractionDigits,
-  });
-}
-
-function formatValueWithUnit(
+function formatNumber(
   value,
-  unit,
+  locale,
+  unavailableText,
   maximumFractionDigits = 0
 ) {
   if (
@@ -125,29 +280,76 @@ function formatValueWithUnit(
     value === undefined ||
     value === ""
   ) {
-    return "Não disponível";
+    return unavailableText;
   }
 
-  if (typeof value === "string") {
-    const trimmedValue = value.trim();
+  const number =
+    Number(value);
+
+  if (
+    Number.isNaN(number)
+  ) {
+    return String(value);
+  }
+
+  return number.toLocaleString(
+    locale,
+    {
+      maximumFractionDigits,
+    }
+  );
+}
+
+function formatValueWithUnit(
+  value,
+  unit,
+  locale,
+  unavailableText,
+  maximumFractionDigits = 0
+) {
+  if (
+    value === null ||
+    value === undefined ||
+    value === ""
+  ) {
+    return unavailableText;
+  }
+
+  if (
+    typeof value === "string"
+  ) {
+    const trimmedValue =
+      value.trim();
 
     if (
       trimmedValue
         .toLowerCase()
-        .includes(unit.toLowerCase())
+        .includes(
+          unit.toLowerCase()
+        )
     ) {
       return trimmedValue;
     }
 
-    const normalizedValue = trimmedValue
-      .replace(/\s/g, "")
-      .replace(",", ".");
+    const normalizedValue =
+      trimmedValue
+        .replace(/\s/g, "")
+        .replace(",", ".");
 
-    const numericValue = Number(normalizedValue);
+    const numericValue =
+      Number(
+        normalizedValue
+      );
 
-    if (!Number.isNaN(numericValue)) {
+    if (
+      !Number.isNaN(
+        numericValue
+      )
+    ) {
       return `${formatNumber(
         numericValue,
+        locale,
+        unavailableText,
         maximumFractionDigits
       )} ${unit}`;
     }
@@ -157,83 +359,132 @@ function formatValueWithUnit(
 
   return `${formatNumber(
     value,
+    locale,
+    unavailableText,
     maximumFractionDigits
   )} ${unit}`;
 }
 
-function getFavoriteType(favorite) {
+function getFavoriteType(
+  favorite
+) {
   return String(
     favorite?.nasa_type ||
       favorite?.source ||
       favorite?.type ||
-      "NASA"
+      "nasa"
   ).toLowerCase();
 }
 
-function getImageUrl(favorite, data, favoriteType) {
-  if (favoriteType === "apod") {
-    if (data.media_type === "video") {
-      return "";
-    }
-
-    return (
-      favorite.image_url ||
-      data.image_url ||
-      data.imageUrl ||
-      data.hdurl ||
-      data.hd_url ||
-      data.url ||
-      ""
-    );
-  }
-
-  if (favoriteType === "epic") {
-    return (
-      favorite.image_url ||
-      data.image_url ||
-      data.imageUrl ||
-      data.url ||
-      ""
-    );
+function getImageUrl(
+  favorite,
+  data,
+  favoriteType
+) {
+  if (
+    favoriteType ===
+      "apod" &&
+    data.media_type ===
+      "video"
+  ) {
+    return "";
   }
 
   return (
     favorite.image_url ||
     data.image_url ||
     data.imageUrl ||
+    data.hdurl ||
+    data.hd_url ||
     data.url ||
     ""
   );
 }
 
-function getMetaValue(meta, possibleLabels) {
-  if (!Array.isArray(meta)) {
+function getMetaValue(
+  meta,
+  possibleLabels
+) {
+  if (
+    !Array.isArray(meta)
+  ) {
     return null;
   }
 
-  const normalizedLabels = possibleLabels.map((label) =>
-    String(label).toLowerCase()
-  );
-
-  const matchingItem = meta.find((item) => {
-    const itemLabel = String(
-      item?.label || ""
-    ).toLowerCase();
-
-    return normalizedLabels.some(
+  const normalizedLabels =
+    possibleLabels.map(
       (label) =>
-        itemLabel === label ||
-        itemLabel.includes(label)
+        normalizeLabel(label)
     );
-  });
 
-  return matchingItem?.value ?? null;
+  const matchingItem =
+    meta.find((item) => {
+      const itemLabel =
+        normalizeLabel(
+          item?.label
+        );
+
+      return normalizedLabels.some(
+        (label) =>
+          itemLabel ===
+            label ||
+          itemLabel.includes(
+            label
+          )
+      );
+    });
+
+  return (
+    matchingItem?.value ??
+    null
+  );
+}
+
+function getLocalizedValue(
+  data,
+  language,
+  keys
+) {
+  const isEnglish =
+    language?.startsWith(
+      "en"
+    );
+
+  const preferredKeys =
+    isEnglish
+      ? keys.english
+      : keys.portuguese;
+
+  const fallbackKeys =
+    isEnglish
+      ? keys.portuguese
+      : keys.english;
+
+  for (
+    const key of preferredKeys
+  ) {
+    if (data?.[key]) {
+      return data[key];
+    }
+  }
+
+  for (
+    const key of fallbackKeys
+  ) {
+    if (data?.[key]) {
+      return data[key];
+    }
+  }
+
+  return "";
 }
 
 function getEstimatedDiameter(
   data,
   rawData,
-  meta
+  meta,
+  locale,
+  unavailableText
 ) {
   const diameterFromData =
     data.diameter ||
@@ -245,91 +496,199 @@ function getEstimatedDiameter(
     return diameterFromData;
   }
 
-  const diameterFromMeta = getMetaValue(meta, [
-    "diâmetro estimado",
-    "diametro estimado",
-    "diâmetro",
-    "diametro",
-  ]);
+  const diameterFromMeta =
+    getMetaValue(meta, [
+      "diâmetro estimado",
+      "diametro estimado",
+      "estimated diameter",
+      "diâmetro",
+      "diametro",
+      "diameter",
+    ]);
 
   if (diameterFromMeta) {
     return diameterFromMeta;
   }
 
   const diameterMeters =
-    rawData?.estimated_diameter?.meters ||
-    data?.estimated_diameter?.meters;
+    rawData?.estimated_diameter
+      ?.meters ||
+    data?.estimated_diameter
+      ?.meters;
 
   if (diameterMeters) {
     const minimum =
-      diameterMeters.estimated_diameter_min;
+      diameterMeters
+        .estimated_diameter_min;
 
     const maximum =
-      diameterMeters.estimated_diameter_max;
+      diameterMeters
+        .estimated_diameter_max;
 
-    return `${formatNumber(minimum)} m – ${formatNumber(
-      maximum
+    return `${formatNumber(
+      minimum,
+      locale,
+      unavailableText
+    )} m – ${formatNumber(
+      maximum,
+      locale,
+      unavailableText
     )} m`;
   }
 
   const diameterKilometers =
-    rawData?.estimated_diameter?.kilometers ||
-    data?.estimated_diameter?.kilometers;
+    rawData?.estimated_diameter
+      ?.kilometers ||
+    data?.estimated_diameter
+      ?.kilometers;
 
   if (diameterKilometers) {
     const minimum =
-      diameterKilometers.estimated_diameter_min;
+      diameterKilometers
+        .estimated_diameter_min;
 
     const maximum =
-      diameterKilometers.estimated_diameter_max;
+      diameterKilometers
+        .estimated_diameter_max;
 
     return `${formatNumber(
       minimum,
+      locale,
+      unavailableText,
       2
-    )} km – ${formatNumber(maximum, 2)} km`;
+    )} km – ${formatNumber(
+      maximum,
+      locale,
+      unavailableText,
+      2
+    )} km`;
   }
 
-  return "Não disponível";
+  return unavailableText;
 }
 
-function FavoriteDetailsModal({ favorite, onClose }) {
-  const closeButtonRef = useRef(null);
-  const containerRef = useModalA11y({
-    isOpen: Boolean(favorite),
-    onClose,
-    initialFocusRef: closeButtonRef,
-  });
+function FavoriteDetailsModal({
+  favorite,
+  onClose,
+}) {
+  const { t, i18n } =
+    useTranslation();
+
+  const closeButtonRef =
+    useRef(null);
+
+  const containerRef =
+    useModalA11y({
+      isOpen:
+        Boolean(favorite),
+      onClose,
+      initialFocusRef:
+        closeButtonRef,
+    });
 
   if (!favorite) {
     return null;
   }
 
-  const data = parseFavoriteData(favorite.data);
+  const locale =
+    i18n.resolvedLanguage?.startsWith(
+      "en"
+    )
+      ? "en-GB"
+      : "pt-PT";
+
+  const unavailableText =
+    t(
+      "favoriteModal.unavailable"
+    );
+
+  const data =
+    parseFavoriteData(
+      favorite.data
+    );
 
   const favoriteType =
-    getFavoriteType(favorite);
+    getFavoriteType(
+      favorite
+    );
 
-  const imageUrl = getImageUrl(
-    favorite,
-    data,
-    favoriteType
-  );
+  const imageUrl =
+    getImageUrl(
+      favorite,
+      data,
+      favoriteType
+    );
 
   const rawData =
     data.raw &&
-    typeof data.raw === "object"
+    typeof data.raw ===
+      "object"
       ? data.raw
       : data;
 
-  const neowsMeta = Array.isArray(data.meta)
-    ? data.meta
-    : Array.isArray(rawData.meta)
-      ? rawData.meta
-      : [];
+  const localizedTitle =
+    getLocalizedValue(
+      data,
+      i18n.resolvedLanguage,
+      {
+        english: [
+          "originalTitle",
+          "original_title",
+          "title",
+          "name",
+        ],
+        portuguese: [
+          "translatedTitle",
+          "translated_title",
+          "title",
+          "name",
+        ],
+      }
+    );
+
+  const title =
+    localizedTitle ||
+    favorite.title ||
+    t(
+      "favoriteModal.untitled"
+    );
+
+  const localizedDescription =
+    getLocalizedValue(
+      data,
+      i18n.resolvedLanguage,
+      {
+        english: [
+          "originalExplanation",
+          "original_explanation",
+          "explanation",
+          "description",
+          "caption",
+        ],
+        portuguese: [
+          "translatedExplanation",
+          "translated_explanation",
+          "explanation",
+          "description",
+          "caption",
+        ],
+      }
+    );
+
+  const neowsMeta =
+    Array.isArray(data.meta)
+      ? data.meta
+      : Array.isArray(
+          rawData.meta
+        )
+        ? rawData.meta
+        : [];
 
   const approach =
-    rawData.close_approach_data?.[0] ||
-    data.close_approach_data?.[0] ||
+    rawData
+      .close_approach_data?.[0] ||
+    data
+      .close_approach_data?.[0] ||
     null;
 
   const neowsApproachDate =
@@ -338,8 +697,10 @@ function FavoriteDetailsModal({ favorite, onClose }) {
     data.approach_date ||
     data.closeApproachDate ||
     data.close_approach_date ||
-    approach?.close_approach_date_full ||
-    approach?.close_approach_date;
+    approach
+      ?.close_approach_date_full ||
+    approach
+      ?.close_approach_date;
 
   const neowsDistanceKm =
     data.distanceKm ||
@@ -348,26 +709,35 @@ function FavoriteDetailsModal({ favorite, onClose }) {
     data.miss_distance_km ||
     data.missDistance ||
     data.miss_distance ||
-    getMetaValue(neowsMeta, [
-      "distância (miss distance)",
-      "distancia (miss distance)",
-      "miss distance",
-      "distância",
-      "distancia",
-    ]) ||
-    approach?.miss_distance?.kilometers;
+    getMetaValue(
+      neowsMeta,
+      [
+        "distância (miss distance)",
+        "distancia (miss distance)",
+        "miss distance",
+        "distância",
+        "distancia",
+        "distance",
+      ]
+    ) ||
+    approach?.miss_distance
+      ?.kilometers;
 
   const neowsLunarDistance =
     data.lunarDistance ||
     data.lunar_distance ||
     data.distanceLunar ||
     data.distance_lunar ||
-    getMetaValue(neowsMeta, [
-      "distância lunar",
-      "distancia lunar",
-      "lunar distance",
-    ]) ||
-    approach?.miss_distance?.lunar;
+    getMetaValue(
+      neowsMeta,
+      [
+        "distância lunar",
+        "distancia lunar",
+        "lunar distance",
+      ]
+    ) ||
+    approach?.miss_distance
+      ?.lunar;
 
   const neowsVelocity =
     data.velocityKmH ||
@@ -376,33 +746,55 @@ function FavoriteDetailsModal({ favorite, onClose }) {
     data.relative_velocity ||
     data.relativeVelocityKmH ||
     data.relative_velocity_kmh ||
-    getMetaValue(neowsMeta, [
-      "velocidade relativa",
-      "relative velocity",
-      "velocidade",
-    ]) ||
-    approach?.relative_velocity
+    getMetaValue(
+      neowsMeta,
+      [
+        "velocidade relativa",
+        "relative velocity",
+        "velocidade",
+        "velocity",
+      ]
+    ) ||
+    approach
+      ?.relative_velocity
       ?.kilometers_per_hour;
 
-  const neowsDiameter = getEstimatedDiameter(
-    data,
-    rawData,
-    neowsMeta
-  );
+  const neowsDiameter =
+    getEstimatedDiameter(
+      data,
+      rawData,
+      neowsMeta,
+      locale,
+      unavailableText
+    );
 
   const isHazardous =
     data.isHazardous ??
     data.hazardous ??
-    data.is_potentially_hazardous_asteroid ??
-    rawData.is_potentially_hazardous_asteroid ??
+    data
+      .is_potentially_hazardous_asteroid ??
+    rawData
+      .is_potentially_hazardous_asteroid ??
     false;
 
-  const neowsRisk =
+  const rawNeowsRisk =
     data.risk ||
     data.riskLevel ||
     data.risk_level ||
-    getMetaValue(neowsMeta, ["risco"]) ||
-    (isHazardous ? "Elevado" : "Baixo");
+    getMetaValue(
+      neowsMeta,
+      [
+        "risco",
+        "risk",
+      ]
+    );
+
+  const neowsRisk =
+    getLocalizedRisk(
+      rawNeowsRisk,
+      isHazardous,
+      t
+    );
 
   const neowsLink =
     data.link ||
@@ -412,35 +804,51 @@ function FavoriteDetailsModal({ favorite, onClose }) {
     rawData.nasa_jpl_url ||
     "";
 
+  const typeLabel =
+    t(
+      `favoriteModal.types.${favoriteType}`,
+      {
+        defaultValue:
+          favoriteType.toUpperCase(),
+      }
+    );
+
   return (
     <div
-  className="favorite-modal"
-  role="dialog"
-  aria-modal="true"
-  aria-labelledby="favorite-modal-title"
-  onClick={onClose}
-  ref={containerRef}
->
-  <div className="favorite-modal__content" onClick={(event) => event.stopPropagation()}>
-    <button
-      ref={closeButtonRef}
-      type="button"
-      className="favorite-modal__close"
+      className="favorite-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="favorite-modal-title"
       onClick={onClose}
-      aria-label="Fechar detalhes"
+      ref={containerRef}
     >
-          <X size={22} />
+      <div
+        className="favorite-modal__content"
+        onClick={(event) =>
+          event.stopPropagation()
+        }
+      >
+        <button
+          ref={closeButtonRef}
+          type="button"
+          className="favorite-modal__close"
+          onClick={onClose}
+          aria-label={t(
+            "favoriteModal.closeAria"
+          )}
+        >
+          <X
+            size={22}
+            aria-hidden="true"
+          />
         </button>
 
         <span className="favorite-modal__type">
-          {favoriteType.toUpperCase()}
+          {typeLabel}
         </span>
 
         <h2 id="favorite-modal-title">
-          {favorite.title ||
-            data.title ||
-            data.name ||
-            "Conteúdo sem título"}
+          {title}
         </h2>
 
         {imageUrl && (
@@ -448,92 +856,151 @@ function FavoriteDetailsModal({ favorite, onClose }) {
             className="favorite-modal__image"
             src={imageUrl}
             alt={
-              favorite.title ||
-              data.title ||
-              data.caption ||
-              "Imagem da NASA"
+              title ||
+              t(
+                "favoriteModal.imageAlt"
+              )
             }
           />
         )}
 
-        {favoriteType === "apod" && (
+        {favoriteType ===
+          "apod" && (
           <div className="favorite-modal__details">
             <p>
-              <strong>Data:</strong>{" "}
-              {formatDate(data.date)}
+              <strong>
+                {t(
+                  "favoriteModal.common.date"
+                )}
+                :
+              </strong>{" "}
+              {formatDate(
+                data.date,
+                locale,
+                unavailableText
+              )}
             </p>
 
             {data.copyright && (
               <p>
-                <strong>Créditos:</strong>{" "}
-                {data.copyright}
+                <strong>
+                  {t(
+                    "favoriteModal.apod.credits"
+                  )}
+                  :
+                </strong>{" "}
+                {
+                  data.copyright
+                }
               </p>
             )}
 
-            {data.explanation ||
-            data.description ? (
+            {localizedDescription ? (
               <div>
-                <h3>Descrição</h3>
+                <h3>
+                  {t(
+                    "favoriteModal.common.description"
+                  )}
+                </h3>
 
                 <p>
-                  {data.explanation ||
-                    data.description}
+                  {
+                    localizedDescription
+                  }
                 </p>
               </div>
             ) : (
               <p>
-                Não existe uma descrição guardada
-                neste favorito.
+                {t(
+                  "favoriteModal.common.descriptionUnavailable"
+                )}
               </p>
             )}
 
-            {data.media_type === "video" &&
+            {data.media_type ===
+              "video" &&
               data.url && (
                 <a
                   className="favorite-modal__link"
-                  href={data.url}
+                  href={
+                    data.url
+                  }
                   target="_blank"
                   rel="noreferrer"
                 >
-                  Abrir vídeo
+                  {t(
+                    "favoriteModal.apod.openVideo"
+                  )}
                 </a>
               )}
           </div>
         )}
 
-        {favoriteType === "epic" && (
+        {favoriteType ===
+          "epic" && (
           <div className="favorite-modal__details">
             <p>
-              <strong>Data:</strong>{" "}
-              {formatDate(data.date)}
+              <strong>
+                {t(
+                  "favoriteModal.common.date"
+                )}
+                :
+              </strong>{" "}
+              {formatDate(
+                data.date,
+                locale,
+                unavailableText
+              )}
             </p>
 
-            {data.caption ? (
+            {localizedDescription ? (
               <div>
-                <h3>Descrição</h3>
-                <p>{data.caption}</p>
+                <h3>
+                  {t(
+                    "favoriteModal.common.description"
+                  )}
+                </h3>
+
+                <p>
+                  {
+                    localizedDescription
+                  }
+                </p>
               </div>
             ) : (
               <p>
-                Não existe uma descrição guardada
-                neste favorito.
+                {t(
+                  "favoriteModal.common.descriptionUnavailable"
+                )}
               </p>
             )}
 
             {data.centroid_coordinates && (
               <>
                 <p>
-                  <strong>Latitude:</strong>{" "}
+                  <strong>
+                    {t(
+                      "favoriteModal.epic.latitude"
+                    )}
+                    :
+                  </strong>{" "}
                   {
-                    data.centroid_coordinates
+                    data
+                      .centroid_coordinates
                       .lat
                   }
                 </p>
 
                 <p>
-                  <strong>Longitude:</strong>{" "}
+                  <strong>
+                    {t(
+                      "favoriteModal.epic.longitude"
+                    )}
+                    :
+                  </strong>{" "}
                   {
-                    data.centroid_coordinates
+                    data
+                      .centroid_coordinates
                       .lon
                   }
                 </p>
@@ -543,45 +1010,69 @@ function FavoriteDetailsModal({ favorite, onClose }) {
             {data.identifier && (
               <p>
                 <strong>
-                  Identificador:
+                  {t(
+                    "favoriteModal.epic.identifier"
+                  )}
+                  :
                 </strong>{" "}
-                {data.identifier}
+                {
+                  data.identifier
+                }
               </p>
             )}
           </div>
         )}
 
-        {favoriteType === "donki" && (
+        {favoriteType ===
+          "donki" && (
           <div className="favorite-modal__details">
             <div className="favorite-modal__donki-summary">
               <p className="favorite-modal__donki-date">
                 {formatDateTime(
                   data.date ||
-                    data.event_date
+                    data.event_date,
+                  locale,
+                  unavailableText,
+                  t(
+                    "favoriteModal.dateTimeSeparator"
+                  )
                 )}
               </p>
 
               {data.badge && (
                 <span className="favorite-modal__donki-badge">
-                  {data.badge}
+                  {
+                    data.badge
+                  }
                 </span>
               )}
             </div>
 
-            {Array.isArray(data.meta) &&
-            data.meta.length > 0 ? (
+            {Array.isArray(
+              data.meta
+            ) &&
+            data.meta.length >
+              0 ? (
               <dl className="favorite-modal__data-grid">
                 {data.meta.map(
-                  (item, index) => (
+                  (
+                    item,
+                    index
+                  ) => (
                     <div
                       className="favorite-modal__data-item"
                       key={`${item.label}-${index}`}
                     >
-                      <dt>{item.label}</dt>
+                      <dt>
+                        {getDonkiMetaLabel(
+                          item.label,
+                          t
+                        )}
+                      </dt>
 
                       <dd>
                         {item.value ||
-                          "Não disponível"}
+                          unavailableText}
                       </dd>
                     </div>
                   )
@@ -589,32 +1080,49 @@ function FavoriteDetailsModal({ favorite, onClose }) {
               </dl>
             ) : (
               <p>
-                Não existem detalhes adicionais
-                guardados para este evento.
+                {t(
+                  "favoriteModal.donki.noDetails"
+                )}
               </p>
             )}
 
             {data.link && (
               <a
                 className="favorite-modal__source-link"
-                href={data.link}
+                href={
+                  data.link
+                }
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Ver fonte na NASA
-                <ExternalLink size={16} />
+                {t(
+                  "favoriteModal.donki.viewSource"
+                )}
+
+                <ExternalLink
+                  size={16}
+                  aria-hidden="true"
+                />
               </a>
             )}
           </div>
         )}
 
-        {favoriteType === "neows" && (
+        {favoriteType ===
+          "neows" && (
           <div className="favorite-modal__details">
             <div className="favorite-modal__neows-summary">
               <p>
-                <strong>Aproximação:</strong>{" "}
+                <strong>
+                  {t(
+                    "favoriteModal.neows.approach"
+                  )}
+                  :
+                </strong>{" "}
                 {formatShortDateTime(
-                  neowsApproachDate
+                  neowsApproachDate,
+                  locale,
+                  unavailableText
                 )}
               </p>
 
@@ -625,49 +1133,76 @@ function FavoriteDetailsModal({ favorite, onClose }) {
                     : "favorite-modal__risk--low"
                 }`}
               >
-                Risco: {neowsRisk}
+                {t(
+                  "favoriteModal.neows.risk"
+                )}
+                : {neowsRisk}
               </p>
             </div>
 
             <dl className="favorite-modal__data-grid favorite-modal__data-grid--neows">
               <div className="favorite-modal__data-item">
                 <dt>
-                  Distância (miss distance)
+                  {t(
+                    "favoriteModal.neows.missDistance"
+                  )}
                 </dt>
 
                 <dd>
                   {formatValueWithUnit(
                     neowsDistanceKm,
-                    "km"
+                    "km",
+                    locale,
+                    unavailableText
                   )}
                 </dd>
               </div>
 
               <div className="favorite-modal__data-item">
-                <dt>Distância lunar</dt>
+                <dt>
+                  {t(
+                    "favoriteModal.neows.lunarDistance"
+                  )}
+                </dt>
 
                 <dd>
                   {formatValueWithUnit(
                     neowsLunarDistance,
                     "LD",
+                    locale,
+                    unavailableText,
                     2
                   )}
                 </dd>
               </div>
 
               <div className="favorite-modal__data-item">
-                <dt>Diâmetro estimado</dt>
+                <dt>
+                  {t(
+                    "favoriteModal.neows.estimatedDiameter"
+                  )}
+                </dt>
 
-                <dd>{neowsDiameter}</dd>
+                <dd>
+                  {
+                    neowsDiameter
+                  }
+                </dd>
               </div>
 
               <div className="favorite-modal__data-item">
-                <dt>Velocidade relativa</dt>
+                <dt>
+                  {t(
+                    "favoriteModal.neows.relativeVelocity"
+                  )}
+                </dt>
 
                 <dd>
                   {formatValueWithUnit(
                     neowsVelocity,
-                    "km/h"
+                    "km/h",
+                    locale,
+                    unavailableText
                   )}
                 </dd>
               </div>
@@ -676,23 +1211,33 @@ function FavoriteDetailsModal({ favorite, onClose }) {
             {neowsLink && (
               <a
                 className="favorite-modal__source-link"
-                href={neowsLink}
+                href={
+                  neowsLink
+                }
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Ver no JPL
-                <ExternalLink size={16} />
+                {t(
+                  "favoriteModal.neows.viewJpl"
+                )}
+
+                <ExternalLink
+                  size={16}
+                  aria-hidden="true"
+                />
               </a>
             )}
           </div>
         )}
 
-        {Object.keys(data).length === 0 && (
+        {Object.keys(
+          data
+        ).length === 0 && (
           <div className="favorite-modal__details">
             <p>
-              Este favorito não tem os dados completos
-              guardados. Remove-o e volta a adicioná-lo
-              para guardar todas as informações.
+              {t(
+                "favoriteModal.incompleteData"
+              )}
             </p>
           </div>
         )}
