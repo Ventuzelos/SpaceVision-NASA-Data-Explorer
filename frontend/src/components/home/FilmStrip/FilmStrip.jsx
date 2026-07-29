@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 import "./FilmStrip.css";
 
@@ -16,20 +17,40 @@ const FRAMES = [
 ];
 
 function FilmStrip() {
-  const reelFrames = useMemo(() => [...FRAMES, ...FRAMES], []);
+  const { t } = useTranslation();
+
+  const reelFrames = useMemo(
+    () => [...FRAMES, ...FRAMES],
+    []
+  );
 
   return (
     <section className="film-strip">
       <div className="container film-strip__header">
-        <p className="film-strip__eyebrow">Arquivo visual</p>
-        <h2 className="film-strip__title">O cosmos, fotograma a fotograma.</h2>
+        <p className="film-strip__eyebrow">
+          {t("home.filmStrip.eyebrow")}
+        </p>
+
+        <h2 className="film-strip__title">
+          {t("home.filmStrip.title")}
+        </h2>
       </div>
 
-      <div className="film-strip__reel" aria-hidden="true">
+      <div
+        className="film-strip__reel"
+        aria-hidden="true"
+      >
         <div className="film-strip__track">
           {reelFrames.map((src, index) => (
-            <div className="film-strip__frame" key={`${src}-${index}`}>
-              <img src={src} alt="" loading="lazy" />
+            <div
+              className="film-strip__frame"
+              key={`${src}-${index}`}
+            >
+              <img
+                src={src}
+                alt=""
+                loading="lazy"
+              />
             </div>
           ))}
         </div>

@@ -76,6 +76,12 @@
   display: none;
 }
 
+.navbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
 @media (max-width: 1180px) {
   .navbar__container {
     gap: var(--space-4);

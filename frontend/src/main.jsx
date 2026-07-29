@@ -11,6 +11,7 @@ import "./styles/global.css";
 import App from "./App";
 import { AuthProvider } from "./context/AuthProvider";
 import ScrollToTop from "./components/common/ScrollToTop/ScrollToTop";
+import "./i18n";
 
 ReactDOM.createRoot(
   document.getElementById("root")

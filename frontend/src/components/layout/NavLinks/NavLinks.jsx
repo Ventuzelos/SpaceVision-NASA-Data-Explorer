@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { NavLink, useLocation } from "react-router";
+import { useTranslation } from "react-i18next";
 
 import { nasaApis } from "../../../data/nasaApis";
 
@@ -10,7 +11,11 @@ const liveApis = nasaApis.filter((api) => api.isLiveApi);
 const exploreRoutes = liveApis.map((api) => api.link);
 
 function NavLinks({ onNavigate }) {
-  const [isExploreOpen, setIsExploreOpen] = useState(false);
+  const { t } = useTranslation();
+
+  const [isExploreOpen, setIsExploreOpen] =
+    useState(false);
+
   const dropdownRef = useRef(null);
   const location = useLocation();
 
@@ -27,44 +32,44 @@ function NavLinks({ onNavigate }) {
     onNavigate?.();
   }
 
-useEffect(() => {
-  function handleClickOutside(event) {
-    if (
-      dropdownRef.current &&
-      !dropdownRef.current.contains(event.target)
-    ) {
-      closeExploreMenu();
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target)
+      ) {
+        closeExploreMenu();
+      }
     }
-  }
 
-  function handleEscape(event) {
-    if (event.key === "Escape") {
-      closeExploreMenu();
+    function handleEscape(event) {
+      if (event.key === "Escape") {
+        closeExploreMenu();
+      }
     }
-  }
 
-  document.addEventListener(
-    "click",
-    handleClickOutside
-  );
-
-  document.addEventListener(
-    "keydown",
-    handleEscape
-  );
-
-  return () => {
-    document.removeEventListener(
+    document.addEventListener(
       "click",
       handleClickOutside
     );
 
-    document.removeEventListener(
+    document.addEventListener(
       "keydown",
       handleEscape
     );
-  };
-}, []);
+
+    return () => {
+      document.removeEventListener(
+        "click",
+        handleClickOutside
+      );
+
+      document.removeEventListener(
+        "keydown",
+        handleEscape
+      );
+    };
+  }, []);
 
   return (
     <div className="nav-links">
@@ -73,7 +78,7 @@ useEffect(() => {
         end
         onClick={handleNavigate}
       >
-        Início
+        {t("navigation.home")}
       </NavLink>
 
       <div
@@ -88,14 +93,16 @@ useEffect(() => {
           type="button"
           className="nav-links__dropdown-button"
           onClick={() => {
-            setIsExploreOpen((currentValue) => {
-              return !currentValue;
-            });
+            setIsExploreOpen(
+              (currentValue) => !currentValue
+            );
           }}
           aria-expanded={isExploreOpen}
           aria-controls="explore-navigation"
         >
-          <span>Dados da NASA</span>
+          <span>
+            {t("navigation.nasaData")}
+          </span>
 
           <ChevronDown
             size={16}
@@ -118,25 +125,41 @@ useEffect(() => {
           aria-hidden={!isExploreOpen}
         >
           <div className="nav-links__dropdown-content">
-            {liveApis.map(({ title, description, icon: Icon, link }) => (
-              <NavLink
-                key={link}
-                to={link}
-                onClick={handleNavigate}
-                tabIndex={isExploreOpen ? 0 : -1}
-              >
-                <Icon
-                  size={20}
-                  aria-hidden="true"
-                  className="nav-links__dropdown-item-icon"
-                />
+            {liveApis.map(
+              ({
+                titleKey,
+                descriptionKey,
+                icon: Icon,
+                link,
+              }) => (
+                <NavLink
+                  key={link}
+                  to={link}
+                  onClick={handleNavigate}
+                  tabIndex={
+                    isExploreOpen ? 0 : -1
+                  }
+                >
+                  {Icon && (
+                    <Icon
+                      size={20}
+                      aria-hidden="true"
+                      className="nav-links__dropdown-item-icon"
+                    />
+                  )}
 
-                <div className="nav-links__dropdown-text">
-                  <span>{title}</span>
-                  <small>{description}</small>
-                </div>
-              </NavLink>
-            ))}
+                  <div className="nav-links__dropdown-text">
+                    <span>
+                      {t(titleKey)}
+                    </span>
+
+                    <small>
+                      {t(descriptionKey)}
+                    </small>
+                  </div>
+                </NavLink>
+              )
+            )}
           </div>
         </div>
       </div>
@@ -145,28 +168,28 @@ useEffect(() => {
         to="/discover"
         onClick={handleNavigate}
       >
-        Descobrir
+        {t("navigation.discover")}
       </NavLink>
 
       <NavLink
         to="/quiz"
         onClick={handleNavigate}
       >
-        Quiz
+        {t("navigation.quiz")}
       </NavLink>
 
       <NavLink
         to="/about"
         onClick={handleNavigate}
       >
-        Sobre
+        {t("navigation.about")}
       </NavLink>
 
       <NavLink
         to="/faq"
         onClick={handleNavigate}
       >
-        Perguntas Frequentes
+        {t("navigation.faq")}
       </NavLink>
     </div>
   );
