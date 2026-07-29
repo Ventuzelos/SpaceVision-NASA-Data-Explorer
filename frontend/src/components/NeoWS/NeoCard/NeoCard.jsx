@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import Icon from "../../common/Icon/Icon";
 import FavoriteButton from "../../common/FavoriteButton/FavoriteButton";
 
@@ -11,12 +13,100 @@ function parseNeoDate(value) {
     return null;
   }
 
-  const normalizedValue = value
-    .trim()
-    .replace(" ", "T");
+  const normalizedValue =
+    value.trim();
+
+  const dateOnlyMatch =
+    normalizedValue.match(
+      /^(\d{4})-(\d{2})-(\d{2})$/
+    );
+
+  if (dateOnlyMatch) {
+    const [, year, month, day] =
+      dateOnlyMatch;
+
+    const parsedDate = new Date(
+      Number(year),
+      Number(month) - 1,
+      Number(day)
+    );
+
+    return Number.isNaN(
+      parsedDate.getTime()
+    )
+      ? null
+      : parsedDate;
+  }
+
+  const nasaDateMatch =
+    normalizedValue.match(
+      /^(\d{4})-([A-Za-z]{3})-(\d{2})(?:[ T](\d{2}):(\d{2}))?$/
+    );
+
+  if (nasaDateMatch) {
+    const [
+      ,
+      year,
+      monthName,
+      day,
+      hour = "00",
+      minute = "00",
+    ] = nasaDateMatch;
+
+    const monthIndexes = {
+      Jan: 0,
+      Feb: 1,
+      Mar: 2,
+      Apr: 3,
+      May: 4,
+      Jun: 5,
+      Jul: 6,
+      Aug: 7,
+      Sep: 8,
+      Oct: 9,
+      Nov: 10,
+      Dec: 11,
+    };
+
+    const normalizedMonth =
+      monthName
+        .charAt(0)
+        .toUpperCase() +
+      monthName
+        .slice(1)
+        .toLowerCase();
+
+    const monthIndex =
+      monthIndexes[
+      normalizedMonth
+      ];
+
+    if (
+      monthIndex === undefined
+    ) {
+      return null;
+    }
+
+    const parsedDate = new Date(
+      Number(year),
+      monthIndex,
+      Number(day),
+      Number(hour),
+      Number(minute)
+    );
+
+    return Number.isNaN(
+      parsedDate.getTime()
+    )
+      ? null
+      : parsedDate;
+  }
 
   const parsedDate = new Date(
-    normalizedValue
+    normalizedValue.replace(
+      " ",
+      "T"
+    )
   );
 
   return Number.isNaN(
@@ -26,9 +116,13 @@ function parseNeoDate(value) {
     : parsedDate;
 }
 
-function formatDate(value) {
+function formatDate(
+  value,
+  locale,
+  unavailableText
+) {
   if (!value) {
-    return "Data não disponível";
+    return unavailableText;
   }
 
   const parsedDate =
@@ -44,16 +138,16 @@ function formatDate(value) {
       value.includes("T"));
 
   return new Intl.DateTimeFormat(
-    "pt-PT",
+    locale,
     {
       day: "2-digit",
       month: "short",
       year: "numeric",
       ...(hasTime
         ? {
-            hour: "2-digit",
-            minute: "2-digit",
-          }
+          hour: "2-digit",
+          minute: "2-digit",
+        }
         : {}),
     }
   ).format(parsedDate);
@@ -77,17 +171,19 @@ function toFiniteNumber(value) {
 
 function formatNumber(
   value,
+  locale,
+  unavailableText,
   unit = ""
 ) {
   const numericValue =
     toFiniteNumber(value);
 
   if (numericValue === null) {
-    return "Não disponível";
+    return unavailableText;
   }
 
   return `${new Intl.NumberFormat(
-    "pt-PT",
+    locale,
     {
       maximumFractionDigits: 0,
     }
@@ -95,23 +191,30 @@ function formatNumber(
 }
 
 function formatSingleDiameter(
-  value
+  value,
+  locale,
+  unavailableText
 ) {
   const numericValue =
     toFiniteNumber(value);
 
   if (numericValue === null) {
-    return "Não disponível";
+    return unavailableText;
   }
 
   if (numericValue < 1) {
-    return `${Math.round(
+    return `${new Intl.NumberFormat(
+      locale,
+      {
+        maximumFractionDigits: 0,
+      }
+    ).format(
       numericValue * 1000
     )} m`;
   }
 
   return `${new Intl.NumberFormat(
-    "pt-PT",
+    locale,
     {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
@@ -121,7 +224,9 @@ function formatSingleDiameter(
 
 function formatDiameterRange(
   minimum,
-  maximum
+  maximum,
+  locale,
+  unavailableText
 ) {
   const numericMinimum =
     toFiniteNumber(minimum);
@@ -133,28 +238,34 @@ function formatDiameterRange(
     numericMinimum === null ||
     numericMaximum === null
   ) {
-    return "Não disponível";
+    return unavailableText;
   }
 
   return `${formatSingleDiameter(
-    numericMinimum
+    numericMinimum,
+    locale,
+    unavailableText
   )} – ${formatSingleDiameter(
-    numericMaximum
+    numericMaximum,
+    locale,
+    unavailableText
   )}`;
 }
 
 function formatLunarDistance(
-  value
+  value,
+  locale,
+  unavailableText
 ) {
   const numericValue =
     toFiniteNumber(value);
 
   if (numericValue === null) {
-    return "Não disponível";
+    return unavailableText;
   }
 
   return `${new Intl.NumberFormat(
-    "pt-PT",
+    locale,
     {
       minimumFractionDigits: 1,
       maximumFractionDigits: 1,
@@ -162,9 +273,7 @@ function formatLunarDistance(
   ).format(numericValue)} LD`;
 }
 
-function getSafeExternalUrl(
-  value
-) {
+function getSafeExternalUrl(value) {
   if (
     typeof value !== "string" ||
     !value.trim()
@@ -190,7 +299,7 @@ function getSafeExternalUrl(
 
 function createSafeId(value) {
   return String(
-    value || "desconhecido"
+    value || "unknown"
   ).replace(
     /[^a-zA-Z0-9_-]/g,
     "-"
@@ -203,23 +312,39 @@ function NeoCard({
   isFavoriteLoading,
   onToggleFavorite,
 }) {
+  const { t, i18n } =
+    useTranslation();
+
   if (!neo) {
     return null;
   }
 
+  const locale =
+    i18n.resolvedLanguage?.startsWith(
+      "en"
+    )
+      ? "en-GB"
+      : "pt-PT";
+
+  const unavailableText = t(
+    "neows.card.unavailable"
+  );
+
   const objectName =
     typeof neo.name === "string" &&
-    neo.name.trim()
+      neo.name.trim()
       ? neo.name.trim()
-      : "Objeto próximo da Terra";
+      : t(
+        "neows.object.defaultTitle"
+      );
 
   const hazardous = Boolean(
     neo.isHazardous
   );
 
   const riskLabel = hazardous
-    ? "Risco elevado"
-    : "Risco baixo";
+    ? t("neows.card.highRisk")
+    : t("neows.card.lowRisk");
 
   const cardTitleId =
     `neo-card-title-${createSafeId(
@@ -242,11 +367,10 @@ function NeoCard({
 
   return (
     <article
-      className={`neo-card${
-        hazardous
+      className={`neo-card${hazardous
           ? " neo-card--hazard"
           : ""
-      }`}
+        }`}
       aria-labelledby={
         cardTitleId
       }
@@ -282,27 +406,40 @@ function NeoCard({
                 aria-hidden="true"
               />
 
-              Potencialmente perigoso
+              {t(
+                "neows.card.potentiallyHazardous"
+              )}
             </span>
           )}
         </div>
 
         <p className="neo-card__date">
-          Aproximação:{" "}
+          {t(
+            "neows.card.approach"
+          )}
+          {": "}
           {formatDate(
-            neo.closeApproachDate
+            neo.closeApproachDate,
+            locale,
+            t(
+              "neows.card.dateUnavailable"
+            )
           )}
         </p>
 
         <dl className="neo-card__metadata">
           <div className="neo-card__metadata-item">
             <dt>
-              Distância mínima
+              {t(
+                "neows.card.minimumDistance"
+              )}
             </dt>
 
             <dd>
               {formatNumber(
                 neo.missDistanceKm,
+                locale,
+                unavailableText,
                 " km"
               )}
             </dd>
@@ -310,37 +447,49 @@ function NeoCard({
 
           <div className="neo-card__metadata-item">
             <dt>
-              Distância lunar
+              {t(
+                "neows.card.lunarDistance"
+              )}
             </dt>
 
             <dd>
               {formatLunarDistance(
-                neo.missDistanceLunar
+                neo.missDistanceLunar,
+                locale,
+                unavailableText
               )}
             </dd>
           </div>
 
           <div className="neo-card__metadata-item">
             <dt>
-              Diâmetro estimado
+              {t(
+                "neows.card.estimatedDiameter"
+              )}
             </dt>
 
             <dd>
               {formatDiameterRange(
                 neo.diameterMinKm,
-                neo.diameterMaxKm
+                neo.diameterMaxKm,
+                locale,
+                unavailableText
               )}
             </dd>
           </div>
 
           <div className="neo-card__metadata-item">
             <dt>
-              Velocidade relativa
+              {t(
+                "neows.card.relativeVelocity"
+              )}
             </dt>
 
             <dd>
               {formatNumber(
                 neo.velocityKmH,
+                locale,
+                unavailableText,
                 " km/h"
               )}
             </dd>
@@ -353,9 +502,16 @@ function NeoCard({
             href={jplUrl}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label={`Consultar ${objectName} no JPL da NASA, abre numa nova janela`}
+            aria-label={t(
+              "neows.card.jplAria",
+              {
+                name: objectName,
+              }
+            )}
           >
-            Ver no JPL
+            {t(
+              "neows.card.viewOnJpl"
+            )}
 
             <Icon
               name="ArrowRight"
@@ -364,7 +520,9 @@ function NeoCard({
             />
 
             <span className="sr-only">
-              , abre numa nova janela
+              {t(
+                "neows.card.newWindow"
+              )}
             </span>
           </a>
         )}
@@ -389,17 +547,26 @@ function NeoCard({
           size={16}
           ariaLabel={
             isFavorite
-              ? `Remover ${objectName} dos favoritos`
-              : `Adicionar ${objectName} aos favoritos`
+              ? t(
+                "neows.card.removeFavoriteAria",
+                {
+                  name: objectName,
+                }
+              )
+              : t(
+                "neows.card.addFavoriteAria",
+                {
+                  name: objectName,
+                }
+              )
           }
         />
 
         <span
-          className={`neo-card__risk ${
-            hazardous
+          className={`neo-card__risk ${hazardous
               ? "neo-card__risk--high"
               : "neo-card__risk--low"
-          }`}
+            }`}
         >
           {riskLabel}
         </span>

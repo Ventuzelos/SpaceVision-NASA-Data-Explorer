@@ -3,8 +3,12 @@ import {
   useRef,
   useState,
 } from "react";
+import { useTranslation } from "react-i18next";
 
-import { Pause, Play } from "lucide-react";
+import {
+  Pause,
+  Play,
+} from "lucide-react";
 
 import Icon from "../../common/Icon/Icon";
 
@@ -18,9 +22,13 @@ const MAX_SPEED = 20;
 const SPEED_STEP = 0.1;
 
 function BennuViewer() {
+  const { t, i18n } =
+    useTranslation();
+
   const mountRef = useRef(null);
   const sceneApiRef = useRef(null);
-  const lastDisplayedDayRef = useRef(-1);
+  const lastDisplayedDayRef =
+    useRef(-1);
 
   const [playing, setPlaying] =
     useState(true);
@@ -43,13 +51,22 @@ function BennuViewer() {
   const [sceneError, setSceneError] =
     useState("");
 
+  const locale =
+    i18n.resolvedLanguage?.startsWith(
+      "en"
+    )
+      ? "en-GB"
+      : "pt-PT";
+
   useEffect(() => {
     const container =
       mountRef.current;
 
     if (!container) {
       setSceneError(
-        "Não foi possível iniciar a visualização 3D."
+        t(
+          "neows.bennuViewer.errors.initialization"
+        )
       );
 
       return undefined;
@@ -69,7 +86,7 @@ function BennuViewer() {
 
       if (!sceneApi) {
         throw new Error(
-          "A cena 3D não foi criada."
+          "The 3D scene was not created."
         );
       }
 
@@ -139,12 +156,14 @@ function BennuViewer() {
       }
     } catch (error) {
       console.error(
-        "Erro ao iniciar a visualização de Bennu:",
+        "Error starting the Bennu visualisation:",
         error
       );
 
       setSceneError(
-        "Não foi possível carregar a visualização 3D de Bennu."
+        t(
+          "neows.bennuViewer.errors.load"
+        )
       );
     }
 
@@ -165,6 +184,7 @@ function BennuViewer() {
         container.replaceChildren();
       }
     };
+
     // A cena deve ser criada apenas uma vez.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -219,7 +239,32 @@ function BennuViewer() {
     setSpeed(nextSpeed);
   }
 
- 
+  const formattedElapsedDays =
+    new Intl.NumberFormat(
+      locale,
+      {
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1,
+      }
+    ).format(elapsedDays);
+
+  const formattedSpeed =
+    new Intl.NumberFormat(
+      locale,
+      {
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1,
+      }
+    ).format(speed);
+
+  const simulationButtonLabel =
+    playing
+      ? t(
+          "neows.bennuViewer.controls.pause"
+        )
+      : t(
+          "neows.bennuViewer.controls.resume"
+        );
 
   if (sceneError) {
     return (
@@ -236,7 +281,9 @@ function BennuViewer() {
 
           <div>
             <strong>
-              Visualização indisponível
+              {t(
+                "neows.bennuViewer.errors.title"
+              )}
             </strong>
 
             <p>{sceneError}</p>
@@ -249,13 +296,17 @@ function BennuViewer() {
   return (
     <section
       className="bennu-viewer"
-      aria-label="Visualização orbital 3D do asteroide Bennu"
+      aria-label={t(
+        "neows.bennuViewer.sectionAria"
+      )}
     >
       <div
         className="bennu-viewer__canvas"
         ref={mountRef}
         role="img"
-        aria-label="Simulação tridimensional do Sol, da Terra e da órbita do asteroide Bennu"
+        aria-label={t(
+          "neows.bennuViewer.canvasAria"
+        )}
       />
 
       <div className="bennu-viewer__badge">
@@ -264,7 +315,9 @@ function BennuViewer() {
         </span>
 
         <small>
-          Escala não proporcional
+          {t(
+            "neows.bennuViewer.notToScale"
+          )}
         </small>
       </div>
 
@@ -272,49 +325,68 @@ function BennuViewer() {
         className="bennu-viewer__hint"
         aria-hidden="true"
       >
-        Arrasta para orbitar · usa o scroll para ampliar
+        {t(
+          "neows.bennuViewer.interactionHint"
+        )}
       </div>
 
       <div
         className="bennu-viewer__telemetry"
         aria-live="off"
       >
-        T+{" "}
-        {elapsedDays.toFixed(1)}{" "}
-        dias simulados
+        {t(
+          "neows.bennuViewer.telemetry",
+          {
+            count:
+              formattedElapsedDays,
+          }
+        )}
       </div>
 
       <div
         className="bennu-viewer__controls"
-        aria-label="Controlos da simulação"
+        aria-label={t(
+          "neows.bennuViewer.controls.ariaLabel"
+        )}
       >
         <button
           type="button"
           className="bennu-viewer__play"
-          onClick={() => setPlaying((current) => !current)}
+          onClick={() =>
+            setPlaying(
+              (current) =>
+                !current
+            )
+          }
           aria-label={
-            playing
-              ? "Pausar simulação"
-              : "Retomar simulação"
+            simulationButtonLabel
           }
           title={
-            playing
-              ? "Pausar simulação"
-              : "Retomar simulação"
+            simulationButtonLabel
           }
         >
           {playing ? (
-            <Pause size={17} aria-hidden="true" />
+            <Pause
+              size={17}
+              aria-hidden="true"
+            />
           ) : (
-            <Play size={17} aria-hidden="true" />
+            <Play
+              size={17}
+              aria-hidden="true"
+            />
           )}
         </button>
 
         <div className="bennu-viewer__speed">
           <label htmlFor="bennu-speed">
-            Velocidade —{" "}
-            {speed.toFixed(1)}{" "}
-            dias por segundo
+            {t(
+              "neows.bennuViewer.controls.speedLabel",
+              {
+                speed:
+                  formattedSpeed,
+              }
+            )}
           </label>
 
           <input
@@ -336,15 +408,21 @@ function BennuViewer() {
             aria-valuenow={
               speed
             }
-            aria-valuetext={`${speed.toFixed(
-              1
-            )} dias por segundo`}
+            aria-valuetext={t(
+              "neows.bennuViewer.controls.speedValue",
+              {
+                speed:
+                  formattedSpeed,
+              }
+            )}
           />
         </div>
 
         <div
           className="bennu-viewer__toggles"
-          aria-label="Elementos visíveis"
+          aria-label={t(
+            "neows.bennuViewer.controls.visibleElements"
+          )}
         >
           <label
             className={
@@ -368,7 +446,9 @@ function BennuViewer() {
               }
             />
 
-            Órbitas
+            {t(
+              "neows.bennuViewer.controls.orbits"
+            )}
           </label>
 
           <label
@@ -393,7 +473,9 @@ function BennuViewer() {
               }
             />
 
-            Eixo
+            {t(
+              "neows.bennuViewer.controls.axis"
+            )}
           </label>
 
           <label
@@ -418,7 +500,9 @@ function BennuViewer() {
               }
             />
 
-            Seguir Bennu
+            {t(
+              "neows.bennuViewer.controls.followBennu"
+            )}
           </label>
         </div>
       </div>

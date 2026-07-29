@@ -505,6 +505,124 @@
             "description": "Os principais marcos da missão DSCOVR e da câmara EPIC, desde o lançamento até à atualidade."
         }
     },
+    "neows": {
+        "meta": {
+            "title": "NeoWatch",
+            "description": "Consulta asteroides e cometas próximos da Terra monitorizados pela NASA."
+        },
+        "header": {
+            "breadcrumb": "Asteroides",
+            "eyebrow": "NeoWS · Objetos próximos da Terra",
+            "title": "Objetos próximos da Terra",
+            "description": "Consulta asteroides e cometas cuja órbita os aproxima da Terra, com estatísticas agregadas e destaque para os objetos potencialmente perigosos monitorizados pela NASA."
+        },
+        "validation": {
+            "requiredDates": "Seleciona uma data inicial e uma data final.",
+            "invalidRange": "O intervalo de datas não é válido.",
+            "endBeforeStart": "A data final não pode ser anterior à data inicial.",
+            "maximumRange": "O intervalo máximo permitido é de {{count}} dias."
+        },
+        "viewer": {
+            "loading": "A carregar visualização 3D...",
+            "title": "Explora o asteroide Bennu",
+            "description": "Carrega a visualização interativa para observar o asteroide, as órbitas e a sua aproximação à Terra.",
+            "loadButton": "Carregar visualização 3D",
+            "mobileNote": "O carregamento manual ajuda a melhorar o desempenho em dispositivos móveis."
+        },
+        "errors": {
+            "title": "Não foi possível carregar os asteroides",
+            "loadFallback": "Não foi possível carregar os objetos próximos da Terra."
+        },
+        "empty": {
+            "title": "Nenhum objeto encontrado",
+            "description": "Não foram encontrados objetos próximos da Terra para este período. Experimenta selecionar outro intervalo de datas."
+        },
+        "list": {
+            "ariaLabel": "Lista de objetos próximos da Terra"
+        },
+        "object": {
+            "defaultTitle": "Objeto próximo da Terra"
+        },
+        "risk": {
+            "high": "Elevado",
+            "low": "Baixo"
+        },
+        "favorites": {
+            "loginRequired": "Precisas de iniciar sessão para guardar favoritos",
+            "invalidObject": "Não foi possível identificar este objeto.",
+            "added": "Adicionado aos favoritos",
+            "removed": "Removido dos favoritos",
+            "updateError": "Não foi possível atualizar o favorito"
+        },
+        "dateRange": {
+            "period": "Período de aproximação",
+            "today": "Hoje",
+            "next3Days": "Próximos 3 dias",
+            "nextMaximumDays": "Próximos {{count}} dias",
+            "startDate": "Data inicial",
+            "endDate": "Data final",
+            "searchObjects": "Pesquisar objetos",
+            "searching": "A pesquisar...",
+            "rangeAdjusted": "O intervalo máximo permitido pela API é de {{count}} dias. A data final foi ajustada."
+        },
+        "stats": {
+            "sectionTitle": "Estatísticas dos objetos próximos da Terra",
+            "totalObjects": "Total de objetos",
+            "hazardousObjects": "Potencialmente perigosos",
+            "closestObject": "Objeto mais próximo",
+            "largestDiameter": "Maior diâmetro estimado",
+            "unavailable": "Não disponível",
+            "updating": "A atualizar estatísticas.",
+            "summary": "Foram encontrados {{total}} objetos, dos quais {{hazardous}} são potencialmente perigosos."
+        },
+        "sort": {
+            "resultsCount_one": "{{count}} objeto encontrado",
+            "resultsCount_other": "{{count}} objetos encontrados",
+            "ariaLabel": "Ordenar por distância de aproximação",
+            "closestFirst": "Mais próximo primeiro",
+            "farthestFirst": "Mais distante primeiro"
+        },
+        "card": {
+            "unavailable": "Não disponível",
+            "dateUnavailable": "Data não disponível",
+            "potentiallyHazardous": "Potencialmente perigoso",
+            "highRisk": "Risco elevado",
+            "lowRisk": "Risco baixo",
+            "approach": "Aproximação",
+            "minimumDistance": "Distância mínima",
+            "lunarDistance": "Distância lunar",
+            "estimatedDiameter": "Diâmetro estimado",
+            "relativeVelocity": "Velocidade relativa",
+            "viewOnJpl": "Ver no JPL",
+            "jplAria": "Consultar {{name}} no JPL da NASA, abre numa nova janela",
+            "newWindow": ", abre numa nova janela",
+            "addFavoriteAria": "Adicionar {{name}} aos favoritos",
+            "removeFavoriteAria": "Remover {{name}} dos favoritos"
+        },
+        "bennuViewer": {
+            "sectionAria": "Visualização orbital 3D do asteroide Bennu",
+            "canvasAria": "Simulação tridimensional do Sol, da Terra e da órbita do asteroide Bennu",
+            "notToScale": "Escala não proporcional",
+            "interactionHint": "Arrasta para orbitar · usa o scroll para ampliar",
+            "telemetry": "T+ {{count}} dias simulados",
+            "errors": {
+                "title": "Visualização indisponível",
+                "initialization": "Não foi possível iniciar a visualização 3D.",
+                "load": "Não foi possível carregar a visualização 3D de Bennu."
+            },
+            "controls": {
+                "ariaLabel": "Controlos da simulação",
+                "pause": "Pausar simulação",
+                "resume": "Retomar simulação",
+                "speedLabel": "Velocidade — {{speed}} dias por segundo",
+                "speedValue": "{{speed}} dias por segundo",
+                "visibleElements": "Elementos visíveis",
+                "orbits": "Órbitas",
+                "axis": "Eixo",
+                "followBennu": "Seguir Bennu"
+            }
+        }
+    },
     "common": {
         "loading": "A carregar...",
         "error": "Ocorreu um erro",
