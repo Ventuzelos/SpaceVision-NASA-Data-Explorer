@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { useModalA11y } from "../../../hooks/UseModalA11y";
 
@@ -8,6 +9,8 @@ export default function EpicLightbox({
   photo,
   onClose,
 }) {
+  const { t, i18n } = useTranslation();
+
   const closeButtonRef = useRef(null);
 
   const [failedImageUrl, setFailedImageUrl] =
@@ -38,9 +41,27 @@ export default function EpicLightbox({
     return null;
   }
 
-  const caption =
+  const isEnglish =
+    i18n.resolvedLanguage?.startsWith("en");
+
+  const originalCaption =
+    photo.original_caption ||
+    photo.originalCaption ||
     photo.caption ||
-    "Imagem da Terra captada pela câmara EPIC da NASA";
+    "";
+
+  const translatedCaption =
+    photo.translated_caption ||
+    photo.translatedCaption ||
+    originalCaption;
+
+  const caption = isEnglish
+    ? originalCaption ||
+      translatedCaption ||
+      t("epic.lightbox.defaultCaption")
+    : translatedCaption ||
+      originalCaption ||
+      t("epic.lightbox.defaultCaption");
 
   return (
     <div
@@ -49,7 +70,7 @@ export default function EpicLightbox({
       aria-modal="true"
       aria-labelledby="epic-lightbox-title"
       aria-describedby={
-        photo.caption
+        caption
           ? "epic-lightbox-description"
           : undefined
       }
@@ -66,14 +87,16 @@ export default function EpicLightbox({
           id="epic-lightbox-title"
           className="sr-only"
         >
-          Imagem EPIC ampliada
+          {t("epic.lightbox.title")}
         </h2>
 
         <button
           ref={closeButtonRef}
           className="epic-lightbox__close"
           type="button"
-          aria-label="Fechar imagem ampliada"
+          aria-label={t(
+            "epic.lightbox.closeAria"
+          )}
           onClick={handleClose}
         >
           ×
@@ -83,12 +106,20 @@ export default function EpicLightbox({
           <div
             className="epic-lightbox__fallback"
             role="img"
-            aria-label="A imagem EPIC ampliada não está disponível"
+            aria-label={t(
+              "epic.lightbox.imageUnavailableAria"
+            )}
           >
-            <strong>Imagem indisponível</strong>
+            <strong>
+              {t(
+                "epic.lightbox.imageUnavailable"
+              )}
+            </strong>
 
             <span>
-              Não foi possível carregar esta captura da Terra.
+              {t(
+                "epic.lightbox.imageLoadError"
+              )}
             </span>
           </div>
         ) : (
@@ -102,12 +133,12 @@ export default function EpicLightbox({
           />
         )}
 
-        {photo.caption && (
+        {caption && (
           <p
             id="epic-lightbox-description"
             className="epic-lightbox__caption"
           >
-            {photo.caption}
+            {caption}
           </p>
         )}
       </div>

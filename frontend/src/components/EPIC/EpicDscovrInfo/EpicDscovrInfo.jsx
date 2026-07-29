@@ -1,56 +1,119 @@
-import { useEffect, useRef, useState } from 'react';
-import { Info } from 'lucide-react';
-import './EpicDscovrInfo.css';
+import {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { useTranslation } from "react-i18next";
+import { Info } from "lucide-react";
+
+import "./EpicDscovrInfo.css";
 
 export default function EpicDscovrInfo() {
-  const [open, setOpen] = useState(false);
+  const { t } = useTranslation();
+
+  const [open, setOpen] =
+    useState(false);
+
   const ref = useRef(null);
 
   useEffect(() => {
-    if (!open) return undefined;
+    if (!open) {
+      return undefined;
+    }
 
-    function handleClickOutside(e) {
-      if (ref.current && !ref.current.contains(e.target)) {
+    function handleClickOutside(event) {
+      if (
+        ref.current &&
+        !ref.current.contains(
+          event.target
+        )
+      ) {
         setOpen(false);
       }
     }
-    function handleKeyDown(e) {
-      if (e.key === 'Escape') setOpen(false);
+
+    function handleKeyDown(event) {
+      if (event.key === "Escape") {
+        setOpen(false);
+      }
     }
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('keydown', handleKeyDown);
+
+    document.addEventListener(
+      "mousedown",
+      handleClickOutside
+    );
+
+    document.addEventListener(
+      "keydown",
+      handleKeyDown
+    );
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
+
+      document.removeEventListener(
+        "keydown",
+        handleKeyDown
+      );
     };
   }, [open]);
 
   return (
-    <div className="dscovr-info" ref={ref}>
+    <div
+      className="dscovr-info"
+      ref={ref}
+    >
       <button
         type="button"
         className="dscovr-info__tag"
-        onClick={() => setOpen((current) => !current)}
+        onClick={() =>
+          setOpen(
+            (current) => !current
+          )
+        }
         aria-expanded={open}
         aria-controls="dscovr-info-popover"
+        aria-label={t(
+          "epic.dscovrInfo.buttonAria"
+        )}
       >
-        DSCOVR · L1
-        <Info size={14} className="dscovr-info__icon" />
+        {t("epic.dscovrInfo.tag")}
+
+        <Info
+          size={14}
+          className="dscovr-info__icon"
+          aria-hidden="true"
+        />
       </button>
+
       {open && (
-        <div id="dscovr-info-popover"
+        <div
+          id="dscovr-info-popover"
           className="dscovr-info__popover"
           role="dialog"
-          aria-label="Sobre o satélite DSCOVR">
-          <p className="dscovr-info__title">Sobre o satélite DSCOVR</p>
-          <p>
-            Satélite de meteorologia espacial da NOAA — monitoriza vento solar e ejeções de
-            massa coronal a partir do ponto de Lagrange L1.
+          aria-label={t(
+            "epic.dscovrInfo.dialogAria"
+          )}
+        >
+          <p className="dscovr-info__title">
+            {t(
+              "epic.dscovrInfo.title"
+            )}
           </p>
+
           <p>
-            A EPIC é um dos dois instrumentos científicos a bordo; o outro, o NISTAR, mede o
-            balanço radiativo da Terra.
+            {t(
+              "epic.dscovrInfo.description"
+            )}
+          </p>
+
+          <p>
+            {t(
+              "epic.dscovrInfo.instruments"
+            )}
           </p>
         </div>
       )}

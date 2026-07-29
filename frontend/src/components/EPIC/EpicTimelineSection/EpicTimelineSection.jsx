@@ -1,15 +1,30 @@
-import './EpicTimelineSection.css';
-import EpicSectionHead from '../EpicSectionHead/EpicSectionHead';
-import EpicTimeline from '../EpicTimeline/EpicTimeline';
+import { useTranslation } from "react-i18next";
+
+import "./EpicTimelineSection.css";
+
+import EpicSectionHead from "../EpicSectionHead/EpicSectionHead";
+import EpicTimeline from "../EpicTimeline/EpicTimeline";
 
 export default function EpicTimelineSection() {
+  const { t } = useTranslation();
+
   return (
-    <section id="timeline">
+    <section
+      id="timeline"
+      aria-labelledby="epic-timeline-title"
+    >
       <EpicSectionHead
-        title="Mais de uma década a fotografar o nosso planeta"
-        sub="Os marcos principais da missão DSCOVR e da câmara EPIC, desde o lançamento até à atualidade."
+        titleId="epic-timeline-title"
+        title={t(
+          "epic.timelineSection.title"
+        )}
+        sub={t(
+          "epic.timelineSection.description"
+        )}
       />
+
       <div className="timeline-spacer" />
+
       <div className="timeline-card">
         <EpicTimeline />
       </div>

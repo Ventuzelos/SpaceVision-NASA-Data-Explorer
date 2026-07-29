@@ -1,30 +1,34 @@
+import { useTranslation } from "react-i18next";
+
 import "./EpicPipeline.css";
 import EpicSectionHead from "../EpicSectionHead/EpicSectionHead";
 
 const PIPELINE_STEPS = [
   {
     number: "01",
-    title: "Captura",
-    text: "A EPIC regista o disco solar da Terra em 10 bandas espectrais, do ultravioleta ao infravermelho próximo.",
+    titleKey: "epic.pipeline.steps.capture.title",
+    textKey: "epic.pipeline.steps.capture.text",
   },
   {
     number: "02",
-    title: "Downlink",
-    text: "Os dados são transmitidos do L1 para estações terrestres da NOAA, a cerca de 1,5 milhões de quilómetros de distância.",
+    titleKey: "epic.pipeline.steps.downlink.title",
+    textKey: "epic.pipeline.steps.downlink.text",
   },
   {
     number: "03",
-    title: "Processamento",
-    text: "Os canais são calibrados e combinados num composto de cor natural, com coordenadas e hora associadas.",
+    titleKey: "epic.pipeline.steps.processing.title",
+    textKey: "epic.pipeline.steps.processing.text",
   },
   {
     number: "04",
-    title: "Publicação",
-    text: "A EPIC API expõe cada captura como registo JSON, com ligação direta à imagem em alta resolução.",
+    titleKey: "epic.pipeline.steps.publication.title",
+    textKey: "epic.pipeline.steps.publication.text",
   },
 ];
 
 export default function EpicPipeline() {
+  const { t } = useTranslation();
+
   return (
     <section
       id="pipeline"
@@ -32,9 +36,9 @@ export default function EpicPipeline() {
       aria-labelledby="epic-pipeline-title"
     >
       <EpicSectionHead
-        id="epic-pipeline-title"
-        title="Como uma imagem chega até aqui"
-        sub="Quatro etapas reais entre a captura em órbita e o pixel que vês no visualizador abaixo."
+        titleId="epic-pipeline-title"
+        title={t("epic.pipeline.title")}
+        sub={t("epic.pipeline.description")}
       />
 
       <ol className="epic-pipeline">
@@ -51,11 +55,11 @@ export default function EpicPipeline() {
             </span>
 
             <h3 className="epic-pipeline__title">
-              {step.title}
+              {t(step.titleKey)}
             </h3>
 
             <p className="epic-pipeline__description">
-              {step.text}
+              {t(step.textKey)}
             </p>
           </li>
         ))}
