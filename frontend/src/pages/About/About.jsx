@@ -1,4 +1,8 @@
 import { useEffect } from "react";
+import {
+  Trans,
+  useTranslation,
+} from "react-i18next";
 import { useLocation } from "react-router";
 
 import {
@@ -6,8 +10,7 @@ import {
   ExternalLink,
   Mail,
   Rocket,
-  Target,
-  User,
+  Target
 } from "lucide-react";
 
 import Container from "../../components/common/Container/Container";
@@ -18,136 +21,171 @@ import PageMeta from "../../components/common/PageMeta/PageMeta";
 import ApiSection from "../../components/home/ApiSection/ApiSection";
 import CTASection from "../../components/home/CTASection/CTASection";
 
-import { teamMembers } from "../../data/team";
-
 import aboutHeroImage from "../../assets/galaxy-night-panorama.webp";
 import projectMainImage from "../../assets/milky-way.jpg";
 import projectNebulaImage from "../../assets/jeremy-perkins-uhjiu8FjnsQ-unsplash.jpg";
-import linkedinIcon from "../../assets/linkedin-icon.avif";
-import githubIcon from "../../assets/github-icon.png";
-
 import "./About.css";
 
 const PROJECT_STATS = [
   {
+    id: "teamMembers",
     value: "4",
-    label: "Elementos na equipa",
   },
   {
+    id: "nasaApis",
     value: "4",
-    label: "APIs principais da NASA",
   },
   {
+    id: "technologies",
     value: "2",
-    label: "Tecnologias principais",
   },
   {
+    id: "realData",
     value: "100%",
-    label: "Dados reais da NASA",
   },
 ];
 
 const TECHNOLOGIES = [
   {
+    id: "react",
     name: "React",
-    description:
-      "Interface responsiva, componentes reutilizáveis e experiência interativa.",
   },
   {
+    id: "laravel",
     name: "Laravel",
-    description:
-      "API, autenticação, segurança, cache e ligação à base de dados.",
   },
   {
+    id: "nasaApis",
     name: "NASA Open APIs",
-    description:
-      "Dados astronómicos, meteorologia espacial e observação da Terra.",
   },
 ];
 
 function About() {
-  const location = useLocation();
+  const { t } =
+    useTranslation();
+
+  const location =
+    useLocation();
 
   useEffect(() => {
     if (!location.hash) {
-      return;
+      return undefined;
     }
 
-    const sectionId = location.hash.replace("#", "");
-    const section = document.getElementById(sectionId);
+    const sectionId =
+      location.hash.replace(
+        "#",
+        ""
+      );
+
+    const section =
+      document.getElementById(
+        sectionId
+      );
 
     if (!section) {
-      return;
+      return undefined;
     }
 
-    const animationFrame = window.requestAnimationFrame(() => {
-      section.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    });
+    const animationFrame =
+      window.requestAnimationFrame(
+        () => {
+          section.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }
+      );
 
     return () => {
-      window.cancelAnimationFrame(animationFrame);
+      window.cancelAnimationFrame(
+        animationFrame
+      );
     };
   }, [location.hash]);
 
   return (
     <>
       <PageMeta
-        title="Sobre o SpaceVision"
-        description="Conhece o SpaceVision, um projeto que reúne dados oficiais da NASA numa experiência visual, educativa e acessível."
+        title={t(
+          "about.meta.title"
+        )}
+        description={t(
+          "about.meta.description"
+        )}
       />
 
       <main className="about-page">
         <section
           className="about-hero"
-          style={{ "--about-hero-image": `url(${aboutHeroImage})` }}
+          style={{
+            "--about-hero-image":
+              `url(${aboutHeroImage})`,
+          }}
           aria-labelledby="about-page-title"
         >
           <div className="about-hero__overlay">
             <Container>
-              <Breadcrumb title="Sobre nós" />
+              <Breadcrumb
+                title={t(
+                  "about.breadcrumb"
+                )}
+              />
             </Container>
 
             <div className="about-hero__center">
               <Container>
                 <div className="about-hero__content">
                   <p className="about-page__eyebrow">
-                    O projeto por detrás da exploração
+                    {t(
+                      "about.hero.eyebrow"
+                    )}
                   </p>
 
                   <h1
                     id="about-page-title"
                     className="about-hero__title"
                   >
-                    Tornamos os dados da NASA mais próximos de todos.
+                    {t(
+                      "about.hero.title"
+                    )}
                   </h1>
 
                   <p className="about-hero__subtitle">
-                    O SpaceVision descomplica a ciência espacial. Uma plataforma
-                    interativa e acessível que transforma os dados mais
-                    complexos da NASA numa experiência puramente visual e
-                    intuitiva.
+                    {t(
+                      "about.hero.subtitle"
+                    )}
                   </p>
 
                   <div
                     className="about-hero__stats"
-                    aria-label="Informação geral do projeto"
+                    aria-label={t(
+                      "about.hero.statsAria"
+                    )}
                   >
-                    {PROJECT_STATS.map(({ value, label }) => (
-                      <div
-                        key={label}
-                        className="about-hero__stat-item"
-                      >
-                        <span className="about-hero__stat-number">
-                          {value}
-                        </span>
-                        <span className="about-hero__stat-label">
-                          {label}
-                        </span>
-                      </div>
-                    ))}
+                    {PROJECT_STATS.map(
+                      ({
+                        id,
+                        value,
+                      }) => (
+                        <div
+                          key={id}
+                          className="about-hero__stat-item"
+                        >
+                          <span className="about-hero__stat-number">
+                            {
+                              value
+                            }
+                          </span>
+
+                          <span className="about-hero__stat-label">
+                            {t(
+                              `about.hero.stats.${id}`
+                            )}
+                          </span>
+                        </div>
+                      )
+                    )}
                   </div>
                 </div>
               </Container>
@@ -163,14 +201,18 @@ function About() {
             <div className="about-section__heading">
               <div>
                 <p className="about-page__eyebrow">
-                  01 / A Nossa Missão
+                  {t(
+                    "about.mission.eyebrow"
+                  )}
                 </p>
 
                 <h2
                   id="about-mission-title"
                   className="sr-only"
                 >
-                  A nossa missão
+                  {t(
+                    "about.mission.title"
+                  )}
                 </h2>
               </div>
             </div>
@@ -181,14 +223,22 @@ function About() {
                   className="about-mission-item__icon"
                   aria-hidden="true"
                 >
-                  <Target size={20} />
+                  <Target
+                    size={20}
+                  />
                 </span>
 
                 <div>
-                  <h3>O que fazemos</h3>
+                  <h3>
+                    {t(
+                      "about.mission.what.title"
+                    )}
+                  </h3>
+
                   <p>
-                    Democratizar o acesso à ciência espacial para todos os
-                    utilizadores.
+                    {t(
+                      "about.mission.what.description"
+                    )}
                   </p>
                 </div>
               </div>
@@ -198,14 +248,22 @@ function About() {
                   className="about-mission-item__icon"
                   aria-hidden="true"
                 >
-                  <Cog size={20} />
+                  <Cog
+                    size={20}
+                  />
                 </span>
 
                 <div>
-                  <h3>Como fazemos</h3>
+                  <h3>
+                    {t(
+                      "about.mission.how.title"
+                    )}
+                  </h3>
+
                   <p>
-                    Traduzir dados brutos da NASA em aplicações práticas,
-                    visuais e de fácil compreensão.
+                    {t(
+                      "about.mission.how.description"
+                    )}
                   </p>
                 </div>
               </div>
@@ -215,14 +273,22 @@ function About() {
                   className="about-mission-item__icon"
                   aria-hidden="true"
                 >
-                  <Rocket size={20} />
+                  <Rocket
+                    size={20}
+                  />
                 </span>
 
                 <div>
-                  <h3>Porquê o fazemos</h3>
+                  <h3>
+                    {t(
+                      "about.mission.why.title"
+                    )}
+                  </h3>
+
                   <p>
-                    Inspirar a próxima geração de exploradores, cientistas
-                    e entusiastas do universo.
+                    {t(
+                      "about.mission.why.description"
+                    )}
                   </p>
                 </div>
               </div>
@@ -235,36 +301,41 @@ function About() {
           >
             <div className="about-project__content">
               <p className="about-page__eyebrow">
-                02 / O Projeto
+                {t(
+                  "about.project.eyebrow"
+                )}
               </p>
 
               <h2 id="about-project-title">
-                Uma ponte digital para a{" "}
-                <span className="about-project__accent">
-                  ciência espacial
-                </span>
-                .
+                <Trans
+                  i18nKey="about.project.title"
+                  components={{
+                    accent: (
+                      <span className="about-project__accent" />
+                    ),
+                  }}
+                />
               </h2>
 
               <p>
-                Este projeto nasceu do fascínio profundo pelas ciências do
-                espaço e da oportunidade incrível aberta pelo programa
-                oficial{" "}
-                <a
-                  href="https://api.nasa.gov"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  NASA Open APIs
-                </a>
-                .
+                <Trans
+                  i18nKey="about.project.paragraph1"
+                  components={{
+                    nasaLink: (
+                      <a
+                        href="https://api.nasa.gov"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      />
+                    ),
+                  }}
+                />
               </p>
 
               <p>
-                Sabemos que os dados científicos e astronómicos podem ser
-                intimidantes para o público geral. Por isso, criámos uma
-                ponte digital que organiza, filtra e ilustra estas
-                informações de forma simples, rápida e intuitiva.
+                {t(
+                  "about.project.paragraph2"
+                )}
               </p>
             </div>
 
@@ -274,7 +345,9 @@ function About() {
             >
               <div className="about-project__image about-project__image--main">
                 <img
-                  src={projectMainImage}
+                  src={
+                    projectMainImage
+                  }
                   alt=""
                   loading="lazy"
                 />
@@ -282,7 +355,9 @@ function About() {
 
               <div className="about-project__image about-project__image--nebula">
                 <img
-                  src={projectNebulaImage}
+                  src={
+                    projectNebulaImage
+                  }
                   alt=""
                   loading="lazy"
                 />
@@ -292,8 +367,12 @@ function About() {
         </Container>
 
         <ApiSection
-          title="O que Vais Encontrar Aqui"
-          subtitle="Ferramentas ao teu alcance"
+          title={t(
+            "about.apiSection.title"
+          )}
+          subtitle={t(
+            "about.apiSection.subtitle"
+          )}
         />
 
         <Container>
@@ -304,150 +383,52 @@ function About() {
             <div className="about-section__heading">
               <div>
                 <p className="about-page__eyebrow">
-                  Tecnologia
+                  {t(
+                    "about.technology.eyebrow"
+                  )}
                 </p>
 
                 <h2 id="about-technology-title">
-                  Construído como um produto digital real
+                  {t(
+                    "about.technology.title"
+                  )}
                 </h2>
               </div>
 
               <p>
-                O projeto combina frontend, backend, autenticação, base de
-                dados, integração de APIs e princípios de UX/UI.
+                {t(
+                  "about.technology.description"
+                )}
               </p>
             </div>
 
             <div className="about-technologies">
-              {TECHNOLOGIES.map(({ name, description }) => (
-                <div
-                  key={name}
-                  className="about-hero__stat-item"
-                >
-                  <span className="about-hero__stat-number">
-                    {name}
-                  </span>
-                  <span className="about-hero__stat-label">
-                    {description}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <section
-            className="about-section"
-            aria-labelledby="about-team-title"
-          >
-            <div className="about-section__heading">
-              <div>
-                <p className="about-page__eyebrow">
-                  A equipa
-                </p>
-
-                <h2 id="about-team-title">
-                  Por Trás do Projeto
-                </h2>
-              </div>
-
-              <p>
-                Conhece as mentes que desenharam a rota entre a Terra e os
-                dados da NASA.
-              </p>
-            </div>
-
-            <div className="about-team-grid">
-              {teamMembers.map((member) => (
-                <article
-                  key={member.name}
-                  className="about-team-card"
-                >
+              {TECHNOLOGIES.map(
+                ({
+                  id,
+                  name,
+                }) => (
                   <div
-                    className="about-team-card__photo"
-                    aria-hidden="true"
+                    key={id}
+                    className="about-hero__stat-item"
                   >
-                    {member.photo ? (
-                      <img
-                        src={member.photo}
-                        alt=""
-                        loading="lazy"
-                      />
-                    ) : (
-                      <User size={36} />
-                    )}
+                    <span className="about-hero__stat-number">
+                      {
+                        name
+                      }
+                    </span>
+
+                    <span className="about-hero__stat-label">
+                      {t(
+                        `about.technology.items.${id}`
+                      )}
+                    </span>
                   </div>
-
-                  <h3 className="about-team-card__name">
-                    {member.name}
-                  </h3>
-
-                  {member.role && (
-                    <p className="about-team-card__role">
-                      {member.role}
-                    </p>
-                  )}
-
-                  {(member.github ||
-                    member.linkedin ||
-                    member.portfolio) && (
-                    <div
-                      className="about-team-card__links"
-                      aria-label={`Perfis profissionais de ${member.name}`}
-                    >
-                      {member.github && (
-                        <a
-                          href={member.github}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          aria-label={`Abrir o GitHub de ${member.name} numa nova janela`}
-                          title={`GitHub de ${member.name}`}
-                        >
-                          <img
-                            src={githubIcon}
-                            alt=""
-                            width={18}
-                            height={18}
-                          />
-                        </a>
-                      )}
-
-                      {member.linkedin && (
-                        <a
-                          href={member.linkedin}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          aria-label={`Abrir o LinkedIn de ${member.name} numa nova janela`}
-                          title={`LinkedIn de ${member.name}`}
-                        >
-                          <img
-                            src={linkedinIcon}
-                            alt=""
-                            width={18}
-                            height={18}
-                          />
-                        </a>
-                      )}
-
-                      {member.portfolio && (
-                        <a
-                          href={member.portfolio}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          aria-label={`Abrir o portfólio de ${member.name} numa nova janela`}
-                          title={`Portfólio de ${member.name}`}
-                        >
-                          <ExternalLink
-                            size={18}
-                            aria-hidden="true"
-                          />
-                        </a>
-                      )}
-                    </div>
-                  )}
-                </article>
-              ))}
+                )
+              )}
             </div>
           </section>
+
         </Container>
 
         <CTASection />
@@ -460,25 +441,34 @@ function About() {
           >
             <div className="about-contact__intro">
               <p className="about-page__eyebrow">
-                Contacto
+                {t(
+                  "about.contact.eyebrow"
+                )}
               </p>
 
               <h2 id="about-contact-title">
-                Vamos falar sobre o Universo?
+                {t(
+                  "about.contact.title"
+                )}
               </h2>
 
               <p>
-                Encontraste um problema, tens uma sugestão ou queres saber mais
-                sobre o projeto? Envia-nos uma mensagem.
+                {t(
+                  "about.contact.description"
+                )}
               </p>
 
               <div className="about-contact__details">
                 <div>
-                  <Mail size={19} aria-hidden="true" />
+                  <Mail
+                    size={19}
+                    aria-hidden="true"
+                  />
 
                   <span>
-                    Respondemos a questões relacionadas com o projeto e com a
-                    utilização da plataforma.
+                    {t(
+                      "about.contact.projectSupport"
+                    )}
                   </span>
                 </div>
 
@@ -489,8 +479,9 @@ function About() {
                   />
 
                   <span>
-                    Os dados científicos pertencem às respetivas fontes e
-                    serviços oficiais da NASA.
+                    {t(
+                      "about.contact.nasaDisclaimer"
+                    )}
                   </span>
                 </div>
               </div>

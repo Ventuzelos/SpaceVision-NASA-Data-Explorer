@@ -1203,6 +1203,112 @@
             }
         }
     },
+    "about": {
+        "meta": {
+            "title": "Sobre o SpaceVision",
+            "description": "Conhece o SpaceVision, um projeto que reúne dados oficiais da NASA numa experiência visual, educativa e acessível."
+        },
+        "breadcrumb": "Sobre nós",
+        "hero": {
+            "eyebrow": "O projeto por detrás da exploração",
+            "title": "Tornamos os dados da NASA mais próximos de todos.",
+            "subtitle": "O SpaceVision descomplica a ciência espacial. Uma plataforma interativa e acessível que transforma os dados mais complexos da NASA numa experiência puramente visual e intuitiva.",
+            "statsAria": "Informação geral do projeto",
+            "stats": {
+                "teamMembers": "Elementos na equipa",
+                "nasaApis": "APIs principais da NASA",
+                "technologies": "Tecnologias principais",
+                "realData": "Dados reais da NASA"
+            }
+        },
+        "mission": {
+            "eyebrow": "01 / A Nossa Missão",
+            "title": "A nossa missão",
+            "what": {
+                "title": "O que fazemos",
+                "description": "Democratizar o acesso à ciência espacial para todos os utilizadores."
+            },
+            "how": {
+                "title": "Como fazemos",
+                "description": "Traduzir dados brutos da NASA em aplicações práticas, visuais e de fácil compreensão."
+            },
+            "why": {
+                "title": "Porquê o fazemos",
+                "description": "Inspirar a próxima geração de exploradores, cientistas e entusiastas do universo."
+            }
+        },
+        "project": {
+            "eyebrow": "02 / O Projeto",
+            "title": "Uma ponte digital para a <accent>ciência espacial</accent>.",
+            "paragraph1": "Este projeto nasceu do fascínio profundo pelas ciências do espaço e da oportunidade incrível aberta pelo programa oficial <nasaLink>NASA Open APIs</nasaLink>.",
+            "paragraph2": "Sabemos que os dados científicos e astronómicos podem ser intimidantes para o público geral. Por isso, criámos uma ponte digital que organiza, filtra e ilustra estas informações de forma simples, rápida e intuitiva."
+        },
+        "apiSection": {
+            "title": "O que Vais Encontrar Aqui",
+            "subtitle": "Ferramentas ao teu alcance"
+        },
+        "technology": {
+            "eyebrow": "Tecnologia",
+            "title": "Construído como um produto digital real",
+            "description": "O projeto combina frontend, backend, autenticação, base de dados, integração de APIs e princípios de UX/UI.",
+            "items": {
+                "react": "Interface responsiva, componentes reutilizáveis e experiência interativa.",
+                "laravel": "API, autenticação, segurança, cache e ligação à base de dados.",
+                "nasaApis": "Dados astronómicos, meteorologia espacial e observação da Terra."
+            }
+        },
+        "contact": {
+            "eyebrow": "Contacto",
+            "title": "Vamos falar sobre o Universo?",
+            "description": "Encontraste um problema, tens uma sugestão ou queres saber mais sobre o projeto? Envia-nos uma mensagem.",
+            "projectSupport": "Respondemos a questões relacionadas com o projeto e com a utilização da plataforma.",
+            "nasaDisclaimer": "Os dados científicos pertencem às respetivas fontes e serviços oficiais da NASA."
+        }
+    },
+    "contactForm": {
+        "formAria": "Formulário de contacto",
+        "fields": {
+            "name": {
+                "label": "Nome",
+                "placeholder": "O teu nome"
+            },
+            "email": {
+                "label": "Email",
+                "placeholder": "tu@exemplo.com"
+            },
+            "subject": {
+                "label": "Assunto",
+                "placeholder": "Sobre o que nos queres contactar?"
+            },
+            "message": {
+                "label": "Mensagem",
+                "placeholder": "Escreve a tua mensagem..."
+            }
+        },
+        "validation": {
+            "nameRequired": "Indica o teu nome.",
+            "nameMax": "O nome não pode ter mais de 100 caracteres.",
+            "emailRequired": "Indica um email.",
+            "emailInvalid": "Indica um email válido.",
+            "emailMax": "O email não pode ter mais de 150 caracteres.",
+            "subjectRequired": "Indica o assunto.",
+            "subjectMax": "O assunto não pode ter mais de 150 caracteres.",
+            "messageRequired": "Escreve uma mensagem.",
+            "messageMin": "A mensagem deve ter pelo menos 10 caracteres.",
+            "messageMax": "A mensagem não pode ter mais de 5000 caracteres."
+        },
+        "actions": {
+            "submit": "Enviar mensagem",
+            "sending": "A enviar..."
+        },
+        "success": {
+            "message": "Mensagem enviada com sucesso! Entraremos em contacto em breve.",
+            "sendAnother": "Enviar outra mensagem"
+        },
+        "error": {
+            "general": "Não foi possível enviar a mensagem. Verifica os dados e tenta novamente."
+        }
+    },
     "common": {
         "loading": "A carregar...",
         "error": "Ocorreu um erro",

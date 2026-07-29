@@ -1203,6 +1203,112 @@
             }
         }
     },
+    "about": {
+        "meta": {
+            "title": "About SpaceVision",
+            "description": "Discover SpaceVision, a project that brings official NASA data together in a visual, educational and accessible experience."
+        },
+        "breadcrumb": "About us",
+        "hero": {
+            "eyebrow": "The project behind the exploration",
+            "title": "Bringing NASA data closer to everyone.",
+            "subtitle": "SpaceVision simplifies space science. It is an interactive and accessible platform that transforms NASA's most complex data into a visual and intuitive experience.",
+            "statsAria": "General project information",
+            "stats": {
+                "teamMembers": "Team members",
+                "nasaApis": "Main NASA APIs",
+                "technologies": "Core technologies",
+                "realData": "Real NASA data"
+            }
+        },
+        "mission": {
+            "eyebrow": "01 / Our Mission",
+            "title": "Our mission",
+            "what": {
+                "title": "What we do",
+                "description": "Make space science accessible to every user."
+            },
+            "how": {
+                "title": "How we do it",
+                "description": "Transform raw NASA data into practical, visual and easy-to-understand applications."
+            },
+            "why": {
+                "title": "Why we do it",
+                "description": "Inspire the next generation of explorers, scientists and space enthusiasts."
+            }
+        },
+        "project": {
+            "eyebrow": "02 / The Project",
+            "title": "A digital bridge to <accent>space science</accent>.",
+            "paragraph1": "This project was born from a deep fascination with space science and the incredible opportunity provided by the official <nasaLink>NASA Open APIs</nasaLink> programme.",
+            "paragraph2": "We know that scientific and astronomical data can feel intimidating to the general public. That is why we created a digital bridge that organises, filters and illustrates this information in a simple, fast and intuitive way."
+        },
+        "apiSection": {
+            "title": "What You Will Find Here",
+            "subtitle": "Tools within your reach"
+        },
+        "technology": {
+            "eyebrow": "Technology",
+            "title": "Built like a real digital product",
+            "description": "The project combines front end, back end, authentication, databases, API integration and UX/UI principles.",
+            "items": {
+                "react": "Responsive interface, reusable components and an interactive experience.",
+                "laravel": "API, authentication, security, caching and database integration.",
+                "nasaApis": "Astronomical data, space weather and Earth observation."
+            }
+        },
+        "contact": {
+            "eyebrow": "Contact",
+            "title": "Shall we talk about the Universe?",
+            "description": "Have you found a problem, do you have a suggestion or would you like to learn more about the project? Send us a message.",
+            "projectSupport": "We respond to questions related to the project and the use of the platform.",
+            "nasaDisclaimer": "Scientific data belongs to its respective official NASA sources and services."
+        }
+    },
+    "contactForm": {
+        "formAria": "Contact form",
+        "fields": {
+            "name": {
+                "label": "Name",
+                "placeholder": "Your name"
+            },
+            "email": {
+                "label": "Email",
+                "placeholder": "you@example.com"
+            },
+            "subject": {
+                "label": "Subject",
+                "placeholder": "What would you like to contact us about?"
+            },
+            "message": {
+                "label": "Message",
+                "placeholder": "Write your message..."
+            }
+        },
+        "validation": {
+            "nameRequired": "Enter your name.",
+            "nameMax": "The name cannot contain more than 100 characters.",
+            "emailRequired": "Enter an email address.",
+            "emailInvalid": "Enter a valid email address.",
+            "emailMax": "The email address cannot contain more than 150 characters.",
+            "subjectRequired": "Enter a subject.",
+            "subjectMax": "The subject cannot contain more than 150 characters.",
+            "messageRequired": "Write a message.",
+            "messageMin": "The message must contain at least 10 characters.",
+            "messageMax": "The message cannot contain more than 5,000 characters."
+        },
+        "actions": {
+            "submit": "Send message",
+            "sending": "Sending..."
+        },
+        "success": {
+            "message": "Your message was sent successfully! We will contact you soon.",
+            "sendAnother": "Send another message"
+        },
+        "error": {
+            "general": "The message could not be sent. Check the information and try again."
+        }
+    },
     "common": {
         "loading": "Loading...",
         "error": "Something went wrong",
