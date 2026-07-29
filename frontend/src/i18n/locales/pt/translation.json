@@ -1065,6 +1065,144 @@
             }
         }
     },
+    "quiz": {
+        "meta": {
+            "title": "Quiz Espacial — SpaceVision",
+            "description": "Testa os teus conhecimentos sobre o espaço, o Sistema Solar e a exploração espacial."
+        },
+        "breadcrumb": "Quiz",
+        "hero": {
+            "eyebrow": "SpaceVision · Quiz",
+            "titleLines": [
+                "Quanto sabes",
+                "sobre o espaço?"
+            ],
+            "description": "{{count}} perguntas, factos surpreendentes e uma patente cósmica à tua espera. Preparado para a descolagem?",
+            "start": "Iniciar missão",
+            "mission": "Missão nº 08 · Sistema Solar"
+        },
+        "card": {
+            "badge": "Quiz Espacial",
+            "completed": "Concluído",
+            "questionProgress": "Pergunta {{current}} de {{total}}",
+            "progressAria": "Progresso do quiz"
+        },
+        "feedback": {
+            "correct": "Certíssimo!",
+            "incorrect": "Quase! A resposta era: {{answer}}",
+            "result": "Ver resultado",
+            "next": "Seguinte"
+        },
+        "result": {
+            "eyebrow": "Missão concluída",
+            "scoreAria": "{{score}} respostas certas em {{total}} perguntas",
+            "restart": "Repetir missão"
+        },
+        "facts": {
+            "eyebrow": "Curiosidades",
+            "title": "Factos que parecem ficção",
+            "description": "O universo é mais estranho do que imaginas."
+        },
+        "content": {
+            "questions": {
+                "closestPlanet": {
+                    "type": "Escolha múltipla",
+                    "text": "Qual é o planeta mais próximo do Sol?",
+                    "fact": "Mercúrio passa de 430 °C de dia a −180 °C à noite — a maior variação térmica do Sistema Solar."
+                },
+                "sunIsStar": {
+                    "type": "Verdadeiro ou Falso",
+                    "text": "O Sol é uma estrela.",
+                    "fact": "O Sol é uma estrela anã amarela de meia-idade: tem cerca de 4,6 mil milhões de anos."
+                },
+                "redPlanet": {
+                    "type": "Desafio visual",
+                    "text": "Qual destes planetas é conhecido como o \"Planeta Vermelho\"?",
+                    "fact": "A cor de Marte vem do óxido de ferro — na prática, o planeta está coberto de ferrugem."
+                },
+                "earthMoons": {
+                    "type": "Escolha múltipla",
+                    "text": "Quantas luas tem a Terra?",
+                    "fact": "A Lua afasta-se da Terra cerca de 3,8 cm por ano — mais ou menos ao ritmo a que crescem as unhas."
+                },
+                "soundInSpace": {
+                    "type": "Verdadeiro ou Falso",
+                    "text": "No espaço é possível ouvir explosões.",
+                    "fact": "O som precisa de um meio para se propagar. No vácuo do espaço, o silêncio é absoluto."
+                },
+                "largestPlanet": {
+                    "type": "Escolha múltipla",
+                    "text": "Qual é o maior planeta do Sistema Solar?",
+                    "fact": "Júpiter é tão grande que caberiam lá dentro todos os outros planetas do Sistema Solar juntos."
+                },
+                "famousRings": {
+                    "type": "Desafio visual",
+                    "text": "Qual destes planetas tem os anéis mais famosos?",
+                    "fact": "Os anéis de Saturno têm 280 000 km de largura, mas em média só 10 metros de espessura."
+                },
+                "sunlightTravelTime": {
+                    "type": "Escolha múltipla",
+                    "text": "Quanto tempo demora a luz do Sol a chegar à Terra?",
+                    "fact": "Quando olhas para o Sol, estás a ver o passado: a luz que chega partiu há cerca de 8 minutos e 20 segundos."
+                }
+            },
+            "options": {
+                "venus": "Vénus",
+                "mercury": "Mercúrio",
+                "mars": "Marte",
+                "earth": "Terra",
+                "neptune": "Neptuno",
+                "uranus": "Urano",
+                "saturn": "Saturno",
+                "jupiter": "Júpiter",
+                "true": "Verdadeiro",
+                "false": "Falso",
+                "none": "Nenhuma",
+                "one": "Uma",
+                "two": "Duas",
+                "three": "Três",
+                "eightSeconds": "8 segundos",
+                "eightMinutes": "8 minutos",
+                "eightHours": "8 horas",
+                "eightDays": "8 dias"
+            },
+            "ranks": {
+                "cosmicLegend": {
+                    "name": "Lenda Cósmica",
+                    "description": "Pontuação perfeita! O universo não tem segredos para ti."
+                },
+                "starCommander": {
+                    "name": "Comandante Estelar",
+                    "description": "Excelente! Dominas o Sistema Solar como quem domina o bairro."
+                },
+                "orbitPilot": {
+                    "name": "Piloto de Órbita",
+                    "description": "Bom voo! Já saíste da atmosfera — mais uma missão e chegas às estrelas."
+                },
+                "spaceCadet": {
+                    "name": "Cadete Espacial",
+                    "description": "Toda a lenda começa no primeiro treino. Repete a missão e surpreende-te!"
+                }
+            },
+            "facts": {
+                "earthsInsideSun": {
+                    "stat": "1M+",
+                    "title": "Terras dentro do Sol",
+                    "description": "Cabem mais de um milhão de planetas Terra dentro do Sol — e ainda sobra espaço."
+                },
+                "venusDay": {
+                    "stat": "1 dia > 1 ano",
+                    "title": "Em Vénus, o tempo é louco",
+                    "description": "Vénus demora mais tempo a girar sobre si próprio do que a dar a volta ao Sol."
+                },
+                "spaceSilence": {
+                    "stat": "Silêncio",
+                    "title": "O espaço não tem som",
+                    "description": "Sem ar para transportar as ondas sonoras, até a maior explosão estelar é totalmente muda."
+                }
+            }
+        }
+    },
     "common": {
         "loading": "A carregar...",
         "error": "Ocorreu um erro",
