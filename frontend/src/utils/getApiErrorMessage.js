@@ -3,6 +3,27 @@ export default function getApiErrorMessage(
   fallbackMessage = "Ocorreu um problema inesperado."
 ) {
   const status = error?.response?.status;
+
+  if (!error?.response) {
+    return "Não foi possível estabelecer ligação ao servidor. Confirma a tua ligação e tenta novamente.";
+  }
+
+  // Erros de servidor (5xx) nunca devem mostrar a mensagem crua do
+  // backend: quando o debug está ativo (ex.: APP_DEBUG=true no Laravel),
+  // essa mensagem pode conter detalhes internos como queries SQL,
+  // stack traces ou nomes de tabelas. Mostramos sempre um texto amigável.
+  if (status >= 500) {
+    switch (status) {
+      case 502:
+      case 503:
+      case 504:
+        return "O serviço está temporariamente indisponível. Tenta novamente dentro de alguns momentos.";
+
+      default:
+        return "O servidor encontrou um problema ao processar o pedido. Vá ao seu perfil e insira sua chave de API para visualizar os conteúdos.";
+    }
+  }
+
   const backendMessage = error?.response?.data?.message;
 
   if (
@@ -10,10 +31,6 @@ export default function getApiErrorMessage(
     backendMessage.trim()
   ) {
     return backendMessage;
-  }
-
-  if (!error?.response) {
-    return "Não foi possível estabelecer ligação ao servidor. Confirma a tua ligação e tenta novamente.";
   }
 
   switch (status) {
@@ -28,14 +45,6 @@ export default function getApiErrorMessage(
 
     case 429:
       return "Foram realizados demasiados pedidos. Aguarda alguns momentos e tenta novamente.";
-
-    case 500:
-      return "O servidor encontrou um problema ao processar o pedido.";
-
-    case 502:
-    case 503:
-    case 504:
-      return "O serviço está temporariamente indisponível. Tenta novamente dentro de alguns momentos.";
 
     default:
       return fallbackMessage;
