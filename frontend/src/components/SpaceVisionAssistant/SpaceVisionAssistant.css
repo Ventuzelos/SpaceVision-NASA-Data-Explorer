@@ -3,40 +3,60 @@
   right: 74px;
   bottom: 24px;
   z-index: 1000;
-  font-family: inherit;
+  font-family: var(--font-family);
 }
 
 .spacevision-assistant__trigger {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: var(--space-3);
   min-height: 40px;
   padding: 10px 18px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid
+    color-mix(
+      in srgb,
+      var(--color-text) 16%,
+      transparent
+    );
   border-radius: 999px;
   background: var(--gradient-primary);
-  color: #ffffff;
+  color: var(--color-text);
   font: inherit;
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
   line-height: 1;
   cursor: pointer;
   box-shadow:
-    0 16px 40px rgba(0, 0, 0, 0.35),
-    0 0 24px rgba(126, 71, 253, 0.25);
+    var(--shadow-lg),
+    0 0 24px
+      color-mix(
+        in srgb,
+        var(--color-primary) 25%,
+        transparent
+      );
   transition:
-    transform 180ms ease,
-    box-shadow 180ms ease,
-    border-color 180ms ease;
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
 .spacevision-assistant__trigger:hover {
   transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.32);
+  border-color:
+    color-mix(
+      in srgb,
+      var(--color-text) 32%,
+      transparent
+    );
   box-shadow:
-    0 20px 44px rgba(0, 0, 0, 0.42),
-    0 0 30px rgba(126, 71, 253, 0.36);
+    var(--shadow-lg),
+    0 0 30px
+      color-mix(
+        in srgb,
+        var(--color-primary) 36%,
+        transparent
+      );
 }
 
 .spacevision-assistant__trigger:active {
@@ -49,7 +69,12 @@
 .spacevision-assistant__suggestion:focus-visible,
 .spacevision-assistant__link:focus-visible,
 .spacevision-assistant__input:focus-visible {
-  outline: 3px solid rgba(151, 118, 255, 0.55);
+  outline: 3px solid
+    color-mix(
+      in srgb,
+      var(--color-accent) 55%,
+      transparent
+    );
   outline-offset: 3px;
 }
 
@@ -60,35 +85,48 @@
   height: min(620px, calc(100vh - 48px));
   max-height: 620px;
   overflow: hidden;
-  border: 1px solid #334155;
-  border-radius: 20px;
-  background: #0b1020;
-  color: #f9fafc;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-background);
+  color: var(--color-text);
   box-shadow:
     0 28px 70px rgba(0, 0, 0, 0.55),
-    0 0 40px rgba(72, 64, 240, 0.14);
+    0 0 40px
+      color-mix(
+        in srgb,
+        var(--color-primary-dark) 14%,
+        transparent
+      );
 }
 
 .spacevision-assistant__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding: 16px;
-  border-bottom: 1px solid #334155;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
   background:
     linear-gradient(
       135deg,
-      rgba(126, 71, 253, 0.16),
-      rgba(72, 64, 240, 0.05)
+      color-mix(
+        in srgb,
+        var(--color-primary) 16%,
+        transparent
+      ),
+      color-mix(
+        in srgb,
+        var(--color-primary-dark) 5%,
+        transparent
+      )
     ),
-    #111827;
+    var(--color-surface);
 }
 
 .spacevision-assistant__identity {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
   min-width: 0;
 }
 
@@ -99,24 +137,34 @@
   justify-content: center;
   width: 40px;
   height: 40px;
-  border: 1px solid rgba(151, 118, 255, 0.35);
-  border-radius: 12px;
-  background: rgba(126, 71, 253, 0.16);
-  color: #a78bfa;
+  border: 1px solid
+    color-mix(
+      in srgb,
+      var(--color-accent) 35%,
+      transparent
+    );
+  border-radius: var(--radius-md);
+  background:
+    color-mix(
+      in srgb,
+      var(--color-primary) 16%,
+      transparent
+    );
+  color: var(--color-accent);
 }
 
 .spacevision-assistant__title {
   margin: 0;
-  color: #f9fafc;
+  color: var(--color-text);
   font-size: 0.95rem;
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   line-height: 1.3;
 }
 
 .spacevision-assistant__status {
   margin: 3px 0 0;
-  color: #94a3b8;
-  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
   line-height: 1.4;
 }
 
@@ -129,29 +177,35 @@
   height: 38px;
   padding: 0;
   border: 1px solid transparent;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   background: transparent;
-  color: #cbd5e1;
+  color: var(--color-text-secondary);
   cursor: pointer;
   transition:
-    color 160ms ease,
-    background-color 160ms ease,
-    border-color 160ms ease;
+    color var(--transition-fast),
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
 .spacevision-assistant__close:hover {
-  border-color: #334155;
-  background: rgba(255, 255, 255, 0.06);
-  color: #ffffff;
+  border-color: var(--color-border);
+  background:
+    color-mix(
+      in srgb,
+      var(--color-text) 6%,
+      transparent
+    );
+  color: var(--color-text);
 }
 
 .spacevision-assistant__messages {
   min-height: 0;
-  padding: 18px 16px;
+  padding: 18px var(--space-4);
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
-  scrollbar-color: #475569 transparent;
+  scrollbar-color: var(--color-surface-light)
+    transparent;
 }
 
 .spacevision-assistant__messages::-webkit-scrollbar {
@@ -160,13 +214,13 @@
 
 .spacevision-assistant__messages::-webkit-scrollbar-thumb {
   border-radius: 999px;
-  background: #475569;
+  background: var(--color-surface-light);
 }
 
 .spacevision-assistant__message {
   display: flex;
   flex-direction: column;
-  margin-bottom: 16px;
+  margin-bottom: var(--space-4);
 }
 
 .spacevision-assistant__message--assistant {
@@ -181,34 +235,30 @@
   max-width: 88%;
   margin: 0;
   padding: 11px 13px;
-  border-radius: 15px;
-  font-size: 0.875rem;
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-sm);
   line-height: 1.55;
 }
 
 .spacevision-assistant__message--assistant
   .spacevision-assistant__bubble {
-  border: 1px solid #334155;
-  border-bottom-left-radius: 5px;
-  background: #111827;
-  color: #e2e8f0;
+  border: 1px solid var(--color-border);
+  border-bottom-left-radius: var(--radius-btn);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
 }
 
 .spacevision-assistant__message--user
   .spacevision-assistant__bubble {
-  border-bottom-right-radius: 5px;
-  background: linear-gradient(
-    135deg,
-    #7e47fd,
-    #4840f0
-  );
-  color: #ffffff;
+  border-bottom-right-radius: var(--radius-btn);
+  background: var(--gradient-primary);
+  color: var(--color-text);
 }
 
 .spacevision-assistant__actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--space-2);
   margin-top: 9px;
 }
 
@@ -219,30 +269,50 @@
   gap: 7px;
   min-height: 36px;
   padding: 8px 11px;
-  border: 1px solid rgba(126, 71, 253, 0.45);
-  border-radius: 9px;
-  background: rgba(126, 71, 253, 0.12);
-  color: #c4b5fd;
+  border: 1px solid
+    color-mix(
+      in srgb,
+      var(--color-primary) 45%,
+      transparent
+    );
+  border-radius: var(--radius-sm);
+  background:
+    color-mix(
+      in srgb,
+      var(--color-primary) 12%,
+      transparent
+    );
+  color: var(--color-link);
   font-size: 0.78rem;
-  font-weight: 600;
-  line-height: 1.2;
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
   text-decoration: none;
   transition:
-    color 160ms ease,
-    background-color 160ms ease,
-    border-color 160ms ease;
+    color var(--transition-fast),
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
 .spacevision-assistant__link:hover {
-  border-color: #8b5cf6;
-  background: rgba(126, 71, 253, 0.22);
-  color: #ffffff;
+  border-color: var(--color-accent);
+  background:
+    color-mix(
+      in srgb,
+      var(--color-primary) 22%,
+      transparent
+    );
+  color: var(--color-link-hover);
 }
 
 .spacevision-assistant__link--secondary {
-  border-color: #475569;
-  background: rgba(255, 255, 255, 0.04);
-  color: #cbd5e1;
+  border-color: var(--color-border);
+  background:
+    color-mix(
+      in srgb,
+      var(--color-text) 4%,
+      transparent
+    );
+  color: var(--color-text-secondary);
 }
 
 .spacevision-assistant__suggestions {
@@ -254,25 +324,30 @@
 
 .spacevision-assistant__suggestion {
   padding: 7px 10px;
-  border: 1px solid #334155;
+  border: 1px solid var(--color-border);
   border-radius: 999px;
   background: transparent;
-  color: #a5b4fc;
+  color: var(--color-link);
   font: inherit;
-  font-size: 0.75rem;
+  font-size: var(--font-size-xs);
   line-height: 1.3;
   text-align: left;
   cursor: pointer;
   transition:
-    color 160ms ease,
-    background-color 160ms ease,
-    border-color 160ms ease;
+    color var(--transition-fast),
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
 .spacevision-assistant__suggestion:hover {
-  border-color: #6366f1;
-  background: rgba(99, 102, 241, 0.1);
-  color: #ffffff;
+  border-color: var(--color-primary);
+  background:
+    color-mix(
+      in srgb,
+      var(--color-primary) 10%,
+      transparent
+    );
+  color: var(--color-link-hover);
 }
 
 .spacevision-assistant__form {
@@ -280,8 +355,8 @@
   align-items: center;
   gap: 9px;
   padding: 13px;
-  border-top: 1px solid #334155;
-  background: #111827;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
 }
 
 .spacevision-assistant__input {
@@ -289,29 +364,40 @@
   min-width: 0;
   min-height: 44px;
   padding: 10px 13px;
-  border: 1px solid #334155;
-  border-radius: 11px;
-  background: #0b1020;
-  color: #f9fafc;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-background);
+  color: var(--color-text);
   font: inherit;
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   line-height: 1.4;
   transition:
-    border-color 160ms ease,
-    box-shadow 160ms ease;
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
 .spacevision-assistant__input::placeholder {
-  color: #64748b;
+  color:
+    color-mix(
+      in srgb,
+      var(--color-text-secondary) 60%,
+      transparent
+    );
 }
 
 .spacevision-assistant__input:hover {
-  border-color: #475569;
+  border-color: var(--color-surface-light);
 }
 
 .spacevision-assistant__input:focus {
-  border-color: #7e47fd;
-  box-shadow: 0 0 0 3px rgba(126, 71, 253, 0.13);
+  border-color: var(--color-primary);
+  box-shadow:
+    0 0 0 3px
+      color-mix(
+        in srgb,
+        var(--color-primary) 13%,
+        transparent
+      );
 }
 
 .spacevision-assistant__send {
@@ -323,17 +409,13 @@
   height: 44px;
   padding: 0;
   border: 0;
-  border-radius: 11px;
-  background: linear-gradient(
-    135deg,
-    #7e47fd,
-    #4840f0
-  );
-  color: #ffffff;
+  border-radius: var(--radius-md);
+  background: var(--gradient-primary);
+  color: var(--color-text);
   cursor: pointer;
   transition:
-    opacity 160ms ease,
-    transform 160ms ease;
+    opacity var(--transition-fast),
+    transform var(--transition-fast);
 }
 
 .spacevision-assistant__send:hover:not(:disabled) {
@@ -346,7 +428,7 @@
 }
 
 @media (max-width: 600px) {
-   .spacevision-assistant {
+  .spacevision-assistant {
     right: 14px;
     bottom: 14px;
   }
@@ -354,7 +436,7 @@
   .spacevision-assistant__panel {
     width: calc(100vw - 28px);
     height: min(620px, calc(100dvh - 28px));
-    border-radius: 17px;
+    border-radius: var(--radius-lg);
   }
 
   .spacevision-assistant__trigger {
@@ -387,8 +469,6 @@
   .spacevision-assistant__bubble {
     max-width: 92%;
   }
-
-
 }
 
 @media (prefers-reduced-motion: reduce) {
