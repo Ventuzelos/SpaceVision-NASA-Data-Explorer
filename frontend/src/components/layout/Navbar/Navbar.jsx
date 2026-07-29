@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
-
+import { useTranslation } from "react-i18next";
 
 import Logo from "../Logo/Logo";
 import NavLinks from "../NavLinks/NavLinks";
 import UserMenu from "../UserMenu/UserMenu";
+import LanguageSwitcher from "../../common/LanguageSwitcher/LanguageSwitcher";
 
 import "./Navbar.css";
 
@@ -12,6 +13,8 @@ const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
 function Navbar() {
+  const { t } = useTranslation();
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const toggleButtonRef = useRef(null);
   const panelRef = useRef(null);
@@ -46,7 +49,10 @@ function Navbar() {
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
 
-      if (event.shiftKey && document.activeElement === first) {
+      if (
+        event.shiftKey &&
+        document.activeElement === first
+      ) {
         event.preventDefault();
         last.focus();
       } else if (
@@ -61,7 +67,10 @@ function Navbar() {
     document.addEventListener("keydown", handleKeydown);
 
     return () => {
-      document.removeEventListener("keydown", handleKeydown);
+      document.removeEventListener(
+        "keydown",
+        handleKeydown
+      );
     };
   }, [isMenuOpen]);
 
@@ -72,16 +81,16 @@ function Navbar() {
     }
 
     if (isMenuOpen) {
-      const firstFocusable = panelRef.current?.querySelector(
-        FOCUSABLE_SELECTOR
-      );
+      const firstFocusable =
+        panelRef.current?.querySelector(
+          FOCUSABLE_SELECTOR
+        );
 
       firstFocusable?.focus();
     } else {
       toggleButtonRef.current?.focus();
     }
   }, [isMenuOpen]);
-
 
   useEffect(() => {
     document.body.style.overflow = isMenuOpen
@@ -101,12 +110,13 @@ function Navbar() {
 
           <nav
             className="navbar__desktop-nav"
-            aria-label="Navegação principal"
+            aria-label={t("navbar.mainNavigation")}
           >
             <NavLinks />
           </nav>
 
           <div className="navbar__desktop-actions">
+            <LanguageSwitcher />
             <UserMenu />
           </div>
 
@@ -117,16 +127,22 @@ function Navbar() {
             onClick={toggleMenu}
             aria-label={
               isMenuOpen
-                ? "Fechar menu"
-                : "Abrir menu"
+                ? t("navbar.closeMenu")
+                : t("navbar.openMenu")
             }
             aria-expanded={isMenuOpen}
             aria-controls="mobile-navigation"
           >
             {isMenuOpen ? (
-              <X size={26} aria-hidden="true" />
+              <X
+                size={26}
+                aria-hidden="true"
+              />
             ) : (
-              <Menu size={26} aria-hidden="true" />
+              <Menu
+                size={26}
+                aria-hidden="true"
+              />
             )}
           </button>
         </div>
@@ -138,24 +154,34 @@ function Navbar() {
             type="button"
             className="navbar__overlay"
             onClick={closeMenu}
-            aria-label="Fechar menu"
+            aria-label={t("navbar.closeMenu")}
           />
 
           <aside
             id="mobile-navigation"
             ref={panelRef}
             className="navbar__mobile-panel"
-            aria-label="Menu móvel"
+            aria-label={t("navbar.mobileMenu")}
           >
             <div className="navbar__mobile-content">
-              <nav aria-label="Navegação móvel">
-                <NavLinks onNavigate={closeMenu} />
+              <nav
+                aria-label={t(
+                  "navbar.mobileNavigation"
+                )}
+              >
+                <NavLinks
+                  onNavigate={closeMenu}
+                />
               </nav>
 
               <div className="navbar__mobile-divider" />
 
               <div className="navbar__mobile-actions">
-                <UserMenu onMobileNavigate={closeMenu} />
+                <LanguageSwitcher />
+
+                <UserMenu
+                  onMobileNavigate={closeMenu}
+                />
               </div>
             </div>
           </aside>

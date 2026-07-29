@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router";
+import { useTranslation } from "react-i18next";
 import {
   Heart,
   LogOut,
@@ -13,6 +14,7 @@ import useAuth from "../../../hooks/useAuth";
 import "./UserMenu.css";
 
 function UserMenu({ onMobileNavigate }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const {
@@ -44,8 +46,15 @@ function UserMenu({ onMobileNavigate }) {
       }
     }
 
-    document.addEventListener("mousedown", handleOutsideClick);
-    document.addEventListener("keydown", handleEscape);
+    document.addEventListener(
+      "mousedown",
+      handleOutsideClick
+    );
+
+    document.addEventListener(
+      "keydown",
+      handleEscape
+    );
 
     return () => {
       document.removeEventListener(
@@ -73,12 +82,12 @@ function UserMenu({ onMobileNavigate }) {
 
     navigate("/");
   }
-  
+
   if (isAuthLoading) {
     return (
       <div
         className="user-menu user-menu--loading"
-        aria-label="A carregar sessão"
+        aria-label={t("userMenu.loadingSession")}
         aria-busy="true"
       >
         <span className="user-menu__skeleton" />
@@ -95,7 +104,7 @@ function UserMenu({ onMobileNavigate }) {
             onClick={handleMobileNavigation}
           >
             <Button variant="primary">
-              Entrar
+              {t("userMenu.login")}
             </Button>
           </Link>
 
@@ -104,7 +113,7 @@ function UserMenu({ onMobileNavigate }) {
             onClick={handleMobileNavigation}
           >
             <Button variant="secondary">
-              Criar conta
+              {t("userMenu.register")}
             </Button>
           </Link>
         </div>
@@ -115,7 +124,7 @@ function UserMenu({ onMobileNavigate }) {
             onClick={handleMobileNavigation}
           >
             <Button variant="primary">
-              Entrar
+              {t("userMenu.login")}
             </Button>
           </Link>
 
@@ -124,7 +133,7 @@ function UserMenu({ onMobileNavigate }) {
             onClick={handleMobileNavigation}
           >
             <Button variant="secondary">
-              Criar conta
+              {t("userMenu.register")}
             </Button>
           </Link>
         </div>
@@ -133,24 +142,36 @@ function UserMenu({ onMobileNavigate }) {
   }
 
   const firstName =
-    user?.name?.trim()?.split(" ")[0] || "Utilizador";
+    user?.name?.trim()?.split(" ")[0] ||
+    t("userMenu.defaultUser");
 
   return (
-    <div className="user-menu" ref={menuRef}>
+    <div
+      className="user-menu"
+      ref={menuRef}
+    >
       <div className="user-menu__desktop">
         <button
           type="button"
           className="account-menu-trigger"
           onClick={() =>
-            setIsAccountMenuOpen((current) => !current)
+            setIsAccountMenuOpen(
+              (current) => !current
+            )
           }
+          aria-label={t("userMenu.open")}
           aria-expanded={isAccountMenuOpen}
           aria-controls="account-dropdown"
         >
-          <User size={20} aria-hidden="true" />
+          <User
+            size={20}
+            aria-hidden="true"
+          />
 
           <span className="account-menu-trigger__greeting">
-            Olá, {firstName}
+            {t("userMenu.greeting", {
+              name: firstName,
+            })}
           </span>
         </button>
 
@@ -161,7 +182,9 @@ function UserMenu({ onMobileNavigate }) {
           >
             <div className="account-dropdown__header">
               <span className="account-dropdown__avatar">
-                {firstName.charAt(0).toUpperCase()}
+                {firstName
+                  .charAt(0)
+                  .toUpperCase()}
               </span>
 
               <div>
@@ -180,8 +203,12 @@ function UserMenu({ onMobileNavigate }) {
                   setIsAccountMenuOpen(false)
                 }
               >
-                <Shield size={18} aria-hidden="true" />
-                Painel Admin
+                <Shield
+                  size={18}
+                  aria-hidden="true"
+                />
+
+                {t("userMenu.adminPanel")}
               </Link>
             )}
 
@@ -192,8 +219,12 @@ function UserMenu({ onMobileNavigate }) {
                 setIsAccountMenuOpen(false)
               }
             >
-              <User size={18} aria-hidden="true" />
-              Perfil
+              <User
+                size={18}
+                aria-hidden="true"
+              />
+
+              {t("navigation.profile")}
             </Link>
 
             <Link
@@ -203,8 +234,12 @@ function UserMenu({ onMobileNavigate }) {
                 setIsAccountMenuOpen(false)
               }
             >
-              <Heart size={18} aria-hidden="true" />
-              Favoritos
+              <Heart
+                size={18}
+                aria-hidden="true"
+              />
+
+              {t("navigation.favorites")}
             </Link>
 
             <div className="account-dropdown__divider" />
@@ -214,8 +249,12 @@ function UserMenu({ onMobileNavigate }) {
               className="account-dropdown__item account-dropdown__item--logout"
               onClick={handleLogout}
             >
-              <LogOut size={18} aria-hidden="true" />
-              Terminar sessão
+              <LogOut
+                size={18}
+                aria-hidden="true"
+              />
+
+              {t("navigation.logout")}
             </button>
           </div>
         )}
@@ -223,12 +262,22 @@ function UserMenu({ onMobileNavigate }) {
 
       <div className="user-menu__mobile">
         <div className="account-dropdown__header">
-          <span className="account-dropdown__avatar" aria-hidden="true">
-            {firstName.charAt(0).toUpperCase()}
+          <span
+            className="account-dropdown__avatar"
+            aria-hidden="true"
+          >
+            {firstName
+              .charAt(0)
+              .toUpperCase()}
           </span>
 
           <div>
-            <strong>Olá, {firstName}</strong>
+            <strong>
+              {t("userMenu.greeting", {
+                name: firstName,
+              })}
+            </strong>
+
             <span>{user.email}</span>
           </div>
         </div>
@@ -241,7 +290,7 @@ function UserMenu({ onMobileNavigate }) {
             onClick={handleMobileNavigation}
           >
             <Button variant="secondary">
-              Painel Admin
+              {t("userMenu.adminPanel")}
             </Button>
           </Link>
         )}
@@ -251,7 +300,7 @@ function UserMenu({ onMobileNavigate }) {
           onClick={handleMobileNavigation}
         >
           <Button variant="secondary">
-            Perfil
+            {t("navigation.profile")}
           </Button>
         </Link>
 
@@ -260,7 +309,7 @@ function UserMenu({ onMobileNavigate }) {
           onClick={handleMobileNavigation}
         >
           <Button variant="secondary">
-            Favoritos
+            {t("navigation.favorites")}
           </Button>
         </Link>
 
@@ -268,7 +317,7 @@ function UserMenu({ onMobileNavigate }) {
           variant="outline"
           onClick={handleLogout}
         >
-          Terminar sessão
+          {t("navigation.logout")}
         </Button>
       </div>
     </div>

@@ -1,10 +1,12 @@
 import { Link } from "react-router";
+import { useTranslation } from "react-i18next";
 
 import Logo from "../Logo/Logo";
 
 import "./Footer.css";
 
 function Footer() {
+  const { t } = useTranslation();
   const currentYear = new Date().getFullYear();
 
   return (
@@ -14,28 +16,34 @@ function Footer() {
           <Logo />
 
           <p className="footer__description">
-            Projeto académico que junta várias APIs públicas da NASA numa
-            única interface, para tornar os dados espaciais mais fáceis de
-            explorar e compreender.
+            {t("footer.description")}
           </p>
         </div>
 
         <nav
           className="footer__links"
-          aria-label="Navegação do rodapé"
+          aria-label={t("footer.navigation")}
         >
           <section
             className="footer__group"
             aria-labelledby="footer-information-title"
           >
-            <h2 id="footer-information-title">Informação</h2>
+            <h2 id="footer-information-title">
+              {t("footer.information.title")}
+            </h2>
 
             <div className="footer__group-links">
-              <Link to="/about">Sobre o projeto</Link>
+              <Link to="/about">
+                {t("footer.information.about")}
+              </Link>
 
-              <Link to="/faq">Perguntas frequentes</Link>
+              <Link to="/faq">
+                {t("footer.information.faq")}
+              </Link>
 
-              <Link to="/about#contact">Contacto</Link>
+              <Link to="/about#contact">
+                {t("footer.information.contact")}
+              </Link>
             </div>
           </section>
 
@@ -43,7 +51,9 @@ function Footer() {
             className="footer__group"
             aria-labelledby="footer-resources-title"
           >
-            <h2 id="footer-resources-title">Fontes oficiais</h2>
+            <h2 id="footer-resources-title">
+              {t("footer.resources.title")}
+            </h2>
 
             <div className="footer__group-links">
               <a
@@ -52,9 +62,10 @@ function Footer() {
                 rel="noopener noreferrer"
               >
                 NASA Open APIs
+
                 <span className="sr-only">
                   {" "}
-                  — abre numa nova janela
+                  — {t("footer.opensNewWindow")}
                 </span>
               </a>
 
@@ -64,9 +75,10 @@ function Footer() {
                 rel="noopener noreferrer"
               >
                 NASA
+
                 <span className="sr-only">
                   {" "}
-                  — abre numa nova janela
+                  — {t("footer.opensNewWindow")}
                 </span>
               </a>
             </div>
@@ -76,16 +88,26 @@ function Footer() {
             className="footer__group"
             aria-labelledby="footer-legal-title"
           >
-            <h2 id="footer-legal-title">Legal</h2>
+            <h2 id="footer-legal-title">
+              {t("footer.legal.title")}
+            </h2>
 
             <div className="footer__group-links">
-              <Link to="/cookies">Política de Cookies</Link>
+              <Link to="/cookies">
+                {t("footer.legal.cookies")}
+              </Link>
 
-              <Link to="/termos">Termos e Condições</Link>
+              <Link to="/termos">
+                {t("footer.legal.terms")}
+              </Link>
 
-              <Link to="/privacidade">Política de Privacidade</Link>
+              <Link to="/privacidade">
+                {t("footer.legal.privacy")}
+              </Link>
 
-              <Link to="/accessibility">Acessibilidade</Link>
+              <Link to="/accessibility">
+                {t("footer.legal.accessibility")}
+              </Link>
             </div>
           </section>
         </nav>
@@ -97,7 +119,7 @@ function Footer() {
         </p>
 
         <p className="footer__note">
-          Desenvolvido para fins educativos.
+          {t("footer.educationalNote")}
         </p>
       </div>
     </footer>

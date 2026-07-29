@@ -1,4 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { useTranslation } from "react-i18next";
 
 import Hero from "../../components/home/Hero/Hero";
 import IntroSection from "../../components/home/IntroSection/IntroSection";
@@ -21,6 +27,8 @@ import getApiErrorMessage from "../../utils/getApiErrorMessage";
 import "./Home.css";
 
 function Home() {
+  const { t } = useTranslation();
+
   const [apod, setApod] = useState(null);
   const [selectedDate, setSelectedDate] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -28,50 +36,55 @@ function Home() {
 
   const requestIdRef = useRef(0);
 
-  async function loadApod(date = "") {
-    const requestId = ++requestIdRef.current;
+  const loadApod = useCallback(
+    async (date = "") => {
+      const requestId = ++requestIdRef.current;
 
-    try {
-      setIsLoading(true);
-      setError("");
-      setApod(null);
+      try {
+        setIsLoading(true);
+        setError("");
+        setApod(null);
 
-      const data = date ? await getApodByDate(date) : await getApod();
+        const data = date
+          ? await getApodByDate(date)
+          : await getApod();
 
-      if (requestIdRef.current !== requestId) {
-        return;
+        if (requestIdRef.current !== requestId) {
+          return;
+        }
+
+        setApod(data);
+        setSelectedDate(data.date);
+      } catch (err) {
+        if (requestIdRef.current !== requestId) {
+          return;
+        }
+
+        setError(
+          getApiErrorMessage(
+            err,
+            t("home.apod.loadError")
+          )
+        );
+      } finally {
+        if (requestIdRef.current === requestId) {
+          setIsLoading(false);
+        }
       }
+    },
+    [t]
+  );
 
-      setApod(data);
-      setSelectedDate(data.date);
-    } catch (err) {
-      if (requestIdRef.current !== requestId) {
-        return;
-      }
-
-      setError(
-        getApiErrorMessage(
-          err,
-          "Não foi possível carregar a imagem astronómica."
-        )
-      );
-    } finally {
-      if (requestIdRef.current === requestId) {
-        setIsLoading(false);
-      }
-    }
-  }
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    loadApod();
-  }, []);
+ useEffect(() => {
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  loadApod();
+}, [loadApod]);
 
   return (
     <>
       <PageMeta
-        title="SpaceVision — Explora dados reais da NASA"
-        description="Explora imagens da Terra, meteorologia espacial, asteroides próximos e outros dados oficiais da NASA numa experiência visual e interativa."
+        title={t("home.meta.title")}
+        description={t("home.meta.description")}
       />
 
       <main>
@@ -86,17 +99,19 @@ function Home() {
         <Container>
           <div className="home-apod-section">
             <Section
-              eyebrow="NASA · APOD"
-              title="Imagem astronómica do dia"
-              description="Explora diariamente uma imagem real da NASA, acompanhada da sua explicação científica."
+              eyebrow={t("home.apod.eyebrow")}
+              title={t("home.apod.title")}
+              description={t("home.apod.description")}
             >
               {isLoading && <APODSkeleton />}
 
               {error && !isLoading && (
                 <ErrorState
-                  title="Não foi possível carregar a APOD"
+                  title={t("home.apod.errorTitle")}
                   message={error}
-                  onRetry={() => loadApod(selectedDate)}
+                  onRetry={() =>
+                    loadApod(selectedDate)
+                  }
                 />
               )}
 

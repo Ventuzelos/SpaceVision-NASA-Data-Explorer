@@ -1,0 +1,158 @@
+{
+    "navigation": {
+        "home": "Início",
+        "nasaData": "Dados da NASA",
+        "discover": "Descobrir",
+        "quiz": "Quiz",
+        "favorites": "Favoritos",
+        "about": "Sobre",
+        "faq": "Perguntas frequentes",
+        "profile": "Perfil",
+        "login": "Iniciar sessão",
+        "logout": "Terminar sessão"
+    },
+    "userMenu": {
+        "open": "Abrir menu do utilizador",
+        "loadingSession": "A carregar sessão",
+        "login": "Entrar",
+        "register": "Criar conta",
+        "defaultUser": "Utilizador",
+        "greeting": "Olá, {{name}}",
+        "adminPanel": "Painel Admin"
+    },
+    "navbar": {
+        "mainNavigation": "Navegação principal",
+        "mobileNavigation": "Navegação móvel",
+        "mobileMenu": "Menu móvel",
+        "openMenu": "Abrir menu",
+        "closeMenu": "Fechar menu"
+    },
+    "footer": {
+        "description": "Projeto académico que junta várias APIs públicas da NASA numa única interface, para tornar os dados espaciais mais fáceis de explorar e compreender.",
+        "navigation": "Navegação do rodapé",
+        "opensNewWindow": "abre numa nova janela",
+        "information": {
+            "title": "Informação",
+            "about": "Sobre o projeto",
+            "faq": "Perguntas frequentes",
+            "contact": "Contacto"
+        },
+        "resources": {
+            "title": "Fontes oficiais"
+        },
+        "legal": {
+            "title": "Legal",
+            "cookies": "Política de Cookies",
+            "terms": "Termos e Condições",
+            "privacy": "Política de Privacidade",
+            "accessibility": "Acessibilidade"
+        },
+        "educationalNote": "Desenvolvido para fins educativos."
+    },
+    "nasaApis": {
+        "discover": {
+            "title": "Descobrir o Espaço",
+            "description": "Curiosidades, missões icónicas e experiências interativas sobre o Universo.",
+            "category": "SPACEVISION · DESCOBRIR"
+        },
+        "asteroids": {
+            "title": "Asteroides",
+            "description": "Rastreio em tempo real de objetos próximos da Terra, com distâncias e velocidades.",
+            "category": "NASA · NeoWS"
+        },
+        "spaceWeather": {
+            "title": "Meteorologia Espacial",
+            "description": "Monitorize o clima espacial em tempo real e saiba quando ocorrem as maiores tempestades solares.",
+            "category": "NASA · DONKI"
+        },
+        "earth": {
+            "title": "Terra",
+            "description": "Imagens diárias da Terra captadas pela câmara EPIC a bordo do satélite DSCOVR.",
+            "category": "NASA · EPIC"
+        }
+    },
+    "searchPages": {
+        "discover": {
+            "title": "Descobrir",
+            "subtitle": "Curiosidades, missões e o estado atual dos exploradores"
+        },
+        "quiz": {
+            "title": "Quiz",
+            "subtitle": "Testa os teus conhecimentos sobre o espaço"
+        },
+        "spaceWeather": {
+            "title": "Meteorologia Espacial",
+            "subtitle": "Eventos solares e clima espacial"
+        },
+        "earth": {
+            "title": "Terra",
+            "subtitle": "Imagens da Terra captadas pela câmara EPIC"
+        },
+        "asteroids": {
+            "title": "Asteroides",
+            "subtitle": "Objetos próximos da Terra"
+        }
+    },
+    "home": {
+        "hero": {
+            "welcome": "Bem-vindo ao",
+            "title": "SPACE VISION",
+            "description": "Imagens, missões e descobertas do espaço, tudo num só lugar. Uma forma interativa e educativa de explorar o Universo.",
+            "searchPlaceholder": "Pesquisar imagens, missões ou planetas...",
+            "stats": {
+                "nasaApis": "APIs DA NASA",
+                "cosmicObjects": "OBJETOS CÓSMICOS",
+                "liveData": "DADOS AO VIVO"
+            }
+        },
+        "apiSection": {
+            "title": "Dados oficiais da NASA",
+            "subtitle": "Explore APIs oficiais da NASA — meteorologia espacial, asteroides e imagens da Terra — ou descubra curiosidades sobre o Universo."
+        },
+        "ctaSection": {
+            "titlePrefix": "Espaço:",
+            "titleAccent": "A Fronteira Final",
+            "description": "A nossa comunidade dedica-se a partilhar dados pelo amor ao espaço. Encontra o teu lugar dentro da nossa base de dados cósmica.",
+            "primaryAction": "Explorar o Universo",
+            "asteroids": "Asteroides",
+            "spaceWeather": "Meteorologia Espacial",
+            "earth": "Terra"
+        },
+        "meta": {
+            "title": "SpaceVision — Explora dados reais da NASA",
+            "description": "Explora imagens da Terra, meteorologia espacial, asteroides próximos e outros dados oficiais da NASA numa experiência visual e interativa."
+        },
+        "apod": {
+            "eyebrow": "NASA · APOD",
+            "title": "Imagem astronómica do dia",
+            "description": "Explora diariamente uma imagem real da NASA, acompanhada da sua explicação científica.",
+            "loadError": "Não foi possível carregar a imagem astronómica.",
+            "errorTitle": "Não foi possível carregar a APOD"
+        },
+        "intro": {
+            "eyebrow": "Introdução",
+            "titlePrefix": "O que é o",
+            "description": "O Space Vision é um conjunto de ferramentas que te permite explorar dados espaciais, acompanhar fenómenos astronómicos e descobrir informação oficial da NASA diretamente através do teu navegador.",
+            "readMore": "Ler mais"
+        },
+        "filmStrip": {
+            "eyebrow": "Arquivo visual",
+            "title": "O cosmos, fotograma a fotograma."
+        }
+    },
+    "common": {
+        "loading": "A carregar...",
+        "error": "Ocorreu um erro",
+        "tryAgain": "Tentar novamente",
+        "viewDetails": "Ver detalhes",
+        "back": "Voltar",
+        "search": "Pesquisar",
+        "noResults": "Não foram encontrados resultados",
+        "live": "Ao vivo"
+    },
+    "language": {
+        "portuguese": "Português",
+        "english": "English",
+        "changeLanguage": "Alterar idioma"
+    }
+}
