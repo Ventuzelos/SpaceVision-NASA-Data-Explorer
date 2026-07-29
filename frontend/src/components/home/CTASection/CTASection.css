@@ -79,6 +79,7 @@
 .cta-section__secondary-links {
   display: flex;
   flex-wrap: wrap;
+  flex-basis: 100%;
   gap: var(--space-3);
 }
 
