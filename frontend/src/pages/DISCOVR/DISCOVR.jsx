@@ -5,6 +5,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { useTranslation } from "react-i18next";
 
 import Container from "../../components/common/Container/Container";
 import DiscovrHero from "../../components/DISCOVR/DiscovrHero/DiscovrHero";
@@ -31,6 +32,8 @@ function supportsIntersectionObserver() {
 }
 
 function DISCOVR() {
+  const { t } = useTranslation();
+
   const solarSystemTriggerRef =
     useRef(null);
 
@@ -88,8 +91,12 @@ function DISCOVR() {
   return (
     <>
       <PageMeta
-        title="Descobrir o Espaço"
-        description="Explora conteúdos visuais, curiosidades e experiências interativas sobre o Universo com dados e recursos da NASA."
+        title={t(
+          "discovr.meta.title"
+        )}
+        description={t(
+          "discovr.meta.description"
+        )}
       />
 
       <main className="discovr-page">
@@ -112,15 +119,20 @@ function DISCOVR() {
                     role="status"
                     aria-live="polite"
                     aria-busy="true"
-                    aria-label="A carregar sistema solar interativo"
+                    aria-label={t(
+                      "discovr.solarSystem.loadingAria"
+                    )}
                   >
                     <h2 className="discovr-section__title">
-                      Sistema solar
+                      {t(
+                        "discovr.solarSystem.title"
+                      )}
                     </h2>
 
                     <p>
-                      A preparar a simulação
-                      3D...
+                      {t(
+                        "discovr.solarSystem.preparing"
+                      )}
                     </p>
                   </section>
                 }
@@ -136,14 +148,15 @@ function DISCOVR() {
                   id="discovr-solar-system-title"
                   className="discovr-section__title"
                 >
-                  Sistema solar
+                  {t(
+                    "discovr.solarSystem.title"
+                  )}
                 </h2>
 
                 <p>
-                  A simulação 3D será
-                  carregada automaticamente
-                  quando estiveres perto desta
-                  secção.
+                  {t(
+                    "discovr.solarSystem.autoLoadDescription"
+                  )}
                 </p>
 
                 <button
@@ -153,7 +166,9 @@ function DISCOVR() {
                     handleLoadSolarSystem
                   }
                 >
-                  Carregar simulação 3D
+                  {t(
+                    "discovr.solarSystem.loadButton"
+                  )}
                 </button>
               </section>
             )}

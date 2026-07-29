@@ -623,6 +623,233 @@
             }
         }
     },
+    "discovr": {
+        "meta": {
+            "title": "Discover Space",
+            "description": "Explore visual content, curiosities and interactive experiences about the Universe using NASA data and resources."
+        },
+        "solarSystem": {
+            "title": "Solar system",
+            "loadingAria": "Loading interactive solar system",
+            "preparing": "Preparing the 3D simulation...",
+            "autoLoadDescription": "The 3D simulation will load automatically when you approach this section.",
+            "loadButton": "Load 3D simulation"
+        },
+        "hero": {
+            "breadcrumb": "Discover",
+            "eyebrow": "Discover",
+            "title": "Discover the Universe",
+            "description": "Explore curiosities, iconic missions and the current status of the explorers that continue to expand the limits of human knowledge.",
+            "videoCaptionLabel": "Portuguese",
+            "readout": {
+                "interactiveSections": "Interactive sections",
+                "update": "Update frequency",
+                "dailyApod": "Daily (APOD)",
+                "solarSystem": "Solar system",
+                "simulation": "3D simulation"
+            }
+        },
+        "surpriseCard": {
+            "surpriseMe": "Surprise me",
+            "anotherFact": "Another fact",
+            "closeAria": "Close fact",
+            "facts": {
+                "venusDay": "A day on Venus is longer than a year on Venus.",
+                "voyager": "Voyager 1 is the most distant human-made object from Earth and has been travelling through interstellar space since 2012.",
+                "olympusMons": "Olympus Mons on Mars is the largest volcano in the Solar System, standing almost 22 km high.",
+                "issSpeed": "The International Space Station travels at approximately 28,000 km/h, completing an orbit around Earth roughly every 90 minutes.",
+                "stars": "There are more stars in the observable Universe than grains of sand on all the beaches on Earth.",
+                "jamesWebb": "The James Webb Space Telescope can detect light from galaxies formed more than 13 billion years ago.",
+                "neptuneYear": "One year on Neptune is equivalent to approximately 165 Earth years.",
+                "newHorizons": "The New Horizons spacecraft took more than nine years to reach Pluto.",
+                "sunMass": "The Sun accounts for approximately 99.8% of the total mass of the Solar System.",
+                "moonFootprints": "Astronaut footprints on the Moon may last for millions of years because there is no wind or water to erase them.",
+                "saturnDensity": "Saturn is so low in density that it would theoretically float in a sufficiently large ocean of water.",
+                "sunlight": "Sunlight takes approximately 8 minutes and 20 seconds to reach Earth."
+            }
+        },
+        "gallery": {
+            "title": "Random NASA gallery",
+            "description": "Five randomly selected images from the Astronomy Picture of the Day archive.",
+            "loadingAria": "Loading NASA gallery",
+            "dateUnavailable": "DATE UNAVAILABLE",
+            "defaultTitle": "NASA astronomy image",
+            "viewArchive": "View image archive",
+            "viewFullImage": "View full image",
+            "imageUnavailableAria": "The NASA image is unavailable",
+            "imageUnavailable": "Image unavailable",
+            "imageLoadError": "This image could not be loaded.",
+            "openFullSizeAria": "Open the image {{title}} at full size in a new window",
+            "viewOnApodAria": "View {{title}} on NASA's APOD website, opens in a new window",
+            "navigationAria": "Gallery navigation",
+            "previousImage": "Previous image",
+            "nextImage": "Next image",
+            "descriptionUnavailable": "No description is available for this image.",
+            "selectImageAria": "View image {{number}}: {{title}}",
+            "errors": {
+                "title": "Signal lost",
+                "rateLimit": "Too many requests were made to NASA. Wait a moment and try again.",
+                "noImages": "NASA images could not be loaded at this time.",
+                "loadFallback": "NASA images could not be loaded."
+            },
+            "favorites": {
+                "loginRequired": "You need to sign in to save favourites",
+                "added": "Added to favourites",
+                "removed": "Removed from favourites",
+                "updateError": "The favourite could not be updated",
+                "addAria": "Add to favourites",
+                "removeAria": "Remove from favourites"
+            }
+        },
+        "apodHistory": {
+            "title": "Previous images",
+            "description": "Explore the astronomy images published over the last few days.",
+            "loadingAria": "Loading previous images",
+            "defaultTitle": "NASA astronomy image",
+            "errors": {
+                "title": "The image history could not be loaded",
+                "loadFallback": "The previous images could not be loaded."
+            },
+            "empty": {
+                "title": "No images available",
+                "description": "No APOD images were found for the last few days."
+            }
+        },
+        "apodHistoryCard": {
+            "defaultTitle": "NASA astronomy image",
+            "openItem": "Open {{title}} on NASA's APOD website",
+            "imageAlt": "NASA astronomy image",
+            "video": "Video"
+        },
+        "timeline": {
+            "title": "Interactive timeline",
+            "mobileDescription": "Scroll down to explore the missions.",
+            "desktopDescription": "Click a year on the timeline to view the corresponding mission.",
+            "ariaLabel": "Timeline of major space missions",
+            "future": "Future",
+            "missionAria": "{{year}} — {{title}}",
+            "closeAria": "Close details for {{title}}",
+            "missions": {
+                "apollo11": {
+                    "title": "Apollo 11",
+                    "text": "Armstrong and Aldrin become the first humans to walk on the Moon."
+                },
+                "voyager": {
+                    "title": "Voyager 1 and 2",
+                    "text": "The twin spacecraft are launched towards the outer planets."
+                },
+                "hubble": {
+                    "title": "Hubble Space Telescope",
+                    "text": "The space telescope revolutionises observational astronomy."
+                },
+                "iss": {
+                    "title": "International Space Station",
+                    "text": "Construction begins on the international orbital laboratory."
+                },
+                "curiosity": {
+                    "title": "Curiosity on Mars",
+                    "text": "The rover lands on Mars to study the planet's habitability."
+                },
+                "jamesWebb": {
+                    "title": "James Webb Space Telescope",
+                    "text": "Launched to observe the Universe in infrared light."
+                },
+                "artemis1": {
+                    "title": "Artemis I",
+                    "text": "An uncrewed test flight travels around the Moon."
+                },
+                "artemisFuture": {
+                    "title": "Artemis II and III",
+                    "text": "Crewed missions prepare for a new human landing on the Moon."
+                }
+            }
+        },
+        "asteroidRadar": {
+            "title": "DISCOVR asteroid radar",
+            "description": "Track the near-Earth objects with the shortest predicted approach distances.",
+            "loading": "Loading NASA asteroid radar...",
+            "empty": "No asteroids were found for the current period.",
+            "defaultName": "Unnamed asteroid",
+            "distance": "Distance",
+            "estimatedDiameter": "Estimated diameter",
+            "distanceUnavailable": "Unknown distance",
+            "diameterUnavailable": "Unknown diameter",
+            "viewFavorites": "View all favourites",
+            "errors": {
+                "title": "The radar could not be loaded",
+                "loadFallback": "The asteroids could not be loaded.",
+                "sync": "There was an error synchronising information with NASA.",
+                "favoriteFallback": "The favourite could not be updated."
+            },
+            "favorites": {
+                "loginRequired": "You need to sign in to save favourites.",
+                "added": "Asteroid added to favourites.",
+                "removed": "Asteroid removed from favourites.",
+                "updateError": "The favourite status could not be updated.",
+                "addAria": "Add {{name}} to favourites",
+                "removeAria": "Remove {{name}} from favourites"
+            }
+        },
+        "missionStatus": {
+            "title": "Mission status",
+            "description": "An informative overview of some of the most iconic missions associated with NASA space exploration.",
+            "updatedLabel": "Editorial update:",
+            "statusAria": "Mission status: {{status}}",
+            "missions": {
+                "jamesWebb": {
+                    "name": "James Webb Space Telescope",
+                    "status": "Operational",
+                    "detail": "Orbiting near the L2 Lagrange point, it continues to collect infrared data about the early Universe."
+                },
+                "artemisII": {
+                    "name": "Artemis II",
+                    "status": "In preparation",
+                    "detail": "A crewed mission being prepared for the first Artemis programme flight around the Moon."
+                },
+                "voyager1": {
+                    "name": "Voyager 1",
+                    "status": "Active · Interstellar space",
+                    "detail": "The most distant spacecraft built by humanity continues to transmit scientific data from interstellar space."
+                },
+                "voyager2": {
+                    "name": "Voyager 2",
+                    "status": "Active · Interstellar space",
+                    "detail": "It continues to send data about the interstellar medium after crossing the heliopause in 2018."
+                }
+            }
+        },
+        "solarSystemSimulation": {
+            "title": "Solar system",
+            "description": "An orbital simulation of the Sun and the eight planets, using their real distances and orbital periods. The visual scale has been compressed so that every planet fits within the same view.",
+            "canvasAria": "Interactive three-dimensional simulation of the Solar System",
+            "systemName": "Solar system",
+            "notToScale": "Not to scale",
+            "navigationHint": "Drag to orbit · use the mouse wheel to zoom",
+            "elapsedTime": "T+ {{years}} simulated years",
+            "pause": "Pause simulation",
+            "resume": "Resume simulation",
+            "speedLabel": "Speed — {{speed}} days per second",
+            "speedValue": "{{speed}} days per second",
+            "orbits": "Orbits",
+            "focusAria": "Select the simulation focus",
+            "overview": "Overview",
+            "focusPlanetAria": "Focus the simulation on {{planet}}",
+            "error": {
+                "title": "Simulation unavailable",
+                "description": "The 3D simulation could not be started on this device."
+            },
+            "planets": {
+                "mercury": "Mercury",
+                "venus": "Venus",
+                "earth": "Earth",
+                "mars": "Mars",
+                "jupiter": "Jupiter",
+                "saturn": "Saturn",
+                "uranus": "Uranus",
+                "neptune": "Neptune"
+            }
+        }
+    },
     "common": {
         "loading": "Loading...",
         "error": "Something went wrong",

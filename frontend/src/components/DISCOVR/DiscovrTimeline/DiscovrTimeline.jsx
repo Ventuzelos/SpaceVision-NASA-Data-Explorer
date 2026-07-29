@@ -3,6 +3,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { useTranslation } from "react-i18next";
 
 import Icon from "../../common/Icon/Icon";
 
@@ -17,50 +18,67 @@ const DRAG_SPEED = 1.5;
 const MISSION_TIMELINE = [
   {
     year: "1969",
-    title: "Apollo 11",
-    text: "Armstrong e Aldrin tornam-se os primeiros humanos a pisar a Lua.",
+    titleKey:
+      "discovr.timeline.missions.apollo11.title",
+    textKey:
+      "discovr.timeline.missions.apollo11.text",
     position: "above",
   },
   {
     year: "1977",
-    title: "Voyager 1 e 2",
-    text: "Lançamento das sondas gémeas rumo aos planetas exteriores.",
+    titleKey:
+      "discovr.timeline.missions.voyager.title",
+    textKey:
+      "discovr.timeline.missions.voyager.text",
     position: "below",
   },
   {
     year: "1990",
-    title: "Telescópio Hubble",
-    text: "O telescópio espacial revoluciona a astronomia observacional.",
+    titleKey:
+      "discovr.timeline.missions.hubble.title",
+    textKey:
+      "discovr.timeline.missions.hubble.text",
     position: "above",
   },
   {
     year: "1998",
-    title: "Estação Espacial Internacional",
-    text: "Início da construção do laboratório orbital internacional.",
+    titleKey:
+      "discovr.timeline.missions.iss.title",
+    textKey:
+      "discovr.timeline.missions.iss.text",
     position: "below",
   },
   {
     year: "2012",
-    title: "Curiosity em Marte",
-    text: "O rover pousa em Marte para estudar a sua habitabilidade.",
+    titleKey:
+      "discovr.timeline.missions.curiosity.title",
+    textKey:
+      "discovr.timeline.missions.curiosity.text",
     position: "above",
   },
   {
     year: "2021",
-    title: "Telescópio James Webb",
-    text: "Lançado para observar o Universo em infravermelho.",
+    titleKey:
+      "discovr.timeline.missions.jamesWebb.title",
+    textKey:
+      "discovr.timeline.missions.jamesWebb.text",
     position: "below",
   },
   {
     year: "2022",
-    title: "Artemis I",
-    text: "Voo de teste não tripulado à volta da Lua.",
+    titleKey:
+      "discovr.timeline.missions.artemis1.title",
+    textKey:
+      "discovr.timeline.missions.artemis1.text",
     position: "above",
   },
   {
-    year: "Futuro",
-    title: "Artemis II e III",
-    text: "Missões tripuladas rumo a uma nova alunagem humana.",
+    yearKey:
+      "discovr.timeline.future",
+    titleKey:
+      "discovr.timeline.missions.artemisFuture.title",
+    textKey:
+      "discovr.timeline.missions.artemisFuture.text",
     position: "below",
     active: true,
   },
@@ -69,7 +87,8 @@ const MISSION_TIMELINE = [
 function getInitialMobileState() {
   if (
     typeof window === "undefined" ||
-    typeof window.matchMedia !== "function"
+    typeof window.matchMedia !==
+      "function"
   ) {
     return false;
   }
@@ -80,6 +99,8 @@ function getInitialMobileState() {
 }
 
 function DiscovrTimeline() {
+  const { t } = useTranslation();
+
   const [openIndex, setOpenIndex] =
     useState(null);
 
@@ -98,23 +119,31 @@ function DiscovrTimeline() {
   const pathRef = useRef(null);
 
   const dragStartXRef = useRef(0);
-  const dragScrollLeftRef = useRef(0);
+  const dragScrollLeftRef =
+    useRef(0);
+
   const pointerIdRef = useRef(null);
-  const mouseMovedRef = useRef(false);
+  const mouseMovedRef =
+    useRef(false);
 
   useEffect(() => {
     if (
-      typeof window === "undefined" ||
-      typeof window.matchMedia !== "function"
+      typeof window ===
+        "undefined" ||
+      typeof window.matchMedia !==
+        "function"
     ) {
       return undefined;
     }
 
-    const mediaQuery = window.matchMedia(
-      `(max-width: ${MOBILE_BREAKPOINT}px)`
-    );
+    const mediaQuery =
+      window.matchMedia(
+        `(max-width: ${MOBILE_BREAKPOINT}px)`
+      );
 
-    function handleMediaChange(event) {
+    function handleMediaChange(
+      event
+    ) {
       setIsMobile(event.matches);
 
       if (event.matches) {
@@ -139,7 +168,9 @@ function DiscovrTimeline() {
 
   useEffect(() => {
     function handleKeyDown(event) {
-      if (event.key === "Escape") {
+      if (
+        event.key === "Escape"
+      ) {
         setOpenIndex(null);
         setHoveredIndex(null);
       }
@@ -148,11 +179,14 @@ function DiscovrTimeline() {
     function handlePointerDownOutside(
       event
     ) {
-      const scene = sceneRef.current;
+      const scene =
+        sceneRef.current;
 
       if (
         scene &&
-        !scene.contains(event.target)
+        !scene.contains(
+          event.target
+        )
       ) {
         setOpenIndex(null);
         setHoveredIndex(null);
@@ -182,16 +216,21 @@ function DiscovrTimeline() {
     };
   }, []);
 
-  function handlePointerDown(event) {
+  function handlePointerDown(
+    event
+  ) {
     if (
       isMobile ||
       event.button !== 0 ||
-      event.target.closest("button")
+      event.target.closest(
+        "button"
+      )
     ) {
       return;
     }
 
-    const slider = pathRef.current;
+    const slider =
+      pathRef.current;
 
     if (!slider) {
       return;
@@ -216,7 +255,9 @@ function DiscovrTimeline() {
     setIsDragging(true);
   }
 
-  function handlePointerMove(event) {
+  function handlePointerMove(
+    event
+  ) {
     if (
       isMobile ||
       !isDragging ||
@@ -226,7 +267,8 @@ function DiscovrTimeline() {
       return;
     }
 
-    const slider = pathRef.current;
+    const slider =
+      pathRef.current;
 
     if (!slider) {
       return;
@@ -251,19 +293,23 @@ function DiscovrTimeline() {
 
   function endDragging(event) {
     if (
-      pointerIdRef.current !== null &&
-      event?.pointerId !== undefined &&
+      pointerIdRef.current !==
+        null &&
+      event?.pointerId !==
+        undefined &&
       pointerIdRef.current !==
         event.pointerId
     ) {
       return;
     }
 
-    const slider = pathRef.current;
+    const slider =
+      pathRef.current;
 
     if (
       slider &&
-      pointerIdRef.current !== null
+      pointerIdRef.current !==
+        null
     ) {
       try {
         slider.releasePointerCapture?.(
@@ -274,7 +320,9 @@ function DiscovrTimeline() {
       }
     }
 
-    pointerIdRef.current = null;
+    pointerIdRef.current =
+      null;
+
     setIsDragging(false);
   }
 
@@ -316,7 +364,8 @@ function DiscovrTimeline() {
 
   const stepX =
     100 /
-    (MISSION_TIMELINE.length - 1);
+    (MISSION_TIMELINE.length -
+      1);
 
   return (
     <section
@@ -328,13 +377,19 @@ function DiscovrTimeline() {
         id="discovr-timeline-title"
         className="discovr-section__title"
       >
-        Linha do tempo interativa
+        {t(
+          "discovr.timeline.title"
+        )}
       </h2>
 
       <p className="discovr-section__subtitle">
         {isMobile
-          ? "Desliza para baixo para explorares as missões."
-          : "Clica num ano da linha para veres a missão correspondente."}
+          ? t(
+              "discovr.timeline.mobileDescription"
+            )
+          : t(
+              "discovr.timeline.desktopDescription"
+            )}
       </p>
 
       <div
@@ -376,7 +431,9 @@ function DiscovrTimeline() {
           onLostPointerCapture={
             endDragging
           }
-          aria-label="Linha cronológica das principais missões espaciais"
+          aria-label={t(
+            "discovr.timeline.ariaLabel"
+          )}
         >
           <div className="discovr-timeline-scene__track">
             <div
@@ -385,10 +442,14 @@ function DiscovrTimeline() {
             />
 
             {MISSION_TIMELINE.map(
-              (mission, index) => {
+              (
+                mission,
+                index
+              ) => {
                 const isOpen =
                   isMobile ||
-                  openIndex === index;
+                  openIndex ===
+                    index;
 
                 const isHovered =
                   !isMobile &&
@@ -400,6 +461,21 @@ function DiscovrTimeline() {
 
                 const titleId =
                   `${cardId}-title`;
+
+                const year =
+                  mission.yearKey
+                    ? t(
+                        mission.yearKey
+                      )
+                    : mission.year;
+
+                const title = t(
+                  mission.titleKey
+                );
+
+                const text = t(
+                  mission.textKey
+                );
 
                 let alignClass =
                   "discovr-timeline-scene__info--center";
@@ -427,9 +503,11 @@ function DiscovrTimeline() {
 
                 return (
                   <div
-                    key={`${mission.year}-${mission.title}`}
+                    key={`${mission.titleKey}-${index}`}
                     className="discovr-timeline-scene__marker"
-                    style={markerStyle}
+                    style={
+                      markerStyle
+                    }
                   >
                     <button
                       type="button"
@@ -448,14 +526,22 @@ function DiscovrTimeline() {
                           index
                         )
                       }
-                      disabled={isMobile}
+                      disabled={
+                        isMobile
+                      }
                       aria-expanded={
                         isOpen
                       }
                       aria-controls={
                         cardId
                       }
-                      aria-label={`${mission.year} — ${mission.title}`}
+                      aria-label={t(
+                        "discovr.timeline.missionAria",
+                        {
+                          year,
+                          title,
+                        }
+                      )}
                     />
 
                     <div
@@ -487,7 +573,7 @@ function DiscovrTimeline() {
                           cardId
                         }
                       >
-                        {mission.year}
+                        {year}
                       </button>
 
                       {isOpen && (
@@ -508,7 +594,12 @@ function DiscovrTimeline() {
                                   null
                                 )
                               }
-                              aria-label={`Fechar detalhes de ${mission.title}`}
+                              aria-label={t(
+                                "discovr.timeline.closeAria",
+                                {
+                                  title,
+                                }
+                              )}
                             >
                               <Icon
                                 name="X"
@@ -521,15 +612,11 @@ function DiscovrTimeline() {
                           <h3
                             id={titleId}
                           >
-                            {
-                              mission.title
-                            }
+                            {title}
                           </h3>
 
                           <p>
-                            {
-                              mission.text
-                            }
+                            {text}
                           </p>
                         </div>
                       )}
