@@ -49,6 +49,8 @@ import {
   HelpCircle,
   Play,
   Pause,
+  MessageCircle,
+  Send,
 } from "lucide-react";
 
 export const Icons = {
@@ -102,4 +104,6 @@ export const Icons = {
   HelpCircle,
   Play,
   Pause,
+  MessageCircle,
+  Send,
 };
