@@ -1,24 +1,66 @@
+import { useTranslation } from "react-i18next";
+
 import FavoriteButton from "../../common/FavoriteButton/FavoriteButton";
 import Icon from "../../common/Icon/Icon";
 
 import "./EventCard.css";
 
-function formatShortDate(value) {
+function formatShortDate(
+  value,
+  locale,
+  unavailableText
+) {
   if (!value) {
-    return "Data não disponível";
+    return unavailableText;
   }
 
   const parsed = new Date(value);
 
   if (Number.isNaN(parsed.getTime())) {
-    return "Data não disponível";
+    return unavailableText;
   }
 
-  return parsed.toLocaleDateString("pt-PT", {
+  return parsed.toLocaleDateString(locale, {
     day: "2-digit",
     month: "short",
     year: "numeric",
   });
+}
+
+function formatMetaValue(
+  item,
+  locale,
+  unavailableText
+) {
+  if (
+    item?.value === null ||
+    item?.value === undefined ||
+    item?.value === ""
+  ) {
+    return unavailableText;
+  }
+
+  if (item.valueType === "dateTime") {
+    const parsed = new Date(item.value);
+
+    if (
+      Number.isNaN(
+        parsed.getTime()
+      )
+    ) {
+      return unavailableText;
+    }
+
+    return parsed.toLocaleString(locale, {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  }
+
+  return item.value;
 }
 
 function EventCard({
@@ -28,9 +70,25 @@ function EventCard({
   onToggleFavorite,
   onViewDetails,
 }) {
-  const title = event?.title || "Evento DONKI";
+  const { t, i18n } = useTranslation();
 
-  const metaItems = Array.isArray(event?.meta)
+  const locale =
+    i18n.resolvedLanguage?.startsWith("en")
+      ? "en-GB"
+      : "pt-PT";
+
+  const title =
+    event?.title ||
+    (event?.titleKey
+      ? t(
+          event.titleKey,
+          event.titleOptions
+        )
+      : t("donki.defaultEventTitle"));
+
+  const metaItems = Array.isArray(
+    event?.meta
+  )
     ? event.meta.slice(0, 2)
     : [];
 
@@ -65,18 +123,36 @@ function EventCard({
               aria-hidden="true"
             />
 
-            {formatShortDate(event?.date)}
+            {formatShortDate(
+              event?.date,
+              locale,
+              t(
+                "donki.eventCard.dateUnavailable"
+              )
+            )}
           </p>
         </div>
 
         <FavoriteButton
           active={Boolean(isFavorite)}
-          disabled={Boolean(isFavoriteLoading)}
+          disabled={Boolean(
+            isFavoriteLoading
+          )}
           onClick={handleFavoriteClick}
           ariaLabel={
             isFavorite
-              ? `Remover ${title} dos favoritos`
-              : `Adicionar ${title} aos favoritos`
+              ? t(
+                  "donki.eventCard.removeFavorite",
+                  {
+                    title,
+                  }
+                )
+              : t(
+                  "donki.eventCard.addFavorite",
+                  {
+                    title,
+                  }
+                )
           }
         />
       </div>
@@ -89,19 +165,35 @@ function EventCard({
 
       {metaItems.length > 0 && (
         <ul className="event-card__meta">
-          {metaItems.map((item, index) => (
-            <li
-              key={`${item.label}-${index}`}
-            >
-              <span>
-                {item.label || "Informação"}
-              </span>
+          {metaItems.map(
+            (item, index) => (
+              <li
+                key={`${
+                  item.labelKey ||
+                  item.label
+                }-${index}`}
+              >
+                <span>
+                  {item.labelKey
+                    ? t(item.labelKey)
+                    : item.label ||
+                      t(
+                        "donki.eventCard.information"
+                      )}
+                </span>
 
-              <strong>
-                {item.value ?? "N/D"}
-              </strong>
-            </li>
-          ))}
+                <strong>
+                  {formatMetaValue(
+                    item,
+                    locale,
+                    t(
+                      "common.notAvailable"
+                    )
+                  )}
+                </strong>
+              </li>
+            )
+          )}
         </ul>
       )}
 
@@ -110,9 +202,16 @@ function EventCard({
           type="button"
           className="event-card__link"
           onClick={handleViewDetails}
-          aria-label={`Ver detalhes de ${title}`}
+          aria-label={t(
+            "donki.eventCard.viewDetailsAria",
+            {
+              title,
+            }
+          )}
         >
-          Ver detalhes
+          {t(
+            "donki.eventCard.viewDetails"
+          )}
 
           <Icon
             name="ArrowRight"

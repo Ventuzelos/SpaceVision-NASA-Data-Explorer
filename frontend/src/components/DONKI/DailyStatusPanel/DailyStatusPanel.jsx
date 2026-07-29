@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 import { donkiEventTypes } from "../../../services/donkiService";
 import { getTodaySeverity } from "../../../utils/donkiStats";
@@ -7,34 +8,52 @@ import "./DailyStatusPanel.css";
 
 const LEVEL_CONFIG = {
   normal: {
-    label: "Normal",
+    labelKey: "donki.dailyStatus.levels.normal.label",
+    descriptionKey:
+      "donki.dailyStatus.levels.normal.description",
     modifier: "daily-status-panel__gauge--normal",
-    description: "Sem atividade significativa registada hoje.",
   },
   moderate: {
-    label: "Moderado",
+    labelKey: "donki.dailyStatus.levels.moderate.label",
+    descriptionKey:
+      "donki.dailyStatus.levels.moderate.description",
     modifier: "daily-status-panel__gauge--moderate",
-    description: "Atividade moderada registada hoje.",
   },
   critical: {
-    label: "Crítico",
+    labelKey: "donki.dailyStatus.levels.critical.label",
+    descriptionKey:
+      "donki.dailyStatus.levels.critical.description",
     modifier: "daily-status-panel__gauge--critical",
-    description:
-      "Atividade intensa registada hoje — mantém-te atento.",
   },
 };
 
-function DailyStatusPanel({ type, events, loading, error }) {
+function DailyStatusPanel({
+  type,
+  events,
+  loading,
+  error,
+}) {
+  const { t } = useTranslation();
+
   const typeConfig = donkiEventTypes.find(
     (item) => item.id === type
   );
 
   const status = useMemo(() => {
-    if (loading || error) return null;
+    if (loading || error) {
+      return null;
+    }
+
     return getTodaySeverity(events, type);
   }, [events, type, loading, error]);
 
-  const level = status ? LEVEL_CONFIG[status.level] : null;
+  const level = status
+    ? LEVEL_CONFIG[status.level]
+    : null;
+
+  const typeLabel = typeConfig
+    ? t(typeConfig.shortLabelKey)
+    : "";
 
   return (
     <div
@@ -43,47 +62,59 @@ function DailyStatusPanel({ type, events, loading, error }) {
       aria-live="polite"
     >
       <h2 className="daily-status-panel__title">
-        Estado do Dia · {typeConfig?.shortLabel}
+        {t("donki.dailyStatus.title", {
+          type: typeLabel,
+        })}
       </h2>
 
       <p className="daily-status-panel__hint">
-        Reflete apenas os eventos de hoje — pode ser
-        diferente do total do período de pesquisa
-        apresentado mais abaixo.
+        {t("donki.dailyStatus.hint")}
       </p>
 
       {loading && (
         <p className="daily-status-panel__message">
-          A avaliar o estado do dia...
+          {t("donki.dailyStatus.loading")}
         </p>
       )}
 
       {!loading && error && (
         <p className="daily-status-panel__message">
-          Sem dados disponíveis para avaliar o estado do
-          dia.
+          {t("donki.dailyStatus.unavailable")}
         </p>
       )}
 
-      {!loading && !error && status && level && (
-        <div
-          className={`daily-status-panel__gauge ${level.modifier}`}
-        >
-          <span
-            className="daily-status-panel__dot"
-            aria-hidden="true"
-          />
+      {!loading &&
+        !error &&
+        status &&
+        level && (
+          <div
+            className={`daily-status-panel__gauge ${level.modifier}`}
+          >
+            <span
+              className="daily-status-panel__dot"
+              aria-hidden="true"
+            />
 
-          <div className="daily-status-panel__gauge-text">
-            <strong>{level.label}</strong>
-            <p>{level.description}</p>
+            <div className="daily-status-panel__gauge-text">
+              <strong>
+                {t(level.labelKey)}
+              </strong>
+
+              <p>
+                {t(level.descriptionKey)}
+              </p>
+            </div>
+
+            <span className="daily-status-panel__count">
+              {t(
+                "donki.dailyStatus.eventCount",
+                {
+                  count: status.count,
+                }
+              )}
+            </span>
           </div>
-
-          <span className="daily-status-panel__count">
-            {status.count} evento(s) hoje
-          </span>
-        </div>
-      )}
+        )}
     </div>
   );
 }

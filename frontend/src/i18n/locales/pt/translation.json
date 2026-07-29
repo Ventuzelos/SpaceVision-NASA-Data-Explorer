@@ -171,6 +171,194 @@
         "imageAlt": "Imagem astronómica disponibilizada pela NASA",
         "video": "Vídeo"
     },
+    "donki": {
+        "meta": {
+            "title": "Meteorologia Espacial — SpaceVision",
+            "description": "Consulta erupções solares, ejeções de massa coronal, tempestades geomagnéticas e outros eventos espaciais através de dados DONKI da NASA."
+        },
+        "validation": {
+            "requiredDates": "Seleciona uma data inicial e uma data final.",
+            "invalidRange": "A data inicial não pode ser posterior à data final."
+        },
+        "errors": {
+            "title": "Não foi possível carregar os eventos",
+            "loadEvents": "Não foi possível carregar os eventos de meteorologia espacial."
+        },
+        "empty": {
+            "title": "Nenhum evento encontrado",
+            "description": "Não foram encontrados eventos para este período. Experimenta alargar o intervalo de datas ou selecionar outro tipo de evento."
+        },
+        "results": {
+            "eventCount_one": "{{count}} evento",
+            "eventCount_other": "{{count}} eventos"
+        },
+        "stats": {
+            "periodEvents": "Eventos neste período",
+            "mostIntense": "Mais intenso",
+            "latest": "Mais recente"
+        },
+        "favorites": {
+            "loginRequired": "Precisas de iniciar sessão para guardar favoritos",
+            "added": "Adicionado aos favoritos",
+            "removed": "Removido dos favoritos",
+            "updateError": "Não foi possível atualizar o favorito"
+        },
+        "defaultEventTitle": "Evento DONKI",
+        "eventTypes": {
+            "ariaLabel": "Tipo de evento DONKI",
+            "flr": {
+                "label": "Erupções solares",
+                "description": "Explosões intensas de energia na superfície do Sol."
+            },
+            "cme": {
+                "label": "Ejeções de massa coronal",
+                "description": "Grandes libertações de plasma e campo magnético do Sol."
+            },
+            "gst": {
+                "label": "Tempestades geomagnéticas",
+                "description": "Perturbações no campo magnético da Terra."
+            },
+            "sep": {
+                "label": "Partículas energéticas",
+                "description": "Eventos de partículas solares de alta energia."
+            },
+            "hss": {
+                "label": "Fluxos solares rápidos",
+                "description": "Correntes rápidas de vento solar vindas de buracos coronais."
+            },
+            "notifications": {
+                "label": "Notificações",
+                "description": "Avisos e atualizações recentes da NASA."
+            }
+        },
+        "dateRange": {
+            "period": "Período",
+            "last7Days": "Últimos 7 dias",
+            "last30Days": "Últimos 30 dias",
+            "last90Days": "Últimos 90 dias",
+            "startDate": "Data inicial",
+            "endDate": "Data final",
+            "searching": "A pesquisar...",
+            "searchEvents": "Pesquisar eventos"
+        },
+        "hero": {
+            "breadcrumb": "Meteorologia Espacial",
+            "eyebrow": "DONKI · Base de dados de meteorologia espacial da NASA",
+            "title": "Meteorologia espacial em tempo real",
+            "description": "Consulta erupções solares, ejeções de massa coronal, tempestades geomagnéticas e outros fenómenos monitorizados pela NASA para perceber o que está a acontecer à volta do Sol e da Terra."
+        },
+        "insights": {
+            "ariaLabel": "Informações sobre o tipo de evento selecionado",
+            "tabs": {
+                "curiosity": "Sabias que",
+                "explainer": "O que é isto",
+                "status": "Estado do dia"
+            }
+        },
+        "curiosity": {
+            "title": "Sabias que...",
+            "showAnother": "Mostrar outra curiosidade"
+        },
+        "facts": {
+            "carrington": "O DONKI acompanha as Ejeções de Massa Coronal (CMEs) para ajudar a prever cenários extremos: uma tempestade solar como o Evento Carrington de 1859, se atingisse a Terra hoje, poderia danificar redes elétricas e satélites. Os dados ajudam as entidades responsáveis a proteger sistemas críticos.",
+            "birthday": "É possível descobrir o que o Sol fez no dia em que nasceste: basta ajustar o intervalo de datas para o teu aniversário e consultar os eventos solares registados nesse dia.",
+            "mars": "O DONKI ajuda a estudar o efeito do vento solar sobre Marte. Como o planeta não tem um campo magnético global forte como o da Terra, a sua atmosfera está mais exposta às partículas emitidas pelo Sol.",
+            "astronauts": "Os dados de meteorologia espacial ajudam a proteger astronautas, permitindo emitir alertas de radiação para missões espaciais e planear medidas de segurança para futuras missões à Lua.",
+            "auroras": "O DONKI ajuda a prever auroras boreais e austrais. A velocidade do vento solar e a atividade geomagnética permitem estimar a intensidade e a localização provável destes fenómenos."
+        },
+        "explainer": {
+            "whatIsHappening": "O que está a acontecer?",
+            "howItAffectsYou": "Como te afeta?"
+        },
+        "explainers": {
+            "flr": {
+                "whatIsHappening": "O Sol liberta flashes gigantescos de luz e radiação. Viajam à velocidade da luz e demoram apenas 8 minutos a chegar à Terra.",
+                "howItAffectsYou": "Não perfura a atmosfera, por isso estamos seguros, mas pode baralhar os sinais de rádio usados por aviões e barcos."
+            },
+            "cme": {
+                "whatIsHappening": "Uma bolha gigante de milhares de milhões de toneladas de gás magnético é disparada pelo Sol para o espaço.",
+                "howItAffectsYou": "Se vier em direção à Terra, pode empurrar os satélites para fora das suas órbitas e causar falhas temporárias no sinal de GPS do teu telemóvel."
+            },
+            "gst": {
+                "whatIsHappening": "A energia do Sol colide e agita o escudo magnético invisível que protege o planeta Terra.",
+                "howItAffectsYou": "Em casos extremos, pode sobrecarregar transformadores de eletricidade e causar apagões. O lado positivo? Cria auroras boreais incríveis no céu."
+            },
+            "sep": {
+                "whatIsHappening": "Uma tempestade de protões ultrarrápidos é disparada pelo Sol, funcionando como uma espécie de \"chuva radioativa\" no espaço profundo.",
+                "howItAffectsYou": "É o maior perigo para as viagens espaciais. Os astronautas na Estação Espacial ou a caminho da Lua precisam de se abrigar em salas protegidas."
+            },
+            "hss": {
+                "whatIsHappening": "O Sol tem \"buracos\" na sua atmosfera por onde sopra um vento contínuo de gases a velocidades de milhões de quilómetros por hora.",
+                "howItAffectsYou": "Funciona como a brisa diária do espaço. Quando o vento sopra mais forte, ativa pequenas auroras nos polos da Terra."
+            }
+        },
+        "dailyStatus": {
+            "title": "Estado do Dia · {{type}}",
+            "hint": "Reflete apenas os eventos de hoje — pode ser diferente do total do período de pesquisa apresentado mais abaixo.",
+            "loading": "A avaliar o estado do dia...",
+            "unavailable": "Sem dados disponíveis para avaliar o estado do dia.",
+            "eventCount_one": "{{count}} evento hoje",
+            "eventCount_other": "{{count}} eventos hoje",
+            "levels": {
+                "normal": {
+                    "label": "Normal",
+                    "description": "Sem atividade significativa registada hoje."
+                },
+                "moderate": {
+                    "label": "Moderado",
+                    "description": "Atividade moderada registada hoje."
+                },
+                "critical": {
+                    "label": "Crítico",
+                    "description": "Atividade intensa registada hoje — mantém-te atento."
+                }
+            }
+        },
+        "eventCard": {
+            "dateUnavailable": "Data não disponível",
+            "information": "Informação",
+            "viewDetails": "Ver detalhes",
+            "viewDetailsAria": "Ver detalhes de {{title}}",
+            "addFavorite": "Adicionar {{title}} aos favoritos",
+            "removeFavorite": "Remover {{title}} dos favoritos"
+        },
+        "eventDetails": {
+            "back": "Voltar à lista",
+            "backAria": "Fechar os detalhes e voltar à lista de eventos",
+            "dateUnavailable": "Data não disponível",
+            "addFavorite": "Adicionar {{title}} aos favoritos",
+            "removeFavorite": "Remover {{title}} dos favoritos",
+            "translationNote": "Tradução automática. O conteúdo original foi fornecido pela NASA.",
+            "relatedResources": "Recursos relacionados",
+            "openResource": "Abrir recurso {{number}}",
+            "openResourceAria": "Abrir recurso relacionado {{number}} numa nova janela",
+            "viewNasaSource": "Ver fonte na NASA",
+            "viewNasaSourceAria": "Ver a fonte original na NASA numa nova janela"
+        },
+        "eventData": {
+            "titles": {
+                "flr": "Erupção Solar {{classType}}",
+                "cme": "Ejeção de Massa Coronal",
+                "gst": "Tempestade Geomagnética",
+                "sep": "Evento de Partículas Energéticas Solares",
+                "hss": "Fluxo de Vento Solar de Alta Velocidade",
+                "notification": "Notificação DONKI"
+            },
+            "meta": {
+                "start": "Início",
+                "peak": "Pico",
+                "end": "Fim",
+                "activeRegion": "Região ativa",
+                "instruments": "Instrumentos",
+                "location": "Localização",
+                "speed": "Velocidade",
+                "maximumKp": "Índice Kp máximo",
+                "linkedEvents": "Eventos associados",
+                "issuedAt": "Emitida em",
+                "messageId": "ID da mensagem"
+            }
+        }
+    },
     "common": {
         "loading": "A carregar...",
         "error": "Ocorreu um erro",
@@ -179,7 +367,8 @@
         "back": "Voltar",
         "search": "Pesquisar",
         "noResults": "Não foram encontrados resultados",
-        "live": "Ao vivo"
+        "live": "Ao vivo",
+        "notAvailable": "N/D"
     },
     "language": {
         "portuguese": "Português",
