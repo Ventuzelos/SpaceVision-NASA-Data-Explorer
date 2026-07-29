@@ -65,10 +65,7 @@ function Login() {
         "Não foi possível iniciar sessão. Por favor, verifica as tuas credenciais e tenta novamente.";
 
       const validationMessage =
-        requestError.response?.status &&
-        requestError.response.status < 500
-          ? requestError.response?.data?.errors?.email?.[0]
-          : null;
+        requestError.response?.data?.errors?.email?.[0];
 
       const message =
         validationMessage ||
