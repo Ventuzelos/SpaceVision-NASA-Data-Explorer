@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import Button from "../common/Button/Button";
 import Toast from "../common/Toast/Toast";
@@ -16,9 +17,9 @@ import {
 
 import "./APODCard.css";
 
-function formatApodDate(date) {
+function formatApodDate(date, locale, unavailableText) {
   if (!date) {
-    return "Data indisponível";
+    return unavailableText;
   }
 
   const [year, month, day] = date.split("-").map(Number);
@@ -28,7 +29,7 @@ function formatApodDate(date) {
   }
 
   return new Date(year, month - 1, day).toLocaleDateString(
-    "pt-PT",
+    locale,
     {
       day: "numeric",
       month: "long",
@@ -38,6 +39,7 @@ function formatApodDate(date) {
 }
 
 function APODCard({ apod }) {
+  const { t, i18n } = useTranslation();
   const { isAuthenticated, isAuthLoading } = useAuth();
 
   const [isExpanded, setIsExpanded] = useState(false);
@@ -50,27 +52,52 @@ function APODCard({ apod }) {
 
   const toastTimeoutRef = useRef(null);
 
+  const currentLanguage =
+    i18n.resolvedLanguage?.startsWith("en")
+      ? "en"
+      : "pt";
+
+  const dateLocale =
+    currentLanguage === "en" ? "en-GB" : "pt-PT";
+
   const favoriteId = `apod-${apod.date}`;
-  const formattedDate = formatApodDate(apod.date);
+
+  const formattedDate = formatApodDate(
+    apod.date,
+    dateLocale,
+    t("apodCard.dateUnavailable")
+  );
 
   const isImage = apod.media_type === "image";
   const mediaUrl = isSafeUrl(apod.url) ? apod.url : null;
   const hdUrl = isSafeUrl(apod.hdurl) ? apod.hdurl : null;
 
-  const displayTitle =
-    apod.translated_title ||
+  const originalTitle =
+    apod.original_title ||
     apod.title ||
-    "Imagem astronómica do dia";
+    t("apodCard.defaultTitle");
 
-  const displayExplanation =
-    apod.translated_explanation ||
+  const originalExplanation =
+    apod.original_explanation ||
     apod.explanation ||
     "";
 
+  const displayTitle =
+    currentLanguage === "pt"
+      ? apod.translated_title ||
+        originalTitle
+      : originalTitle;
+
+  const displayExplanation =
+    currentLanguage === "pt"
+      ? apod.translated_explanation ||
+        originalExplanation
+      : originalExplanation;
+
   const hasAutomaticTranslation =
+    currentLanguage === "pt" &&
     Boolean(apod.translated_explanation) &&
-    apod.translated_explanation !==
-      (apod.original_explanation || apod.explanation);
+    apod.translated_explanation !== originalExplanation;
 
   useEffect(() => {
     let isMounted = true;
@@ -98,7 +125,7 @@ function APODCard({ apod }) {
       } catch (error) {
         if (error.response?.status !== 401) {
           console.error(
-            "Erro ao verificar favorito:",
+            "Error checking favorite:",
             error
           );
         }
@@ -145,7 +172,7 @@ function APODCard({ apod }) {
   async function handleFavoriteClick() {
     if (!isAuthenticated) {
       showToast(
-        "Precisas de iniciar sessão para guardar favoritos"
+        t("apodCard.favorites.loginRequired")
       );
       return;
     }
@@ -163,7 +190,9 @@ function APODCard({ apod }) {
         setFavorite(false);
         setFavoriteDatabaseId(null);
 
-        showToast("Removido dos favoritos");
+        showToast(
+          t("apodCard.favorites.removed")
+        );
         return;
       }
 
@@ -189,20 +218,22 @@ function APODCard({ apod }) {
       setFavorite(true);
       setFavoriteDatabaseId(createdFavorite.id);
 
-      showToast("Adicionado aos favoritos");
+      showToast(
+        t("apodCard.favorites.added")
+      );
     } catch (error) {
       console.error(
-        "Erro ao atualizar favorito:",
+        "Error updating favorite:",
         error
       );
 
       if (error.response?.status === 401) {
         showToast(
-          "Precisas de iniciar sessão para guardar favoritos"
+          t("apodCard.favorites.loginRequired")
         );
       } else {
         showToast(
-          "Não foi possível atualizar o favorito"
+          t("apodCard.favorites.updateError")
         );
       }
     } finally {
@@ -225,8 +256,7 @@ function APODCard({ apod }) {
             />
 
             <p>
-              O conteúdo multimédia desta APOD não está
-              disponível.
+              {t("apodCard.mediaUnavailable")}
             </p>
           </div>
         )}
@@ -236,7 +266,7 @@ function APODCard({ apod }) {
             src={mediaUrl}
             alt={
               displayTitle ||
-              "Imagem astronómica disponibilizada pela NASA"
+              t("apodCard.imageAlt")
             }
             loading="lazy"
             decoding="async"
@@ -248,7 +278,7 @@ function APODCard({ apod }) {
             src={mediaUrl}
             title={
               displayTitle ||
-              "Vídeo astronómico disponibilizado pela NASA"
+              t("apodCard.videoTitle")
             }
             loading="lazy"
             allow="accelerometer; autoplay; encrypted-media; picture-in-picture"
@@ -259,8 +289,6 @@ function APODCard({ apod }) {
       </div>
 
       <div className="apod-card__content">
-        
-
         <div className="apod-card__header">
           <h2>{displayTitle}</h2>
 
@@ -272,8 +300,8 @@ function APODCard({ apod }) {
             }
             ariaLabel={
               favorite
-                ? "Remover dos favoritos"
-                : "Adicionar aos favoritos"
+                ? t("apodCard.favorites.removeLabel")
+                : t("apodCard.favorites.addLabel")
             }
           />
         </div>
@@ -308,7 +336,9 @@ function APODCard({ apod }) {
               aria-hidden="true"
             />
 
-            {isImage ? "Imagem" : "Vídeo"}
+            {isImage
+              ? t("apodCard.mediaType.image")
+              : t("apodCard.mediaType.video")}
           </span>
         </div>
 
@@ -326,8 +356,7 @@ function APODCard({ apod }) {
 
             {hasAutomaticTranslation && (
               <p className="apod-card__translation-note">
-                Tradução automática. O conteúdo original foi
-                fornecido pela NASA.
+                {t("apodCard.translationNote")}
               </p>
             )}
 
@@ -342,8 +371,8 @@ function APODCard({ apod }) {
                 aria-expanded={isExpanded}
               >
                 {isExpanded
-                  ? "Mostrar menos"
-                  : "Ler mais"}
+                  ? t("apodCard.showLess")
+                  : t("apodCard.readMore")}
               </Button>
 
               {isImage && hdUrl && (
@@ -360,16 +389,19 @@ function APODCard({ apod }) {
                       aria-hidden="true"
                     />
 
-                    Ver imagem HD
+                    {t("apodCard.viewHdImage")}
                   </Button>
+
+                  <span className="sr-only">
+                    {t("apodCard.opensNewWindow")}
+                  </span>
                 </a>
               )}
             </div>
           </>
         ) : (
           <p className="apod-card__text">
-            Não está disponível uma explicação para este
-            conteúdo.
+            {t("apodCard.explanationUnavailable")}
           </p>
         )}
       </div>

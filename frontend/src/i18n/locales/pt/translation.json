@@ -140,6 +140,37 @@
             "title": "O cosmos, fotograma a fotograma."
         }
     },
+    "apodCard": {
+        "dateUnavailable": "Data indisponível",
+        "defaultTitle": "Imagem astronómica do dia",
+        "mediaUnavailable": "O conteúdo multimédia desta APOD não está disponível.",
+        "imageAlt": "Imagem astronómica disponibilizada pela NASA",
+        "videoTitle": "Vídeo astronómico disponibilizado pela NASA",
+        "translationNote": "Tradução automática. O conteúdo original foi fornecido pela NASA.",
+        "showLess": "Mostrar menos",
+        "readMore": "Ler mais",
+        "viewHdImage": "Ver imagem HD",
+        "opensNewWindow": "Abre numa nova janela",
+        "explanationUnavailable": "Não está disponível uma explicação para este conteúdo.",
+        "mediaType": {
+            "image": "Imagem",
+            "video": "Vídeo"
+        },
+        "favorites": {
+            "addLabel": "Adicionar aos favoritos",
+            "removeLabel": "Remover dos favoritos",
+            "loginRequired": "Precisas de iniciar sessão para guardar favoritos",
+            "added": "Adicionado aos favoritos",
+            "removed": "Removido dos favoritos",
+            "updateError": "Não foi possível atualizar o favorito"
+        }
+    },
+    "apodHistoryCard": {
+        "defaultTitle": "Imagem astronómica da NASA",
+        "openItem": "Ver {{title}}",
+        "imageAlt": "Imagem astronómica disponibilizada pela NASA",
+        "video": "Vídeo"
+    },
     "common": {
         "loading": "A carregar...",
         "error": "Ocorreu um erro",
