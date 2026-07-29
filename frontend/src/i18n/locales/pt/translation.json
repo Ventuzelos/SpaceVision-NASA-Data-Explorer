@@ -1309,6 +1309,124 @@
             "general": "Não foi possível enviar a mensagem. Verifica os dados e tenta novamente."
         }
     },
+    "favorites": {
+        "meta": {
+            "title": "Favoritos — SpaceVision",
+            "description": "Consulta e organiza os conteúdos da NASA que guardaste como favoritos no SpaceVision."
+        },
+        "breadcrumb": "Favoritos",
+        "contentTitle": "Lista de favoritos",
+        "hero": {
+            "label": "Os teus conteúdos guardados",
+            "title": "Favoritos",
+            "userTitle": "Favoritos de {{name}}",
+            "description": "Guarda imagens e dados da NASA para consultares mais tarde."
+        },
+        "filters": {
+            "title": "Filtrar por API",
+            "aria": "Filtrar favoritos por API",
+            "options": {
+                "all": "Todos",
+                "apod": "APOD",
+                "donki": "DONKI",
+                "epic": "EPIC",
+                "neows": "NeoWS"
+            }
+        },
+        "undo": {
+            "removed": "Favorito removido.",
+            "action": "Desfazer"
+        },
+        "states": {
+            "loading": "A carregar favoritos...",
+            "errorTitle": "Favoritos indisponíveis",
+            "emptyTitle": "Ainda não tens favoritos",
+            "emptyDescription": "Explora os conteúdos da NASA e guarda os que mais gostares.",
+            "filterEmptyTitle": "Não existem favoritos neste filtro",
+            "filterEmptyDescription": "Ainda não guardaste conteúdos desta API."
+        },
+        "errors": {
+            "authentication": "Precisas de iniciar sessão para consultar os teus favoritos.",
+            "load": "Não foi possível carregar os favoritos."
+        },
+        "toast": {
+            "removeError": "Não foi possível remover o favorito.",
+            "restored": "Favorito restaurado.",
+            "restoreError": "Não foi possível restaurar o favorito."
+        }
+    },
+    "favoriteCard": {
+        "dateUnavailable": "Data não disponível",
+        "untitled": "Conteúdo sem título",
+        "types": {
+            "nasa": "NASA",
+            "apod": "APOD",
+            "donki": "DONKI",
+            "epic": "EPIC",
+            "neows": "NeoWS"
+        },
+        "actions": {
+            "view": "Ver",
+            "remove": "Remover",
+            "viewAria": "Ver detalhes de {{title}}",
+            "removeAria": "Remover {{title}} dos favoritos"
+        }
+    },
+    "favoriteModal": {
+        "closeAria": "Fechar detalhes",
+        "untitled": "Conteúdo sem título",
+        "imageAlt": "Imagem da NASA",
+        "unavailable": "Não disponível",
+        "dateTimeSeparator": "às",
+        "incompleteData": "Este favorito não tem os dados completos guardados. Remove-o e volta a adicioná-lo para guardar todas as informações.",
+        "types": {
+            "nasa": "NASA",
+            "apod": "APOD",
+            "donki": "DONKI",
+            "epic": "EPIC",
+            "neows": "NeoWS"
+        },
+        "common": {
+            "date": "Data",
+            "description": "Descrição",
+            "descriptionUnavailable": "Não existe uma descrição guardada neste favorito."
+        },
+        "apod": {
+            "credits": "Créditos",
+            "openVideo": "Abrir vídeo"
+        },
+        "epic": {
+            "latitude": "Latitude",
+            "longitude": "Longitude",
+            "identifier": "Identificador"
+        },
+        "donki": {
+            "noDetails": "Não existem detalhes adicionais guardados para este evento.",
+            "viewSource": "Ver fonte na NASA",
+            "labels": {
+                "start": "Início",
+                "peak": "Pico",
+                "end": "Fim",
+                "activeRegion": "Região ativa",
+                "instruments": "Instrumentos",
+                "type": "Tipo",
+                "location": "Localização",
+                "speed": "Velocidade",
+                "duration": "Duração"
+            }
+        },
+        "neows": {
+            "approach": "Aproximação",
+            "risk": "Risco",
+            "riskHigh": "Elevado",
+            "riskLow": "Baixo",
+            "missDistance": "Distância de passagem",
+            "lunarDistance": "Distância lunar",
+            "estimatedDiameter": "Diâmetro estimado",
+            "relativeVelocity": "Velocidade relativa",
+            "viewJpl": "Ver no JPL"
+        }
+    },
     "common": {
         "loading": "A carregar...",
         "error": "Ocorreu um erro",

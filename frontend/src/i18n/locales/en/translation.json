@@ -1309,6 +1309,124 @@
             "general": "The message could not be sent. Check the information and try again."
         }
     },
+    "favorites": {
+        "meta": {
+            "title": "Favourites — SpaceVision",
+            "description": "View and organise the NASA content you have saved as favourites in SpaceVision."
+        },
+        "breadcrumb": "Favourites",
+        "contentTitle": "Favourites list",
+        "hero": {
+            "label": "Your saved content",
+            "title": "Favourites",
+            "userTitle": "{{name}}'s favourites",
+            "description": "Save NASA images and data so you can view them later."
+        },
+        "filters": {
+            "title": "Filter by API",
+            "aria": "Filter favourites by API",
+            "options": {
+                "all": "All",
+                "apod": "APOD",
+                "donki": "DONKI",
+                "epic": "EPIC",
+                "neows": "NeoWS"
+            }
+        },
+        "undo": {
+            "removed": "Favourite removed.",
+            "action": "Undo"
+        },
+        "states": {
+            "loading": "Loading favourites...",
+            "errorTitle": "Favourites unavailable",
+            "emptyTitle": "You do not have any favourites yet",
+            "emptyDescription": "Explore NASA content and save the items you like most.",
+            "filterEmptyTitle": "There are no favourites in this filter",
+            "filterEmptyDescription": "You have not saved any content from this API yet."
+        },
+        "errors": {
+            "authentication": "You need to sign in to view your favourites.",
+            "load": "The favourites could not be loaded."
+        },
+        "toast": {
+            "removeError": "The favourite could not be removed.",
+            "restored": "Favourite restored.",
+            "restoreError": "The favourite could not be restored."
+        }
+    },
+    "favoriteCard": {
+        "dateUnavailable": "Date unavailable",
+        "untitled": "Untitled content",
+        "types": {
+            "nasa": "NASA",
+            "apod": "APOD",
+            "donki": "DONKI",
+            "epic": "EPIC",
+            "neows": "NeoWS"
+        },
+        "actions": {
+            "view": "View",
+            "remove": "Remove",
+            "viewAria": "View details for {{title}}",
+            "removeAria": "Remove {{title}} from favourites"
+        }
+    },
+    "favoriteModal": {
+        "closeAria": "Close details",
+        "untitled": "Untitled content",
+        "imageAlt": "NASA image",
+        "unavailable": "Unavailable",
+        "dateTimeSeparator": "at",
+        "incompleteData": "This favourite does not contain all the saved data. Remove it and add it again to save all the available information.",
+        "types": {
+            "nasa": "NASA",
+            "apod": "APOD",
+            "donki": "DONKI",
+            "epic": "EPIC",
+            "neows": "NeoWS"
+        },
+        "common": {
+            "date": "Date",
+            "description": "Description",
+            "descriptionUnavailable": "There is no description saved for this favourite."
+        },
+        "apod": {
+            "credits": "Credits",
+            "openVideo": "Open video"
+        },
+        "epic": {
+            "latitude": "Latitude",
+            "longitude": "Longitude",
+            "identifier": "Identifier"
+        },
+        "donki": {
+            "noDetails": "There are no additional details saved for this event.",
+            "viewSource": "View source on NASA",
+            "labels": {
+                "start": "Start",
+                "peak": "Peak",
+                "end": "End",
+                "activeRegion": "Active region",
+                "instruments": "Instruments",
+                "type": "Type",
+                "location": "Location",
+                "speed": "Speed",
+                "duration": "Duration"
+            }
+        },
+        "neows": {
+            "approach": "Approach",
+            "risk": "Risk",
+            "riskHigh": "High",
+            "riskLow": "Low",
+            "missDistance": "Miss distance",
+            "lunarDistance": "Lunar distance",
+            "estimatedDiameter": "Estimated diameter",
+            "relativeVelocity": "Relative velocity",
+            "viewJpl": "View on JPL"
+        }
+    },
     "common": {
         "loading": "Loading...",
         "error": "Something went wrong",
