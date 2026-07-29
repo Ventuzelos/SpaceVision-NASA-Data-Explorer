@@ -850,6 +850,221 @@
             }
         }
     },
+    "faq": {
+        "meta": {
+            "title": "Perguntas Frequentes — SpaceVision",
+            "description": "Encontra respostas sobre o SpaceVision, as APIs da NASA, favoritos, conta de utilizador e utilização da plataforma."
+        },
+        "breadcrumb": "Perguntas Frequentes",
+        "hero": {
+            "eyebrow": "Perguntas frequentes",
+            "title": "Tudo o que precisas de saber",
+            "description": "Encontra respostas sobre os dados da NASA, conta, favoritos, segurança, chave pessoal e funcionalidades do SpaceVision."
+        },
+        "toolsAria": "Pesquisa e filtros das perguntas frequentes",
+        "searchPlaceholder": "Pesquisar por imagem do dia, asteroides, favoritos ou acesso à NASA...",
+        "filtersAria": "Filtrar perguntas por categoria",
+        "listAria": "Perguntas frequentes",
+        "categories": {
+            "all": "Todas",
+            "general": "Geral",
+            "nasaApis": "APIs NASA",
+            "data": "Dados",
+            "account": "Conta",
+            "favorites": "Favoritos",
+            "nasaKey": "Chave NASA",
+            "privacy": "Privacidade",
+            "support": "Suporte"
+        },
+        "empty": {
+            "title": "Não encontrámos nenhuma pergunta com esse termo.",
+            "description": "Tenta pesquisar por outra palavra-chave."
+        },
+        "items": {
+            "whatIsSpaceVision": {
+                "question": "O que é o SpaceVision?",
+                "keywords": "plataforma aplicação nasa universo espaço projeto",
+                "answer": "O SpaceVision — NASA Data Explorer é uma plataforma educativa que reúne diferentes fontes oficiais da NASA numa única experiência. Permite explorar imagens astronómicas, meteorologia espacial, fotografias da Terra, asteroides, missões e outros conteúdos científicos de forma visual e acessível."
+            },
+            "officialNasaApp": {
+                "question": "O SpaceVision é uma aplicação oficial da NASA?",
+                "keywords": "oficial nasa projeto académico universidade escola",
+                "answer": "Não. O SpaceVision é um projeto académico independente. A plataforma utiliza dados e serviços oficiais disponibilizados publicamente pela NASA, mas não é desenvolvida, patrocinada ou administrada pela NASA."
+            },
+            "targetAudience": {
+                "question": "Para quem foi criado o SpaceVision?",
+                "keywords": "público estudantes curiosidade ciência astronomia",
+                "answer": "A plataforma foi criada para pessoas interessadas em ciência, tecnologia e exploração espacial, incluindo utilizadores sem conhecimentos avançados de astronomia. Também pode ser útil para estudantes, professores e entusiastas do espaço."
+            },
+            "responsive": {
+                "question": "O SpaceVision funciona em telemóveis e tablets?",
+                "keywords": "mobile responsivo tablet smartphone computador desktop",
+                "answer": "Sim. A interface foi desenvolvida para se adaptar a computadores, tablets e telemóveis. Algumas visualizações mais complexas, como os modelos 3D, podem ter um desempenho diferente dependendo do dispositivo utilizado."
+            },
+            "nasaApis": {
+                "question": "Que APIs da NASA o SpaceVision utiliza?",
+                "keywords": "apod donki epic neows neowatch api astronomia meteorologia terra asteroides",
+                "answer": "O SpaceVision utiliza diferentes serviços públicos da NASA:",
+                "apis": {
+                    "apod": {
+                        "name": "APOD",
+                        "description": "Astronomy Picture of the Day — conteúdo astronómico diário acompanhado por uma explicação científica."
+                    },
+                    "donki": {
+                        "name": "DONKI",
+                        "description": "Base de dados de meteorologia espacial, incluindo erupções solares, tempestades geomagnéticas e ejeções de massa coronal."
+                    },
+                    "epic": {
+                        "name": "EPIC",
+                        "description": "Imagens do disco completo da Terra captadas pela câmara EPIC a bordo do satélite DSCOVR."
+                    },
+                    "neows": {
+                        "name": "NeoWS",
+                        "description": "Dados sobre asteroides e outros objetos que passam próximos da órbita da Terra."
+                    }
+                }
+            },
+            "apod": {
+                "question": "O que é a imagem astronómica do dia?",
+                "keywords": "apod fotografia vídeo astronomia imagem diária",
+                "answer": "A Astronomy Picture of the Day, conhecida como APOD, é um conteúdo publicado diariamente pela NASA. Pode ser uma fotografia, uma ilustração científica ou um vídeo, acompanhado por uma explicação escrita por profissionais da área."
+            },
+            "spaceWeather": {
+                "question": "O que é a meteorologia espacial?",
+                "keywords": "donki sol erupções solares tempestades geomagnéticas eventos solares",
+                "answer": "A meteorologia espacial estuda as condições do Sol e do espaço que podem afetar a Terra e os seus sistemas tecnológicos. No SpaceVision, os dados DONKI permitem consultar eventos como erupções solares, ejeções de massa coronal e tempestades geomagnéticas."
+            },
+            "epic": {
+                "question": "O que é a câmara EPIC?",
+                "keywords": "epic terra dscovr satélite imagens planeta",
+                "answer": "A EPIC, ou Earth Polychromatic Imaging Camera, é uma câmara instalada no satélite DSCOVR. A partir de uma posição entre a Terra e o Sol, capta imagens do lado iluminado do planeta em vários comprimentos de onda."
+            },
+            "nearEarthObjects": {
+                "question": "O que são objetos próximos da Terra?",
+                "keywords": "asteroides neows neowatch objetos próximos perigosos órbita distância",
+                "answer": "São asteroides ou cometas cujas órbitas passam relativamente perto da órbita terrestre. A designação não significa necessariamente que exista perigo de colisão. O SpaceVision apresenta dados como a distância, velocidade, dimensão estimada e classificação de risco."
+            },
+            "realTime": {
+                "question": "Os dados apresentados são em tempo real?",
+                "keywords": "tempo real atualizados nasa atraso cache",
+                "answer": "O SpaceVision apresenta a informação mais recente disponibilizada publicamente pelas APIs da NASA. Nem todas as fontes funcionam em tempo real: algumas são atualizadas diariamente e outras recebem novos dados ao longo do dia.",
+                "callout": "A frequência de atualização depende de cada serviço da NASA."
+            },
+            "updateFrequency": {
+                "question": "Com que frequência os dados são atualizados?",
+                "keywords": "frequência atualização apod epic donki neows cache",
+                "answer": "O APOD publica um novo conteúdo diariamente. A EPIC pode disponibilizar várias imagens por dia. O DONKI recebe eventos sempre que são registadas novas ocorrências de meteorologia espacial e o NeoWS é atualizado de acordo com os dados orbitais publicados pela NASA."
+            },
+            "noResults": {
+                "question": "Porque alguns dias não apresentam resultados?",
+                "keywords": "sem resultados data vazia nenhum evento erro",
+                "answer": "Algumas datas podem não ter imagens ou eventos disponíveis. Isto não significa necessariamente que exista um erro: pode simplesmente não ter sido registado conteúdo nessa data. Experimenta selecionar outro dia ou aumentar o intervalo da pesquisa."
+            },
+            "mediaNotLoading": {
+                "question": "Porque algumas imagens ou vídeos não carregam?",
+                "keywords": "imagem vídeo falha indisponível ligação youtube nasa",
+                "answer": "Alguns conteúdos são alojados em serviços externos ou podem ficar temporariamente indisponíveis. Uma ligação lenta, limites da API ou bloqueios do navegador também podem impedir o carregamento. Atualiza a página e tenta novamente alguns minutos depois."
+            },
+            "accountRequired": {
+                "question": "Preciso de criar conta para explorar o site?",
+                "keywords": "conta registo login sessão navegar",
+                "answer": "Não. Podes consultar as áreas públicas sem criar conta. A autenticação é necessária apenas para funcionalidades pessoais, como guardar favoritos, gerir o perfil, descarregar os teus dados ou adicionar uma chave pessoal da NASA."
+            },
+            "createAccount": {
+                "question": "Como posso criar uma conta?",
+                "keywords": "registar criar conta nome email palavra-passe",
+                "answer": "Abre a página de registo, introduz o teu nome, email e uma palavra-passe válida e confirma o formulário. Depois do registo, poderás iniciar sessão e utilizar as funcionalidades pessoais da plataforma."
+            },
+            "forgotPassword": {
+                "question": "Esqueci-me da palavra-passe. O que devo fazer?",
+                "keywords": "recuperar reset redefinir password palavra-passe email",
+                "answer": "Na página de início de sessão, seleciona a opção de recuperação da palavra-passe. Introduz o email associado à tua conta e segue as instruções enviadas. Em ambiente de desenvolvimento, o envio pode ser registado nos logs do servidor."
+            },
+            "deleteAccount": {
+                "question": "Como posso eliminar a minha conta?",
+                "keywords": "apagar eliminar conta perfil dados",
+                "answer": "A eliminação da conta está disponível no Perfil, na área dedicada à gestão da conta. A ação requer confirmação e remove o acesso à conta. Antes de eliminar, podes descarregar uma cópia dos teus dados."
+            },
+            "howFavoritesWork": {
+                "question": "Como funcionam os favoritos?",
+                "keywords": "favoritos coração guardar remover conteúdos",
+                "answer": "Depois de iniciares sessão, seleciona o ícone de coração num conteúdo compatível. O favorito fica associado à tua conta e pode ser consultado ou removido na página <strong>Favoritos</strong>."
+            },
+            "favoritesAcrossDevices": {
+                "question": "Os favoritos ficam disponíveis noutros dispositivos?",
+                "keywords": "sincronização dispositivos conta telemóvel computador",
+                "answer": "Sim. Os favoritos são guardados na tua conta e não apenas no navegador. Ao iniciares sessão noutro dispositivo com a mesma conta, deverás encontrar os conteúdos anteriormente guardados."
+            },
+            "favoritesLogin": {
+                "question": "Porque preciso de iniciar sessão para guardar favoritos?",
+                "keywords": "autenticação sessão unauthenticated favorito",
+                "answer": "A sessão permite associar cada favorito ao utilizador correto e mantê-lo disponível depois de fechar o navegador ou mudar de dispositivo. Sem sessão, podes continuar a explorar os conteúdos, mas não os podes guardar na tua coleção pessoal."
+            },
+            "whatIsNasaKey": {
+                "question": "O que é uma chave da API da NASA?",
+                "keywords": "api key chave nasa pedidos limite perfil",
+                "answer": "É um código pessoal fornecido pela NASA para identificar os pedidos efetuados às suas APIs. Uma chave pessoal permite utilizar um limite próprio de pedidos, em vez de depender apenas da chave geral da aplicação."
+            },
+            "personalNasaKey": {
+                "question": "Como funciona a chave da API da NASA e porque devo utilizar uma chave pessoal?",
+                "keywords": "nasa api key chave pessoal chave geral limite pedidos bloqueio conta perfil obter criar",
+                "paragraph1": "O SpaceVision utiliza uma chave geral da API da NASA para permitir que os visitantes consultem os conteúdos sem terem de configurar uma chave própria. No entanto, essa chave é partilhada por todos os utilizadores da plataforma e possui um limite de pedidos.",
+                "paragraph2": "Quando muitas pessoas utilizam o site ao mesmo tempo, esse limite pode ser atingido temporariamente. Nessa situação, algumas imagens, eventos ou outros dados da NASA podem deixar de carregar até o limite ficar novamente disponível.",
+                "paragraph3": "Para evitar depender da chave partilhada, podes obter gratuitamente uma chave pessoal no portal oficial das APIs da NASA. Depois de iniciares sessão no SpaceVision, podes inserir essa chave na área dedicada à <strong>Chave NASA</strong> da página de Perfil.",
+                "callout": "Obtém uma chave pessoal no <nasaLink>portal oficial das APIs da NASA</nasaLink>."
+            },
+            "rateLimit": {
+                "question": "O que significa “limite de pedidos atingido”?",
+                "keywords": "rate limit excedido nasa pedidos 429",
+                "answer": "Significa que a chave utilizada atingiu temporariamente o número máximo de pedidos permitido pela NASA. Podes aguardar pela renovação do limite ou adicionar uma chave pessoal da NASA na página de Perfil."
+            },
+            "nasaKeySecurity": {
+                "question": "A minha chave pessoal da NASA fica protegida?",
+                "keywords": "segurança privacidade api key chave encriptada",
+                "answer": "A chave é enviada para o back-end e utilizada nos pedidos à NASA. Não deve ser exposta nos URLs, na interface pública ou a outros utilizadores. Podes substituí-la ou removê-la a qualquer momento no Perfil."
+            },
+            "storedPersonalData": {
+                "question": "Que dados pessoais são guardados?",
+                "keywords": "dados pessoais nome email favoritos chave privacidade",
+                "answer": "A aplicação guarda os dados necessários para gerir a conta, como nome, email e palavra-passe protegida. Também pode guardar favoritos, preferências e uma chave pessoal da NASA, quando o utilizador decide adicioná-la."
+            },
+            "passwordStorage": {
+                "question": "As palavras-passe são guardadas em texto simples?",
+                "keywords": "password palavra-passe hash segurança",
+                "answer": "Não. As palavras-passe são processadas através dos mecanismos de segurança do Laravel e guardadas sob a forma de hash. Isto significa que a palavra-passe original não deve ficar diretamente legível na base de dados."
+            },
+            "downloadData": {
+                "question": "Posso descarregar os meus dados?",
+                "keywords": "download exportar dados perfil rgpd",
+                "answer": "Sim. A página de Perfil inclui uma opção para descarregar os dados associados à tua conta. Esta funcionalidade permite consultar a informação pessoal armazenada pela plataforma."
+            },
+            "cookies": {
+                "question": "O SpaceVision utiliza cookies?",
+                "keywords": "cookies sessão preferências política",
+                "answer": "A aplicação pode utilizar mecanismos técnicos necessários ao funcionamento da autenticação e da experiência do utilizador. Consulta a Política de Cookies disponível no rodapé para obter informação mais detalhada."
+            },
+            "connectionError": {
+                "question": "O que devo fazer quando aparece um erro de ligação?",
+                "keywords": "erro rede servidor backend cors ligação",
+                "answer": "Confirma que tens ligação à Internet e atualiza a página. Em ambiente local, confirma também se o front-end e o servidor Laravel estão em execução. Caso o problema continue, tenta novamente mais tarde ou utiliza o formulário de contacto."
+            },
+            "supportedBrowsers": {
+                "question": "Que navegadores são suportados?",
+                "keywords": "chrome edge firefox safari navegador browser",
+                "answer": "O SpaceVision foi desenvolvido para funcionar nas versões recentes dos principais navegadores, incluindo Chrome, Edge e Firefox. Algumas funcionalidades visuais podem variar em navegadores antigos ou em dispositivos sem suporte para WebGL."
+            },
+            "keyboardSupport": {
+                "question": "O SpaceVision pode ser utilizado apenas com o teclado?",
+                "keywords": "acessibilidade teclado tab enter escape wcag",
+                "answer": "A interface foi desenvolvida com suporte para navegação por teclado, incluindo menus, formulários, filtros, acordeões e modais. O foco deve permanecer visível durante a navegação com Tab, Shift + Tab, Enter e Escape."
+            },
+            "contactTeam": {
+                "question": "Como posso contactar a equipa?",
+                "keywords": "contacto ajuda mensagem suporte equipa",
+                "answer": "Podes utilizar o formulário de contacto disponível na página <strong>Sobre</strong>. As mensagens enviadas ficam disponíveis para consulta pelos administradores da plataforma."
+            }
+        }
+    },
     "common": {
         "loading": "A carregar...",
         "error": "Ocorreu um erro",
