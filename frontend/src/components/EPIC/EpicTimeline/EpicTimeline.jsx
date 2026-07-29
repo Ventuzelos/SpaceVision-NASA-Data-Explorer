@@ -1,41 +1,50 @@
+import { useTranslation } from "react-i18next";
+
 import "./EpicTimeline.css";
 
 const TIMELINE_ITEMS = [
   {
-    year: "Fev 2015",
-    title: "Lançamento do DSCOVR",
-    text: "O satélite Deep Space Climate Observatory é lançado num foguetão Falcon 9 da SpaceX, numa parceria entre a NASA, a NOAA e a Força Aérea dos EUA.",
+    id: "launch",
+    yearKey: "epic.timeline.items.launch.year",
+    titleKey: "epic.timeline.items.launch.title",
+    textKey: "epic.timeline.items.launch.text",
   },
   {
-    year: "Jun 2015",
-    title: "Chegada ao ponto L1",
-    text: "Após meses de viagem, o DSCOVR entra em órbita a cerca de 1,5 milhões de km da Terra, no ponto de Lagrange L1.",
+    id: "l1Arrival",
+    yearKey: "epic.timeline.items.l1Arrival.year",
+    titleKey: "epic.timeline.items.l1Arrival.title",
+    textKey: "epic.timeline.items.l1Arrival.text",
   },
   {
-    year: "Verão 2015",
-    title: "Primeiras imagens da EPIC",
-    text: "A NASA divulga as primeiras imagens a cores naturais do disco completo da Terra, captadas pelo espectroradiómetro EPIC.",
+    id: "firstImages",
+    yearKey: "epic.timeline.items.firstImages.year",
+    titleKey: "epic.timeline.items.firstImages.title",
+    textKey: "epic.timeline.items.firstImages.text",
   },
   {
-    year: "Desde 2015",
-    title: "Abertura da EPIC API",
-    text: "A EPIC API passa a disponibilizar publicamente cada captura e os respetivos metadados, prontos a explorar por qualquer pessoa.",
+    id: "apiLaunch",
+    yearKey: "epic.timeline.items.apiLaunch.year",
+    titleKey: "epic.timeline.items.apiLaunch.title",
+    textKey: "epic.timeline.items.apiLaunch.text",
   },
   {
-    year: "Hoje",
-    title: "Mais de uma década de dados",
-    text: "A EPIC continua em operação, a capturar o disco completo da Terra a cada duas horas — um arquivo contínuo com mais de dez anos de imagens.",
+    id: "today",
+    yearKey: "epic.timeline.items.today.year",
+    titleKey: "epic.timeline.items.today.title",
+    textKey: "epic.timeline.items.today.text",
     active: true,
   },
 ];
 
 export default function EpicTimeline() {
+  const { t } = useTranslation();
+
   return (
     <ol className="epic-timeline">
       {TIMELINE_ITEMS.map((item) => (
         <li
           className="epic-timeline__item"
-          key={`${item.year}-${item.title}`}
+          key={item.id}
         >
           <div className="epic-timeline__marker">
             <span
@@ -48,17 +57,17 @@ export default function EpicTimeline() {
             />
 
             <span className="epic-timeline__year">
-              {item.year}
+              {t(item.yearKey)}
             </span>
           </div>
 
           <div className="epic-timeline__content">
             <h3 className="epic-timeline__title">
-              {item.title}
+              {t(item.titleKey)}
             </h3>
 
             <p className="epic-timeline__description">
-              {item.text}
+              {t(item.textKey)}
             </p>
           </div>
         </li>

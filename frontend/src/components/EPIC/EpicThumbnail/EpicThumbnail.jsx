@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Clock } from "lucide-react";
 
 import FavoriteButton from "../../common/FavoriteButton/FavoriteButton";
@@ -36,6 +37,11 @@ export default function EpicThumbnail({
   isFavoriteLoading,
   onToggleFavorite,
 }) {
+  const { t, i18n } = useTranslation();
+
+  const isEnglish =
+    i18n.resolvedLanguage?.startsWith("en");
+
   const photoImage =
     typeof photo?.image === "string"
       ? photo.image
@@ -60,24 +66,48 @@ export default function EpicThumbnail({
     photo?.time ||
     getPhotoTime(photo?.date);
 
-  const caption =
+  const originalCaption =
+    photo?.original_caption ||
+    photo?.originalCaption ||
     photo?.caption ||
-    `Vista completa da Terra captada pela EPIC${
-      time ? ` às ${time} UTC` : ""
-    }`;
+    "";
+
+  const translatedCaption =
+    photo?.translated_caption ||
+    photo?.translatedCaption ||
+    originalCaption;
+
+  const defaultCaption = t(
+    "epic.thumbnail.defaultCaption",
+    {
+      time: time
+        ? t("epic.thumbnail.atTime", {
+            time,
+          })
+        : "",
+    }
+  );
+
+  const caption = isEnglish
+    ? originalCaption ||
+      translatedCaption ||
+      defaultCaption
+    : translatedCaption ||
+      originalCaption ||
+      defaultCaption;
 
   const favoriteId = photoImage
     ? `epic-${photoImage}`
     : "";
 
   const latitude =
-    photo?.lat ||
+    photo?.lat ??
     formatCoordinate(
       photo?.centroid_coordinates?.lat
     );
 
   const longitude =
-    photo?.lon ||
+    photo?.lon ??
     formatCoordinate(
       photo?.centroid_coordinates?.lon
     );
@@ -121,6 +151,10 @@ export default function EpicThumbnail({
       url: fullUrl,
       image_url: fullUrl,
       caption,
+      original_caption:
+        originalCaption,
+      translated_caption:
+        translatedCaption,
       time,
       lat: latitude,
       lon: longitude,
@@ -158,9 +192,14 @@ export default function EpicThumbnail({
       type: "epic",
       nasa_type: "epic",
 
-      title: `EPIC · Terra${
-        time ? ` (${time} UTC)` : ""
-      }`,
+      title: t(
+        "epic.thumbnail.favoriteTitle",
+        {
+          time: time
+            ? ` (${time} UTC)`
+            : "",
+        }
+      ),
 
       date: photoDate,
 
@@ -168,8 +207,7 @@ export default function EpicThumbnail({
       image_url: fullUrl,
       hdUrl: fullUrl,
 
-      description:
-        photo?.caption || caption,
+      description: caption,
 
       data: {
         ...photo,
@@ -177,6 +215,10 @@ export default function EpicThumbnail({
         date: photoDate,
         time,
         caption,
+        original_caption:
+          originalCaption,
+        translated_caption:
+          translatedCaption,
         image: photoImage,
 
         image_url: fullUrl,
@@ -217,6 +259,45 @@ export default function EpicThumbnail({
     }
   }
 
+  const imageUnavailableAria = t(
+    "epic.thumbnail.imageUnavailableAria",
+    {
+      time: time
+        ? t("epic.thumbnail.atTime", {
+            time,
+          })
+        : "",
+    }
+  );
+
+  const favoriteAria = favorite
+    ? t(
+        "epic.thumbnail.removeFavorite",
+        {
+          time: time
+            ? t(
+                "epic.thumbnail.atTime",
+                {
+                  time,
+                }
+              )
+            : "",
+        }
+      )
+    : t(
+        "epic.thumbnail.addFavorite",
+        {
+          time: time
+            ? t(
+                "epic.thumbnail.atTime",
+                {
+                  time,
+                }
+              )
+            : "",
+        }
+      );
+
   return (
     <div
       className="epic-thumbnail"
@@ -227,12 +308,14 @@ export default function EpicThumbnail({
         <div
           className="epic-thumbnail__fallback"
           role="img"
-          aria-label={`Imagem EPIC indisponível${
-            time ? ` das ${time} UTC` : ""
-          }`}
+          aria-label={
+            imageUnavailableAria
+          }
         >
           <span>
-            Imagem indisponível
+            {t(
+              "epic.thumbnail.imageUnavailable"
+            )}
           </span>
         </div>
       ) : (
@@ -244,7 +327,12 @@ export default function EpicThumbnail({
           tabIndex={0}
           loading="lazy"
           decoding="async"
-          aria-label={`Abrir ${caption}`}
+          aria-label={t(
+            "epic.thumbnail.openImageAria",
+            {
+              caption,
+            }
+          )}
           onClick={handleSelect}
           onKeyDown={handleKeyDown}
           onError={handleImageError}
@@ -266,24 +354,14 @@ export default function EpicThumbnail({
         active={Boolean(favorite)}
         onClick={handleFavoriteClick}
         disabled={
-          Boolean(isFavoriteLoading) ||
+          Boolean(
+            isFavoriteLoading
+          ) ||
           !favoriteId ||
           !fullUrl
         }
         size={12}
-        ariaLabel={
-          favorite
-            ? `Remover imagem EPIC${
-                time
-                  ? ` das ${time} UTC`
-                  : ""
-              } dos favoritos`
-            : `Adicionar imagem EPIC${
-                time
-                  ? ` das ${time} UTC`
-                  : ""
-              } aos favoritos`
-        }
+        ariaLabel={favoriteAria}
       />
     </div>
   );

@@ -1,4 +1,8 @@
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
+import { useTranslation } from "react-i18next";
 
 import "./EpicPanel.css";
 
@@ -28,6 +32,8 @@ export default function EpicPanel({
   onSelect,
   onRetry,
 }) {
+  const { t } = useTranslation();
+
   const {
     isAuthenticated,
     isAuthLoading,
@@ -91,7 +97,7 @@ export default function EpicPanel({
             ?.status !== 401
         ) {
           console.error(
-            "Erro ao carregar favoritos EPIC:",
+            "Error loading EPIC favorites:",
             favoritesError
           );
         }
@@ -190,7 +196,7 @@ export default function EpicPanel({
       );
     } catch (favoriteError) {
       console.error(
-        "Erro ao atualizar favorito EPIC:",
+        "Error updating EPIC favorite:",
         favoriteError
       );
 
@@ -237,7 +243,9 @@ export default function EpicPanel({
         className="epic-panel"
         aria-busy="true"
         aria-live="polite"
-        aria-label="A carregar imagens EPIC"
+        aria-label={t(
+          "epic.panel.loadingAria"
+        )}
       >
         <EpicSkeleton />
       </div>
@@ -248,7 +256,9 @@ export default function EpicPanel({
     return (
       <div className="epic-panel">
         <ErrorState
-          title="Não foi possível carregar as imagens"
+          title={t(
+            "epic.panel.errorTitle"
+          )}
           message={error}
           onRetry={
             typeof onRetry === "function"
@@ -269,12 +279,16 @@ export default function EpicPanel({
           aria-live="polite"
         >
           <h3>
-            Nenhuma imagem disponível
+            {t(
+              "epic.panel.emptyTitle"
+            )}
           </h3>
 
           <p>
             {emptyMessage ||
-              "Seleciona uma data ou carrega a captura mais recente."}
+              t(
+                "epic.panel.emptyDescription"
+              )}
           </p>
         </div>
       </div>
@@ -285,29 +299,39 @@ export default function EpicPanel({
     <div className="epic-panel">
       <div className="epic-panel__meta">
         <span className="epic-panel__tag epic-panel__tag--highlight">
-          {safePhotos.length}{" "}
-          {safePhotos.length === 1
-            ? "CAPTURA"
-            : "CAPTURAS"}
+          {t(
+            "epic.panel.captureCount",
+            {
+              count:
+                safePhotos.length,
+            }
+          )}
         </span>
 
         <EpicDscovrInfo />
 
         <span className="epic-panel__tag">
-          {date || "Data indisponível"}
+          {date ||
+            t(
+              "epic.panel.dateUnavailable"
+            )}
         </span>
       </div>
 
       <div className="epic-panel__content">
         <div
           className="epic-panel__grid"
-          aria-label="Capturas EPIC disponíveis"
+          aria-label={t(
+            "epic.panel.gridAria"
+          )}
         >
           {paginatedItems.map(
             (photo, index) => {
               const imageId =
                 photo?.image ||
-                `${date || "sem-data"}-${index}`;
+                `${
+                  date || "no-date"
+                }-${index}`;
 
               const favoriteId =
                 `epic-${imageId}`;

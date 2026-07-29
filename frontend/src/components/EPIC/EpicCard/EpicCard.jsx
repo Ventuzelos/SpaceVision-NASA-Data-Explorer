@@ -1,4 +1,8 @@
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
+import { useTranslation } from "react-i18next";
 
 import FavoriteButton from "../../common/FavoriteButton/FavoriteButton";
 
@@ -12,15 +16,19 @@ import {
 import "./EpicCard.css";
 
 function hasCoordinate(value) {
-  return value !== null &&
+  return (
+    value !== null &&
     value !== undefined &&
-    value !== "";
+    value !== ""
+  );
 }
 
 export default function EpicCard({
   detail,
   onImageClick,
 }) {
+  const { t, i18n } = useTranslation();
+
   const {
     isAuthenticated,
     isAuthLoading,
@@ -52,6 +60,11 @@ export default function EpicCard({
     !imageUrl ||
     failedImageUrl === imageUrl;
 
+  const isEnglish =
+    i18n.resolvedLanguage?.startsWith(
+      "en"
+    );
+
   useEffect(() => {
     let isMounted = true;
 
@@ -71,14 +84,16 @@ export default function EpicCard({
         );
 
         if (isMounted) {
-          setFavorite(Boolean(result));
+          setFavorite(
+            Boolean(result)
+          );
         }
       } catch (error) {
         if (
           error.response?.status !== 401
         ) {
           console.error(
-            "Erro ao verificar favorito EPIC:",
+            "Error checking EPIC favorite:",
             error
           );
         }
@@ -126,13 +141,20 @@ export default function EpicCard({
   const hasAutomaticTranslation =
     Boolean(
       translatedCaption &&
-      originalCaption &&
-      translatedCaption !== originalCaption
+        originalCaption &&
+        translatedCaption !==
+          originalCaption
     );
 
+  const displayCaption = isEnglish
+    ? originalCaption ||
+      translatedCaption
+    : translatedCaption ||
+      originalCaption;
+
   const accessibleCaption =
-    translatedCaption ||
-    "Imagem da Terra captada pela câmara EPIC da NASA";
+    displayCaption ||
+    t("epic.card.defaultCaption");
 
   function handleOpenImage() {
     if (
@@ -180,25 +202,33 @@ export default function EpicCard({
           type: "epic",
           nasa_type: "epic",
 
-          title: `EPIC · Terra${time
-            ? ` (${time} UTC)`
-            : ""
-            }`,
+          title: t(
+            "epic.card.favoriteTitle",
+            {
+              time: time
+                ? ` (${time} UTC)`
+                : "",
+            }
+          ),
 
           date,
 
           imageUrl,
           image_url: imageUrl,
           hdUrl: imageUrl,
-          description: accessibleCaption,
+          description:
+            accessibleCaption,
 
           data: {
             ...detail,
             date,
             time,
-            caption: accessibleCaption,
-            original_caption: originalCaption,
-            translated_caption: translatedCaption,
+            caption:
+              accessibleCaption,
+            original_caption:
+              originalCaption,
+            translated_caption:
+              translatedCaption,
             image: detail.image,
             image_url: imageUrl,
             url: imageUrl,
@@ -230,7 +260,7 @@ export default function EpicCard({
       );
     } catch (error) {
       console.error(
-        "Erro ao atualizar favorito EPIC:",
+        "Error updating EPIC favorite:",
         error
       );
 
@@ -266,7 +296,7 @@ export default function EpicCard({
     <article className="epic-card">
       <div className="epic-card__header">
         <h3 className="epic-card__title">
-          Terra — Disco Completo
+          {t("epic.card.title")}
         </h3>
 
         {time && (
@@ -281,15 +311,20 @@ export default function EpicCard({
           <div
             className="epic-card__fallback"
             role="img"
-            aria-label="A imagem EPIC não está disponível"
+            aria-label={t(
+              "epic.card.imageUnavailableAria"
+            )}
           >
             <strong>
-              Imagem indisponível
+              {t(
+                "epic.card.imageUnavailable"
+              )}
             </strong>
 
             <span>
-              Não foi possível carregar esta
-              captura da Terra.
+              {t(
+                "epic.card.imageLoadError"
+              )}
             </span>
           </div>
         ) : (
@@ -302,11 +337,23 @@ export default function EpicCard({
             loading="eager"
             decoding="async"
             fetchPriority="high"
-            aria-label={`${accessibleCaption}. Abrir imagem ampliada.`}
-            onClick={handleOpenImage}
-            onKeyDown={handleImageKeyDown}
+            aria-label={t(
+              "epic.card.openImageAria",
+              {
+                caption:
+                  accessibleCaption,
+              }
+            )}
+            onClick={
+              handleOpenImage
+            }
+            onKeyDown={
+              handleImageKeyDown
+            }
             onError={() => {
-              setFailedImageUrl(imageUrl);
+              setFailedImageUrl(
+                imageUrl
+              );
             }}
           />
         )}
@@ -328,38 +375,49 @@ export default function EpicCard({
           size={18}
           ariaLabel={
             favorite
-              ? "Remover esta imagem EPIC dos favoritos"
-              : "Adicionar esta imagem EPIC aos favoritos"
+              ? t(
+                  "epic.card.removeFavorite"
+                )
+              : t(
+                  "epic.card.addFavorite"
+                )
           }
         />
       </div>
 
       <div className="epic-card__metadata">
-        {translatedCaption && (
+        {displayCaption && (
           <>
             <p className="epic-card__caption">
-              {translatedCaption}
+              {displayCaption}
             </p>
 
-            {hasAutomaticTranslation && (
-              <p className="epic-card__translation-note">
-                Tradução automática. A legenda original foi
-                fornecida pela NASA.
-              </p>
-            )}
+            {!isEnglish &&
+              hasAutomaticTranslation && (
+                <p className="epic-card__translation-note">
+                  {t(
+                    "epic.card.translationNote"
+                  )}
+                </p>
+              )}
           </>
         )}
 
         {hasCoordinate(lat) &&
           hasCoordinate(lon) && (
             <p>
-              Centro visível: {lat}° lat ·{" "}
-              {lon}° lon
+              {t(
+                "epic.card.visibleCenter",
+                {
+                  lat,
+                  lon,
+                }
+              )}
             </p>
           )}
 
         <p>
-          Formato PNG 2048 × 2048 px
+          {t("epic.card.format")}
         </p>
       </div>
     </article>

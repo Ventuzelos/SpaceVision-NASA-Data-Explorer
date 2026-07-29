@@ -359,6 +359,152 @@
             }
         }
     },
+    "epic": {
+        "meta": {
+            "title": "Terra vista do espaço — SpaceVision",
+            "description": "Explora imagens reais do planeta Terra captadas pela câmara EPIC do satélite DSCOVR da NASA."
+        },
+        "validation": {
+            "requiredDate": "Seleciona uma data.",
+            "futureDate": "Não é possível consultar uma data futura."
+        },
+        "favorites": {
+            "added": "Adicionado aos favoritos",
+            "removed": "Removido dos favoritos",
+            "loginRequired": "Precisas de iniciar sessão para guardar favoritos",
+            "updateError": "Não foi possível atualizar o favorito"
+        },
+        "viewer": {
+            "title": "Visualizador de imagens",
+            "description": "Escolhe uma data para ver todas as capturas do disco terrestre desse dia."
+        },
+        "hero": {
+            "breadcrumb": "Terra",
+            "eyebrow": "EPIC · Earth Polychromatic Imaging Camera",
+            "title": "O nosso planeta. Visto de longe, em tempo real.",
+            "description": "Descobre a Terra como nunca a viste. Através dos olhos da câmara EPIC, a bordo do satélite DSCOVR no ponto de Lagrange L1, acede a imagens atualizadas a cada duas horas que capturam a totalidade do disco terrestre iluminado pelo Sol.",
+            "cta": "Ver imagens do dia",
+            "readout": {
+                "distanceLabel": "Distância à Terra",
+                "distanceValue": "1,5 milhões km",
+                "channelsLabel": "Canais espectrais",
+                "channelsValue": "10",
+                "operationLabel": "Em operação desde",
+                "operationValue": "2015"
+            }
+        },
+        "dateControls": {
+            "dateLabel": "Data",
+            "loading": "A carregar...",
+            "load": "Carregar",
+            "latest": "Mais recente"
+        },
+        "card": {
+            "title": "Terra — Disco Completo",
+            "defaultCaption": "Imagem da Terra captada pela câmara EPIC da NASA",
+            "favoriteTitle": "EPIC · Terra{{time}}",
+            "imageUnavailableAria": "A imagem EPIC não está disponível",
+            "imageUnavailable": "Imagem indisponível",
+            "imageLoadError": "Não foi possível carregar esta captura da Terra.",
+            "openImageAria": "{{caption}}. Abrir imagem ampliada.",
+            "addFavorite": "Adicionar esta imagem EPIC aos favoritos",
+            "removeFavorite": "Remover esta imagem EPIC dos favoritos",
+            "translationNote": "Tradução automática. A legenda original foi fornecida pela NASA.",
+            "visibleCenter": "Centro visível: {{lat}}° lat · {{lon}}° lon",
+            "format": "Formato PNG 2048 × 2048 px"
+        },
+        "panel": {
+            "loadingAria": "A carregar imagens EPIC",
+            "errorTitle": "Não foi possível carregar as imagens",
+            "emptyTitle": "Nenhuma imagem disponível",
+            "emptyDescription": "Seleciona uma data ou carrega a captura mais recente.",
+            "captureCount_one": "{{count}} CAPTURA",
+            "captureCount_other": "{{count}} CAPTURAS",
+            "dateUnavailable": "Data indisponível",
+            "gridAria": "Capturas EPIC disponíveis"
+        },
+        "thumbnail": {
+            "defaultCaption": "Vista completa da Terra captada pela EPIC{{time}}",
+            "atTime": " às {{time}} UTC",
+            "favoriteTitle": "EPIC · Terra{{time}}",
+            "imageUnavailable": "Imagem indisponível",
+            "imageUnavailableAria": "Imagem EPIC indisponível{{time}}",
+            "openImageAria": "Abrir {{caption}}",
+            "addFavorite": "Adicionar imagem EPIC{{time}} aos favoritos",
+            "removeFavorite": "Remover imagem EPIC{{time}} dos favoritos"
+        },
+        "dscovrInfo": {
+            "tag": "DSCOVR · L1",
+            "buttonAria": "Abrir informações sobre o satélite DSCOVR",
+            "dialogAria": "Sobre o satélite DSCOVR",
+            "title": "Sobre o satélite DSCOVR",
+            "description": "Satélite de meteorologia espacial da NOAA — monitoriza o vento solar e as ejeções de massa coronal a partir do ponto de Lagrange L1.",
+            "instruments": "A EPIC é um dos dois instrumentos científicos a bordo; o outro, o NISTAR, mede o balanço radiativo da Terra."
+        },
+        "lightbox": {
+            "title": "Imagem EPIC ampliada",
+            "closeAria": "Fechar imagem ampliada",
+            "defaultCaption": "Imagem da Terra captada pela câmara EPIC da NASA",
+            "imageUnavailableAria": "A imagem EPIC ampliada não está disponível",
+            "imageUnavailable": "Imagem indisponível",
+            "imageLoadError": "Não foi possível carregar esta captura da Terra."
+        },
+        "pipeline": {
+            "title": "Como uma imagem chega até aqui",
+            "description": "Quatro etapas reais entre a captura em órbita e o pixel que vês no visualizador.",
+            "steps": {
+                "capture": {
+                    "title": "Captura",
+                    "text": "A EPIC regista o disco terrestre em 10 bandas espectrais, do ultravioleta ao infravermelho próximo."
+                },
+                "downlink": {
+                    "title": "Transmissão",
+                    "text": "Os dados são transmitidos do ponto L1 para estações terrestres da NOAA, a cerca de 1,5 milhões de quilómetros de distância."
+                },
+                "processing": {
+                    "title": "Processamento",
+                    "text": "Os canais são calibrados e combinados num composto de cor natural, com coordenadas e hora associadas."
+                },
+                "publication": {
+                    "title": "Publicação",
+                    "text": "A API EPIC disponibiliza cada captura como um registo JSON, com ligação direta à imagem em alta resolução."
+                }
+            }
+        },
+        "timeline": {
+            "items": {
+                "launch": {
+                    "year": "Fev 2015",
+                    "title": "Lançamento do DSCOVR",
+                    "text": "O satélite Deep Space Climate Observatory é lançado num foguetão Falcon 9 da SpaceX, numa parceria entre a NASA, a NOAA e a Força Aérea dos EUA."
+                },
+                "l1Arrival": {
+                    "year": "Jun 2015",
+                    "title": "Chegada ao ponto L1",
+                    "text": "Após meses de viagem, o DSCOVR entra em órbita a cerca de 1,5 milhões de km da Terra, no ponto de Lagrange L1."
+                },
+                "firstImages": {
+                    "year": "Verão 2015",
+                    "title": "Primeiras imagens da EPIC",
+                    "text": "A NASA divulga as primeiras imagens a cores naturais do disco completo da Terra, captadas pelo espectroradiómetro EPIC."
+                },
+                "apiLaunch": {
+                    "year": "Desde 2015",
+                    "title": "Abertura da EPIC API",
+                    "text": "A EPIC API passa a disponibilizar publicamente cada captura e os respetivos metadados, prontos a explorar por qualquer pessoa."
+                },
+                "today": {
+                    "year": "Hoje",
+                    "title": "Mais de uma década de dados",
+                    "text": "A EPIC continua em operação, a capturar o disco completo da Terra a cada duas horas — um arquivo contínuo com mais de dez anos de imagens."
+                }
+            }
+        },
+        "timelineSection": {
+            "title": "Mais de uma década a fotografar o nosso planeta",
+            "description": "Os principais marcos da missão DSCOVR e da câmara EPIC, desde o lançamento até à atualidade."
+        }
+    },
     "common": {
         "loading": "A carregar...",
         "error": "Ocorreu um erro",

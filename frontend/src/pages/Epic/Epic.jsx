@@ -1,4 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { useTranslation } from "react-i18next";
 
 import { useEpicPhotos } from "../../hooks/useEpicPhotos";
 
@@ -25,9 +30,11 @@ function getLocalToday() {
   const today = new Date();
 
   const year = today.getFullYear();
+
   const month = padDatePart(
     today.getMonth() + 1
   );
+
   const day = padDatePart(
     today.getDate()
   );
@@ -36,6 +43,8 @@ function getLocalToday() {
 }
 
 export default function Epic() {
+  const { t } = useTranslation();
+
   const [lightbox, setLightbox] =
     useState(null);
 
@@ -90,16 +99,20 @@ export default function Epic() {
     function handleFavoriteUpdated(event) {
       showToast(
         event.detail?.isFavorite
-          ? "Adicionado aos favoritos"
-          : "Removido dos favoritos"
+          ? t("epic.favorites.added")
+          : t("epic.favorites.removed")
       );
     }
 
     function handleFavoriteError(event) {
       showToast(
         event.detail?.status === 401
-          ? "Precisas de iniciar sessão para guardar favoritos"
-          : "Não foi possível atualizar o favorito"
+          ? t(
+              "epic.favorites.loginRequired"
+            )
+          : t(
+              "epic.favorites.updateError"
+            )
       );
     }
 
@@ -130,7 +143,7 @@ export default function Epic() {
         );
       }
     };
-  }, []);
+  }, [t]);
 
   function handleDateChange(value) {
     setPendingDate(value);
@@ -142,7 +155,7 @@ export default function Epic() {
 
     if (!displayedDate) {
       setDateError(
-        "Seleciona uma data."
+        t("epic.validation.requiredDate")
       );
 
       return;
@@ -150,7 +163,7 @@ export default function Epic() {
 
     if (displayedDate > today) {
       setDateError(
-        "Não é possível consultar uma data futura."
+        t("epic.validation.futureDate")
       );
 
       return;
@@ -186,8 +199,10 @@ export default function Epic() {
   return (
     <>
       <PageMeta
-        title="Terra vista do espaço — SpaceVision"
-        description="Explora imagens reais do planeta Terra captadas pela câmara EPIC do satélite DSCOVR da NASA."
+        title={t("epic.meta.title")}
+        description={t(
+          "epic.meta.description"
+        )}
       />
 
       <main className="epic-page">
@@ -199,8 +214,12 @@ export default function Epic() {
         >
           <div className="viewer-intro">
             <EpicSectionHead
-              title="Visualizador de imagens"
-              sub="Escolhe uma data para ver todas as capturas do disco terrestre desse dia."
+              title={t(
+                "epic.viewer.title"
+              )}
+              sub={t(
+                "epic.viewer.description"
+              )}
               titleId="epic-viewer-title"
             />
 
@@ -259,9 +278,7 @@ export default function Epic() {
           }
         />
 
-        <Toast
-          message={toastMessage}
-        />
+        <Toast message={toastMessage} />
       </main>
     </>
   );

@@ -5,15 +5,20 @@ export default function EpicSectionHead({
   title,
   sub,
   id,
+  titleId,
   className = "",
 }) {
-  const titleId =
-    id || `epic-section-${title
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-|-$/g, "")}`;
+  const generatedTitleId = title
+    ? `epic-section-${title
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "")}`
+    : "epic-section-title";
+
+  const resolvedTitleId =
+    titleId || id || generatedTitleId;
 
   return (
     <header
@@ -26,7 +31,7 @@ export default function EpicSectionHead({
       )}
 
       <h2
-        id={titleId}
+        id={resolvedTitleId}
         className="epic-section-head__title"
       >
         {title}

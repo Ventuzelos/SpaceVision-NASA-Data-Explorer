@@ -359,6 +359,152 @@
             }
         }
     },
+    "epic": {
+        "meta": {
+            "title": "Earth from space — SpaceVision",
+            "description": "Explore real images of planet Earth captured by NASA's EPIC camera aboard the DSCOVR satellite."
+        },
+        "validation": {
+            "requiredDate": "Select a date.",
+            "futureDate": "A future date cannot be selected."
+        },
+        "favorites": {
+            "added": "Added to favorites",
+            "removed": "Removed from favorites",
+            "loginRequired": "You need to sign in to save favorites",
+            "updateError": "The favorite could not be updated"
+        },
+        "viewer": {
+            "title": "Image viewer",
+            "description": "Choose a date to view all full-disc Earth images captured on that day."
+        },
+        "hero": {
+            "breadcrumb": "Earth",
+            "eyebrow": "EPIC · Earth Polychromatic Imaging Camera",
+            "title": "Our planet. Seen from afar, in real time.",
+            "description": "Discover Earth as you have never seen it before. Through the EPIC camera aboard the DSCOVR satellite at the L1 Lagrange point, access images updated every two hours that capture the entire sunlit disc of our planet.",
+            "cta": "View today's images",
+            "readout": {
+                "distanceLabel": "Distance from Earth",
+                "distanceValue": "1.5 million km",
+                "channelsLabel": "Spectral channels",
+                "channelsValue": "10",
+                "operationLabel": "Operating since",
+                "operationValue": "2015"
+            }
+        },
+        "dateControls": {
+            "dateLabel": "Date",
+            "loading": "Loading...",
+            "load": "Load",
+            "latest": "Latest"
+        },
+        "card": {
+            "title": "Earth — Full Disc",
+            "defaultCaption": "Image of Earth captured by NASA's EPIC camera",
+            "favoriteTitle": "EPIC · Earth{{time}}",
+            "imageUnavailableAria": "The EPIC image is unavailable",
+            "imageUnavailable": "Image unavailable",
+            "imageLoadError": "This image of Earth could not be loaded.",
+            "openImageAria": "{{caption}}. Open enlarged image.",
+            "addFavorite": "Add this EPIC image to favorites",
+            "removeFavorite": "Remove this EPIC image from favorites",
+            "translationNote": "Automatic translation. The original caption was provided by NASA.",
+            "visibleCenter": "Visible centre: {{lat}}° lat · {{lon}}° lon",
+            "format": "PNG format · 2048 × 2048 px"
+        },
+        "panel": {
+            "loadingAria": "Loading EPIC images",
+            "errorTitle": "The images could not be loaded",
+            "emptyTitle": "No images available",
+            "emptyDescription": "Select a date or load the latest capture.",
+            "captureCount_one": "{{count}} CAPTURE",
+            "captureCount_other": "{{count}} CAPTURES",
+            "dateUnavailable": "Date unavailable",
+            "gridAria": "Available EPIC captures"
+        },
+        "thumbnail": {
+            "defaultCaption": "Full view of Earth captured by EPIC{{time}}",
+            "atTime": " at {{time}} UTC",
+            "favoriteTitle": "EPIC · Earth{{time}}",
+            "imageUnavailable": "Image unavailable",
+            "imageUnavailableAria": "EPIC image unavailable{{time}}",
+            "openImageAria": "Open {{caption}}",
+            "addFavorite": "Add EPIC image{{time}} to favorites",
+            "removeFavorite": "Remove EPIC image{{time}} from favorites"
+        },
+        "dscovrInfo": {
+            "tag": "DSCOVR · L1",
+            "buttonAria": "Open information about the DSCOVR satellite",
+            "dialogAria": "About the DSCOVR satellite",
+            "title": "About the DSCOVR satellite",
+            "description": "A NOAA space weather satellite that monitors the solar wind and coronal mass ejections from the L1 Lagrange point.",
+            "instruments": "EPIC is one of the two scientific instruments on board; the other, NISTAR, measures Earth's radiation balance."
+        },
+        "lightbox": {
+            "title": "Enlarged EPIC image",
+            "closeAria": "Close enlarged image",
+            "defaultCaption": "Image of Earth captured by NASA's EPIC camera",
+            "imageUnavailableAria": "The enlarged EPIC image is unavailable",
+            "imageUnavailable": "Image unavailable",
+            "imageLoadError": "This image of Earth could not be loaded."
+        },
+        "pipeline": {
+            "title": "How an image reaches this page",
+            "description": "Four real stages between capture in orbit and the pixel displayed in the viewer.",
+            "steps": {
+                "capture": {
+                    "title": "Capture",
+                    "text": "EPIC records Earth's disc in 10 spectral bands, ranging from ultraviolet to near infrared."
+                },
+                "downlink": {
+                    "title": "Downlink",
+                    "text": "The data is transmitted from the L1 point to NOAA ground stations, approximately 1.5 million kilometres away."
+                },
+                "processing": {
+                    "title": "Processing",
+                    "text": "The channels are calibrated and combined into a natural-colour composite with associated coordinates and time."
+                },
+                "publication": {
+                    "title": "Publication",
+                    "text": "The EPIC API provides each capture as a JSON record with a direct link to the high-resolution image."
+                }
+            }
+        },
+        "timeline": {
+            "items": {
+                "launch": {
+                    "year": "Feb 2015",
+                    "title": "DSCOVR launch",
+                    "text": "The Deep Space Climate Observatory satellite is launched aboard a SpaceX Falcon 9 rocket through a partnership between NASA, NOAA and the United States Air Force."
+                },
+                "l1Arrival": {
+                    "year": "Jun 2015",
+                    "title": "Arrival at the L1 point",
+                    "text": "After several months of travel, DSCOVR enters orbit around 1.5 million kilometres from Earth at the L1 Lagrange point."
+                },
+                "firstImages": {
+                    "year": "Summer 2015",
+                    "title": "EPIC's first images",
+                    "text": "NASA releases the first natural-colour images of Earth's full disc captured by the EPIC spectroradiometer."
+                },
+                "apiLaunch": {
+                    "year": "Since 2015",
+                    "title": "EPIC API goes public",
+                    "text": "The EPIC API begins providing public access to every capture and its associated metadata, ready for anyone to explore."
+                },
+                "today": {
+                    "year": "Today",
+                    "title": "More than a decade of data",
+                    "text": "EPIC remains operational, capturing Earth's full disc every two hours — a continuous archive containing more than ten years of images."
+                }
+            }
+        },
+        "timelineSection": {
+            "title": "More than a decade photographing our planet",
+            "description": "The main milestones of the DSCOVR mission and the EPIC camera, from launch to the present day."
+        }
+    },
     "common": {
         "loading": "Loading...",
         "error": "Something went wrong",
