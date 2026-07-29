@@ -11,6 +11,7 @@ import AuthGalaxyLayout from "../../components/common/AuthGalaxyLayout/AuthGalax
 import useAuth from "../../hooks/useAuth";
 
 import PageMeta from "../../components/common/PageMeta/PageMeta";
+import getApiErrorMessage from "../../utils/getApiErrorMessage";
 
 import "./Login.css";
 
@@ -59,11 +60,16 @@ function Login() {
       } else {
         navigate(location.state?.from || "/");
       }
-    } catch (requestError) {
-      const message =
-        requestError.response?.data?.errors?.email?.[0] ||
-        requestError.response?.data?.message ||
+     } catch (requestError) {
+      const fallbackMessage =
         "Não foi possível iniciar sessão. Por favor, verifica as tuas credenciais e tenta novamente.";
+
+      const validationMessage =
+        requestError.response?.data?.errors?.email?.[0];
+
+      const message =
+        validationMessage ||
+        getApiErrorMessage(requestError, fallbackMessage);
 
       setError(message);
     } finally {

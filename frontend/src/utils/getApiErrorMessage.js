@@ -8,10 +8,6 @@ export default function getApiErrorMessage(
     return "Não foi possível estabelecer ligação ao servidor. Confirma a tua ligação e tenta novamente.";
   }
 
-  // Erros de servidor (5xx) nunca devem mostrar a mensagem crua do
-  // backend: quando o debug está ativo (ex.: APP_DEBUG=true no Laravel),
-  // essa mensagem pode conter detalhes internos como queries SQL,
-  // stack traces ou nomes de tabelas. Mostramos sempre um texto amigável.
   if (status >= 500) {
     switch (status) {
       case 502:
@@ -20,7 +16,7 @@ export default function getApiErrorMessage(
         return "O serviço está temporariamente indisponível. Tenta novamente dentro de alguns momentos.";
 
       default:
-        return "O servidor encontrou um problema ao processar o pedido. Vá ao seu perfil e insira sua chave de API para visualizar os conteúdos.";
+        return "O servidor encontrou um problema ao processar o pedido. Tenta novamente mais tarde.";
     }
   }
 
