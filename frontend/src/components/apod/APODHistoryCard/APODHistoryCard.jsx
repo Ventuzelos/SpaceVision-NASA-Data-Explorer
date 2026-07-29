@@ -1,4 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { PlayCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -14,106 +18,203 @@ import {
 
 import "./APODHistoryCard.css";
 
-function formatApodHistoryDate(date, locale) {
+function formatApodHistoryDate(
+  date,
+  locale
+) {
   if (!date) {
     return "";
   }
 
-  const [year, month, day] = date.split("-").map(Number);
+  const [year, month, day] =
+    date
+      .split("-")
+      .map(Number);
 
-  if (!year || !month || !day) {
+  if (
+    !year ||
+    !month ||
+    !day
+  ) {
     return date;
   }
 
-  return new Date(year, month - 1, day).toLocaleDateString(
+  const parsedDate = new Date(
+    year,
+    month - 1,
+    day
+  );
+
+  if (
+    Number.isNaN(
+      parsedDate.getTime()
+    )
+  ) {
+    return date;
+  }
+
+  return new Intl.DateTimeFormat(
     locale,
     {
       day: "numeric",
       month: "short",
     }
-  );
+  ).format(parsedDate);
 }
 
-function APODHistoryCard({ item, active, onSelect }) {
-  const { t, i18n } = useTranslation();
-  const { isAuthenticated, isAuthLoading } = useAuth();
+function APODHistoryCard({
+  item,
+  active,
+  onSelect,
+}) {
+  const { t, i18n } =
+    useTranslation();
 
-  const [favorite, setFavorite] = useState(false);
-  const [favoriteDatabaseId, setFavoriteDatabaseId] =
-    useState(null);
-  const [isFavoriteLoading, setIsFavoriteLoading] =
-    useState(false);
-  const [toastMessage, setToastMessage] = useState("");
+  const {
+    isAuthenticated,
+    isAuthLoading,
+  } = useAuth();
 
-  const toastTimeoutRef = useRef(null);
+  const [
+    favorite,
+    setFavorite,
+  ] = useState(false);
 
-  const currentLanguage =
-    i18n.resolvedLanguage?.startsWith("en")
-      ? "en"
-      : "pt";
+  const [
+    favoriteDatabaseId,
+    setFavoriteDatabaseId,
+  ] = useState(null);
 
-  const dateLocale =
-    currentLanguage === "en" ? "en-GB" : "pt-PT";
+  const [
+    isFavoriteLoading,
+    setIsFavoriteLoading,
+  ] = useState(false);
+
+  const [
+    toastMessage,
+    setToastMessage,
+  ] = useState("");
+
+  const toastTimeoutRef =
+    useRef(null);
+
+  const isEnglish =
+    i18n.resolvedLanguage?.startsWith(
+      "en"
+    );
+
+  const dateLocale = isEnglish
+    ? "en-GB"
+    : "pt-PT";
 
   const favoriteId = `apod-${item.date}`;
 
-  const formattedDate = formatApodHistoryDate(
-    item.date,
-    dateLocale
-  );
+  const formattedDate =
+    formatApodHistoryDate(
+      item.date,
+      dateLocale
+    );
 
   const originalTitle =
+    item.originalTitle ||
     item.original_title ||
+    item.title_original ||
     item.title ||
-    t("apodHistoryCard.defaultTitle");
+    t(
+      "apodHistoryCard.defaultTitle"
+    );
 
-  const displayTitle =
-    currentLanguage === "pt"
-      ? item.translated_title || originalTitle
-      : originalTitle;
+  const translatedTitle =
+    item.translatedTitle ||
+    item.translated_title ||
+    item.title_pt ||
+    item.title ||
+    originalTitle;
+
+  const displayTitle = isEnglish
+    ? originalTitle
+    : translatedTitle;
+
+  const originalExplanation =
+    item.originalExplanation ||
+    item.original_explanation ||
+    item.explanation_original ||
+    item.explanation ||
+    "";
+
+  const translatedExplanation =
+    item.translatedExplanation ||
+    item.translated_explanation ||
+    item.explanation_pt ||
+    item.explanation ||
+    originalExplanation;
+
+  const displayExplanation =
+    isEnglish
+      ? originalExplanation
+      : translatedExplanation;
 
   useEffect(() => {
     let isMounted = true;
 
-    if (isAuthLoading || !isAuthenticated) {
+    if (
+      isAuthLoading ||
+      !isAuthenticated
+    ) {
       return undefined;
     }
 
     async function checkFavorite() {
       try {
-        const favorites = await getFavorites("apod");
+        const favorites =
+          await getFavorites(
+            "apod"
+          );
 
-        const existingFavorite = favorites.find(
-          (favoriteItem) => {
-            const itemId =
-              favoriteItem.nasa_id ||
-              favoriteItem.id;
+        const existingFavorite =
+          favorites.find(
+            (favoriteItem) => {
+              const itemId =
+                favoriteItem.nasa_id ||
+                favoriteItem.id;
 
-            return (
-              String(itemId) === String(favoriteId)
-            );
-          }
-        );
+              return (
+                String(itemId) ===
+                String(favoriteId)
+              );
+            }
+          );
 
         if (!isMounted) {
           return;
         }
 
-        setFavorite(Boolean(existingFavorite));
+        setFavorite(
+          Boolean(
+            existingFavorite
+          )
+        );
+
         setFavoriteDatabaseId(
-          existingFavorite?.id || null
+          existingFavorite?.id ||
+            null
         );
       } catch (error) {
-        if (error.response?.status !== 401) {
+        if (
+          error.response?.status !==
+          401
+        ) {
           console.error(
-            "Error checking favorite:",
+            "Erro ao verificar favorito:",
             error
           );
         }
 
         if (isMounted) {
           setFavorite(false);
-          setFavoriteDatabaseId(null);
+          setFavoriteDatabaseId(
+            null
+          );
         }
       }
     }
@@ -131,7 +232,9 @@ function APODHistoryCard({ item, active, onSelect }) {
 
   useEffect(() => {
     return () => {
-      if (toastTimeoutRef.current) {
+      if (
+        toastTimeoutRef.current
+      ) {
         window.clearTimeout(
           toastTimeoutRef.current
         );
@@ -140,7 +243,9 @@ function APODHistoryCard({ item, active, onSelect }) {
   }, []);
 
   function showToast(message) {
-    if (toastTimeoutRef.current) {
+    if (
+      toastTimeoutRef.current
+    ) {
       window.clearTimeout(
         toastTimeoutRef.current
       );
@@ -148,20 +253,22 @@ function APODHistoryCard({ item, active, onSelect }) {
 
     setToastMessage(message);
 
-    toastTimeoutRef.current = window.setTimeout(
-      () => {
+    toastTimeoutRef.current =
+      window.setTimeout(() => {
         setToastMessage("");
-        toastTimeoutRef.current = null;
-      },
-      2500
-    );
+        toastTimeoutRef.current =
+          null;
+      }, 2500);
   }
 
   async function handleFavoriteClick() {
     if (!isAuthenticated) {
       showToast(
-        t("apodCard.favorites.loginRequired")
+        t(
+          "apodCard.favorites.loginRequired"
+        )
       );
+
       return;
     }
 
@@ -172,63 +279,109 @@ function APODHistoryCard({ item, active, onSelect }) {
     try {
       setIsFavoriteLoading(true);
 
-      if (favorite && favoriteDatabaseId) {
-        await removeFavorite(favoriteDatabaseId);
+      if (
+        favorite &&
+        favoriteDatabaseId
+      ) {
+        await removeFavorite(
+          favoriteDatabaseId
+        );
 
         setFavorite(false);
-        setFavoriteDatabaseId(null);
+        setFavoriteDatabaseId(
+          null
+        );
 
         showToast(
-          t("apodCard.favorites.removed")
+          t(
+            "apodCard.favorites.removed"
+          )
         );
+
         return;
       }
 
       const isImage =
-        item.media_type === "image";
+        item.media_type ===
+        "image";
 
       const favoriteItem = {
         nasa_type: "apod",
         nasa_id: favoriteId,
         title: displayTitle,
+
         image_url: isImage
-          ? item.hdurl || item.url
+          ? item.hdurl ||
+            item.url
           : null,
 
         data: {
           ...item,
+          title: displayTitle,
+          explanation:
+            displayExplanation,
+
           image_url: isImage
-            ? item.hdurl || item.url
+            ? item.hdurl ||
+              item.url
             : null,
         },
       };
 
       const createdFavorite =
-        await addFavorite(favoriteItem);
+        await addFavorite(
+          favoriteItem
+        );
 
       setFavorite(true);
-      setFavoriteDatabaseId(createdFavorite.id);
+
+      setFavoriteDatabaseId(
+        createdFavorite.id
+      );
 
       showToast(
-        t("apodCard.favorites.added")
+        t(
+          "apodCard.favorites.added"
+        )
       );
     } catch (error) {
       console.error(
-        "Error updating favorite:",
+        "Erro ao atualizar favorito:",
         error
       );
 
-      if (error.response?.status === 401) {
+      if (
+        error.response?.status ===
+        401
+      ) {
         showToast(
-          t("apodCard.favorites.loginRequired")
+          t(
+            "apodCard.favorites.loginRequired"
+          )
         );
       } else {
         showToast(
-          t("apodCard.favorites.updateError")
+          t(
+            "apodCard.favorites.updateError"
+          )
         );
       }
     } finally {
       setIsFavoriteLoading(false);
+    }
+  }
+
+  function handleSelect() {
+    if (
+      typeof onSelect ===
+      "function"
+    ) {
+      onSelect({
+        ...item,
+        title: displayTitle,
+        explanation:
+          displayExplanation,
+      });
     }
   }
 
@@ -243,22 +396,29 @@ function APODHistoryCard({ item, active, onSelect }) {
       <button
         type="button"
         className="apod-history-card__trigger"
-        onClick={() => onSelect(item)}
+        onClick={handleSelect}
         aria-label={t(
           "apodHistoryCard.openItem",
           {
-            title: displayTitle,
+            title:
+              displayTitle,
           }
         )}
       />
 
       <div className="apod-history-card__media">
-        {item.media_type === "image" ? (
+        {item.media_type ===
+        "image" ? (
           <img
-            src={item.url}
+            src={
+              item.url ||
+              item.hdurl
+            }
             alt={
               displayTitle ||
-              t("apodHistoryCard.imageAlt")
+              t(
+                "apodHistoryCard.imageAlt"
+              )
             }
             loading="lazy"
             decoding="async"
@@ -271,7 +431,9 @@ function APODHistoryCard({ item, active, onSelect }) {
             />
 
             <span>
-              {t("apodHistoryCard.video")}
+              {t(
+                "apodHistoryCard.video"
+              )}
             </span>
           </div>
         )}
@@ -289,10 +451,16 @@ function APODHistoryCard({ item, active, onSelect }) {
 
       <FavoriteButton
         className="apod-history-card__favorite"
-        active={isAuthenticated && favorite}
-        onClick={handleFavoriteClick}
+        active={
+          isAuthenticated &&
+          favorite
+        }
+        onClick={
+          handleFavoriteClick
+        }
         disabled={
-          isFavoriteLoading || isAuthLoading
+          isFavoriteLoading ||
+          isAuthLoading
         }
         size={16}
         ariaLabel={
@@ -306,7 +474,9 @@ function APODHistoryCard({ item, active, onSelect }) {
         }
       />
 
-      <Toast message={toastMessage} />
+      <Toast
+        message={toastMessage}
+      />
     </div>
   );
 }

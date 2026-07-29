@@ -1,65 +1,108 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import Icon from "../Icon/Icon";
 import Button from "../Button/Button";
 
 import "./SurpriseCard.css";
 
-const SPACE_FACTS = [
-  "Um dia em Vénus é mais longo do que um ano em Vénus.",
-  "A Voyager 1 é o objeto feito pelo Homem mais distante da Terra, viajando pelo espaço interestelar desde 2012.",
-  "O Monte Olimpo, em Marte, é o maior vulcão do Sistema Solar, com quase 22 km de altura.",
-  "A Estação Espacial Internacional viaja a cerca de 28 000 km/h, dando a volta à Terra a cada 90 minutos.",
-  "Existem mais estrelas no universo observável do que grãos de areia em todas as praias da Terra.",
-  "O Telescópio Espacial James Webb consegue detetar luz de galáxias formadas há mais de 13 mil milhões de anos.",
-  "Um ano em Neptuno equivale a cerca de 165 anos terrestres.",
-  "A sonda New Horizons demorou mais de 9 anos a chegar a Plutão.",
-  "O Sol representa 99,8% da massa total do Sistema Solar.",
-  "As pegadas dos astronautas na Lua podem durar milhões de anos, porque não há vento nem água para as apagar.",
-  "Saturno é tão pouco denso que, teoricamente, flutuaria num oceano de água.",
-  "A luz do Sol demora cerca de 8 minutos e 20 segundos a chegar à Terra.",
+const SPACE_FACT_KEYS = [
+  "discovr.surpriseCard.facts.venusDay",
+  "discovr.surpriseCard.facts.voyager",
+  "discovr.surpriseCard.facts.olympusMons",
+  "discovr.surpriseCard.facts.issSpeed",
+  "discovr.surpriseCard.facts.stars",
+  "discovr.surpriseCard.facts.jamesWebb",
+  "discovr.surpriseCard.facts.neptuneYear",
+  "discovr.surpriseCard.facts.newHorizons",
+  "discovr.surpriseCard.facts.sunMass",
+  "discovr.surpriseCard.facts.moonFootprints",
+  "discovr.surpriseCard.facts.saturnDensity",
+  "discovr.surpriseCard.facts.sunlight",
 ];
 
 function pickRandomFactIndex(currentIndex) {
-  if (SPACE_FACTS.length <= 1) return 0;
+  if (SPACE_FACT_KEYS.length <= 1) {
+    return 0;
+  }
 
-  let nextIndex = Math.floor(Math.random() * SPACE_FACTS.length);
+  let nextIndex = Math.floor(
+    Math.random() * SPACE_FACT_KEYS.length
+  );
 
   while (nextIndex === currentIndex) {
-    nextIndex = Math.floor(Math.random() * SPACE_FACTS.length);
+    nextIndex = Math.floor(
+      Math.random() * SPACE_FACT_KEYS.length
+    );
   }
 
   return nextIndex;
 }
 
 function SurpriseCard() {
-  const [factIndex, setFactIndex] = useState(0);
-  const [hasRevealedFact, setHasRevealedFact] = useState(false);
+  const { t } = useTranslation();
+
+  const [factIndex, setFactIndex] =
+    useState(0);
+
+  const [
+    hasRevealedFact,
+    setHasRevealedFact,
+  ] = useState(false);
 
   function handleSurpriseMe() {
-    setFactIndex((current) => pickRandomFactIndex(current));
+    setFactIndex((current) =>
+      pickRandomFactIndex(current)
+    );
+
     setHasRevealedFact(true);
   }
 
   return (
     <div className="surprise-card">
       <Button onClick={handleSurpriseMe}>
-        {hasRevealedFact ? "Outro facto" : "Surpreenda-me"}
+        {hasRevealedFact
+          ? t(
+              "discovr.surpriseCard.anotherFact"
+            )
+          : t(
+              "discovr.surpriseCard.surpriseMe"
+            )}
       </Button>
 
       {hasRevealedFact && (
-        <div className="surprise-card__reveal" key={factIndex}>
-          <Icon name="Sparkles" size={16} className="surprise-card__icon" />
+        <div
+          className="surprise-card__reveal"
+          key={factIndex}
+        >
+          <Icon
+            name="Sparkles"
+            size={16}
+            className="surprise-card__icon"
+            aria-hidden="true"
+          />
 
-          <p className="surprise-card__fact">{SPACE_FACTS[factIndex]}</p>
+          <p className="surprise-card__fact">
+            {t(
+              SPACE_FACT_KEYS[factIndex]
+            )}
+          </p>
 
           <button
             type="button"
             className="surprise-card__close"
-            onClick={() => setHasRevealedFact(false)}
-            aria-label="Fechar facto"
+            onClick={() =>
+              setHasRevealedFact(false)
+            }
+            aria-label={t(
+              "discovr.surpriseCard.closeAria"
+            )}
           >
-            <Icon name="X" size={14} />
+            <Icon
+              name="X"
+              size={14}
+              aria-hidden="true"
+            />
           </button>
         </div>
       )}

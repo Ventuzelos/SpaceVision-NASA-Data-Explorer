@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import Icon from "../../common/Icon/Icon";
 
 import "./DiscovrMissionStatus.css";
@@ -5,51 +7,106 @@ import "./DiscovrMissionStatus.css";
 const MISSION_STATUS = [
   {
     id: "james-webb",
-    name: "James Webb Space Telescope",
+    nameKey:
+      "discovr.missionStatus.missions.jamesWebb.name",
     icon: "Telescope",
-    status: "Operacional",
+    statusKey:
+      "discovr.missionStatus.missions.jamesWebb.status",
     variant: "success",
-    detail:
-      "Em órbita em torno do ponto de Lagrange L2, continua a recolher dados infravermelhos sobre o Universo primitivo.",
-    updatedLabel: "julho de 2026",
+    detailKey:
+      "discovr.missionStatus.missions.jamesWebb.detail",
     updatedDate: "2026-07",
   },
   {
     id: "artemis-ii",
-    name: "Artemis II",
+    nameKey:
+      "discovr.missionStatus.missions.artemisII.name",
     icon: "Rocket",
-    status: "Em preparação",
+    statusKey:
+      "discovr.missionStatus.missions.artemisII.status",
     variant: "upcoming",
-    detail:
-      "Missão tripulada em preparação para o primeiro voo do programa Artemis em torno da Lua.",
-    updatedLabel: "julho de 2026",
+    detailKey:
+      "discovr.missionStatus.missions.artemisII.detail",
     updatedDate: "2026-07",
   },
   {
     id: "voyager-1",
-    name: "Voyager 1",
+    nameKey:
+      "discovr.missionStatus.missions.voyager1.name",
     icon: "Satellite",
-    status: "Ativa · Espaço interestelar",
+    statusKey:
+      "discovr.missionStatus.missions.voyager1.status",
     variant: "success",
-    detail:
-      "A sonda mais distante construída pela humanidade continua a transmitir dados científicos a partir do espaço interestelar.",
-    updatedLabel: "julho de 2026",
+    detailKey:
+      "discovr.missionStatus.missions.voyager1.detail",
     updatedDate: "2026-07",
   },
   {
     id: "voyager-2",
-    name: "Voyager 2",
+    nameKey:
+      "discovr.missionStatus.missions.voyager2.name",
     icon: "Satellite",
-    status: "Ativa · Espaço interestelar",
+    statusKey:
+      "discovr.missionStatus.missions.voyager2.status",
     variant: "success",
-    detail:
-      "Continua a enviar dados sobre o meio interestelar desde que ultrapassou a heliopausa em 2018.",
-    updatedLabel: "julho de 2026",
+    detailKey:
+      "discovr.missionStatus.missions.voyager2.detail",
     updatedDate: "2026-07",
   },
 ];
 
+function formatUpdatedDate(
+  dateString,
+  locale
+) {
+  if (
+    typeof dateString !== "string" ||
+    !/^\d{4}-\d{2}$/.test(
+      dateString
+    )
+  ) {
+    return dateString;
+  }
+
+  const [year, month] =
+    dateString
+      .split("-")
+      .map(Number);
+
+  const parsedDate = new Date(
+    year,
+    month - 1,
+    1
+  );
+
+  if (
+    Number.isNaN(
+      parsedDate.getTime()
+    )
+  ) {
+    return dateString;
+  }
+
+  return new Intl.DateTimeFormat(
+    locale,
+    {
+      month: "long",
+      year: "numeric",
+    }
+  ).format(parsedDate);
+}
+
 function DiscovrMissionStatus() {
+  const { t, i18n } =
+    useTranslation();
+
+  const locale =
+    i18n.resolvedLanguage?.startsWith(
+      "en"
+    )
+      ? "en-GB"
+      : "pt-PT";
+
   return (
     <section
       id="missoes"
@@ -60,58 +117,108 @@ function DiscovrMissionStatus() {
         id="discovr-missions-title"
         className="discovr-section__title"
       >
-        Estado das missões
+        {t(
+          "discovr.missionStatus.title"
+        )}
       </h2>
 
       <p className="discovr-section__subtitle">
-        Panorama informativo de algumas das missões mais emblemáticas
-        associadas à exploração espacial da NASA.
+        {t(
+          "discovr.missionStatus.description"
+        )}
       </p>
 
       <div className="discovr-status-grid">
-        {MISSION_STATUS.map((mission) => {
-          const titleId = `mission-status-${mission.id}`;
+        {MISSION_STATUS.map(
+          (mission) => {
+            const titleId =
+              `mission-status-${mission.id}`;
 
-          return (
-            <article
-              className="discovr-status-card"
-              key={mission.id}
-              aria-labelledby={titleId}
-            >
-              <div className="discovr-status-card__header">
-                <Icon
-                  name={mission.icon}
-                  size={22}
-                  aria-hidden="true"
-                />
+            const missionName =
+              t(
+                mission.nameKey
+              );
 
-                <span
-                  className={`discovr-status-card__badge discovr-status-card__badge--${mission.variant}`}
-                >
-                  <span
-                    className="discovr-status-card__pulse"
+            const missionStatus =
+              t(
+                mission.statusKey
+              );
+
+            const missionDetail =
+              t(
+                mission.detailKey
+              );
+
+            const updatedLabel =
+              formatUpdatedDate(
+                mission.updatedDate,
+                locale
+              );
+
+            return (
+              <article
+                className="discovr-status-card"
+                key={mission.id}
+                aria-labelledby={
+                  titleId
+                }
+              >
+                <div className="discovr-status-card__header">
+                  <Icon
+                    name={
+                      mission.icon
+                    }
+                    size={22}
                     aria-hidden="true"
                   />
 
-                  {mission.status}
+                  <span
+                    className={`discovr-status-card__badge discovr-status-card__badge--${mission.variant}`}
+                    aria-label={t(
+                      "discovr.missionStatus.statusAria",
+                      {
+                        status:
+                          missionStatus,
+                      }
+                    )}
+                  >
+                    <span
+                      className="discovr-status-card__pulse"
+                      aria-hidden="true"
+                    />
+
+                    {
+                      missionStatus
+                    }
+                  </span>
+                </div>
+
+                <h3 id={titleId}>
+                  {missionName}
+                </h3>
+
+                <p>
+                  {missionDetail}
+                </p>
+
+                <span className="discovr-status-card__updated">
+                  {t(
+                    "discovr.missionStatus.updatedLabel"
+                  )}{" "}
+                  <time
+                    dateTime={
+                      mission.updatedDate
+                    }
+                  >
+                    {
+                      updatedLabel
+                    }
+                  </time>
                 </span>
-              </div>
-
-              <h3 id={titleId}>
-                {mission.name}
-              </h3>
-
-              <p>{mission.detail}</p>
-
-              <span className="discovr-status-card__updated">
-                Atualização editorial:{" "}
-                <time dateTime={mission.updatedDate}>
-                  {mission.updatedLabel}
-                </time>
-              </span>
-            </article>
-          );
-        })}
+              </article>
+            );
+          }
+        )}
       </div>
     </section>
   );

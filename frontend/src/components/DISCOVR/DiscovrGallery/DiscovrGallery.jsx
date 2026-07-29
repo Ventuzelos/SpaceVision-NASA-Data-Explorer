@@ -4,6 +4,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { useTranslation } from "react-i18next";
 
 import Icon from "../../common/Icon/Icon";
 import ErrorState from "../../common/ErrorState/ErrorState";
@@ -101,21 +102,22 @@ function randomApodDate() {
 }
 
 function formatApodEyebrow(
-  dateString
+  dateString,
+  locale,
+  unavailableText
 ) {
   if (
-    typeof dateString !== "string"
+    typeof dateString !==
+      "string" ||
+    !dateString.trim()
   ) {
-    return "DATA INDISPONÍVEL";
+    return unavailableText;
   }
 
-  const [
-    year,
-    month,
-    day,
-  ] = dateString
-    .split("-")
-    .map(Number);
+  const [year, month, day] =
+    dateString
+      .split("-")
+      .map(Number);
 
   const parsedDate = new Date(
     year,
@@ -131,15 +133,15 @@ function formatApodEyebrow(
     return dateString;
   }
 
-  return parsedDate
-    .toLocaleDateString(
-      "pt-PT",
-      {
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-      }
-    )
+  return new Intl.DateTimeFormat(
+    locale,
+    {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    }
+  )
+    .format(parsedDate)
     .toUpperCase();
 }
 
@@ -216,26 +218,81 @@ function normalizePhoto(result) {
       ? result.hdurl
       : result.url;
 
+  const title =
+    typeof result.title ===
+      "string"
+      ? result.title.trim()
+      : "";
+
+  const explanation =
+    typeof result.explanation ===
+      "string"
+      ? result.explanation.trim()
+      : "";
+
+  const originalTitle =
+    result.original_title ||
+    result.originalTitle ||
+    result.title_original ||
+    title ||
+    "";
+
+  const translatedTitle =
+    result.translated_title ||
+    result.translatedTitle ||
+    result.title_pt ||
+    title ||
+    originalTitle;
+
+  const originalExplanation =
+    result.original_explanation ||
+    result.originalExplanation ||
+    result.explanation_original ||
+    explanation ||
+    "";
+
+  const translatedExplanation =
+    result.translated_explanation ||
+    result.translatedExplanation ||
+    result.explanation_pt ||
+    explanation ||
+    originalExplanation;
+
   return {
     url: fullUrl,
 
     previewUrl:
       result.url,
 
-    title:
-      typeof result.title ===
-        "string" &&
-      result.title.trim()
-        ? result.title.trim()
-        : "Imagem da NASA",
-
     date:
       result.date,
 
-    explanation:
-      typeof result.explanation ===
-      "string"
-        ? result.explanation
+    title,
+
+    explanation,
+
+    originalTitle:
+      typeof originalTitle ===
+        "string"
+        ? originalTitle.trim()
+        : "",
+
+    translatedTitle:
+      typeof translatedTitle ===
+        "string"
+        ? translatedTitle.trim()
+        : "",
+
+    originalExplanation:
+      typeof originalExplanation ===
+        "string"
+        ? originalExplanation.trim()
+        : "",
+
+    translatedExplanation:
+      typeof translatedExplanation ===
+        "string"
+        ? translatedExplanation.trim()
         : "",
   };
 }
@@ -260,7 +317,8 @@ function isValidCachedPhoto(
 
 function getCachedGallery() {
   if (
-    typeof window === "undefined"
+    typeof window ===
+    "undefined"
   ) {
     return [];
   }
@@ -308,7 +366,8 @@ function saveGalleryToCache(
   photos
 ) {
   if (
-    typeof window === "undefined" ||
+    typeof window ===
+      "undefined" ||
     !Array.isArray(photos) ||
     photos.length === 0
   ) {
@@ -326,14 +385,45 @@ function saveGalleryToCache(
 }
 
 function DiscovrGallery() {
-  const { isAuthenticated, isAuthLoading } = useAuth();
+  const { t, i18n } =
+    useTranslation();
 
-  const [favorite, setFavorite] = useState(false);
-  const [favoriteDatabaseId, setFavoriteDatabaseId] = useState(null);
-  const [isFavoriteLoading, setIsFavoriteLoading] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
+  const {
+    isAuthenticated,
+    isAuthLoading,
+  } = useAuth();
 
-  const toastTimeoutRef = useRef(null);
+  const isEnglish =
+    i18n.resolvedLanguage?.startsWith(
+      "en"
+    );
+
+  const locale = isEnglish
+    ? "en-GB"
+    : "pt-PT";
+
+  const [
+    favorite,
+    setFavorite,
+  ] = useState(false);
+
+  const [
+    favoriteDatabaseId,
+    setFavoriteDatabaseId,
+  ] = useState(null);
+
+  const [
+    isFavoriteLoading,
+    setIsFavoriteLoading,
+  ] = useState(false);
+
+  const [
+    toastMessage,
+    setToastMessage,
+  ] = useState("");
+
+  const toastTimeoutRef =
+    useRef(null);
 
   const [initialGallery] =
     useState(getCachedGallery);
@@ -463,9 +553,7 @@ function DiscovrGallery() {
               );
 
             if (!alreadyExists) {
-              photos.push(
-                photo
-              );
+              photos.push(photo);
             }
           } catch (
             requestError
@@ -483,11 +571,12 @@ function DiscovrGallery() {
                 ?.status === 429
             ) {
               if (
-                photos.length ===
-                0
+                photos.length === 0
               ) {
                 setCarouselError(
-                  "Foram efetuados demasiados pedidos à NASA. Aguarda um momento e tenta novamente."
+                  t(
+                    "discovr.gallery.errors.rateLimit"
+                  )
                 );
               }
 
@@ -539,7 +628,9 @@ function DiscovrGallery() {
         setCarouselPhotos([]);
 
         setCarouselError(
-          "Não foi possível carregar imagens da NASA neste momento."
+          t(
+            "discovr.gallery.errors.noImages"
+          )
         );
       } catch (
         requestError
@@ -560,7 +651,9 @@ function DiscovrGallery() {
         setCarouselError(
           getApiErrorMessage(
             requestError,
-            "Não foi possível carregar imagens da NASA."
+            t(
+              "discovr.gallery.errors.loadFallback"
+            )
           )
         );
 
@@ -576,7 +669,7 @@ function DiscovrGallery() {
           );
         }
       }
-    }, []);
+    }, [t]);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -667,6 +760,36 @@ function DiscovrGallery() {
       carouselIndex
     ] || null;
 
+  const currentTitle =
+    currentPhoto
+      ? isEnglish
+        ? currentPhoto.originalTitle ||
+          currentPhoto.title ||
+          currentPhoto.translatedTitle ||
+          t(
+            "discovr.gallery.defaultTitle"
+          )
+        : currentPhoto.translatedTitle ||
+          currentPhoto.title ||
+          currentPhoto.originalTitle ||
+          t(
+            "discovr.gallery.defaultTitle"
+          )
+      : "";
+
+  const currentExplanation =
+    currentPhoto
+      ? isEnglish
+        ? currentPhoto.originalExplanation ||
+          currentPhoto.explanation ||
+          currentPhoto.translatedExplanation ||
+          ""
+        : currentPhoto.translatedExplanation ||
+          currentPhoto.explanation ||
+          currentPhoto.originalExplanation ||
+          ""
+      : "";
+
   const favoriteId = currentPhoto
     ? `apod-${currentPhoto.date}`
     : null;
@@ -687,8 +810,7 @@ function DiscovrGallery() {
 
   const fullFailed =
     Boolean(fullUrl) &&
-    failedFullUrl ===
-      fullUrl;
+    failedFullUrl === fullUrl;
 
   const imageSource =
     !previewFailed
@@ -727,34 +849,65 @@ function DiscovrGallery() {
   useEffect(() => {
     let isMounted = true;
 
-    if (isAuthLoading || !isAuthenticated || !favoriteId) {
+    if (
+      isAuthLoading ||
+      !isAuthenticated ||
+      !favoriteId
+    ) {
       return undefined;
     }
 
     async function checkFavorite() {
       try {
-        const favorites = await getFavorites("apod");
+        const favorites =
+          await getFavorites(
+            "apod"
+          );
 
-        const existingFavorite = favorites.find((item) => {
-          const itemId = item.nasa_id || item.id;
+        const existingFavorite =
+          favorites.find(
+            (item) => {
+              const itemId =
+                item.nasa_id ||
+                item.id;
 
-          return String(itemId) === String(favoriteId);
-        });
+              return (
+                String(itemId) ===
+                String(favoriteId)
+              );
+            }
+          );
 
         if (!isMounted) {
           return;
         }
 
-        setFavorite(Boolean(existingFavorite));
-        setFavoriteDatabaseId(existingFavorite?.id || null);
+        setFavorite(
+          Boolean(
+            existingFavorite
+          )
+        );
+
+        setFavoriteDatabaseId(
+          existingFavorite?.id ||
+            null
+        );
       } catch (error) {
-        if (error.response?.status !== 401) {
-          console.error("Erro ao verificar favorito:", error);
+        if (
+          error.response?.status !==
+          401
+        ) {
+          console.error(
+            "Erro ao verificar favorito:",
+            error
+          );
         }
 
         if (isMounted) {
           setFavorite(false);
-          setFavoriteDatabaseId(null);
+          setFavoriteDatabaseId(
+            null
+          );
         }
       }
     }
@@ -764,78 +917,147 @@ function DiscovrGallery() {
     return () => {
       isMounted = false;
     };
-  }, [favoriteId, isAuthenticated, isAuthLoading]);
+  }, [
+    favoriteId,
+    isAuthenticated,
+    isAuthLoading,
+  ]);
 
   useEffect(() => {
     return () => {
-      if (toastTimeoutRef.current) {
-        window.clearTimeout(toastTimeoutRef.current);
+      if (
+        toastTimeoutRef.current
+      ) {
+        window.clearTimeout(
+          toastTimeoutRef.current
+        );
       }
     };
   }, []);
 
   function showToast(message) {
-    if (toastTimeoutRef.current) {
-      window.clearTimeout(toastTimeoutRef.current);
+    if (
+      toastTimeoutRef.current
+    ) {
+      window.clearTimeout(
+        toastTimeoutRef.current
+      );
     }
 
     setToastMessage(message);
 
-    toastTimeoutRef.current = window.setTimeout(() => {
-      setToastMessage("");
-      toastTimeoutRef.current = null;
-    }, 2500);
+    toastTimeoutRef.current =
+      window.setTimeout(() => {
+        setToastMessage("");
+        toastTimeoutRef.current =
+          null;
+      }, 2500);
   }
 
   async function handleFavoriteClick() {
     if (!isAuthenticated) {
-      showToast("Precisas de iniciar sessão para guardar favoritos");
+      showToast(
+        t(
+          "discovr.gallery.favorites.loginRequired"
+        )
+      );
+
       return;
     }
 
-    if (isFavoriteLoading || !currentPhoto) {
+    if (
+      isFavoriteLoading ||
+      !currentPhoto
+    ) {
       return;
     }
 
     try {
       setIsFavoriteLoading(true);
 
-      if (favorite && favoriteDatabaseId) {
-        await removeFavorite(favoriteDatabaseId);
+      if (
+        favorite &&
+        favoriteDatabaseId
+      ) {
+        await removeFavorite(
+          favoriteDatabaseId
+        );
 
         setFavorite(false);
-        setFavoriteDatabaseId(null);
+        setFavoriteDatabaseId(
+          null
+        );
 
-        showToast("Removido dos favoritos");
+        showToast(
+          t(
+            "discovr.gallery.favorites.removed"
+          )
+        );
+
         return;
       }
 
       const favoriteItem = {
         nasa_type: "apod",
         nasa_id: favoriteId,
-        title: currentPhoto.title || "Imagem astronómica da NASA",
-        image_url: currentPhoto.url,
+
+        title:
+          currentTitle ||
+          t(
+            "discovr.gallery.defaultTitle"
+          ),
+
+        image_url:
+          currentPhoto.url,
 
         data: {
           ...currentPhoto,
+          title: currentTitle,
+          explanation:
+            currentExplanation,
           media_type: "image",
-          image_url: currentPhoto.url,
+          image_url:
+            currentPhoto.url,
         },
       };
 
-      const createdFavorite = await addFavorite(favoriteItem);
+      const createdFavorite =
+        await addFavorite(
+          favoriteItem
+        );
 
       setFavorite(true);
-      setFavoriteDatabaseId(createdFavorite.id);
 
-      showToast("Adicionado aos favoritos");
+      setFavoriteDatabaseId(
+        createdFavorite.id
+      );
+
+      showToast(
+        t(
+          "discovr.gallery.favorites.added"
+        )
+      );
     } catch (error) {
-      console.error("Erro ao atualizar favorito:", error);
+      console.error(
+        "Erro ao atualizar favorito:",
+        error
+      );
 
-      if (error.response?.status === 401) {
-        showToast("Precisas de iniciar sessão para guardar favoritos");
+      if (
+        error.response?.status ===
+        401
+      ) {
+        showToast(
+          t(
+            "discovr.gallery.favorites.loginRequired"
+          )
+        );
       } else {
-        showToast("Não foi possível atualizar o favorito");
+        showToast(
+          t(
+            "discovr.gallery.favorites.updateError"
+          )
+        );
       }
     } finally {
       setIsFavoriteLoading(false);
@@ -852,11 +1074,15 @@ function DiscovrGallery() {
         id="discovr-gallery-title"
         className="discovr-section__title"
       >
-        Galeria aleatória da NASA
+        {t(
+          "discovr.gallery.title"
+        )}
       </h2>
 
       <p className="discovr-section__subtitle">
-        Cinco imagens escolhidas ao acaso do arquivo do Astronomy Picture of the Day.
+        {t(
+          "discovr.gallery.description"
+        )}
       </p>
 
       {carouselLoading && (
@@ -865,7 +1091,9 @@ function DiscovrGallery() {
           role="status"
           aria-live="polite"
           aria-busy="true"
-          aria-label="A carregar galeria da NASA"
+          aria-label={t(
+            "discovr.gallery.loadingAria"
+          )}
         >
           <div className="discovr-carousel__card discovr-carousel__card--skeleton">
             <div className="discovr-carousel__text">
@@ -910,7 +1138,9 @@ function DiscovrGallery() {
       {!carouselLoading &&
         carouselError && (
           <ErrorState
-            title="Sinal perdido"
+            title={t(
+              "discovr.gallery.errors.title"
+            )}
             message={
               carouselError
             }
@@ -928,39 +1158,61 @@ function DiscovrGallery() {
               <div className="discovr-carousel__text">
                 <span className="discovr-carousel__eyebrow">
                   {formatApodEyebrow(
-                    currentPhoto.date
+                    currentPhoto.date,
+                    locale,
+                    t(
+                      "discovr.gallery.dateUnavailable"
+                    )
                   )}
                 </span>
 
                 <div className="discovr-carousel__title-row">
                   <h3>
-                    {currentPhoto.title}
+                    {currentTitle}
                   </h3>
 
                   <FavoriteButton
-                    active={isAuthenticated && favorite}
-                    onClick={handleFavoriteClick}
-                    disabled={isFavoriteLoading || isAuthLoading}
+                    active={
+                      isAuthenticated &&
+                      favorite
+                    }
+                    onClick={
+                      handleFavoriteClick
+                    }
+                    disabled={
+                      isFavoriteLoading ||
+                      isAuthLoading
+                    }
                     ariaLabel={
                       favorite
-                        ? "Remover dos favoritos"
-                        : "Adicionar aos favoritos"
+                        ? t(
+                            "discovr.gallery.favorites.removeAria"
+                          )
+                        : t(
+                            "discovr.gallery.favorites.addAria"
+                          )
                     }
                   />
                 </div>
 
                 <p>
-                  {truncateText(
-                    currentPhoto.explanation,
-                    220
-                  )}
+                  {currentExplanation
+                    ? truncateText(
+                        currentExplanation,
+                        220
+                      )
+                    : t(
+                        "discovr.gallery.descriptionUnavailable"
+                      )}
                 </p>
 
                 <a
                   href="#apod-historico"
                   className="discovr-link"
                 >
-                  Ver arquivo de imagens
+                  {t(
+                    "discovr.gallery.viewArchive"
+                  )}
 
                   <Icon
                     name="ArrowRight"
@@ -975,7 +1227,9 @@ function DiscovrGallery() {
                   <div
                     className="discovr-carousel__image-fallback"
                     role="img"
-                    aria-label="A imagem da NASA não está disponível"
+                    aria-label={t(
+                      "discovr.gallery.imageUnavailableAria"
+                    )}
                   >
                     <Icon
                       name="ImageOff"
@@ -984,18 +1238,20 @@ function DiscovrGallery() {
                     />
 
                     <strong>
-                      Imagem indisponível
+                      {t(
+                        "discovr.gallery.imageUnavailable"
+                      )}
                     </strong>
 
                     <span>
-                      Não foi possível carregar esta imagem.
+                      {t(
+                        "discovr.gallery.imageLoadError"
+                      )}
                     </span>
                   </div>
                 ) : (
                   <img
-                    ref={
-                      parallaxRef
-                    }
+                    ref={parallaxRef}
                     key={
                       currentPhoto.url
                     }
@@ -1003,7 +1259,7 @@ function DiscovrGallery() {
                       imageSource
                     }
                     alt={
-                      currentPhoto.title
+                      currentTitle
                     }
                     className="discovr-carousel__image"
                     loading="lazy"
@@ -1023,7 +1279,13 @@ function DiscovrGallery() {
                       }
                       target="_blank"
                       rel="noopener noreferrer"
-                      aria-label={`Abrir a imagem ${currentPhoto.title} em tamanho completo, numa nova janela`}
+                      aria-label={t(
+                        "discovr.gallery.openFullSizeAria",
+                        {
+                          title:
+                            currentTitle,
+                        }
+                      )}
                     >
                       <Icon
                         name="Download"
@@ -1041,9 +1303,17 @@ function DiscovrGallery() {
                     }
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label={`Ver ${currentPhoto.title} no site APOD da NASA, abre numa nova janela`}
+                    aria-label={t(
+                      "discovr.gallery.viewOnApodAria",
+                      {
+                        title:
+                          currentTitle,
+                      }
+                    )}
                   >
-                    Ver imagem completa
+                    {t(
+                      "discovr.gallery.viewFullImage"
+                    )}
 
                     <Icon
                       name="ArrowRight"
@@ -1057,7 +1327,9 @@ function DiscovrGallery() {
 
             <div
               className="discovr-carousel__nav"
-              aria-label="Navegação da galeria"
+              aria-label={t(
+                "discovr.gallery.navigationAria"
+              )}
             >
               <button
                 type="button"
@@ -1069,7 +1341,9 @@ function DiscovrGallery() {
                   carouselPhotos.length <=
                   1
                 }
-                aria-label="Imagem anterior"
+                aria-label={t(
+                  "discovr.gallery.previousImage"
+                )}
               >
                 <Icon
                   name="ArrowLeft"
@@ -1083,30 +1357,56 @@ function DiscovrGallery() {
                   (
                     photo,
                     index
-                  ) => (
-                    <button
-                      type="button"
-                      key={`${photo.date}-${photo.url}`}
-                      className={`discovr-carousel__dot${
-                        index ===
-                        carouselIndex
-                          ? " discovr-carousel__dot--active"
-                          : ""
-                      }`}
-                      onClick={() =>
-                        handleSelectSlide(
-                          index
-                        )
-                      }
-                      aria-label={`Ver imagem ${index + 1}: ${photo.title}`}
-                      aria-current={
-                        index ===
-                        carouselIndex
-                          ? "true"
-                          : undefined
-                      }
-                    />
-                  )
+                  ) => {
+                    const photoTitle =
+                      isEnglish
+                        ? photo.originalTitle ||
+                          photo.title ||
+                          photo.translatedTitle ||
+                          t(
+                            "discovr.gallery.defaultTitle"
+                          )
+                        : photo.translatedTitle ||
+                          photo.title ||
+                          photo.originalTitle ||
+                          t(
+                            "discovr.gallery.defaultTitle"
+                          );
+
+                    return (
+                      <button
+                        type="button"
+                        key={`${photo.date}-${photo.url}`}
+                        className={`discovr-carousel__dot${
+                          index ===
+                          carouselIndex
+                            ? " discovr-carousel__dot--active"
+                            : ""
+                        }`}
+                        onClick={() =>
+                          handleSelectSlide(
+                            index
+                          )
+                        }
+                        aria-label={t(
+                          "discovr.gallery.selectImageAria",
+                          {
+                            number:
+                              index +
+                              1,
+                            title:
+                              photoTitle,
+                          }
+                        )}
+                        aria-current={
+                          index ===
+                          carouselIndex
+                            ? "true"
+                            : undefined
+                        }
+                      />
+                    );
+                  }
                 )}
               </div>
 
@@ -1120,7 +1420,9 @@ function DiscovrGallery() {
                   carouselPhotos.length <=
                   1
                 }
-                aria-label="Imagem seguinte"
+                aria-label={t(
+                  "discovr.gallery.nextImage"
+                )}
               >
                 <Icon
                   name="ArrowRight"
@@ -1132,7 +1434,9 @@ function DiscovrGallery() {
           </div>
         )}
 
-      <Toast message={toastMessage} />
+      <Toast
+        message={toastMessage}
+      />
     </section>
   );
 }

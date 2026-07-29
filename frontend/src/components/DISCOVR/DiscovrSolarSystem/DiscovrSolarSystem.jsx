@@ -4,8 +4,10 @@ import {
   useRef,
   useState,
 } from "react";
+import { useTranslation } from "react-i18next";
 
 import Icon from "../../common/Icon/Icon";
+
 import {
   createSolarSystemScene,
   PLANETS,
@@ -26,14 +28,25 @@ function supportsIntersectionObserver() {
 function supportsAnimationFrame() {
   return (
     typeof window !== "undefined" &&
-    typeof window.requestAnimationFrame === "function"
+    typeof window.requestAnimationFrame ===
+      "function"
   );
 }
 
+function getPlanetTranslationKey(
+  planetId
+) {
+  return `discovr.solarSystemSimulation.planets.${planetId}`;
+}
+
 function DiscovrSolarSystem() {
+  const { t, i18n } =
+    useTranslation();
+
   const mountRef = useRef(null);
   const sceneApiRef = useRef(null);
-  const updateFrameRef = useRef(null);
+  const updateFrameRef =
+    useRef(null);
 
   const [playing, setPlaying] =
     useState(true);
@@ -50,11 +63,21 @@ function DiscovrSolarSystem() {
   const [elapsedDays, setElapsedDays] =
     useState(0);
 
-  const [sceneError, setSceneError] =
-    useState("");
+  const [
+    hasSceneError,
+    setHasSceneError,
+  ] = useState(false);
+
+  const locale =
+    i18n.resolvedLanguage?.startsWith(
+      "en"
+    )
+      ? "en-GB"
+      : "pt-PT";
 
   useEffect(() => {
-    const container = mountRef.current;
+    const container =
+      mountRef.current;
 
     if (!container) {
       return undefined;
@@ -63,7 +86,9 @@ function DiscovrSolarSystem() {
     let sceneApi = null;
     let observer = null;
     let unsubscribe = null;
-    let initializationTimeoutId = null;
+    let initializationTimeoutId =
+      null;
+
     let disposed = false;
 
     initializationTimeoutId =
@@ -85,16 +110,16 @@ function DiscovrSolarSystem() {
           sceneApiRef.current =
             sceneApi;
 
-          /*
-           * Estado inicial da simulação.
-           * Estes valores correspondem aos valores
-           * iniciais dos estados React.
-           */
           sceneApi.setPlaying(true);
+
           sceneApi.setSpeed(
             INITIAL_SPEED
           );
-          sceneApi.setShowOrbits(true);
+
+          sceneApi.setShowOrbits(
+            true
+          );
+
           sceneApi.setFocus(null);
 
           unsubscribe =
@@ -175,8 +200,8 @@ function DiscovrSolarSystem() {
           );
 
           if (!disposed) {
-            setSceneError(
-              "Não foi possível iniciar a simulação 3D neste dispositivo."
+            setHasSceneError(
+              true
             );
           }
         }
@@ -196,7 +221,7 @@ function DiscovrSolarSystem() {
 
       if (
         updateFrameRef.current !==
-        null &&
+          null &&
         supportsAnimationFrame()
       ) {
         window.cancelAnimationFrame(
@@ -211,7 +236,8 @@ function DiscovrSolarSystem() {
       unsubscribe?.();
       sceneApi?.dispose();
 
-      sceneApiRef.current = null;
+      sceneApiRef.current =
+        null;
     };
   }, []);
 
@@ -248,12 +274,40 @@ function DiscovrSolarSystem() {
     [focusId]
   );
 
+  const focusedPlanetName =
+    focusedPlanet
+      ? t(
+          getPlanetTranslationKey(
+            focusedPlanet.id
+          ),
+          {
+            defaultValue:
+              focusedPlanet.name,
+          }
+        )
+      : t(
+          "discovr.solarSystemSimulation.systemName"
+        );
+
   const elapsedYears =
     Number.isFinite(elapsedDays)
       ? elapsedDays / 365.25
       : 0;
 
-  function handleSpeedChange(event) {
+  const formattedElapsedYears =
+    new Intl.NumberFormat(locale, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(elapsedYears);
+
+  const formattedSpeed =
+    new Intl.NumberFormat(locale, {
+      maximumFractionDigits: 0,
+    }).format(speed);
+
+  function handleSpeedChange(
+    event
+  ) {
     const nextSpeed = Number(
       event.target.value
     );
@@ -266,7 +320,10 @@ function DiscovrSolarSystem() {
 
     setSpeed(
       Math.min(
-        Math.max(nextSpeed, 0),
+        Math.max(
+          nextSpeed,
+          0
+        ),
         MAX_SPEED
       )
     );
@@ -295,11 +352,15 @@ function DiscovrSolarSystem() {
         id="discovr-solar-system-title"
         className="discovr-section__title"
       >
-        Sistema solar
+        {t(
+          "discovr.solarSystemSimulation.title"
+        )}
       </h2>
 
       <p className="discovr-section__subtitle">
-        Uma simulação orbital do Sol e dos oito planetas, com as suas distâncias e períodos reais. A escala visual foi comprimida para permitir que todos caibam no mesmo enquadramento.
+        {t(
+          "discovr.solarSystemSimulation.description"
+        )}
       </p>
 
       <div className="discovr-solar-system">
@@ -308,68 +369,100 @@ function DiscovrSolarSystem() {
             ref={mountRef}
             className="discovr-solar-system__canvas"
             role="img"
-            aria-label="Simulação tridimensional interativa do sistema solar"
+            aria-label={t(
+              "discovr.solarSystemSimulation.canvasAria"
+            )}
           />
 
-          {sceneError && (
+          {hasSceneError && (
             <div
               className="discovr-solar-system__error"
               role="alert"
             >
               <strong>
-                Simulação indisponível
+                {t(
+                  "discovr.solarSystemSimulation.error.title"
+                )}
               </strong>
 
-              <p>{sceneError}</p>
+              <p>
+                {t(
+                  "discovr.solarSystemSimulation.error.description"
+                )}
+              </p>
             </div>
           )}
 
-          {!sceneError && (
+          {!hasSceneError && (
             <>
               <div className="discovr-solar-system__badge">
                 <span>
-                  {focusedPlanet
-                    ? focusedPlanet.name
-                    : "Sistema solar"}
+                  {
+                    focusedPlanetName
+                  }
                 </span>
 
                 <small>
-                  escala não proporcional
+                  {t(
+                    "discovr.solarSystemSimulation.notToScale"
+                  )}
                 </small>
               </div>
 
               <div className="discovr-solar-system__hint">
-                Arrasta para orbitar · utiliza a roda do rato para aproximar
+                {t(
+                  "discovr.solarSystemSimulation.navigationHint"
+                )}
               </div>
 
               <div
                 className="discovr-solar-system__telemetry"
                 aria-live="off"
               >
-                T+{" "}
-                {elapsedYears.toFixed(2)}{" "}
-                anos simulados
+                {t(
+                  "discovr.solarSystemSimulation.elapsedTime",
+                  {
+                    years:
+                      formattedElapsedYears,
+                  }
+                )}
               </div>
 
               <div className="discovr-solar-system__controls">
                 <button
                   type="button"
                   className="discovr-solar-system__play"
-                  onClick={handleTogglePlaying}
+                  onClick={
+                    handleTogglePlaying
+                  }
                   aria-label={
                     playing
-                      ? "Pausar simulação"
-                      : "Retomar simulação"
+                      ? t(
+                          "discovr.solarSystemSimulation.pause"
+                        )
+                      : t(
+                          "discovr.solarSystemSimulation.resume"
+                        )
                   }
                   title={
                     playing
-                      ? "Pausar simulação"
-                      : "Retomar simulação"
+                      ? t(
+                          "discovr.solarSystemSimulation.pause"
+                        )
+                      : t(
+                          "discovr.solarSystemSimulation.resume"
+                        )
                   }
-                  aria-pressed={!playing}
+                  aria-pressed={
+                    !playing
+                  }
                 >
                   <Icon
-                    name={playing ? "Pause" : "Play"}
+                    name={
+                      playing
+                        ? "Pause"
+                        : "Play"
+                    }
                     size={16}
                     aria-hidden="true"
                   />
@@ -377,9 +470,13 @@ function DiscovrSolarSystem() {
 
                 <div className="discovr-solar-system__speed">
                   <label htmlFor="solar-system-speed">
-                    Velocidade —{" "}
-                    {speed.toFixed(0)}{" "}
-                    dias por segundo
+                    {t(
+                      "discovr.solarSystemSimulation.speedLabel",
+                      {
+                        speed:
+                          formattedSpeed,
+                      }
+                    )}
                   </label>
 
                   <input
@@ -392,9 +489,13 @@ function DiscovrSolarSystem() {
                     onChange={
                       handleSpeedChange
                     }
-                    aria-valuetext={`${speed.toFixed(
-                      0
-                    )} dias por segundo`}
+                    aria-valuetext={t(
+                      "discovr.solarSystemSimulation.speedValue",
+                      {
+                        speed:
+                          formattedSpeed,
+                      }
+                    )}
                   />
                 </div>
 
@@ -420,18 +521,22 @@ function DiscovrSolarSystem() {
                     }
                   />
 
-                  Órbitas
+                  {t(
+                    "discovr.solarSystemSimulation.orbits"
+                  )}
                 </label>
               </div>
             </>
           )}
         </div>
 
-        {!sceneError && (
+        {!hasSceneError && (
           <div
             className="discovr-solar-system__focus"
             role="group"
-            aria-label="Selecionar o foco da simulação"
+            aria-label={t(
+              "discovr.solarSystemSimulation.focusAria"
+            )}
           >
             <button
               type="button"
@@ -441,37 +546,67 @@ function DiscovrSolarSystem() {
                   : ""
               }
               onClick={() =>
-                handleFocusPlanet(null)
+                handleFocusPlanet(
+                  null
+                )
               }
-              aria-pressed={!focusId}
+              aria-pressed={
+                !focusId
+              }
             >
-              Visão geral
+              {t(
+                "discovr.solarSystemSimulation.overview"
+              )}
             </button>
 
             {PLANETS.map(
-              (planet) => (
-                <button
-                  key={planet.id}
-                  type="button"
-                  className={
-                    focusId ===
+              (planet) => {
+                const planetName =
+                  t(
+                    getPlanetTranslationKey(
                       planet.id
-                      ? "is-active"
-                      : ""
-                  }
-                  onClick={() =>
-                    handleFocusPlanet(
+                    ),
+                    {
+                      defaultValue:
+                        planet.name,
+                    }
+                  );
+
+                return (
+                  <button
+                    key={
                       planet.id
-                    )
-                  }
-                  aria-pressed={
-                    focusId ===
-                    planet.id
-                  }
-                >
-                  {planet.name}
-                </button>
-              )
+                    }
+                    type="button"
+                    className={
+                      focusId ===
+                      planet.id
+                        ? "is-active"
+                        : ""
+                    }
+                    onClick={() =>
+                      handleFocusPlanet(
+                        planet.id
+                      )
+                    }
+                    aria-pressed={
+                      focusId ===
+                      planet.id
+                    }
+                    aria-label={t(
+                      "discovr.solarSystemSimulation.focusPlanetAria",
+                      {
+                        planet:
+                          planetName,
+                      }
+                    )}
+                  >
+                    {
+                      planetName
+                    }
+                  </button>
+                );
+              }
             )}
           </div>
         )}

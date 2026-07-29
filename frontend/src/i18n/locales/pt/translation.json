@@ -623,6 +623,233 @@
             }
         }
     },
+    "discovr": {
+        "meta": {
+            "title": "Descobrir o Espaço",
+            "description": "Explora conteúdos visuais, curiosidades e experiências interativas sobre o Universo com dados e recursos da NASA."
+        },
+        "solarSystem": {
+            "title": "Sistema solar",
+            "loadingAria": "A carregar sistema solar interativo",
+            "preparing": "A preparar a simulação 3D...",
+            "autoLoadDescription": "A simulação 3D será carregada automaticamente quando estiveres perto desta secção.",
+            "loadButton": "Carregar simulação 3D"
+        },
+        "hero": {
+            "breadcrumb": "Descobrir",
+            "eyebrow": "Descobrir",
+            "title": "Descobre o Universo",
+            "description": "Curiosidades, missões icónicas e o estado atual dos exploradores que continuam a expandir os limites do conhecimento humano.",
+            "videoCaptionLabel": "Português",
+            "readout": {
+                "interactiveSections": "Secções interativas",
+                "update": "Atualização",
+                "dailyApod": "Diária (APOD)",
+                "solarSystem": "Sistema solar",
+                "simulation": "Simulação 3D"
+            }
+        },
+        "surpriseCard": {
+            "surpriseMe": "Surpreende-me",
+            "anotherFact": "Outro facto",
+            "closeAria": "Fechar facto",
+            "facts": {
+                "venusDay": "Um dia em Vénus é mais longo do que um ano em Vénus.",
+                "voyager": "A Voyager 1 é o objeto feito pelo ser humano mais distante da Terra, viajando pelo espaço interestelar desde 2012.",
+                "olympusMons": "O Monte Olimpo, em Marte, é o maior vulcão do Sistema Solar, com quase 22 km de altura.",
+                "issSpeed": "A Estação Espacial Internacional viaja a cerca de 28 000 km/h, completando uma volta à Terra aproximadamente a cada 90 minutos.",
+                "stars": "Existem mais estrelas no Universo observável do que grãos de areia em todas as praias da Terra.",
+                "jamesWebb": "O Telescópio Espacial James Webb consegue detetar luz de galáxias formadas há mais de 13 mil milhões de anos.",
+                "neptuneYear": "Um ano em Neptuno equivale a cerca de 165 anos terrestres.",
+                "newHorizons": "A sonda New Horizons demorou mais de nove anos a chegar a Plutão.",
+                "sunMass": "O Sol representa cerca de 99,8% da massa total do Sistema Solar.",
+                "moonFootprints": "As pegadas dos astronautas na Lua podem durar milhões de anos, porque não há vento nem água para as apagar.",
+                "saturnDensity": "Saturno é tão pouco denso que, teoricamente, flutuaria num oceano de água suficientemente grande.",
+                "sunlight": "A luz do Sol demora cerca de 8 minutos e 20 segundos a chegar à Terra."
+            }
+        },
+        "gallery": {
+            "title": "Galeria aleatória da NASA",
+            "description": "Cinco imagens escolhidas ao acaso do arquivo Astronomy Picture of the Day.",
+            "loadingAria": "A carregar galeria da NASA",
+            "dateUnavailable": "DATA INDISPONÍVEL",
+            "defaultTitle": "Imagem astronómica da NASA",
+            "viewArchive": "Ver arquivo de imagens",
+            "viewFullImage": "Ver imagem completa",
+            "imageUnavailableAria": "A imagem da NASA não está disponível",
+            "imageUnavailable": "Imagem indisponível",
+            "imageLoadError": "Não foi possível carregar esta imagem.",
+            "openFullSizeAria": "Abrir a imagem {{title}} em tamanho completo, numa nova janela",
+            "viewOnApodAria": "Ver {{title}} no site APOD da NASA, abre numa nova janela",
+            "navigationAria": "Navegação da galeria",
+            "previousImage": "Imagem anterior",
+            "nextImage": "Imagem seguinte",
+            "descriptionUnavailable": "Descrição não disponível para esta imagem.",
+            "selectImageAria": "Ver imagem {{number}}: {{title}}",
+            "errors": {
+                "title": "Sinal perdido",
+                "rateLimit": "Foram efetuados demasiados pedidos à NASA. Aguarda um momento e tenta novamente.",
+                "noImages": "Não foi possível carregar imagens da NASA neste momento.",
+                "loadFallback": "Não foi possível carregar imagens da NASA."
+            },
+            "favorites": {
+                "loginRequired": "Precisas de iniciar sessão para guardar favoritos",
+                "added": "Adicionado aos favoritos",
+                "removed": "Removido dos favoritos",
+                "updateError": "Não foi possível atualizar o favorito",
+                "addAria": "Adicionar aos favoritos",
+                "removeAria": "Remover dos favoritos"
+            }
+        },
+        "apodHistory": {
+            "title": "Imagens anteriores",
+            "description": "Explora as imagens astronómicas publicadas nos últimos dias.",
+            "loadingAria": "A carregar imagens anteriores",
+            "defaultTitle": "Imagem astronómica da NASA",
+            "errors": {
+                "title": "Não foi possível carregar o histórico",
+                "loadFallback": "Não foi possível carregar as imagens anteriores."
+            },
+            "empty": {
+                "title": "Nenhuma imagem disponível",
+                "description": "Não foram encontradas imagens APOD para os últimos dias."
+            }
+        },
+        "apodHistoryCard": {
+            "defaultTitle": "Imagem astronómica da NASA",
+            "openItem": "Abrir {{title}} no site APOD da NASA",
+            "imageAlt": "Imagem astronómica da NASA",
+            "video": "Vídeo"
+        },
+        "timeline": {
+            "title": "Linha do tempo interativa",
+            "mobileDescription": "Desliza para baixo para explorares as missões.",
+            "desktopDescription": "Clica num ano da linha para veres a missão correspondente.",
+            "ariaLabel": "Linha cronológica das principais missões espaciais",
+            "future": "Futuro",
+            "missionAria": "{{year}} — {{title}}",
+            "closeAria": "Fechar detalhes de {{title}}",
+            "missions": {
+                "apollo11": {
+                    "title": "Apollo 11",
+                    "text": "Armstrong e Aldrin tornam-se os primeiros seres humanos a pisar a Lua."
+                },
+                "voyager": {
+                    "title": "Voyager 1 e 2",
+                    "text": "Lançamento das sondas gémeas rumo aos planetas exteriores."
+                },
+                "hubble": {
+                    "title": "Telescópio Hubble",
+                    "text": "O telescópio espacial revoluciona a astronomia observacional."
+                },
+                "iss": {
+                    "title": "Estação Espacial Internacional",
+                    "text": "Início da construção do laboratório orbital internacional."
+                },
+                "curiosity": {
+                    "title": "Curiosity em Marte",
+                    "text": "O rover pousa em Marte para estudar a habitabilidade do planeta."
+                },
+                "jamesWebb": {
+                    "title": "Telescópio James Webb",
+                    "text": "Lançado para observar o Universo em infravermelho."
+                },
+                "artemis1": {
+                    "title": "Artemis I",
+                    "text": "Voo de teste não tripulado em redor da Lua."
+                },
+                "artemisFuture": {
+                    "title": "Artemis II e III",
+                    "text": "Missões tripuladas rumo a uma nova alunagem humana."
+                }
+            }
+        },
+        "asteroidRadar": {
+            "title": "Radar de asteroides DISCOVR",
+            "description": "Acompanha os objetos próximos da Terra com as menores distâncias de aproximação previstas.",
+            "loading": "A carregar o radar de asteroides da NASA...",
+            "empty": "Não foram encontrados asteroides para o período atual.",
+            "defaultName": "Asteroide sem nome",
+            "distance": "Distância",
+            "estimatedDiameter": "Diâmetro estimado",
+            "distanceUnavailable": "Distância desconhecida",
+            "diameterUnavailable": "Diâmetro desconhecido",
+            "viewFavorites": "Ver todos os favoritos",
+            "errors": {
+                "title": "Não foi possível carregar o radar",
+                "loadFallback": "Não foi possível carregar os asteroides.",
+                "sync": "Erro ao sincronizar informações com a NASA.",
+                "favoriteFallback": "Não foi possível atualizar o favorito."
+            },
+            "favorites": {
+                "loginRequired": "Precisas de iniciar sessão para guardar favoritos.",
+                "added": "Asteroide adicionado aos favoritos.",
+                "removed": "Asteroide removido dos favoritos.",
+                "updateError": "Não foi possível atualizar o estado do favorito.",
+                "addAria": "Adicionar {{name}} aos favoritos",
+                "removeAria": "Remover {{name}} dos favoritos"
+            }
+        },
+        "missionStatus": {
+            "title": "Estado das missões",
+            "description": "Panorama informativo de algumas das missões mais emblemáticas associadas à exploração espacial da NASA.",
+            "updatedLabel": "Atualização editorial:",
+            "statusAria": "Estado da missão: {{status}}",
+            "missions": {
+                "jamesWebb": {
+                    "name": "Telescópio Espacial James Webb",
+                    "status": "Operacional",
+                    "detail": "Em órbita em torno do ponto de Lagrange L2, continua a recolher dados infravermelhos sobre o Universo primitivo."
+                },
+                "artemisII": {
+                    "name": "Artemis II",
+                    "status": "Em preparação",
+                    "detail": "Missão tripulada em preparação para o primeiro voo do programa Artemis em torno da Lua."
+                },
+                "voyager1": {
+                    "name": "Voyager 1",
+                    "status": "Ativa · Espaço interestelar",
+                    "detail": "A sonda mais distante construída pela humanidade continua a transmitir dados científicos a partir do espaço interestelar."
+                },
+                "voyager2": {
+                    "name": "Voyager 2",
+                    "status": "Ativa · Espaço interestelar",
+                    "detail": "Continua a enviar dados sobre o meio interestelar desde que ultrapassou a heliopausa em 2018."
+                }
+            }
+        },
+        "solarSystemSimulation": {
+            "title": "Sistema solar",
+            "description": "Uma simulação orbital do Sol e dos oito planetas, com as suas distâncias e períodos reais. A escala visual foi comprimida para permitir que todos caibam no mesmo enquadramento.",
+            "canvasAria": "Simulação tridimensional interativa do Sistema Solar",
+            "systemName": "Sistema solar",
+            "notToScale": "Escala não proporcional",
+            "navigationHint": "Arrasta para orbitar · utiliza a roda do rato para aproximar",
+            "elapsedTime": "T+ {{years}} anos simulados",
+            "pause": "Pausar simulação",
+            "resume": "Retomar simulação",
+            "speedLabel": "Velocidade — {{speed}} dias por segundo",
+            "speedValue": "{{speed}} dias por segundo",
+            "orbits": "Órbitas",
+            "focusAria": "Selecionar o foco da simulação",
+            "overview": "Visão geral",
+            "focusPlanetAria": "Focar a simulação em {{planet}}",
+            "error": {
+                "title": "Simulação indisponível",
+                "description": "Não foi possível iniciar a simulação 3D neste dispositivo."
+            },
+            "planets": {
+                "mercury": "Mercúrio",
+                "venus": "Vénus",
+                "earth": "Terra",
+                "mars": "Marte",
+                "jupiter": "Júpiter",
+                "saturn": "Saturno",
+                "uranus": "Urano",
+                "neptune": "Neptuno"
+            }
+        }
+    },
     "common": {
         "loading": "A carregar...",
         "error": "Ocorreu um erro",

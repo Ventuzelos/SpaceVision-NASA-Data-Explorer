@@ -4,6 +4,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { useTranslation } from "react-i18next";
 
 import Icon from "../../common/Icon/Icon";
 import ErrorState from "../../common/ErrorState/ErrorState";
@@ -18,7 +19,10 @@ import "./DiscovrApodHistory.css";
 const HISTORY_DAYS = 6;
 
 function padDatePart(value) {
-  return String(value).padStart(2, "0");
+  return String(value).padStart(
+    2,
+    "0"
+  );
 }
 
 function formatDate(date) {
@@ -45,14 +49,17 @@ function formatDate(date) {
 function isValidDateString(value) {
   if (
     typeof value !== "string" ||
-    !/^\d{4}-\d{2}-\d{2}$/.test(value)
+    !/^\d{4}-\d{2}-\d{2}$/.test(
+      value
+    )
   ) {
     return false;
   }
 
-  const [year, month, day] = value
-    .split("-")
-    .map(Number);
+  const [year, month, day] =
+    value
+      .split("-")
+      .map(Number);
 
   const parsedDate = new Date(
     year,
@@ -61,8 +68,10 @@ function isValidDateString(value) {
   );
 
   return (
-    parsedDate.getFullYear() === year &&
-    parsedDate.getMonth() === month - 1 &&
+    parsedDate.getFullYear() ===
+      year &&
+    parsedDate.getMonth() ===
+      month - 1 &&
     parsedDate.getDate() === day
   );
 }
@@ -72,9 +81,10 @@ function getDateTimestamp(value) {
     return 0;
   }
 
-  const [year, month, day] = value
-    .split("-")
-    .map(Number);
+  const [year, month, day] =
+    value
+      .split("-")
+      .map(Number);
 
   return new Date(
     year,
@@ -83,50 +93,132 @@ function getDateTimestamp(value) {
   ).getTime();
 }
 
-function buildApodPageUrl(dateString) {
-  if (!isValidDateString(dateString)) {
+function buildApodPageUrl(
+  dateString
+) {
+  if (
+    !isValidDateString(
+      dateString
+    )
+  ) {
     return "";
   }
 
-  const [year, month, day] =
-    dateString.split("-");
+  const [
+    year,
+    month,
+    day,
+  ] = dateString.split("-");
 
   return `https://apod.nasa.gov/apod/ap${year.slice(
     2
   )}${month}${day}.html`;
 }
 
-function normalizeHistoryItem(item) {
+function normalizeHistoryItem(
+  item,
+  defaultTitle
+) {
   if (
     !item ||
     typeof item !== "object" ||
-    !isValidDateString(item.date)
+    !isValidDateString(
+      item.date
+    )
   ) {
     return null;
   }
+
+  const title =
+    typeof item.title ===
+      "string"
+      ? item.title.trim()
+      : "";
+
+  const explanation =
+    typeof item.explanation ===
+      "string"
+      ? item.explanation.trim()
+      : "";
+
+  const originalTitle =
+    item.original_title ||
+    item.originalTitle ||
+    item.title_original ||
+    title ||
+    "";
+
+  const translatedTitle =
+    item.translated_title ||
+    item.translatedTitle ||
+    item.title_pt ||
+    title ||
+    originalTitle;
+
+  const originalExplanation =
+    item.original_explanation ||
+    item.originalExplanation ||
+    item.explanation_original ||
+    explanation ||
+    "";
+
+  const translatedExplanation =
+    item.translated_explanation ||
+    item.translatedExplanation ||
+    item.explanation_pt ||
+    explanation ||
+    originalExplanation;
 
   return {
     ...item,
 
     title:
-      typeof item.title === "string" &&
-      item.title.trim()
-        ? item.title.trim()
-        : "Imagem astronómica da NASA",
+      title ||
+      defaultTitle,
 
-    explanation:
-      typeof item.explanation === "string"
-        ? item.explanation
+    explanation,
+
+    originalTitle:
+      typeof originalTitle ===
+        "string"
+        ? originalTitle.trim()
+        : "",
+
+    translatedTitle:
+      typeof translatedTitle ===
+        "string"
+        ? translatedTitle.trim()
+        : "",
+
+    originalExplanation:
+      typeof originalExplanation ===
+        "string"
+        ? originalExplanation.trim()
+        : "",
+
+    translatedExplanation:
+      typeof translatedExplanation ===
+        "string"
+        ? translatedExplanation.trim()
         : "",
 
     media_type:
-      typeof item.media_type === "string"
+      typeof item.media_type ===
+        "string"
         ? item.media_type
         : "image",
   };
 }
 
 function DiscovrApodHistory() {
+  const { t, i18n } =
+    useTranslation();
+
+  const isEnglish =
+    i18n.resolvedLanguage?.startsWith(
+      "en"
+    );
+
   const [history, setHistory] =
     useState([]);
 
@@ -136,8 +228,11 @@ function DiscovrApodHistory() {
   const [isLoading, setIsLoading] =
     useState(true);
 
-  const mountedRef = useRef(true);
-  const requestIdRef = useRef(0);
+  const mountedRef =
+    useRef(true);
+
+  const requestIdRef =
+    useRef(0);
 
   const loadHistory = useCallback(
     async () => {
@@ -199,8 +294,13 @@ function DiscovrApodHistory() {
         const orderedResults =
           Array.isArray(results)
             ? results
-                .map(
-                  normalizeHistoryItem
+                .map((item) =>
+                  normalizeHistoryItem(
+                    item,
+                    t(
+                      "discovr.apodHistory.defaultTitle"
+                    )
+                  )
                 )
                 .filter(Boolean)
                 .sort(
@@ -220,7 +320,9 @@ function DiscovrApodHistory() {
         setHistory(
           orderedResults
         );
-      } catch (requestError) {
+      } catch (
+        requestError
+      ) {
         if (
           !mountedRef.current ||
           requestIdRef.current !==
@@ -239,7 +341,9 @@ function DiscovrApodHistory() {
         setError(
           getApiErrorMessage(
             requestError,
-            "Não foi possível carregar as imagens anteriores."
+            t(
+              "discovr.apodHistory.errors.loadFallback"
+            )
           )
         );
       } finally {
@@ -252,7 +356,7 @@ function DiscovrApodHistory() {
         }
       }
     },
-    []
+    [t]
   );
 
   useEffect(() => {
@@ -262,7 +366,9 @@ function DiscovrApodHistory() {
     loadHistory();
 
     return () => {
-      mountedRef.current = false;
+      mountedRef.current =
+        false;
+
       requestIdRef.current += 1;
     };
   }, [loadHistory]);
@@ -285,9 +391,46 @@ function DiscovrApodHistory() {
       );
 
     if (openedWindow) {
-      openedWindow.opener = null;
+      openedWindow.opener =
+        null;
     }
   }
+
+  const localizedHistory =
+    history.map((item) => {
+      const localizedTitle =
+        isEnglish
+          ? item.originalTitle ||
+            item.title ||
+            item.translatedTitle ||
+            t(
+              "discovr.apodHistory.defaultTitle"
+            )
+          : item.translatedTitle ||
+            item.title ||
+            item.originalTitle ||
+            t(
+              "discovr.apodHistory.defaultTitle"
+            );
+
+      const localizedExplanation =
+        isEnglish
+          ? item.originalExplanation ||
+            item.explanation ||
+            item.translatedExplanation ||
+            ""
+          : item.translatedExplanation ||
+            item.explanation ||
+            item.originalExplanation ||
+            "";
+
+      return {
+        ...item,
+        title: localizedTitle,
+        explanation:
+          localizedExplanation,
+      };
+    });
 
   return (
     <section
@@ -299,11 +442,15 @@ function DiscovrApodHistory() {
         id="discovr-apod-history-title"
         className="discovr-section__title"
       >
-        Imagens anteriores
+        {t(
+          "discovr.apodHistory.title"
+        )}
       </h2>
 
       <p className="discovr-section__subtitle">
-        Explora as imagens astronómicas publicadas nos últimos dias.
+        {t(
+          "discovr.apodHistory.description"
+        )}
       </p>
 
       {isLoading && (
@@ -312,23 +459,29 @@ function DiscovrApodHistory() {
           role="status"
           aria-live="polite"
           aria-busy="true"
-          aria-label="A carregar imagens anteriores"
+          aria-label={t(
+            "discovr.apodHistory.loadingAria"
+          )}
         >
           {Array.from({
             length: HISTORY_DAYS,
-          }).map((_, index) => (
-            <div
-              key={index}
-              className="discovr-skeleton discovr-apod-history__skeleton-card"
-              aria-hidden="true"
-            />
-          ))}
+          }).map(
+            (_, index) => (
+              <div
+                key={index}
+                className="discovr-skeleton discovr-apod-history__skeleton-card"
+                aria-hidden="true"
+              />
+            )
+          )}
         </div>
       )}
 
       {!isLoading && error && (
         <ErrorState
-          title="Não foi possível carregar o histórico"
+          title={t(
+            "discovr.apodHistory.errors.title"
+          )}
           message={error}
           onRetry={loadHistory}
         />
@@ -336,7 +489,8 @@ function DiscovrApodHistory() {
 
       {!isLoading &&
         !error &&
-        history.length === 0 && (
+        localizedHistory.length ===
+          0 && (
           <div
             className="discovr-apod-history__empty"
             role="status"
@@ -348,27 +502,36 @@ function DiscovrApodHistory() {
             />
 
             <h3>
-              Nenhuma imagem disponível
+              {t(
+                "discovr.apodHistory.empty.title"
+              )}
             </h3>
 
             <p>
-              Não foram encontradas imagens APOD para os últimos dias.
+              {t(
+                "discovr.apodHistory.empty.description"
+              )}
             </p>
           </div>
         )}
 
       {!isLoading &&
         !error &&
-        history.length > 0 && (
+        localizedHistory.length >
+          0 && (
           <Carousel>
-            {history.map((item) => (
-              <APODHistoryCard
-                key={item.date}
-                item={item}
-                active={false}
-                onSelect={handleSelect}
-              />
-            ))}
+            {localizedHistory.map(
+              (item) => (
+                <APODHistoryCard
+                  key={item.date}
+                  item={item}
+                  active={false}
+                  onSelect={
+                    handleSelect
+                  }
+                />
+              )
+            )}
           </Carousel>
         )}
     </section>

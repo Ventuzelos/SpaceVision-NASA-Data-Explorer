@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import Container from "../../common/Container/Container";
 import Breadcrumb from "../../common/Breadcrumb/Breadcrumb";
 import SurpriseCard from "../../common/SurpriseCard/SurpriseCard";
@@ -8,6 +10,8 @@ import astronautVideo from "../../../assets/videos/astronaut-float.mp4";
 import "./DiscovrHero.css";
 
 function DiscovrHero() {
+  const { t } = useTranslation();
+
   return (
     <section
       className="discovr-hero"
@@ -19,43 +23,76 @@ function DiscovrHero() {
       />
 
       <Container>
-        <Breadcrumb title="Descobrir" />
+        <Breadcrumb
+          title={t(
+            "discovr.hero.breadcrumb"
+          )}
+        />
 
         <div className="discovr-hero__grid">
           <div className="discovr-hero__content">
             <p className="discovr-hero__eyebrow">
-              <span>Descobrir</span>
+              <span>
+                {t(
+                  "discovr.hero.eyebrow"
+                )}
+              </span>
             </p>
 
             <h1
               id="discovr-page-title"
               className="discovr-hero__title"
             >
-              Descobre o Universo
+              {t(
+                "discovr.hero.title"
+              )}
             </h1>
 
             <p className="discovr-hero__description">
-              Curiosidades, missões icónicas e o estado
-              atual dos exploradores que continuam a
-              expandir os limites do conhecimento humano.
+              {t(
+                "discovr.hero.description"
+              )}
             </p>
 
             <SurpriseCard />
 
             <dl className="discovr-hero__readout">
               <div className="discovr-hero__readout-item">
-                <dt>Secções interativas</dt>
+                <dt>
+                  {t(
+                    "discovr.hero.readout.interactiveSections"
+                  )}
+                </dt>
+
                 <dd>6</dd>
               </div>
 
               <div className="discovr-hero__readout-item">
-                <dt>Atualização</dt>
-                <dd>Diária (APOD)</dd>
+                <dt>
+                  {t(
+                    "discovr.hero.readout.update"
+                  )}
+                </dt>
+
+                <dd>
+                  {t(
+                    "discovr.hero.readout.dailyApod"
+                  )}
+                </dd>
               </div>
 
               <div className="discovr-hero__readout-item">
-                <dt>Sistema solar</dt>
-                <dd>Simulação 3D</dd>
+                <dt>
+                  {t(
+                    "discovr.hero.readout.solarSystem"
+                  )}
+                </dt>
+
+                <dd>
+                  {t(
+                    "discovr.hero.readout.simulation"
+                  )}
+                </dd>
               </div>
             </dl>
           </div>
@@ -86,7 +123,9 @@ function DiscovrHero() {
                 kind="captions"
                 src="/captions/decorative-video.vtt"
                 srcLang="pt"
-                label="Português"
+                label={t(
+                  "discovr.hero.videoCaptionLabel"
+                )}
                 default
               />
             </video>
