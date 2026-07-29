@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import Button from "../Button/Button";
+
 import { saveContactMessage } from "../../../services/messagesService";
 
 import "./ContactForm.css";
@@ -12,72 +14,159 @@ const initialValues = {
   message: "",
 };
 
-function validate(values) {
+function validate(
+  values,
+  t
+) {
   const errors = {};
 
-  if (!values.name.trim()) {
-    errors.name = "Indica o teu nome.";
-  } else if (values.name.trim().length > 100) {
-    errors.name = "O nome não pode ter mais de 100 caracteres.";
+  const trimmedName =
+    values.name.trim();
+
+  const trimmedEmail =
+    values.email.trim();
+
+  const trimmedSubject =
+    values.subject.trim();
+
+  const trimmedMessage =
+    values.message.trim();
+
+  if (!trimmedName) {
+    errors.name = t(
+      "contactForm.validation.nameRequired"
+    );
+  } else if (
+    trimmedName.length > 100
+  ) {
+    errors.name = t(
+      "contactForm.validation.nameMax"
+    );
   }
 
-  if (!values.email.trim()) {
-    errors.email = "Indica um email.";
-  } else if (!/^\S+@\S+\.\S+$/.test(values.email)) {
-    errors.email = "Indica um email válido.";
-  } else if (values.email.trim().length > 150) {
-    errors.email = "O email não pode ter mais de 150 caracteres.";
+  if (!trimmedEmail) {
+    errors.email = t(
+      "contactForm.validation.emailRequired"
+    );
+  } else if (
+    !/^\S+@\S+\.\S+$/.test(
+      trimmedEmail
+    )
+  ) {
+    errors.email = t(
+      "contactForm.validation.emailInvalid"
+    );
+  } else if (
+    trimmedEmail.length > 150
+  ) {
+    errors.email = t(
+      "contactForm.validation.emailMax"
+    );
   }
 
-  if (!values.subject.trim()) {
-    errors.subject = "Indica o assunto.";
-  } else if (values.subject.trim().length > 150) {
-    errors.subject = "O assunto não pode ter mais de 150 caracteres.";
+  if (!trimmedSubject) {
+    errors.subject = t(
+      "contactForm.validation.subjectRequired"
+    );
+  } else if (
+    trimmedSubject.length > 150
+  ) {
+    errors.subject = t(
+      "contactForm.validation.subjectMax"
+    );
   }
 
-  if (!values.message.trim()) {
-    errors.message = "Escreve uma mensagem.";
-  } else if (values.message.trim().length < 10) {
-    errors.message = "A mensagem deve ter pelo menos 10 caracteres.";
-  } else if (values.message.trim().length > 5000) {
-    errors.message = "A mensagem não pode ter mais de 5000 caracteres.";
+  if (!trimmedMessage) {
+    errors.message = t(
+      "contactForm.validation.messageRequired"
+    );
+  } else if (
+    trimmedMessage.length < 10
+  ) {
+    errors.message = t(
+      "contactForm.validation.messageMin"
+    );
+  } else if (
+    trimmedMessage.length > 5000
+  ) {
+    errors.message = t(
+      "contactForm.validation.messageMax"
+    );
   }
 
   return errors;
 }
 
 function ContactForm() {
-  const [values, setValues] = useState(initialValues);
-  const [errors, setErrors] = useState({});
-  const [status, setStatus] = useState("idle");
+  const { t } =
+    useTranslation();
 
-  function handleChange(event) {
-    const { name, value } = event.target;
+  const [
+    values,
+    setValues,
+  ] = useState(initialValues);
 
-    setValues((previousValues) => ({
-      ...previousValues,
-      [name]: value,
-    }));
+  const [
+    errors,
+    setErrors,
+  ] = useState({});
+
+  const [
+    status,
+    setStatus,
+  ] = useState("idle");
+
+  function handleChange(
+    event
+  ) {
+    const {
+      name,
+      value,
+    } = event.target;
+
+    setValues(
+      (previousValues) => ({
+        ...previousValues,
+        [name]: value,
+      })
+    );
 
     if (errors[name]) {
-      setErrors((previousErrors) => ({
-        ...previousErrors,
-        [name]: "",
-      }));
+      setErrors(
+        (previousErrors) => ({
+          ...previousErrors,
+          [name]: "",
+        })
+      );
     }
 
-    if (status === "error") {
+    if (
+      status === "error"
+    ) {
       setStatus("idle");
     }
   }
 
-  async function handleSubmit(event) {
+  async function handleSubmit(
+    event
+  ) {
     event.preventDefault();
 
-    const validationErrors = validate(values);
-    setErrors(validationErrors);
+    const validationErrors =
+      validate(
+        values,
+        t
+      );
 
-    if (Object.keys(validationErrors).length > 0) {
+    setErrors(
+      validationErrors
+    );
+
+    if (
+      Object.keys(
+        validationErrors
+      ).length > 0
+    ) {
       return;
     }
 
@@ -85,161 +174,316 @@ function ContactForm() {
 
     try {
       await saveContactMessage({
-        name: values.name.trim(),
-        email: values.email.trim(),
-        subject: values.subject.trim(),
-        message: values.message.trim(),
+        name:
+          values.name.trim(),
+        email:
+          values.email.trim(),
+        subject:
+          values.subject.trim(),
+        message:
+          values.message.trim(),
       });
 
-      setValues(initialValues);
+      setValues(
+        initialValues
+      );
+
       setErrors({});
       setStatus("success");
     } catch (error) {
-      console.error("Erro ao enviar mensagem de contacto:", error);
+      console.error(
+        "Erro ao enviar mensagem de contacto:",
+        error
+      );
 
-      if (error.validationErrors) {
-        const backendErrors = Object.entries(
-          error.validationErrors
-        ).reduce((result, [field, messages]) => {
-          result[field] = messages[0];
-          return result;
-        }, {});
+      if (
+        error.validationErrors
+      ) {
+        const backendErrors =
+          Object.entries(
+            error.validationErrors
+          ).reduce(
+            (
+              result,
+              [field, messages]
+            ) => {
+              result[field] =
+                Array.isArray(
+                  messages
+                )
+                  ? messages[0]
+                  : String(
+                      messages
+                    );
 
-        setErrors(backendErrors);
+              return result;
+            },
+            {}
+          );
+
+        setErrors(
+          backendErrors
+        );
       }
 
       setStatus("error");
     }
   }
 
-  if (status === "success") {
+  if (
+    status === "success"
+  ) {
     return (
       <div
         className="contact-form contact-form--success"
         role="status"
         aria-live="polite"
       >
-        <p>Mensagem enviada com sucesso! Entraremos em contacto em breve.</p>
+        <p>
+          {t(
+            "contactForm.success.message"
+          )}
+        </p>
 
-        <Button variant="secondary" onClick={() => setStatus("idle")}>
-          Enviar outra mensagem
+        <Button
+          variant="secondary"
+          onClick={() =>
+            setStatus("idle")
+          }
+        >
+          {t(
+            "contactForm.success.sendAnother"
+          )}
         </Button>
       </div>
     );
   }
 
   return (
-    <form className="contact-form" onSubmit={handleSubmit} noValidate>
+    <form
+      className="contact-form"
+      onSubmit={
+        handleSubmit
+      }
+      noValidate
+      aria-label={t(
+        "contactForm.formAria"
+      )}
+    >
       <div className="contact-form__field">
-        <label htmlFor="name">Nome</label>
+        <label htmlFor="contact-name">
+          {t(
+            "contactForm.fields.name.label"
+          )}
+        </label>
 
         <input
-          id="name"
+          id="contact-name"
           name="name"
           type="text"
-          value={values.name}
-          onChange={handleChange}
-          placeholder="O teu nome"
+          value={
+            values.name
+          }
+          onChange={
+            handleChange
+          }
+          placeholder={t(
+            "contactForm.fields.name.placeholder"
+          )}
           maxLength={100}
           autoComplete="name"
-          aria-invalid={Boolean(errors.name)}
-          aria-describedby={errors.name ? "name-error" : undefined}
-          disabled={status === "sending"}
+          aria-invalid={Boolean(
+            errors.name
+          )}
+          aria-describedby={
+            errors.name
+              ? "contact-name-error"
+              : undefined
+          }
+          disabled={
+            status ===
+            "sending"
+          }
         />
 
         {errors.name && (
-          <span id="name-error" className="contact-form__error">
+          <span
+            id="contact-name-error"
+            className="contact-form__error"
+          >
             {errors.name}
           </span>
         )}
       </div>
 
       <div className="contact-form__field">
-        <label htmlFor="email">Email</label>
+        <label htmlFor="contact-email">
+          {t(
+            "contactForm.fields.email.label"
+          )}
+        </label>
 
         <input
-          id="email"
+          id="contact-email"
           name="email"
           type="email"
-          value={values.email}
-          onChange={handleChange}
-          placeholder="tu@exemplo.com"
+          value={
+            values.email
+          }
+          onChange={
+            handleChange
+          }
+          placeholder={t(
+            "contactForm.fields.email.placeholder"
+          )}
           maxLength={150}
           autoComplete="email"
-          aria-invalid={Boolean(errors.email)}
-          aria-describedby={errors.email ? "email-error" : undefined}
-          disabled={status === "sending"}
+          aria-invalid={Boolean(
+            errors.email
+          )}
+          aria-describedby={
+            errors.email
+              ? "contact-email-error"
+              : undefined
+          }
+          disabled={
+            status ===
+            "sending"
+          }
         />
 
         {errors.email && (
-          <span id="email-error" className="contact-form__error">
+          <span
+            id="contact-email-error"
+            className="contact-form__error"
+          >
             {errors.email}
           </span>
         )}
       </div>
 
       <div className="contact-form__field">
-        <label htmlFor="subject">Assunto</label>
+        <label htmlFor="contact-subject">
+          {t(
+            "contactForm.fields.subject.label"
+          )}
+        </label>
 
         <input
-          id="subject"
+          id="contact-subject"
           name="subject"
           type="text"
-          value={values.subject}
-          onChange={handleChange}
-          placeholder="Sobre o que nos queres contactar?"
+          value={
+            values.subject
+          }
+          onChange={
+            handleChange
+          }
+          placeholder={t(
+            "contactForm.fields.subject.placeholder"
+          )}
           maxLength={150}
-          aria-invalid={Boolean(errors.subject)}
-          aria-describedby={errors.subject ? "subject-error" : undefined}
-          disabled={status === "sending"}
+          aria-invalid={Boolean(
+            errors.subject
+          )}
+          aria-describedby={
+            errors.subject
+              ? "contact-subject-error"
+              : undefined
+          }
+          disabled={
+            status ===
+            "sending"
+          }
         />
 
         {errors.subject && (
-          <span id="subject-error" className="contact-form__error">
-            {errors.subject}
+          <span
+            id="contact-subject-error"
+            className="contact-form__error"
+          >
+            {
+              errors.subject
+            }
           </span>
         )}
       </div>
 
       <div className="contact-form__field">
-        <label htmlFor="message">Mensagem</label>
+        <label htmlFor="contact-message">
+          {t(
+            "contactForm.fields.message.label"
+          )}
+        </label>
 
         <textarea
-          id="message"
+          id="contact-message"
           name="message"
           rows={5}
-          value={values.message}
-          onChange={handleChange}
-          placeholder="Escreve a tua mensagem..."
+          value={
+            values.message
+          }
+          onChange={
+            handleChange
+          }
+          placeholder={t(
+            "contactForm.fields.message.placeholder"
+          )}
           maxLength={5000}
-          aria-invalid={Boolean(errors.message)}
-          aria-describedby={errors.message ? "message-error" : undefined}
-          disabled={status === "sending"}
+          aria-invalid={Boolean(
+            errors.message
+          )}
+          aria-describedby={
+            errors.message
+              ? "contact-message-error"
+              : undefined
+          }
+          disabled={
+            status ===
+            "sending"
+          }
         />
 
         {errors.message && (
-          <span id="message-error" className="contact-form__error">
-            {errors.message}
+          <span
+            id="contact-message-error"
+            className="contact-form__error"
+          >
+            {
+              errors.message
+            }
           </span>
         )}
       </div>
 
-      {status === "error" && (
+      {status ===
+        "error" && (
         <p
           className="contact-form__error contact-form__error--general"
           role="alert"
         >
-          Não foi possível enviar a mensagem. Verifica os dados e tenta
-          novamente.
+          {t(
+            "contactForm.error.general"
+          )}
         </p>
       )}
 
       <Button
         type="submit"
         variant="primary"
-        disabled={status === "sending"}
+        disabled={
+          status ===
+          "sending"
+        }
       >
-        {status === "sending" ? "A enviar..." : "Enviar mensagem"}
+        {status ===
+        "sending"
+          ? t(
+              "contactForm.actions.sending"
+            )
+          : t(
+              "contactForm.actions.submit"
+            )}
       </Button>
     </form>
   );
