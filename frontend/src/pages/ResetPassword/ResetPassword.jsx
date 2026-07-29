@@ -13,6 +13,7 @@ import {
 import AuthGalaxyLayout from "../../components/common/AuthGalaxyLayout/AuthGalaxyLayout";
 import { resetPassword } from "../../services/authService";
 import PageMeta from "../../components/common/PageMeta/PageMeta";
+import getApiErrorMessage from "../../utils/getApiErrorMessage";
 
 import "./ResetPassword.css";
 
@@ -108,12 +109,17 @@ function ResetPassword() {
       const validationErrors =
         requestError.response?.data?.errors;
 
-      const errorMessage =
+      const validationMessage =
         validationErrors?.email?.[0] ||
         validationErrors?.password?.[0] ||
-        validationErrors?.token?.[0] ||
-        requestError.response?.data?.message ||
-        "Não foi possível atualizar a palavra-passe.";
+        validationErrors?.token?.[0];
+
+      const errorMessage =
+        validationMessage ||
+        getApiErrorMessage(
+          requestError,
+          "Não foi possível atualizar a palavra-passe."
+        );
 
       setError(errorMessage);
     } finally {
