@@ -5,6 +5,7 @@ import { Link } from "react-router";
 import AuthGalaxyLayout from "../../components/common/AuthGalaxyLayout/AuthGalaxyLayout";
 import { requestPasswordReset } from "../../services/authService";
 import PageMeta from "../../components/common/PageMeta/PageMeta";
+import getApiErrorMessage from "../../utils/getApiErrorMessage";
 
 import "./ForgotPassword.css";
 
@@ -28,12 +29,17 @@ function ForgotPassword() {
 
       setMessage(response.message);
       setEmail("");
-    } catch (requestError) {
-      const errorMessage =
+   } catch (requestError) {
+      const validationMessage =
         requestError.response?.data?.errors
-          ?.email?.[0] ||
-        requestError.response?.data?.message ||
-        "Não foi possível enviar o link de reposição.";
+          ?.email?.[0];
+
+      const errorMessage =
+        validationMessage ||
+        getApiErrorMessage(
+          requestError,
+          "Não foi possível enviar o link de reposição."
+        );
 
       setError(errorMessage);
     } finally {

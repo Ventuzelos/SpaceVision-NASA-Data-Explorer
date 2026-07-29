@@ -6,6 +6,7 @@ import AuthGalaxyLayout from "../../components/common/AuthGalaxyLayout/AuthGalax
 import useAuth from "../../hooks/useAuth";
 import PageMeta from "../../components/common/PageMeta/PageMeta";
 import { resendVerificationEmail } from "../../services/authService";
+import getApiErrorMessage from "../../utils/getApiErrorMessage";
 import "./Register.css";
 
 function Register() {
@@ -90,12 +91,17 @@ function Register() {
       const validationErrors =
         requestError.response?.data?.errors;
 
-      const message =
+      const validationMessage =
         validationErrors?.email?.[0] ||
         validationErrors?.password?.[0] ||
-        validationErrors?.name?.[0] ||
-        requestError.response?.data?.message ||
-        "Não foi possível criar a conta.";
+        validationErrors?.name?.[0];
+
+      const message =
+        validationMessage ||
+        getApiErrorMessage(
+          requestError,
+          "Não foi possível criar a conta."
+        );
 
       setError(message);
     } finally {
