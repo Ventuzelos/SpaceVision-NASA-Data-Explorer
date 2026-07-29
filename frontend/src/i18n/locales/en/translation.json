@@ -171,6 +171,194 @@
         "imageAlt": "Astronomy image provided by NASA",
         "video": "Video"
     },
+    "donki": {
+        "meta": {
+            "title": "Space Weather — SpaceVision",
+            "description": "Explore solar flares, coronal mass ejections, geomagnetic storms and other space events using NASA DONKI data."
+        },
+        "validation": {
+            "requiredDates": "Select a start date and an end date.",
+            "invalidRange": "The start date cannot be later than the end date."
+        },
+        "errors": {
+            "title": "The events could not be loaded",
+            "loadEvents": "The space weather events could not be loaded."
+        },
+        "empty": {
+            "title": "No events found",
+            "description": "No events were found for this period. Try expanding the date range or selecting another event type."
+        },
+        "results": {
+            "eventCount_one": "{{count}} event",
+            "eventCount_other": "{{count}} events"
+        },
+        "stats": {
+            "periodEvents": "Events in this period",
+            "mostIntense": "Most intense",
+            "latest": "Most recent"
+        },
+        "favorites": {
+            "loginRequired": "You need to sign in to save favorites",
+            "added": "Added to favorites",
+            "removed": "Removed from favorites",
+            "updateError": "The favorite could not be updated"
+        },
+        "defaultEventTitle": "DONKI event",
+        "eventTypes": {
+            "ariaLabel": "DONKI event type",
+            "flr": {
+                "label": "Solar flares",
+                "description": "Intense bursts of energy from the Sun's surface."
+            },
+            "cme": {
+                "label": "Coronal mass ejections",
+                "description": "Large releases of plasma and magnetic field from the Sun."
+            },
+            "gst": {
+                "label": "Geomagnetic storms",
+                "description": "Disturbances in Earth's magnetic field."
+            },
+            "sep": {
+                "label": "Energetic particles",
+                "description": "High-energy solar particle events."
+            },
+            "hss": {
+                "label": "High-speed streams",
+                "description": "Fast solar wind streams from coronal holes."
+            },
+            "notifications": {
+                "label": "Notifications",
+                "description": "Recent NASA alerts and updates."
+            }
+        },
+        "dateRange": {
+            "period": "Date range",
+            "last7Days": "Last 7 days",
+            "last30Days": "Last 30 days",
+            "last90Days": "Last 90 days",
+            "startDate": "Start date",
+            "endDate": "End date",
+            "searching": "Searching...",
+            "searchEvents": "Search events"
+        },
+        "hero": {
+            "breadcrumb": "Space Weather",
+            "eyebrow": "DONKI · NASA Space Weather Database",
+            "title": "Real-time space weather",
+            "description": "Explore solar flares, coronal mass ejections, geomagnetic storms and other phenomena monitored by NASA to understand what is happening around the Sun and Earth."
+        },
+        "insights": {
+            "ariaLabel": "Information about the selected event type",
+            "tabs": {
+                "curiosity": "Did you know",
+                "explainer": "What is this",
+                "status": "Daily status"
+            }
+        },
+        "curiosity": {
+            "title": "Did you know...",
+            "showAnother": "Show another fact"
+        },
+        "facts": {
+            "carrington": "DONKI tracks Coronal Mass Ejections (CMEs) to help anticipate extreme scenarios. A solar storm similar to the 1859 Carrington Event could damage electrical grids and satellites today, so this data helps authorities protect critical systems.",
+            "birthday": "You can discover what the Sun was doing on the day you were born by selecting your birthday as the date range and exploring the solar events recorded on that day.",
+            "mars": "DONKI helps scientists study the effects of the solar wind on Mars. Because the planet does not have a strong global magnetic field like Earth, its atmosphere is more exposed to particles released by the Sun.",
+            "astronauts": "Space weather data helps protect astronauts by supporting radiation alerts for space missions and safety planning for future missions to the Moon.",
+            "auroras": "DONKI helps predict northern and southern auroras. Solar wind speed and geomagnetic activity can be used to estimate their likely intensity and location."
+        },
+        "explainer": {
+            "whatIsHappening": "What is happening?",
+            "howItAffectsYou": "How does it affect you?"
+        },
+        "explainers": {
+            "flr": {
+                "whatIsHappening": "The Sun releases enormous flashes of light and radiation. They travel at the speed of light and take only 8 minutes to reach Earth.",
+                "howItAffectsYou": "The radiation does not pass through the atmosphere, so we are safe, but it can disrupt radio signals used by aircraft and ships."
+            },
+            "cme": {
+                "whatIsHappening": "A giant bubble containing billions of tonnes of magnetised gas is launched by the Sun into space.",
+                "howItAffectsYou": "When it travels towards Earth, it can push satellites out of their usual orbits and cause temporary disruptions to GPS signals on your phone."
+            },
+            "gst": {
+                "whatIsHappening": "Energy from the Sun collides with and disturbs the invisible magnetic shield that protects planet Earth.",
+                "howItAffectsYou": "In extreme cases, it can overload electricity transformers and cause power outages. The positive side is that it can create spectacular auroras in the sky."
+            },
+            "sep": {
+                "whatIsHappening": "A storm of extremely fast protons is released by the Sun, acting like a form of radioactive rain in deep space.",
+                "howItAffectsYou": "It is one of the greatest dangers for space travel. Astronauts on the Space Station or travelling to the Moon may need to take shelter in protected areas."
+            },
+            "hss": {
+                "whatIsHappening": "The Sun has holes in its atmosphere through which a continuous stream of gases blows at millions of kilometres per hour.",
+                "howItAffectsYou": "It acts like the daily breeze of space. When this wind becomes stronger, it can trigger small auroras near Earth's poles."
+            }
+        },
+        "dailyStatus": {
+            "title": "Daily Status · {{type}}",
+            "hint": "This reflects only today's events and may differ from the total for the selected date range shown below.",
+            "loading": "Assessing today's status...",
+            "unavailable": "No data is available to assess today's status.",
+            "eventCount_one": "{{count}} event today",
+            "eventCount_other": "{{count}} events today",
+            "levels": {
+                "normal": {
+                    "label": "Normal",
+                    "description": "No significant activity recorded today."
+                },
+                "moderate": {
+                    "label": "Moderate",
+                    "description": "Moderate activity recorded today."
+                },
+                "critical": {
+                    "label": "Critical",
+                    "description": "Intense activity recorded today — stay alert."
+                }
+            }
+        },
+        "eventCard": {
+            "dateUnavailable": "Date unavailable",
+            "information": "Information",
+            "viewDetails": "View details",
+            "viewDetailsAria": "View details for {{title}}",
+            "addFavorite": "Add {{title}} to favorites",
+            "removeFavorite": "Remove {{title}} from favorites"
+        },
+        "eventDetails": {
+            "back": "Back to list",
+            "backAria": "Close the details and return to the event list",
+            "dateUnavailable": "Date unavailable",
+            "addFavorite": "Add {{title}} to favorites",
+            "removeFavorite": "Remove {{title}} from favorites",
+            "translationNote": "Automatic translation. The original content was provided by NASA.",
+            "relatedResources": "Related resources",
+            "openResource": "Open resource {{number}}",
+            "openResourceAria": "Open related resource {{number}} in a new window",
+            "viewNasaSource": "View source on NASA",
+            "viewNasaSourceAria": "View the original NASA source in a new window"
+        },
+        "eventData": {
+            "titles": {
+                "flr": "Solar Flare {{classType}}",
+                "cme": "Coronal Mass Ejection",
+                "gst": "Geomagnetic Storm",
+                "sep": "Solar Energetic Particle Event",
+                "hss": "High-Speed Solar Wind Stream",
+                "notification": "DONKI Notification"
+            },
+            "meta": {
+                "start": "Start",
+                "peak": "Peak",
+                "end": "End",
+                "activeRegion": "Active region",
+                "instruments": "Instruments",
+                "location": "Location",
+                "speed": "Speed",
+                "maximumKp": "Maximum Kp index",
+                "linkedEvents": "Linked events",
+                "issuedAt": "Issued at",
+                "messageId": "Message ID"
+            }
+        }
+    },
     "common": {
         "loading": "Loading...",
         "error": "Something went wrong",
@@ -179,7 +367,8 @@
         "back": "Back",
         "search": "Search",
         "noResults": "No results were found",
-        "live": "Live"
+        "live": "Live",
+        "notAvailable": "N/A"
     },
     "language": {
         "portuguese": "Português",

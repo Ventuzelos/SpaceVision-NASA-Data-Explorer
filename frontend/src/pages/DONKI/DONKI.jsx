@@ -4,6 +4,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { useTranslation } from "react-i18next";
 
 import Container from "../../components/common/Container/Container";
 import EventTypeSelector from "../../components/DONKI/EventTypeSelector/EventTypeSelector";
@@ -40,34 +41,47 @@ import "./DONKI.css";
 const SOURCE = "donki";
 const EVENTS_PER_PAGE = 8;
 
-function formatStatDate(value) {
+function formatStatDate(
+  value,
+  locale,
+  unavailableText
+) {
   if (!value) {
-    return "N/D";
+    return unavailableText;
   }
 
   const parsed = new Date(value);
 
   if (Number.isNaN(parsed.getTime())) {
-    return "N/D";
+    return unavailableText;
   }
 
-  return parsed.toLocaleDateString("pt-PT", {
+  return parsed.toLocaleDateString(locale, {
     day: "2-digit",
     month: "short",
     year: "numeric",
   });
 }
 
-function validateDateRange(startDate, endDate) {
+function validateDateRange(
+  startDate,
+  endDate,
+  t
+) {
   if (!startDate || !endDate) {
-    return "Seleciona uma data inicial e uma data final.";
+    return t("donki.validation.requiredDates");
   }
 
-  const start = new Date(`${startDate}T00:00:00`);
-  const end = new Date(`${endDate}T00:00:00`);
+  const start = new Date(
+    `${startDate}T00:00:00`
+  );
+
+  const end = new Date(
+    `${endDate}T00:00:00`
+  );
 
   if (start > end) {
-    return "A data inicial não pode ser posterior à data final.";
+    return t("donki.validation.invalidRange");
   }
 
   return "";
@@ -89,6 +103,13 @@ function getEventFavoriteId(event) {
 }
 
 function DONKI() {
+  const { t, i18n } = useTranslation();
+
+  const locale =
+    i18n.resolvedLanguage?.startsWith("en")
+      ? "en-GB"
+      : "pt-PT";
+
   const {
     isAuthenticated,
     isAuthLoading,
@@ -139,7 +160,10 @@ function DONKI() {
     totalPages,
     setPage,
     shouldShowPagination,
-  } = usePagination(events, EVENTS_PER_PAGE);
+  } = usePagination(
+    events,
+    EVENTS_PER_PAGE
+  );
 
   function showToast(message) {
     if (toastTimeoutRef.current) {
@@ -193,14 +217,14 @@ function DONKI() {
         }
 
         console.error(
-          "Erro ao carregar eventos DONKI:",
+          "Error loading DONKI events:",
           requestError
         );
 
         setError(
           getApiErrorMessage(
             requestError,
-            "Não foi possível carregar os eventos de meteorologia espacial."
+            t("donki.errors.loadEvents")
           )
         );
 
@@ -213,7 +237,7 @@ function DONKI() {
         }
       }
     },
-    []
+    [t]
   );
 
   useEffect(() => {
@@ -258,7 +282,7 @@ function DONKI() {
           (favorite) =>
             String(
               favorite.nasa_id ||
-                favorite.id
+              favorite.id
             )
         );
 
@@ -273,7 +297,7 @@ function DONKI() {
           401
         ) {
           console.error(
-            "Erro ao carregar favoritos DONKI:",
+            "Error loading DONKI favorites:",
             requestError
           );
         }
@@ -300,7 +324,8 @@ function DONKI() {
     const dateError =
       validateDateRange(
         startDate,
-        endDate
+        endDate,
+        t
       );
 
     setValidationError(dateError);
@@ -326,7 +351,8 @@ function DONKI() {
     const dateError =
       validateDateRange(
         newStartDate,
-        newEndDate
+        newEndDate,
+        t
       );
 
     setValidationError(dateError);
@@ -349,7 +375,7 @@ function DONKI() {
   ) {
     if (!isAuthenticated) {
       showToast(
-        "Precisas de iniciar sessão para guardar favoritos"
+        t("donki.favorites.loginRequired")
       );
 
       return;
@@ -384,7 +410,12 @@ function DONKI() {
           nasa_id: favoriteId,
           title:
             event.title ||
-            "Evento DONKI",
+            (event.titleKey
+              ? t(
+                event.titleKey,
+                event.titleOptions
+              )
+              : t("donki.defaultEventTitle")),
           image_url: null,
 
           data: {
@@ -418,12 +449,12 @@ function DONKI() {
 
       showToast(
         result.isFavorite
-          ? "Adicionado aos favoritos"
-          : "Removido dos favoritos"
+          ? t("donki.favorites.added")
+          : t("donki.favorites.removed")
       );
     } catch (requestError) {
       console.error(
-        "Erro ao atualizar favorito DONKI:",
+        "Error updating DONKI favorite:",
         requestError
       );
 
@@ -432,11 +463,15 @@ function DONKI() {
         401
       ) {
         showToast(
-          "Precisas de iniciar sessão para guardar favoritos"
+          t(
+            "donki.favorites.loginRequired"
+          )
         );
       } else {
         showToast(
-          "Não foi possível atualizar o favorito"
+          t(
+            "donki.favorites.updateError"
+          )
         );
       }
     } finally {
@@ -476,16 +511,18 @@ function DONKI() {
 
   const notificationsCount =
     activeType === "NOTIFICATIONS" &&
-    !loading &&
-    !error
+      !loading &&
+      !error
       ? events.length
       : undefined;
 
   return (
     <>
       <PageMeta
-        title="Meteorologia Espacial — SpaceVision"
-        description="Consulta erupções solares, ejeções de massa coronal, tempestades geomagnéticas e outros eventos espaciais através de dados DONKI da NASA."
+        title={t("donki.meta.title")}
+        description={t(
+          "donki.meta.description"
+        )}
       />
 
       <main className="donki-page">
@@ -551,14 +588,22 @@ function DONKI() {
                 aria-live="polite"
               >
                 {loading
-                  ? "A carregar..."
-                  : `${events.length} evento(s)`}
+                  ? t("common.loading")
+                  : t(
+                    "donki.results.eventCount",
+                    {
+                      count:
+                        events.length,
+                    }
+                  )}
               </span>
             </div>
 
             {error && !loading && (
               <ErrorState
-                title="Não foi possível carregar os eventos"
+                title={t(
+                  "donki.errors.title"
+                )}
                 message={error}
                 onRetry={() =>
                   handleSearch(
@@ -577,14 +622,15 @@ function DONKI() {
                   role="status"
                 >
                   <h3>
-                    Nenhum evento encontrado
+                    {t(
+                      "donki.empty.title"
+                    )}
                   </h3>
 
                   <p>
-                    Não foram encontrados eventos
-                    para este período. Experimenta
-                    alargar o intervalo de datas ou
-                    selecionar outro tipo de evento.
+                    {t(
+                      "donki.empty.description"
+                    )}
                   </p>
                 </div>
               )}
@@ -595,7 +641,9 @@ function DONKI() {
                 <div className="donki-page__stats">
                   <div className="donki-page__stat">
                     <span>
-                      Eventos neste período
+                      {t(
+                        "donki.stats.periodEvents"
+                      )}
                     </span>
 
                     <strong>
@@ -606,7 +654,9 @@ function DONKI() {
                   {eventStats.mostIntense && (
                     <div className="donki-page__stat">
                       <span>
-                        Mais intenso
+                        {t(
+                          "donki.stats.mostIntense"
+                        )}
                       </span>
 
                       <strong>
@@ -619,12 +669,18 @@ function DONKI() {
 
                   <div className="donki-page__stat">
                     <span>
-                      Mais recente
+                      {t(
+                        "donki.stats.latest"
+                      )}
                     </span>
 
                     <strong>
                       {formatStatDate(
-                        eventStats.latestDate
+                        eventStats.latestDate,
+                        locale,
+                        t(
+                          "common.notAvailable"
+                        )
                       )}
                     </strong>
                   </div>
@@ -725,9 +781,7 @@ function DONKI() {
           )}
         </Container>
 
-        <Toast
-          message={toastMessage}
-        />
+        <Toast message={toastMessage} />
       </main>
     </>
   );

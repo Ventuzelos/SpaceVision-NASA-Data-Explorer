@@ -1,10 +1,22 @@
+import { useTranslation } from "react-i18next";
+
 import Button from "../../common/Button/Button";
+
 import "./DateRangeFilter.css";
 
 const DATE_PRESETS = [
-  { label: "Últimos 7 dias", days: 7 },
-  { label: "Últimos 30 dias", days: 30 },
-  { label: "Últimos 90 dias", days: 90 },
+  {
+    labelKey: "donki.dateRange.last7Days",
+    days: 7,
+  },
+  {
+    labelKey: "donki.dateRange.last30Days",
+    days: 30,
+  },
+  {
+    labelKey: "donki.dateRange.last90Days",
+    days: 90,
+  },
 ];
 
 function padDatePart(value) {
@@ -23,7 +35,9 @@ function getDateRange(daysBack) {
   const endDate = new Date();
   const startDate = new Date();
 
-  startDate.setDate(startDate.getDate() - daysBack);
+  startDate.setDate(
+    startDate.getDate() - daysBack
+  );
 
   return {
     startDate: formatLocalDate(startDate),
@@ -39,6 +53,8 @@ function DateRangeFilter({
   onSearch,
   loading,
 }) {
+  const { t } = useTranslation();
+
   const today = formatLocalDate(new Date());
 
   function handleSubmit(event) {
@@ -60,7 +76,10 @@ function DateRangeFilter({
 
     onStartDateChange(range.startDate);
     onEndDateChange(range.endDate);
-    onSearch(range.startDate, range.endDate);
+    onSearch(
+      range.startDate,
+      range.endDate
+    );
   }
 
   return (
@@ -74,7 +93,7 @@ function DateRangeFilter({
           id="date-range-filter-title"
           className="date-range-filter__title"
         >
-          Período
+          {t("donki.dateRange.period")}
         </p>
 
         <div
@@ -88,11 +107,13 @@ function DateRangeFilter({
               type="button"
               className="date-range-filter__preset"
               onClick={() => {
-                handlePresetClick(preset.days);
+                handlePresetClick(
+                  preset.days
+                );
               }}
               disabled={loading}
             >
-              {preset.label}
+              {t(preset.labelKey)}
             </button>
           ))}
         </div>
@@ -101,7 +122,7 @@ function DateRangeFilter({
       <div className="date-range-filter__right">
         <div className="date-range-filter__field">
           <label htmlFor="donki-start-date">
-            Data inicial
+            {t("donki.dateRange.startDate")}
           </label>
 
           <input
@@ -110,7 +131,9 @@ function DateRangeFilter({
             value={startDate}
             max={endDate || today}
             onChange={(event) => {
-              onStartDateChange(event.target.value);
+              onStartDateChange(
+                event.target.value
+              );
             }}
             disabled={loading}
             required
@@ -119,7 +142,7 @@ function DateRangeFilter({
 
         <div className="date-range-filter__field">
           <label htmlFor="donki-end-date">
-            Data final
+            {t("donki.dateRange.endDate")}
           </label>
 
           <input
@@ -129,7 +152,9 @@ function DateRangeFilter({
             min={startDate}
             max={today}
             onChange={(event) => {
-              onEndDateChange(event.target.value);
+              onEndDateChange(
+                event.target.value
+              );
             }}
             disabled={loading}
             required
@@ -141,8 +166,8 @@ function DateRangeFilter({
           disabled={loading}
         >
           {loading
-            ? "A pesquisar..."
-            : "Pesquisar eventos"}
+            ? t("donki.dateRange.searching")
+            : t("donki.dateRange.searchEvents")}
         </Button>
       </div>
     </form>

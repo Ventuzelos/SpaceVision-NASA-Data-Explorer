@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import CuriosityCard from "../CuriosityCard/CuriosityCard";
 import EventExplainer from "../EventExplainer/EventExplainer";
@@ -8,17 +9,35 @@ import { donkiExplainers } from "../../../data/donkiExplainers";
 import "./DonkiInsights.css";
 
 const ALL_TABS = [
-  { id: "curiosity", label: "Sabias que" },
-  { id: "explainer", label: "O que é isto" },
-  { id: "status", label: "Estado do dia" },
+  {
+    id: "curiosity",
+    labelKey: "donki.insights.tabs.curiosity",
+  },
+  {
+    id: "explainer",
+    labelKey: "donki.insights.tabs.explainer",
+  },
+  {
+    id: "status",
+    labelKey: "donki.insights.tabs.status",
+  },
 ];
 
-function DonkiInsights({ type, events, loading, error }) {
-  const [activeTabId, setActiveTabId] = useState("curiosity");
+function DonkiInsights({
+  type,
+  events,
+  loading,
+  error,
+}) {
+  const { t } = useTranslation();
+
+  const [activeTabId, setActiveTabId] =
+    useState("curiosity");
 
   const tabs = ALL_TABS.filter(
     (tab) =>
-      tab.id !== "explainer" || Boolean(donkiExplainers[type])
+      tab.id !== "explainer" ||
+      Boolean(donkiExplainers[type])
   );
 
   const currentTabId = tabs.some(
@@ -32,22 +51,28 @@ function DonkiInsights({ type, events, loading, error }) {
       <div
         className="donki-insights__tabs"
         role="tablist"
-        aria-label="Informações sobre o tipo de evento selecionado"
+        aria-label={t(
+          "donki.insights.ariaLabel"
+        )}
       >
         {tabs.map((tab) => (
           <button
             key={tab.id}
             type="button"
             role="tab"
-            aria-selected={currentTabId === tab.id}
+            aria-selected={
+              currentTabId === tab.id
+            }
             className={`donki-insights__tab ${
               currentTabId === tab.id
                 ? "donki-insights__tab--active"
                 : ""
             }`}
-            onClick={() => setActiveTabId(tab.id)}
+            onClick={() =>
+              setActiveTabId(tab.id)
+            }
           >
-            {tab.label}
+            {t(tab.labelKey)}
           </button>
         ))}
       </div>

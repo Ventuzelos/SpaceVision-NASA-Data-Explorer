@@ -15,54 +15,60 @@ export const donkiEventTypes = [
   {
     id: "FLR",
     label: "Solar Flares",
-    shortLabel: "Erupções Solares",
-    description:
-      "Explosões de radiação intensa na superfície do Sol.",
+    shortLabelKey:
+      "donki.eventTypes.flr.label",
+    descriptionKey:
+      "donki.eventTypes.flr.description",
     icon: "sun",
     color: "var(--color-link)",
   },
   {
     id: "CME",
     label: "Coronal Mass Ejections",
-    shortLabel: "Ejeções de Massa Coronal",
-    description:
-      "Grandes libertações de plasma e campo magnético solar.",
+    shortLabelKey:
+      "donki.eventTypes.cme.label",
+    descriptionKey:
+      "donki.eventTypes.cme.description",
     icon: "waves",
     color: "var(--color-link)",
   },
   {
     id: "GST",
     label: "Geomagnetic Storms",
-    shortLabel: "Tempestades Geomagnéticas",
-    description:
-      "Perturbações no campo magnético da Terra.",
+    shortLabelKey:
+      "donki.eventTypes.gst.label",
+    descriptionKey:
+      "donki.eventTypes.gst.description",
     icon: "magnet",
     color: "var(--color-link)",
   },
   {
     id: "SEP",
     label: "Solar Energetic Particles",
-    shortLabel: "Partículas Energéticas Solares",
-    description:
-      "Partículas de alta energia ejetadas pelo Sol.",
+    shortLabelKey:
+      "donki.eventTypes.sep.label",
+    descriptionKey:
+      "donki.eventTypes.sep.description",
     icon: "sparkles",
     color: "var(--color-link)",
   },
   {
     id: "HSS",
     label: "High Speed Streams",
-    shortLabel: "Fluxos de Vento Solar",
-    description:
-      "Correntes rápidas de vento solar vindas de buracos coronais.",
+    shortLabelKey:
+      "donki.eventTypes.hss.label",
+    descriptionKey:
+      "donki.eventTypes.hss.description",
     icon: "wind",
     color: "var(--color-link)",
   },
   {
     id: "NOTIFICATIONS",
     label: "Notifications",
-    shortLabel: "Notificações",
-    description:
-      "Alertas e relatórios oficiais do serviço DONKI.",
+    shortLabelKey:
+      "donki.eventTypes.notifications.label",
+    descriptionKey:
+      "donki.eventTypes.notifications.description",
     icon: "bell",
     color: "var(--color-link)",
   },
@@ -74,7 +80,9 @@ function padDatePart(value) {
 
 function toLocalISODate(date) {
   const year = date.getFullYear();
-  const month = padDatePart(date.getMonth() + 1);
+  const month = padDatePart(
+    date.getMonth() + 1
+  );
   const day = padDatePart(date.getDate());
 
   return `${year}-${month}-${day}`;
@@ -82,7 +90,9 @@ function toLocalISODate(date) {
 
 function validateDate(date, label) {
   if (!date) {
-    throw new Error(`É necessário indicar a ${label}.`);
+    throw new Error(
+      `É necessário indicar a ${label}.`
+    );
   }
 
   if (!DATE_PATTERN.test(date)) {
@@ -107,13 +117,25 @@ function validateDate(date, label) {
     parsedDate.getDate() === day;
 
   if (!isValid) {
-    throw new Error(`A ${label} não é válida.`);
+    throw new Error(
+      `A ${label} não é válida.`
+    );
   }
 }
 
-function validateDateRange(startDate, endDate) {
-  validateDate(startDate, "data inicial");
-  validateDate(endDate, "data final");
+function validateDateRange(
+  startDate,
+  endDate
+) {
+  validateDate(
+    startDate,
+    "data inicial"
+  );
+
+  validateDate(
+    endDate,
+    "data final"
+  );
 
   if (startDate > endDate) {
     throw new Error(
@@ -122,9 +144,12 @@ function validateDateRange(startDate, endDate) {
   }
 }
 
-export function getDefaultDateRange(daysBack = 7) {
+export function getDefaultDateRange(
+  daysBack = 7
+) {
   const safeDaysBack =
-    Number.isInteger(daysBack) && daysBack >= 0
+    Number.isInteger(daysBack) &&
+    daysBack >= 0
       ? daysBack
       : 7;
 
@@ -136,8 +161,10 @@ export function getDefaultDateRange(daysBack = 7) {
   );
 
   return {
-    startDate: toLocalISODate(startDate),
-    endDate: toLocalISODate(endDate),
+    startDate:
+      toLocalISODate(startDate),
+    endDate:
+      toLocalISODate(endDate),
   };
 }
 
@@ -146,7 +173,8 @@ export async function fetchDonkiEvents(
   startDate,
   endDate
 ) {
-  const endpoint = DONKI_ENDPOINTS[type];
+  const endpoint =
+    DONKI_ENDPOINTS[type];
 
   if (!endpoint) {
     throw new Error(
@@ -154,141 +182,180 @@ export async function fetchDonkiEvents(
     );
   }
 
-  validateDateRange(startDate, endDate);
+  validateDateRange(
+    startDate,
+    endDate
+  );
 
-  const { data } = await nasaApi.get(endpoint, {
-    params: {
-      startDate,
-      endDate,
-    },
-  });
+  const { data } =
+    await nasaApi.get(endpoint, {
+      params: {
+        startDate,
+        endDate,
+      },
+    });
 
   const events = Array.isArray(data)
     ? data
     : [];
 
-  return events.map((event, index) =>
-    normalizeEvent(type, event, index)
+  return events.map(
+    (event, index) =>
+      normalizeEvent(
+        type,
+        event,
+        index
+      )
   );
-}
-
-function formatDateTime(value) {
-  if (!value) {
-    return "N/D";
-  }
-
-  const parsed = new Date(value);
-
-  if (Number.isNaN(parsed.getTime())) {
-    return value;
-  }
-
-  return parsed.toLocaleString("pt-PT", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
 }
 
 function joinInstruments(instruments) {
   if (!Array.isArray(instruments)) {
-    return "N/D";
+    return null;
   }
 
   const names = instruments
-    .map((instrument) => instrument?.displayName)
+    .map(
+      (instrument) =>
+        instrument?.displayName
+    )
     .filter(Boolean);
 
   return names.length > 0
     ? names.join(", ")
-    : "N/D";
+    : null;
 }
 
-function createFallbackId(type, event, index) {
+function createFallbackId(
+  type,
+  event,
+  index
+) {
   const date =
     event.startTime ||
     event.beginTime ||
     event.eventTime ||
     event.messageIssueTime ||
-    "sem-data";
+    "no-date";
 
   return `${type}-${date}-${index}`;
 }
 
-function normalizeEvent(type, event, index) {
-  const fallbackId = createFallbackId(
-    type,
-    event,
-    index
-  );
+function createDateMeta(
+  labelKey,
+  value
+) {
+  return {
+    labelKey,
+    value: value || null,
+    valueType: "dateTime",
+  };
+}
+
+function createValueMeta(
+  labelKey,
+  value
+) {
+  return {
+    labelKey,
+    value:
+      value === undefined
+        ? null
+        : value,
+    valueType: "text",
+  };
+}
+
+function normalizeEvent(
+  type,
+  event,
+  index
+) {
+  const fallbackId =
+    createFallbackId(
+      type,
+      event,
+      index
+    );
 
   switch (type) {
     case "FLR": {
       const originalNote =
-        event.original_note || event.note || "";
+        event.original_note ||
+        event.note ||
+        "";
 
       const translatedNote =
         event.translated_note || "";
 
       const displayNote =
-        translatedNote || originalNote;
+        translatedNote ||
+        originalNote;
 
       return {
-        id: event.flrID || fallbackId,
+        id:
+          event.flrID ||
+          fallbackId,
         type,
-        title: `Erupção Solar ${event.classType ?? ""
-          }`.trim(),
+        titleKey:
+          "donki.eventData.titles.flr",
+        titleOptions: {
+          classType:
+            event.classType || "",
+        },
         date:
           event.peakTime ||
           event.beginTime ||
           null,
-        badge: event.classType || null,
+        badge:
+          event.classType || null,
         meta: [
-          {
-            label: "Início",
-            value: formatDateTime(
-              event.beginTime
-            ),
-          },
-          {
-            label: "Pico",
-            value: formatDateTime(
-              event.peakTime
-            ),
-          },
-          {
-            label: "Fim",
-            value: formatDateTime(
-              event.endTime
-            ),
-          },
-          {
-            label: "Região Ativa",
-            value:
-              event.activeRegionNum ?? "N/D",
-          },
-          {
-            label: "Instrumentos",
-            value: joinInstruments(
+          createDateMeta(
+            "donki.eventData.meta.start",
+            event.beginTime
+          ),
+          createDateMeta(
+            "donki.eventData.meta.peak",
+            event.peakTime
+          ),
+          createDateMeta(
+            "donki.eventData.meta.end",
+            event.endTime
+          ),
+          createValueMeta(
+            "donki.eventData.meta.activeRegion",
+            event.activeRegionNum
+          ),
+          createValueMeta(
+            "donki.eventData.meta.instruments",
+            joinInstruments(
               event.instruments
-            ),
-          },
+            )
+          ),
         ],
-
-        body: displayNote || null,
+        body:
+          displayNote || null,
+        originalBody:
+          originalNote || null,
+        translatedBody:
+          translatedNote || null,
         hasAutomaticTranslation:
-          Boolean(translatedNote) &&
-          translatedNote !== originalNote,
-        link: event.link || null,
+          Boolean(
+            translatedNote
+          ) &&
+          translatedNote !==
+            originalNote,
+        link:
+          event.link || null,
         raw: event,
       };
     }
+
     case "CME": {
       const analysis =
         event.cmeAnalyses?.find(
-          (item) => item.isMostAccurate
+          (item) =>
+            item.isMostAccurate
         ) ||
         event.cmeAnalyses?.[0] ||
         null;
@@ -299,12 +366,7 @@ function normalizeEvent(type, event, index) {
         "";
 
       const translatedNote =
-        event.translated_note ||
-        "";
-
-      const displayNote =
-        translatedNote ||
-        originalNote;
+        event.translated_note || "";
 
       const originalAnalysisNote =
         analysis?.original_note ||
@@ -315,175 +377,221 @@ function normalizeEvent(type, event, index) {
         analysis?.translated_note ||
         "";
 
-      const displayAnalysisNote =
-        translatedAnalysisNote ||
-        originalAnalysisNote;
+      const originalBody = [
+        originalNote,
+        originalAnalysisNote,
+      ]
+        .filter(Boolean)
+        .join("\n\n");
 
-      const body = [
-        displayNote,
-        displayAnalysisNote,
+      const translatedBody = [
+        translatedNote ||
+          originalNote,
+        translatedAnalysisNote ||
+          originalAnalysisNote,
       ]
         .filter(Boolean)
         .join("\n\n");
 
       const hasAutomaticTranslation =
-        (
-          Boolean(translatedNote) &&
-          translatedNote !== originalNote
-        ) ||
-        (
-          Boolean(translatedAnalysisNote) &&
+        (Boolean(
+          translatedNote
+        ) &&
+          translatedNote !==
+            originalNote) ||
+        (Boolean(
+          translatedAnalysisNote
+        ) &&
           translatedAnalysisNote !==
-          originalAnalysisNote
-        );
+            originalAnalysisNote);
 
       return {
-        id: event.activityID || fallbackId,
+        id:
+          event.activityID ||
+          fallbackId,
         type,
-        title: "Ejeção de Massa Coronal",
-        date: event.startTime || null,
-        badge: analysis?.type || null,
+        titleKey:
+          "donki.eventData.titles.cme",
+        titleOptions: {},
+        date:
+          event.startTime ||
+          null,
+        badge:
+          analysis?.type ||
+          null,
         meta: [
-          {
-            label: "Início",
-            value: formatDateTime(
-              event.startTime
-            ),
-          },
-          {
-            label: "Localização",
-            value:
-              event.sourceLocation || "N/D",
-          },
-          {
-            label: "Velocidade",
-            value:
-              analysis?.speed != null
-                ? `${analysis.speed} km/s`
-                : "N/D",
-          },
-          {
-            label: "Instrumentos",
-            value: joinInstruments(
+          createDateMeta(
+            "donki.eventData.meta.start",
+            event.startTime
+          ),
+          createValueMeta(
+            "donki.eventData.meta.location",
+            event.sourceLocation
+          ),
+          createValueMeta(
+            "donki.eventData.meta.speed",
+            analysis?.speed != null
+              ? `${analysis.speed} km/s`
+              : null
+          ),
+          createValueMeta(
+            "donki.eventData.meta.instruments",
+            joinInstruments(
               event.instruments
-            ),
-          },
+            )
+          ),
         ],
-        body: body || null,
+        body:
+          translatedBody || null,
+        originalBody:
+          originalBody || null,
+        translatedBody:
+          translatedBody || null,
         hasAutomaticTranslation,
-        link: event.link || null,
+        link:
+          event.link || null,
         raw: event,
       };
     }
 
     case "GST": {
-      const kpIndexes = Array.isArray(
-        event.allKpIndex
-      )
-        ? event.allKpIndex
-        : [];
+      const kpIndexes =
+        Array.isArray(
+          event.allKpIndex
+        )
+          ? event.allKpIndex
+          : [];
 
-      const maxKp = kpIndexes.reduce(
-        (maximum, current) =>
-          current.kpIndex >
-            (maximum?.kpIndex ?? -Infinity)
-            ? current
-            : maximum,
-        null
-      );
+      const maxKp =
+        kpIndexes.reduce(
+          (
+            maximum,
+            current
+          ) =>
+            current.kpIndex >
+            (maximum?.kpIndex ??
+              -Infinity)
+              ? current
+              : maximum,
+          null
+        );
 
       return {
-        id: event.gstID || fallbackId,
+        id:
+          event.gstID ||
+          fallbackId,
         type,
-        title: "Tempestade Geomagnética",
-        date: event.startTime || null,
+        titleKey:
+          "donki.eventData.titles.gst",
+        titleOptions: {},
+        date:
+          event.startTime ||
+          null,
         badge:
           maxKp?.kpIndex != null
             ? `Kp ${maxKp.kpIndex}`
             : null,
         meta: [
-          {
-            label: "Início",
-            value: formatDateTime(
-              event.startTime
-            ),
-          },
-          {
-            label: "Índice Kp máximo",
-            value:
-              maxKp?.kpIndex ?? "N/D",
-          },
-          {
-            label: "Eventos associados",
-            value: Array.isArray(
+          createDateMeta(
+            "donki.eventData.meta.start",
+            event.startTime
+          ),
+          createValueMeta(
+            "donki.eventData.meta.maximumKp",
+            maxKp?.kpIndex
+          ),
+          createValueMeta(
+            "donki.eventData.meta.linkedEvents",
+            Array.isArray(
               event.linkedEvents
             )
               ? event.linkedEvents.length
-              : 0,
-          },
+              : 0
+          ),
         ],
-        link: event.link || null,
+        body: null,
+        originalBody: null,
+        translatedBody: null,
+        hasAutomaticTranslation: false,
+        link:
+          event.link || null,
         raw: event,
       };
     }
 
     case "SEP":
       return {
-        id: event.sepID || fallbackId,
+        id:
+          event.sepID ||
+          fallbackId,
         type,
-        title:
-          "Evento de Partículas Energéticas Solares",
-        date: event.eventTime || null,
+        titleKey:
+          "donki.eventData.titles.sep",
+        titleOptions: {},
+        date:
+          event.eventTime ||
+          null,
         badge: null,
         meta: [
-          {
-            label: "Início",
-            value: formatDateTime(
-              event.eventTime
-            ),
-          },
-          {
-            label: "Instrumentos",
-            value: joinInstruments(
+          createDateMeta(
+            "donki.eventData.meta.start",
+            event.eventTime
+          ),
+          createValueMeta(
+            "donki.eventData.meta.instruments",
+            joinInstruments(
               event.instruments
-            ),
-          },
-          {
-            label: "Eventos associados",
-            value: Array.isArray(
+            )
+          ),
+          createValueMeta(
+            "donki.eventData.meta.linkedEvents",
+            Array.isArray(
               event.linkedEvents
             )
               ? event.linkedEvents.length
-              : 0,
-          },
+              : 0
+          ),
         ],
-        link: event.link || null,
+        body: null,
+        originalBody: null,
+        translatedBody: null,
+        hasAutomaticTranslation: false,
+        link:
+          event.link || null,
         raw: event,
       };
 
     case "HSS":
       return {
-        id: event.hssID || fallbackId,
+        id:
+          event.hssID ||
+          fallbackId,
         type,
-        title:
-          "Fluxo de Vento Solar de Alta Velocidade",
-        date: event.eventTime || null,
+        titleKey:
+          "donki.eventData.titles.hss",
+        titleOptions: {},
+        date:
+          event.eventTime ||
+          null,
         badge: null,
         meta: [
-          {
-            label: "Início",
-            value: formatDateTime(
-              event.eventTime
-            ),
-          },
-          {
-            label: "Instrumentos",
-            value: joinInstruments(
+          createDateMeta(
+            "donki.eventData.meta.start",
+            event.eventTime
+          ),
+          createValueMeta(
+            "donki.eventData.meta.instruments",
+            joinInstruments(
               event.instruments
-            ),
-          },
+            )
+          ),
         ],
-        link: event.link || null,
+        body: null,
+        originalBody: null,
+        translatedBody: null,
+        hasAutomaticTranslation: false,
+        link:
+          event.link || null,
         raw: event,
       };
 
@@ -500,38 +608,68 @@ function normalizeEvent(type, event, index) {
       const hasAutomaticTranslation =
         Boolean(
           event.translated_message_body &&
-          event.translated_message_body !==
-          originalBody
+            event.translated_message_body !==
+              originalBody
         );
 
       return {
-        id: event.messageID || fallbackId,
+        id:
+          event.messageID ||
+          fallbackId,
         type,
         title:
           event.messageType ||
-          "Notificação DONKI",
+          null,
+        titleKey:
+          event.messageType
+            ? null
+            : "donki.eventData.titles.notification",
+        titleOptions: {},
         date:
-          event.messageIssueTime || null,
-        badge: event.messageType || null,
+          event.messageIssueTime ||
+          null,
+        badge:
+          event.messageType ||
+          null,
         meta: [
-          {
-            label: "Emitida em",
-            value: formatDateTime(
-              event.messageIssueTime
-            ),
-          },
-          {
-            label: "ID da mensagem",
-            value:
-              event.messageID || "N/D",
-          },
+          createDateMeta(
+            "donki.eventData.meta.issuedAt",
+            event.messageIssueTime
+          ),
+          createValueMeta(
+            "donki.eventData.meta.messageId",
+            event.messageID
+          ),
         ],
-        body: translatedBody,
+        body:
+          translatedBody || null,
         originalBody,
+        translatedBody:
+          translatedBody || null,
         hasAutomaticTranslation,
-        link: event.messageURL || null,
+        link:
+          event.messageURL ||
+          null,
         raw: event,
       };
     }
+
+    default:
+      return {
+        id: fallbackId,
+        type,
+        titleKey:
+          "donki.defaultEventTitle",
+        titleOptions: {},
+        date: null,
+        badge: null,
+        meta: [],
+        body: null,
+        originalBody: null,
+        translatedBody: null,
+        hasAutomaticTranslation: false,
+        link: null,
+        raw: event,
+      };
   }
 }
