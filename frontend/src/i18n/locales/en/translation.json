@@ -1,0 +1,189 @@
+{
+    "navigation": {
+        "home": "Home",
+        "nasaData": "NASA Data",
+        "discover": "Discover",
+        "quiz": "Quiz",
+        "favorites": "Favorites",
+        "about": "About",
+        "faq": "Frequently asked questions",
+        "profile": "Profile",
+        "login": "Sign in",
+        "logout": "Sign out"
+    },
+    "userMenu": {
+        "open": "Open user menu",
+        "loadingSession": "Loading session",
+        "login": "Sign in",
+        "register": "Create account",
+        "defaultUser": "User",
+        "greeting": "Hello, {{name}}",
+        "adminPanel": "Admin Panel"
+    },
+    "navbar": {
+        "mainNavigation": "Main navigation",
+        "mobileNavigation": "Mobile navigation",
+        "mobileMenu": "Mobile menu",
+        "openMenu": "Open menu",
+        "closeMenu": "Close menu"
+    },
+    "footer": {
+        "description": "An academic project that brings together several public NASA APIs in a single interface, making space data easier to explore and understand.",
+        "navigation": "Footer navigation",
+        "opensNewWindow": "opens in a new window",
+        "information": {
+            "title": "Information",
+            "about": "About the project",
+            "faq": "Frequently asked questions",
+            "contact": "Contact"
+        },
+        "resources": {
+            "title": "Official sources"
+        },
+        "legal": {
+            "title": "Legal",
+            "cookies": "Cookie Policy",
+            "terms": "Terms and Conditions",
+            "privacy": "Privacy Policy",
+            "accessibility": "Accessibility"
+        },
+        "educationalNote": "Developed for educational purposes."
+    },
+    "nasaApis": {
+        "discover": {
+            "title": "Discover Space",
+            "description": "Facts, iconic missions and interactive experiences about the Universe.",
+            "category": "SPACEVISION · DISCOVER"
+        },
+        "asteroids": {
+            "title": "Asteroids",
+            "description": "Real-time tracking of near-Earth objects, including their distances and speeds.",
+            "category": "NASA · NeoWS"
+        },
+        "spaceWeather": {
+            "title": "Space Weather",
+            "description": "Monitor space weather in real time and discover when the largest solar storms occur.",
+            "category": "NASA · DONKI"
+        },
+        "earth": {
+            "title": "Earth",
+            "description": "Daily images of Earth captured by the EPIC camera aboard the DSCOVR satellite.",
+            "category": "NASA · EPIC"
+        }
+    },
+    "searchPages": {
+        "discover": {
+            "title": "Discover",
+            "subtitle": "Facts, iconic missions and the current status of space explorers"
+        },
+        "quiz": {
+            "title": "Quiz",
+            "subtitle": "Test your knowledge about space"
+        },
+        "spaceWeather": {
+            "title": "Space Weather",
+            "subtitle": "Solar events and space weather"
+        },
+        "earth": {
+            "title": "Earth",
+            "subtitle": "Images of Earth captured by the EPIC camera"
+        },
+        "asteroids": {
+            "title": "Asteroids",
+            "subtitle": "Near-Earth objects"
+        }
+    },
+    "home": {
+        "hero": {
+            "welcome": "Welcome to",
+            "title": "SPACE VISION",
+            "description": "Space images, missions and discoveries, all in one place. An interactive and educational way to explore the Universe.",
+            "searchPlaceholder": "Search images, missions or planets...",
+            "stats": {
+                "nasaApis": "NASA APIs",
+                "cosmicObjects": "COSMIC OBJECTS",
+                "liveData": "LIVE DATA"
+            }
+        },
+        "apiSection": {
+            "title": "Official NASA Data",
+            "subtitle": "Explore official NASA APIs — space weather, asteroids and Earth imagery — or discover fascinating facts about the Universe."
+        },
+        "ctaSection": {
+            "titlePrefix": "Space:",
+            "titleAccent": "The Final Frontier",
+            "description": "Our community is dedicated to sharing data through a passion for space. Find your place within our cosmic database.",
+            "primaryAction": "Explore the Universe",
+            "asteroids": "Asteroids",
+            "spaceWeather": "Space Weather",
+            "earth": "Earth"
+        },
+        "meta": {
+            "title": "SpaceVision — Explore real NASA data",
+            "description": "Explore Earth imagery, space weather, near-Earth asteroids and other official NASA data through a visual and interactive experience."
+        },
+        "apod": {
+            "eyebrow": "NASA · APOD",
+            "title": "Astronomy Picture of the Day",
+            "description": "Explore a real NASA image every day, together with its scientific explanation.",
+            "loadError": "The astronomy image could not be loaded.",
+            "errorTitle": "The APOD could not be loaded"
+        },
+        "intro": {
+            "eyebrow": "Introduction",
+            "titlePrefix": "What is",
+            "description": "Space Vision is a collection of tools that allows you to explore space data, follow astronomical phenomena and discover official NASA information directly through your browser.",
+            "readMore": "Read more"
+        },
+        "filmStrip": {
+            "eyebrow": "Visual archive",
+            "title": "The cosmos, frame by frame."
+        }
+    },
+    "apodCard": {
+        "dateUnavailable": "Date unavailable",
+        "defaultTitle": "Astronomy Picture of the Day",
+        "mediaUnavailable": "The multimedia content for this APOD is unavailable.",
+        "imageAlt": "Astronomy image provided by NASA",
+        "videoTitle": "Astronomy video provided by NASA",
+        "translationNote": "Automatically translated. The original content was provided by NASA.",
+        "showLess": "Show less",
+        "readMore": "Read more",
+        "viewHdImage": "View HD image",
+        "opensNewWindow": "Opens in a new window",
+        "explanationUnavailable": "No explanation is available for this content.",
+        "mediaType": {
+            "image": "Image",
+            "video": "Video"
+        },
+        "favorites": {
+            "addLabel": "Add to favorites",
+            "removeLabel": "Remove from favorites",
+            "loginRequired": "You need to sign in to save favorites",
+            "added": "Added to favorites",
+            "removed": "Removed from favorites",
+            "updateError": "The favorite could not be updated"
+        }
+    },
+    "apodHistoryCard": {
+        "defaultTitle": "NASA astronomy image",
+        "openItem": "View {{title}}",
+        "imageAlt": "Astronomy image provided by NASA",
+        "video": "Video"
+    },
+    "common": {
+        "loading": "Loading...",
+        "error": "Something went wrong",
+        "tryAgain": "Try again",
+        "viewDetails": "View details",
+        "back": "Back",
+        "search": "Search",
+        "noResults": "No results were found",
+        "live": "Live"
+    },
+    "language": {
+        "portuguese": "Português",
+        "english": "English",
+        "changeLanguage": "Change language"
+    }
+}

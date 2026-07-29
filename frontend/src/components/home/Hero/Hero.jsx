@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router";
+import { useTranslation } from "react-i18next";
+
 import { Icons } from "../../../constants/icons";
 import SearchInput from "../../common/SearchInput/SearchInput";
 import heroImage from "../../../assets/astronaut_nasa.jpg";
@@ -17,6 +19,7 @@ const searchIcons = {
 };
 
 function Hero() {
+  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredPages = searchablePages.filter((page) => {
@@ -24,10 +27,15 @@ function Hero() {
 
     if (!searchValue) return false;
 
+    const translatedTitle = t(page.titleKey).toLowerCase();
+    const translatedSubtitle = t(page.subtitleKey).toLowerCase();
+
     return (
-      page.title.toLowerCase().includes(searchValue) ||
-      page.subtitle.toLowerCase().includes(searchValue) ||
-      page.keywords.some((keyword) => keyword.includes(searchValue))
+      translatedTitle.includes(searchValue) ||
+      translatedSubtitle.includes(searchValue) ||
+      page.keywords.some((keyword) =>
+        keyword.toLowerCase().includes(searchValue)
+      )
     );
   });
 
@@ -39,24 +47,25 @@ function Hero() {
       <div className="hero__overlay">
         <div className="container hero__container">
           <div className="hero__content">
-            {/* Linha 1 */}
-            <span className="hero__welcome-text">Bem-vindo ao</span>
-            
-            {/* Linha 2 - H1 com texto em maiúsculas */}
-            <h1 className="hero__title">SPACE VISION</h1>
-            
-            {/* Linha 3 - Descrição */}
+            <span className="hero__welcome-text">
+              {t("home.hero.welcome")}
+            </span>
+
+            <h1 className="hero__title">
+              SPACE VISION
+            </h1>
+
             <p className="hero__description">
-              Imagens, missões e descobertas do espaço, tudo num só lugar.
-              Uma forma interativa e educativa de explorar o Universo.
+              {t("home.hero.description")}
             </p>
 
-            {/* Secção de Pesquisa */}
             <div className="hero__search">
               <SearchInput
-                placeholder="Pesquisar imagens, missões ou planetas..."
+                placeholder={t("home.hero.searchPlaceholder")}
                 value={searchTerm}
-                onChange={(event) => setSearchTerm(event.target.value)}
+                onChange={(event) =>
+                  setSearchTerm(event.target.value)
+                }
               />
 
               {filteredPages.length > 0 && (
@@ -66,49 +75,62 @@ function Hero() {
 
                     return (
                       <Link
-                      key={page.path}
-                      to={page.path}
-                      className="hero__search-result"
-                    >
-                      <span className="hero__search-result-icon-wrapper">
-                        {Icon && (
-                          <Icon
-                            className="hero__search-result-icon"
-                            size={18}
-                            aria-hidden="true"
-                          />
-                        )}
-                      </span>
+                        key={page.path}
+                        to={page.path}
+                        className="hero__search-result"
+                      >
+                        <span className="hero__search-result-icon-wrapper">
+                          {Icon && (
+                            <Icon
+                              className="hero__search-result-icon"
+                              size={18}
+                              aria-hidden="true"
+                            />
+                          )}
+                        </span>
 
-                      <span className="hero__search-result-content">
-                        <strong>{page.title}</strong>
-                        <span>{page.subtitle}</span>
-                      </span>
-                    </Link>
+                        <span className="hero__search-result-content">
+                          <strong>{t(page.titleKey)}</strong>
+                          <span>{t(page.subtitleKey)}</span>
+                        </span>
+                      </Link>
                     );
                   })}
                 </div>
               )}
             </div>
 
-            {/* Nova Secção de Estatísticas (Posicionada corretamente) */}
             <div className="hero__stats">
               <div className="hero__stat-item">
-                <span className="hero__stat-number">4</span>
-                <span className="hero__stat-label">APIS DA NASA</span>
+                <span className="hero__stat-number">
+                  4
+                </span>
+
+                <span className="hero__stat-label">
+                  {t("home.hero.stats.nasaApis")}
+                </span>
               </div>
-              
+
               <div className="hero__stat-item">
-                <span className="hero__stat-number">&infin;</span>
-                <span className="hero__stat-label">OBJETOS CÓSMICOS</span>
+                <span className="hero__stat-number">
+                  &infin;
+                </span>
+
+                <span className="hero__stat-label">
+                  {t("home.hero.stats.cosmicObjects")}
+                </span>
               </div>
-              
+
               <div className="hero__stat-item">
-                <span className="hero__stat-number">24/7</span>
-                <span className="hero__stat-label">DADOS AO VIVO</span>
+                <span className="hero__stat-number">
+                  24/7
+                </span>
+
+                <span className="hero__stat-label">
+                  {t("home.hero.stats.liveData")}
+                </span>
               </div>
             </div>
-
           </div>
         </div>
       </div>
