@@ -12,9 +12,15 @@ import {
   vi,
 } from "vitest";
 
+import i18n from "../../../i18n";
+
 import DateRangeFilter from "./DateRangeFilter";
 
 describe("DateRangeFilter", () => {
+  beforeEach(async () => {
+    await i18n.changeLanguage("pt");
+    vi.clearAllMocks();
+  });
   const defaultProps = {
     startDate: "2026-07-01",
     endDate: "2026-07-15",
