@@ -850,6 +850,221 @@
             }
         }
     },
+    "faq": {
+        "meta": {
+            "title": "Frequently Asked Questions — SpaceVision",
+            "description": "Find answers about SpaceVision, NASA APIs, favourites, user accounts and using the platform."
+        },
+        "breadcrumb": "Frequently Asked Questions",
+        "hero": {
+            "eyebrow": "Frequently asked questions",
+            "title": "Everything you need to know",
+            "description": "Find answers about NASA data, accounts, favourites, security, personal API keys and SpaceVision features."
+        },
+        "toolsAria": "Frequently asked questions search and filters",
+        "searchPlaceholder": "Search for picture of the day, asteroids, favourites or NASA access...",
+        "filtersAria": "Filter questions by category",
+        "listAria": "Frequently asked questions",
+        "categories": {
+            "all": "All",
+            "general": "General",
+            "nasaApis": "NASA APIs",
+            "data": "Data",
+            "account": "Account",
+            "favorites": "Favourites",
+            "nasaKey": "NASA key",
+            "privacy": "Privacy",
+            "support": "Support"
+        },
+        "empty": {
+            "title": "We could not find any questions matching that term.",
+            "description": "Try searching with a different keyword."
+        },
+        "items": {
+            "whatIsSpaceVision": {
+                "question": "What is SpaceVision?",
+                "keywords": "platform application nasa universe space project",
+                "answer": "SpaceVision — NASA Data Explorer is an educational platform that brings together several official NASA data sources in one experience. It allows users to explore astronomy images, space weather, photographs of Earth, asteroids, missions and other scientific content in a visual and accessible way."
+            },
+            "officialNasaApp": {
+                "question": "Is SpaceVision an official NASA application?",
+                "keywords": "official nasa academic project university school",
+                "answer": "No. SpaceVision is an independent academic project. The platform uses official data and services made publicly available by NASA, but it is not developed, sponsored or managed by NASA."
+            },
+            "targetAudience": {
+                "question": "Who was SpaceVision created for?",
+                "keywords": "audience students curiosity science astronomy",
+                "answer": "The platform was created for people interested in science, technology and space exploration, including users without advanced knowledge of astronomy. It may also be useful for students, teachers and space enthusiasts."
+            },
+            "responsive": {
+                "question": "Does SpaceVision work on mobile phones and tablets?",
+                "keywords": "mobile responsive tablet smartphone computer desktop",
+                "answer": "Yes. The interface was developed to adapt to computers, tablets and mobile phones. Some more complex visualisations, such as 3D models, may perform differently depending on the device being used."
+            },
+            "nasaApis": {
+                "question": "Which NASA APIs does SpaceVision use?",
+                "keywords": "apod donki epic neows neowatch api astronomy weather earth asteroids",
+                "answer": "SpaceVision uses several public NASA services:",
+                "apis": {
+                    "apod": {
+                        "name": "APOD",
+                        "description": "Astronomy Picture of the Day — daily astronomy content accompanied by a scientific explanation."
+                    },
+                    "donki": {
+                        "name": "DONKI",
+                        "description": "A space weather database including solar flares, geomagnetic storms and coronal mass ejections."
+                    },
+                    "epic": {
+                        "name": "EPIC",
+                        "description": "Images of the full disk of Earth captured by the EPIC camera aboard the DSCOVR satellite."
+                    },
+                    "neows": {
+                        "name": "NeoWS",
+                        "description": "Data about asteroids and other objects passing close to Earth's orbit."
+                    }
+                }
+            },
+            "apod": {
+                "question": "What is the Astronomy Picture of the Day?",
+                "keywords": "apod photograph video astronomy daily image",
+                "answer": "The Astronomy Picture of the Day, known as APOD, is content published daily by NASA. It may be a photograph, a scientific illustration or a video, accompanied by an explanation written by professionals in the field."
+            },
+            "spaceWeather": {
+                "question": "What is space weather?",
+                "keywords": "donki sun solar flares geomagnetic storms solar events",
+                "answer": "Space weather studies conditions on the Sun and in space that may affect Earth and its technological systems. In SpaceVision, DONKI data allows users to explore events such as solar flares, coronal mass ejections and geomagnetic storms."
+            },
+            "epic": {
+                "question": "What is the EPIC camera?",
+                "keywords": "epic earth dscovr satellite images planet",
+                "answer": "EPIC, or the Earth Polychromatic Imaging Camera, is a camera installed aboard the DSCOVR satellite. From a position between Earth and the Sun, it captures images of the illuminated side of the planet at several wavelengths."
+            },
+            "nearEarthObjects": {
+                "question": "What are near-Earth objects?",
+                "keywords": "asteroids neows neowatch near earth hazardous orbit distance",
+                "answer": "They are asteroids or comets whose orbits pass relatively close to Earth's orbit. This designation does not necessarily mean that there is a risk of collision. SpaceVision presents information such as distance, speed, estimated size and risk classification."
+            },
+            "realTime": {
+                "question": "Is the displayed data available in real time?",
+                "keywords": "real time updated nasa delay cache",
+                "answer": "SpaceVision presents the latest information made publicly available through NASA APIs. Not every source operates in real time: some are updated daily, while others receive new data throughout the day.",
+                "callout": "The update frequency depends on each NASA service."
+            },
+            "updateFrequency": {
+                "question": "How frequently is the data updated?",
+                "keywords": "frequency update apod epic donki neows cache",
+                "answer": "APOD publishes new content every day. EPIC may provide several images per day. DONKI receives events whenever new space weather occurrences are recorded, and NeoWS is updated according to orbital data published by NASA."
+            },
+            "noResults": {
+                "question": "Why do some dates have no results?",
+                "keywords": "no results empty date no event error",
+                "answer": "Some dates may not have images or events available. This does not necessarily mean that an error has occurred; no content may simply have been recorded for that date. Try selecting another date or increasing the search range."
+            },
+            "mediaNotLoading": {
+                "question": "Why do some images or videos fail to load?",
+                "keywords": "image video failure unavailable connection youtube nasa",
+                "answer": "Some content is hosted by external services or may become temporarily unavailable. A slow connection, API limits or browser restrictions may also prevent it from loading. Refresh the page and try again a few minutes later."
+            },
+            "accountRequired": {
+                "question": "Do I need to create an account to explore the website?",
+                "keywords": "account register login session browse",
+                "answer": "No. You can access public areas without creating an account. Authentication is only required for personal features such as saving favourites, managing your profile, downloading your data or adding a personal NASA API key."
+            },
+            "createAccount": {
+                "question": "How can I create an account?",
+                "keywords": "register create account name email password",
+                "answer": "Open the registration page, enter your name, email address and a valid password, and submit the form. Once registered, you can sign in and use the platform's personal features."
+            },
+            "forgotPassword": {
+                "question": "I forgot my password. What should I do?",
+                "keywords": "recover reset redefine password email",
+                "answer": "On the sign-in page, select the password recovery option. Enter the email address associated with your account and follow the instructions sent to you. In a development environment, the message may be recorded in the server logs."
+            },
+            "deleteAccount": {
+                "question": "How can I delete my account?",
+                "keywords": "delete remove account profile data",
+                "answer": "Account deletion is available in the Profile area dedicated to account management. The action requires confirmation and removes access to the account. Before deleting it, you can download a copy of your data."
+            },
+            "howFavoritesWork": {
+                "question": "How do favourites work?",
+                "keywords": "favourites heart save remove content",
+                "answer": "After signing in, select the heart icon on compatible content. The favourite is linked to your account and can be viewed or removed on the <strong>Favourites</strong> page."
+            },
+            "favoritesAcrossDevices": {
+                "question": "Are favourites available on other devices?",
+                "keywords": "synchronisation devices account mobile computer",
+                "answer": "Yes. Favourites are saved to your account and not only to the browser. When you sign in on another device using the same account, you should find the content you previously saved."
+            },
+            "favoritesLogin": {
+                "question": "Why do I need to sign in to save favourites?",
+                "keywords": "authentication session unauthenticated favourite",
+                "answer": "Signing in allows each favourite to be linked to the correct user and remain available after closing the browser or changing devices. Without signing in, you can continue exploring the content, but you cannot save it to your personal collection."
+            },
+            "whatIsNasaKey": {
+                "question": "What is a NASA API key?",
+                "keywords": "api key nasa requests limit profile",
+                "answer": "It is a personal code provided by NASA to identify requests made to its APIs. A personal key gives you your own request limit instead of relying only on the application's shared key."
+            },
+            "personalNasaKey": {
+                "question": "How does the NASA API key work and why should I use a personal key?",
+                "keywords": "nasa api key personal shared limit requests blocked account profile obtain create",
+                "paragraph1": "SpaceVision uses a shared NASA API key so visitors can access content without configuring their own key. However, this key is shared by all platform users and has a request limit.",
+                "paragraph2": "When many people use the website at the same time, that limit may be reached temporarily. In that situation, some NASA images, events or other data may stop loading until the limit becomes available again.",
+                "paragraph3": "To avoid relying on the shared key, you can obtain a personal key free of charge from NASA's official API portal. After signing in to SpaceVision, you can enter it in the <strong>NASA key</strong> area of the Profile page.",
+                "callout": "Get a personal key from <nasaLink>NASA's official API portal</nasaLink>."
+            },
+            "rateLimit": {
+                "question": "What does “request limit reached” mean?",
+                "keywords": "rate limit exceeded nasa requests 429",
+                "answer": "It means that the key being used has temporarily reached the maximum number of requests allowed by NASA. You can wait for the limit to reset or add a personal NASA key on the Profile page."
+            },
+            "nasaKeySecurity": {
+                "question": "Is my personal NASA key protected?",
+                "keywords": "security privacy api key encrypted",
+                "answer": "The key is sent to the back end and used for requests to NASA. It should not be exposed in URLs, in the public interface or to other users. You can replace or remove it at any time from your Profile."
+            },
+            "storedPersonalData": {
+                "question": "What personal data is stored?",
+                "keywords": "personal data name email favourites key privacy",
+                "answer": "The application stores the data required to manage the account, such as name, email address and protected password. It may also store favourites, preferences and a personal NASA key when the user chooses to add one."
+            },
+            "passwordStorage": {
+                "question": "Are passwords stored as plain text?",
+                "keywords": "password hash security",
+                "answer": "No. Passwords are processed using Laravel's security mechanisms and stored as hashes. This means that the original password should not be directly readable in the database."
+            },
+            "downloadData": {
+                "question": "Can I download my data?",
+                "keywords": "download export data profile gdpr",
+                "answer": "Yes. The Profile page includes an option to download the data associated with your account. This feature allows you to review the personal information stored by the platform."
+            },
+            "cookies": {
+                "question": "Does SpaceVision use cookies?",
+                "keywords": "cookies session preferences policy",
+                "answer": "The application may use technical mechanisms required for authentication and the user experience. See the Cookie Policy available in the footer for more detailed information."
+            },
+            "connectionError": {
+                "question": "What should I do when a connection error appears?",
+                "keywords": "error network server backend cors connection",
+                "answer": "Check that you have an Internet connection and refresh the page. In a local environment, also confirm that both the front end and the Laravel server are running. If the problem continues, try again later or use the contact form."
+            },
+            "supportedBrowsers": {
+                "question": "Which browsers are supported?",
+                "keywords": "chrome edge firefox safari browser",
+                "answer": "SpaceVision was developed to work in recent versions of the main browsers, including Chrome, Edge and Firefox. Some visual features may vary in older browsers or on devices without WebGL support."
+            },
+            "keyboardSupport": {
+                "question": "Can SpaceVision be used only with a keyboard?",
+                "keywords": "accessibility keyboard tab enter escape wcag",
+                "answer": "The interface was developed with support for keyboard navigation, including menus, forms, filters, accordions and modals. Focus should remain visible when navigating with Tab, Shift + Tab, Enter and Escape."
+            },
+            "contactTeam": {
+                "question": "How can I contact the team?",
+                "keywords": "contact help message support team",
+                "answer": "You can use the contact form available on the <strong>About</strong> page. Submitted messages are made available to the platform administrators."
+            }
+        }
+    },
     "common": {
         "loading": "Loading...",
         "error": "Something went wrong",
