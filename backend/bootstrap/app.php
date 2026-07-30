@@ -35,7 +35,7 @@ return Application::configure(basePath: dirname(__DIR__))
             $hasOrigins = filled(env('CORS_ALLOWED_ORIGINS'))
                 || filled(env('FRONTEND_URL'));
 
-            if (!$hasOrigins) {
+            if (! $hasOrigins) {
                 throw new RuntimeException(
                     'CORS_ALLOWED_ORIGINS ou FRONTEND_URL têm de estar '
                     .'definidas em produção. Sem isso, o CORS cai no '
@@ -45,4 +45,3 @@ return Application::configure(basePath: dirname(__DIR__))
         }
     })
     ->create();
-
