@@ -1810,6 +1810,97 @@
             "faq": "Ver FAQ"
         }
     },
+    "cookies": {
+        "meta": {
+            "title": "Política de cookies — SpaceVision",
+            "description": "Consulta a informação sobre cookies e tecnologias de armazenamento utilizadas pelo SpaceVision."
+        },
+        "breadcrumb": "Política de Cookies",
+        "hero": {
+            "eyebrow": "Privacidade & dados",
+            "title": "Política de Cookies",
+            "description": "O que fica guardado no teu navegador quando exploras o SpaceVision, e como podes controlá-lo.",
+            "lastUpdated": "Última atualização: 16 de julho de 2026"
+        },
+        "summary": {
+            "label": "Em resumo:",
+            "text": "o SpaceVision não usa cookies de publicidade nem de rastreio de terceiros. Guardamos apenas o essencial — sessão e favoritos — diretamente no teu navegador."
+        },
+        "navigation": {
+            "aria": "Secções da política",
+            "whatAreCookies": "O que são cookies",
+            "howWeStore": "Como o SpaceVision guarda dados",
+            "thirdParties": "APIs e serviços de terceiros",
+            "control": "Como limpar ou desativar",
+            "changes": "Alterações a esta política",
+            "contact": "Contacto"
+        },
+        "storage": {
+            "columns": {
+                "item": "O que guarda",
+                "mechanism": "Mecanismo",
+                "duration": "Duração",
+                "purpose": "Finalidade"
+            },
+            "items": {
+                "authentication": {
+                    "name": "Sessão de autenticação",
+                    "duration": "Apagada ao fechar o separador",
+                    "purpose": "Manter-te autenticado enquanto navegas na plataforma."
+                },
+                "favorites": {
+                    "name": "Favoritos",
+                    "duration": "Até limpares os dados do navegador",
+                    "purpose": "Guardar as imagens e capturas que marcaste com o coração."
+                },
+                "tracking": {
+                    "name": "Cookies de publicidade ou rastreio",
+                    "mechanism": "Não utilizados",
+                    "purpose": "O SpaceVision não integra redes de anúncios nem pixels de terceiros."
+                }
+            }
+        },
+        "sections": {
+            "whatAreCookies": {
+                "title": "O que são cookies",
+                "paragraphOneBeforeLocalStorage": "Cookies são pequenos ficheiros de texto que um site pode pedir ao teu navegador para guardar, normalmente para lembrar quem és entre visitas ou para medir o uso da página. O teu navegador também oferece outras formas de armazenamento local — como o",
+                "paragraphOneBetweenStorage": "e o",
+                "paragraphOneAfterStorage": "— que funcionam de forma parecida, mas nunca são enviadas automaticamente para o servidor a cada pedido.",
+                "paragraphTwo": "É essa segunda forma, mais leve e mais privada, que o SpaceVision utiliza. Chamamos-lhe \"cookies\" nesta página porque é o termo que a maioria das pessoas reconhece, mas tecnicamente não colocamos cookies no teu navegador."
+            },
+            "howWeStore": {
+                "title": "Como o SpaceVision guarda dados",
+                "description": "A tabela seguinte resume tudo o que a aplicação guarda no teu navegador, para que serve e durante quanto tempo."
+            },
+            "thirdParties": {
+                "title": "APIs e serviços de terceiros",
+                "paragraphOneBeforeApi": "O SpaceVision consulta as APIs públicas da NASA (",
+                "paragraphOneBeforeLink": ") diretamente do teu navegador para obter imagens e dados. Esses pedidos não fazem a NASA colocar cookies no teu dispositivo através da nossa aplicação — apenas se saíres do SpaceVision e visitares",
+                "paragraphOneAfterLink": "é que ficas sujeito à política de privacidade própria deles.",
+                "paragraphTwo": "O serviço onde este site está alojado pode registar cookies técnicos de infraestrutura, por exemplo para balanceamento de carga ou proteção contra abuso, fora do controlo direto da aplicação."
+            },
+            "control": {
+                "title": "Como limpar ou desativar",
+                "description": "Podes apagar tudo o que o SpaceVision guardou a qualquer momento, sem pedir nada à nossa equipa:",
+                "items": {
+                    "logout": "Terminar sessão apaga imediatamente o token de autenticação guardado.",
+                    "clearBrowserData": "Limpar os dados de navegação do browser, em definições → privacidade → dados do site, remove os favoritos e qualquer sessão ativa.",
+                    "privateMode": "Navegar em modo privado ou anónimo não guarda nada depois de fechares a janela."
+                },
+                "note": "Nota: limpar os dados do navegador termina a tua sessão e esvazia a lista de favoritos guardada localmente."
+            },
+            "changes": {
+                "title": "Alterações a esta política",
+                "description": "Se a forma como o SpaceVision guarda dados no teu navegador mudar — por exemplo, ao introduzir preferências de tema ou analítica interna — atualizamos esta página e a data no topo antes de essa alteração entrar em vigor."
+            },
+            "contact": {
+                "title": "Contacto",
+                "descriptionBeforeLink": "Tens dúvidas sobre privacidade ou sobre o que fica guardado no teu navegador? Fala com a equipa através da página",
+                "link": "Sobre nós",
+                "descriptionAfterLink": "."
+            }
+        }
+    },
     "common": {
         "loading": "A carregar...",
         "error": "Ocorreu um erro",

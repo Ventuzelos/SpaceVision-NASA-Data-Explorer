@@ -1810,6 +1810,97 @@
             "faq": "View FAQ"
         }
     },
+    "cookies": {
+        "meta": {
+            "title": "Cookie policy — SpaceVision",
+            "description": "Read information about cookies and storage technologies used by SpaceVision."
+        },
+        "breadcrumb": "Cookie Policy",
+        "hero": {
+            "eyebrow": "Privacy & data",
+            "title": "Cookie Policy",
+            "description": "Learn what is stored in your browser while you explore SpaceVision and how you can control it.",
+            "lastUpdated": "Last updated: 16 July 2026"
+        },
+        "summary": {
+            "label": "In summary:",
+            "text": "SpaceVision does not use advertising cookies or third-party tracking cookies. We only store what is essential — your session and favourites — directly in your browser."
+        },
+        "navigation": {
+            "aria": "Policy sections",
+            "whatAreCookies": "What cookies are",
+            "howWeStore": "How SpaceVision stores data",
+            "thirdParties": "Third-party APIs and services",
+            "control": "How to clear or disable storage",
+            "changes": "Changes to this policy",
+            "contact": "Contact"
+        },
+        "storage": {
+            "columns": {
+                "item": "What is stored",
+                "mechanism": "Mechanism",
+                "duration": "Duration",
+                "purpose": "Purpose"
+            },
+            "items": {
+                "authentication": {
+                    "name": "Authentication session",
+                    "duration": "Deleted when the browser tab is closed",
+                    "purpose": "Keep you signed in while you navigate the platform."
+                },
+                "favorites": {
+                    "name": "Favourites",
+                    "duration": "Until you clear your browser data",
+                    "purpose": "Store the images and captures you marked with the heart icon."
+                },
+                "tracking": {
+                    "name": "Advertising or tracking cookies",
+                    "mechanism": "Not used",
+                    "purpose": "SpaceVision does not integrate advertising networks or third-party tracking pixels."
+                }
+            }
+        },
+        "sections": {
+            "whatAreCookies": {
+                "title": "What cookies are",
+                "paragraphOneBeforeLocalStorage": "Cookies are small text files that a website may ask your browser to store, usually to remember who you are between visits or to measure page usage. Your browser also provides other forms of local storage, such as",
+                "paragraphOneBetweenStorage": "and",
+                "paragraphOneAfterStorage": "which work in a similar way but are never sent automatically to the server with every request.",
+                "paragraphTwo": "SpaceVision uses this second, lighter and more private form of storage. We refer to it as \"cookies\" on this page because it is the term most people recognise, but technically we do not place cookies in your browser."
+            },
+            "howWeStore": {
+                "title": "How SpaceVision stores data",
+                "description": "The following table summarises everything the application stores in your browser, what it is used for and how long it remains there."
+            },
+            "thirdParties": {
+                "title": "Third-party APIs and services",
+                "paragraphOneBeforeApi": "SpaceVision accesses NASA's public APIs (",
+                "paragraphOneBeforeLink": ") directly from your browser to retrieve images and data. These requests do not cause NASA to place cookies on your device through our application — only when you leave SpaceVision and visit",
+                "paragraphOneAfterLink": "will you be subject to NASA's own privacy policy.",
+                "paragraphTwo": "The service hosting this website may use technical infrastructure cookies, for example for load balancing or protection against abuse, outside the application's direct control."
+            },
+            "control": {
+                "title": "How to clear or disable storage",
+                "description": "You can delete everything SpaceVision has stored at any time without contacting our team:",
+                "items": {
+                    "logout": "Signing out immediately deletes the stored authentication token.",
+                    "clearBrowserData": "Clearing your browser data under settings → privacy → site data removes your favourites and any active session.",
+                    "privateMode": "Private or incognito browsing does not retain anything after you close the window."
+                },
+                "note": "Note: clearing your browser data signs you out and empties the list of favourites stored locally."
+            },
+            "changes": {
+                "title": "Changes to this policy",
+                "description": "If the way SpaceVision stores data in your browser changes — for example, by introducing theme preferences or internal analytics — we will update this page and the date shown above before the change takes effect."
+            },
+            "contact": {
+                "title": "Contact",
+                "descriptionBeforeLink": "Do you have questions about privacy or what is stored in your browser? Contact the team through the",
+                "link": "About us",
+                "descriptionAfterLink": " page."
+            }
+        }
+    },
     "common": {
         "loading": "Loading...",
         "error": "Something went wrong",
