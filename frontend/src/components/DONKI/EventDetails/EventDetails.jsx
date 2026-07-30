@@ -308,7 +308,7 @@ function EventDetails({
                     <a
                       href={url}
                       target="_blank"
-                      rel="noreferrer"
+                      rel="noopener noreferrer"
                       aria-label={t(
                         "donki.eventDetails.openResourceAria",
                         {
@@ -343,7 +343,7 @@ function EventDetails({
             <a
               href={event.link}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="event-details__source-link"
               aria-label={t(
                 "donki.eventDetails.viewNasaSourceAria"

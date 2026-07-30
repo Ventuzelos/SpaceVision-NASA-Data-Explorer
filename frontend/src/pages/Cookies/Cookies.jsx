@@ -501,7 +501,7 @@ function Cookies() {
                   <a
                     href="https://www.nasa.gov/"
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                   >
                     nasa.gov
                   </a>{" "}

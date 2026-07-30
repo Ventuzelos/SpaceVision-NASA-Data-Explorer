@@ -11,9 +11,6 @@ function LanguageSwitcher() {
 
   async function handleLanguageChange(language) {
     await i18n.changeLanguage(language);
-
-    document.documentElement.lang =
-      language === "en" ? "en" : "pt-PT";
   }
 
   return (
