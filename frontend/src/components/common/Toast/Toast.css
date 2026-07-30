@@ -1,8 +1,8 @@
 .toast {
   position: fixed;
   right: 24px;
-  bottom: 24px;
-  z-index: 1000;
+  bottom: 88px;
+  z-index: 1100;
 
   padding: 14px 18px;
   border-radius: var(--radius-md);
