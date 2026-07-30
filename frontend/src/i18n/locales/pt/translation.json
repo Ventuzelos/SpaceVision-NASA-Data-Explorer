@@ -1796,6 +1796,20 @@
             "pageAria": "Página {{page}}"
         }
     },
+    "notFound": {
+        "meta": {
+            "title": "Página não encontrada — SpaceVision",
+            "description": "A página que procuras não foi encontrada no SpaceVision."
+        },
+        "imageAria": "Erro 404, página não encontrada",
+        "eyebrow": "Erro 404",
+        "title": "Página não encontrada",
+        "description": "Parece que esta missão saiu de órbita. Verifica o endereço ou volta para um local conhecido.",
+        "actions": {
+            "home": "Voltar ao início",
+            "faq": "Ver FAQ"
+        }
+    },
     "common": {
         "loading": "A carregar...",
         "error": "Ocorreu um erro",
