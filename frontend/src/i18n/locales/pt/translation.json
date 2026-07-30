@@ -2240,6 +2240,26 @@
     "authGalaxyLayout": {
         "status": "Dados científicos. Exploração sem limites."
     },
+    "apiErrors": {
+        "connection": "Não foi possível estabelecer ligação ao servidor. Confirma a tua ligação e tenta novamente.",
+        "serviceUnavailable": "O serviço está temporariamente indisponível. Tenta novamente dentro de alguns momentos.",
+        "server": "O servidor encontrou um problema ao processar o pedido. Tenta novamente mais tarde.",
+        "generic": "Ocorreu um problema inesperado.",
+        "status": {
+            "badRequest": "O pedido enviado não é válido.",
+            "unauthorized": "Tens de iniciar sessão para realizar esta ação.",
+            "forbidden": "Não tens permissão para realizar esta ação.",
+            "notFound": "Não foram encontrados dados para esta pesquisa.",
+            "validation": "Os dados introduzidos não são válidos.",
+            "tooManyRequests": "Foram realizados demasiados pedidos. Aguarda alguns momentos e tenta novamente."
+        },
+        "codes": {
+            "nasaRateLimitExceeded": "O limite de pedidos à NASA foi atingido. Adiciona uma chave pessoal no perfil ou tenta novamente mais tarde.",
+            "nasaUpstreamError": "Não foi possível obter os dados da NASA neste momento.",
+            "nasaConnectionError": "Não foi possível estabelecer ligação à NASA.",
+            "nasaProcessingError": "Não foi possível processar os dados da NASA neste momento."
+        }
+    },
     "common": {
         "loading": "A carregar...",
         "error": "Ocorreu um erro",
