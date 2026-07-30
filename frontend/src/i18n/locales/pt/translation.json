@@ -1427,6 +1427,113 @@
             "viewJpl": "Ver no JPL"
         }
     },
+    "profile": {
+        "meta": {
+            "title": "Perfil — SpaceVision",
+            "description": "Gere os teus dados pessoais, favoritos e preferências da conta no SpaceVision."
+        },
+        "breadcrumb": "Perfil",
+        "loading": "A carregar perfil...",
+        "dateUnavailable": "Data não disponível",
+        "hero": {
+            "label": "Área pessoal",
+            "communityMember": "Membro da comunidade SpaceVision"
+        },
+        "accountTypes": {
+            "admin": "Administrador",
+            "user": "Utilizador"
+        },
+        "stats": {
+            "aria": "Resumo da conta",
+            "savedFavorites": "Favoritos guardados",
+            "exploredSources": "Fontes exploradas",
+            "accountType": "Tipo de conta",
+            "memberSince": "Membro desde"
+        },
+        "sidebar": {
+            "aria": "Secções do perfil",
+            "heading": "Definições da conta"
+        },
+        "tabs": {
+            "profile": "O meu perfil",
+            "nasaKey": "Chave NASA",
+            "download": "Descarregar dados",
+            "delete": "Eliminar conta",
+            "logout": "Terminar sessão"
+        },
+        "personal": {
+            "label": "Dados pessoais",
+            "title": "Informação da conta",
+            "description": "Consulta e gere os dados associados à tua conta SpaceVision."
+        },
+        "fields": {
+            "name": "Nome",
+            "email": "Email",
+            "accountType": "Tipo de conta",
+            "memberSince": "Membro desde"
+        },
+        "actions": {
+            "edit": "Editar",
+            "saving": "A guardar...",
+            "saveChanges": "Guardar alterações",
+            "cancel": "Cancelar"
+        },
+        "nasaKey": {
+            "label": "Integração NASA",
+            "title": "Chave pessoal da API NASA",
+            "descriptionBeforeLink": "Adiciona uma chave pessoal para utilizar os teus próprios limites de pedidos às APIs da NASA. Podes obter a tua chave gratuitamente em",
+            "statusConfigured": "Chave pessoal configurada",
+            "statusShared": "A utilizar a chave geral do SpaceVision",
+            "fieldLabel": "NASA API Key",
+            "replacePlaceholder": "Introduz uma nova chave para substituir a atual",
+            "addPlaceholder": "Introduz a tua NASA API Key",
+            "help": "A chave será guardada de forma encriptada e não será apresentada novamente.",
+            "validating": "A validar e guardar...",
+            "replace": "Substituir chave",
+            "save": "Guardar chave",
+            "removing": "A remover...",
+            "remove": "Remover chave",
+            "removeConfirm": "Pretendes remover a tua chave pessoal da NASA? A aplicação passará a utilizar a chave geral do SpaceVision."
+        },
+        "download": {
+            "label": "Exportação",
+            "title": "Descarregar os meus dados",
+            "description": "Cria uma cópia em formato JSON com os dados da conta e os favoritos guardados.",
+            "preparing": "A preparar download...",
+            "action": "Descarregar dados"
+        },
+        "delete": {
+            "label": "Zona de perigo",
+            "title": "Eliminar conta e dados",
+            "description": "Esta ação irá eliminar permanentemente a conta e os dados associados. Não poderá ser desfeita.",
+            "confirmationWord": "ELIMINAR",
+            "confirmLabelBefore": "Escreve",
+            "confirmLabelAfter": "para confirmar",
+            "passwordLabel": "Palavra-passe atual",
+            "passwordPlaceholder": "Introduz a tua palavra-passe",
+            "deleting": "A eliminar conta...",
+            "action": "Eliminar permanentemente",
+            "finalConfirm": "Tens a certeza de que pretendes eliminar permanentemente a tua conta? Esta ação não pode ser anulada."
+        },
+        "toast": {
+            "profileUpdated": "Perfil atualizado com sucesso.",
+            "nasaKeySaved": "Chave da NASA guardada com sucesso.",
+            "nasaKeyRemoved": "Chave da NASA removida com sucesso.",
+            "downloadStarted": "Download iniciado.",
+            "accountDeleted": "Conta eliminada com sucesso."
+        },
+        "errors": {
+            "nameEmailRequired": "Preenche o nome e o email.",
+            "profileUpdate": "Não foi possível atualizar o perfil.",
+            "nasaKeyRequired": "Introduz uma chave da API NASA.",
+            "nasaKeySave": "Não foi possível guardar a chave da NASA.",
+            "nasaKeyRemove": "Não foi possível remover a chave da NASA.",
+            "download": "Não foi possível descarregar os dados.",
+            "deleteWord": "Escreve \"{{word}}\" para confirmar a eliminação da conta.",
+            "deletePasswordRequired": "Introduz a tua palavra-passe atual para confirmar.",
+            "accountDelete": "Não foi possível eliminar a conta."
+        }
+    },
     "common": {
         "loading": "A carregar...",
         "error": "Ocorreu um erro",

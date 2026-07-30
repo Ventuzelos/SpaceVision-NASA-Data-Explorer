@@ -1427,6 +1427,113 @@
             "viewJpl": "View on JPL"
         }
     },
+    "profile": {
+        "meta": {
+            "title": "Profile — SpaceVision",
+            "description": "Manage your personal information, favourites and account preferences in SpaceVision."
+        },
+        "breadcrumb": "Profile",
+        "loading": "Loading profile...",
+        "dateUnavailable": "Date unavailable",
+        "hero": {
+            "label": "Personal area",
+            "communityMember": "SpaceVision community member"
+        },
+        "accountTypes": {
+            "admin": "Administrator",
+            "user": "User"
+        },
+        "stats": {
+            "aria": "Account summary",
+            "savedFavorites": "Saved favourites",
+            "exploredSources": "Sources explored",
+            "accountType": "Account type",
+            "memberSince": "Member since"
+        },
+        "sidebar": {
+            "aria": "Profile sections",
+            "heading": "Account settings"
+        },
+        "tabs": {
+            "profile": "My profile",
+            "nasaKey": "NASA key",
+            "download": "Download data",
+            "delete": "Delete account",
+            "logout": "Sign out"
+        },
+        "personal": {
+            "label": "Personal information",
+            "title": "Account information",
+            "description": "View and manage the information associated with your SpaceVision account."
+        },
+        "fields": {
+            "name": "Name",
+            "email": "Email",
+            "accountType": "Account type",
+            "memberSince": "Member since"
+        },
+        "actions": {
+            "edit": "Edit",
+            "saving": "Saving...",
+            "saveChanges": "Save changes",
+            "cancel": "Cancel"
+        },
+        "nasaKey": {
+            "label": "NASA integration",
+            "title": "Personal NASA API key",
+            "descriptionBeforeLink": "Add a personal key to use your own NASA API request limits. You can obtain one free of charge at",
+            "statusConfigured": "Personal key configured",
+            "statusShared": "Using SpaceVision's shared key",
+            "fieldLabel": "NASA API Key",
+            "replacePlaceholder": "Enter a new key to replace the current one",
+            "addPlaceholder": "Enter your NASA API Key",
+            "help": "The key will be stored in encrypted form and will not be displayed again.",
+            "validating": "Validating and saving...",
+            "replace": "Replace key",
+            "save": "Save key",
+            "removing": "Removing...",
+            "remove": "Remove key",
+            "removeConfirm": "Do you want to remove your personal NASA key? The application will start using SpaceVision's shared key."
+        },
+        "download": {
+            "label": "Export",
+            "title": "Download my data",
+            "description": "Create a JSON copy containing your account information and saved favourites.",
+            "preparing": "Preparing download...",
+            "action": "Download data"
+        },
+        "delete": {
+            "label": "Danger zone",
+            "title": "Delete account and data",
+            "description": "This action will permanently delete the account and its associated data. It cannot be undone.",
+            "confirmationWord": "DELETE",
+            "confirmLabelBefore": "Type",
+            "confirmLabelAfter": "to confirm",
+            "passwordLabel": "Current password",
+            "passwordPlaceholder": "Enter your password",
+            "deleting": "Deleting account...",
+            "action": "Delete permanently",
+            "finalConfirm": "Are you sure you want to permanently delete your account? This action cannot be undone."
+        },
+        "toast": {
+            "profileUpdated": "Profile updated successfully.",
+            "nasaKeySaved": "NASA key saved successfully.",
+            "nasaKeyRemoved": "NASA key removed successfully.",
+            "downloadStarted": "Download started.",
+            "accountDeleted": "Account deleted successfully."
+        },
+        "errors": {
+            "nameEmailRequired": "Enter your name and email address.",
+            "profileUpdate": "The profile could not be updated.",
+            "nasaKeyRequired": "Enter a NASA API key.",
+            "nasaKeySave": "The NASA key could not be saved.",
+            "nasaKeyRemove": "The NASA key could not be removed.",
+            "download": "The data could not be downloaded.",
+            "deleteWord": "Type \"{{word}}\" to confirm account deletion.",
+            "deletePasswordRequired": "Enter your current password to confirm.",
+            "accountDelete": "The account could not be deleted."
+        }
+    },
     "common": {
         "loading": "Loading...",
         "error": "Something went wrong",

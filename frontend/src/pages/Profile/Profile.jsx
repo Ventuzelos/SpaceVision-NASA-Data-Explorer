@@ -1,8 +1,10 @@
 import {
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   Navigate,
@@ -41,67 +43,88 @@ import useAuth from "../../hooks/useAuth";
 
 import "./Profile.css";
 
+const TOAST_TIMEOUT_MS = 3000;
+
 const TABS = [
   {
     id: "profile",
-    label: "O meu perfil",
+    labelKey: "profile.tabs.profile",
     icon: User,
   },
   {
     id: "nasa-key",
-    label: "Chave NASA",
+    labelKey: "profile.tabs.nasaKey",
     icon: KeyRound,
   },
   {
     id: "download",
-    label: "Descarregar dados",
+    labelKey: "profile.tabs.download",
     icon: Download,
   },
   {
     id: "delete",
-    label: "Eliminar conta",
+    labelKey: "profile.tabs.delete",
     icon: Trash2,
     danger: true,
   },
   {
     id: "logout",
-    label: "Terminar sessão",
+    labelKey: "profile.tabs.logout",
     icon: LogOut,
   },
 ];
 
-function getInitials(name = "") {
+function getInitials(
+  name = ""
+) {
   const parts = name
     .trim()
     .split(/\s+/)
     .filter(Boolean)
     .slice(0, 2);
 
-  if (parts.length === 0) {
+  if (
+    parts.length === 0
+  ) {
     return "SV";
   }
 
   return parts
-    .map((part) => part.charAt(0))
+    .map(
+      (part) =>
+        part.charAt(0)
+    )
     .join("")
     .toUpperCase();
 }
 
-function formatMemberDate(date) {
+function formatMemberDate(
+  date,
+  locale,
+  unavailableText
+) {
   if (!date) {
-    return "Data não disponível";
+    return unavailableText;
   }
 
-  const parsedDate = new Date(date);
+  const parsedDate =
+    new Date(date);
 
-  if (Number.isNaN(parsedDate.getTime())) {
-    return "Data não disponível";
+  if (
+    Number.isNaN(
+      parsedDate.getTime()
+    )
+  ) {
+    return unavailableText;
   }
 
-  return new Intl.DateTimeFormat("pt-PT", {
-    month: "long",
-    year: "numeric",
-  }).format(parsedDate);
+  return new Intl.DateTimeFormat(
+    locale,
+    {
+      month: "long",
+      year: "numeric",
+    }
+  ).format(parsedDate);
 }
 
 function getApiErrorMessage(
@@ -113,19 +136,27 @@ function getApiErrorMessage(
 
   const firstValidationError =
     validationErrors &&
-    Object.values(validationErrors)
+    Object.values(
+      validationErrors
+    )
       .flat()
       .find(Boolean);
 
   return (
     firstValidationError ||
-    error.response?.data?.message ||
     fallbackMessage
   );
 }
 
 function Profile() {
-  const navigate = useNavigate();
+  const { t, i18n } =
+    useTranslation();
+
+  const navigate =
+    useNavigate();
+
+  const toastTimeoutRef =
+    useRef(null);
 
   const {
     user,
@@ -137,43 +168,75 @@ function Profile() {
     deleteAccount,
   } = useAuth();
 
-  const [activeTab, setActiveTab] =
-    useState("profile");
+  const locale =
+    i18n.resolvedLanguage?.startsWith(
+      "en"
+    )
+      ? "en-GB"
+      : "pt-PT";
 
-  const [isEditing, setIsEditing] =
-    useState(false);
+  const [
+    activeTab,
+    setActiveTab,
+  ] = useState("profile");
 
-  const [formData, setFormData] = useState({
+  const [
+    isEditing,
+    setIsEditing,
+  ] = useState(false);
+
+  const [
+    formData,
+    setFormData,
+  ] = useState({
     name: "",
     email: "",
   });
 
-  const [formError, setFormError] =
-    useState("");
+  const [
+    formError,
+    setFormError,
+  ] = useState("");
 
-  const [isSavingProfile, setIsSavingProfile] =
-    useState(false);
+  const [
+    isSavingProfile,
+    setIsSavingProfile,
+  ] = useState(false);
 
-  const [toast, setToast] = useState("");
-  const [toastType, setToastType] =
-    useState("success");
+  const [
+    toast,
+    setToast,
+  ] = useState("");
 
-  const [favorites, setFavorites] =
-    useState([]);
+  const [
+    toastType,
+    setToastType,
+  ] = useState("success");
+
+  const [
+    favorites,
+    setFavorites,
+  ] = useState([]);
 
   const [
     isLoadingFavorites,
     setIsLoadingFavorites,
   ] = useState(true);
 
-  const [isDownloading, setIsDownloading] =
-    useState(false);
+  const [
+    isDownloading,
+    setIsDownloading,
+  ] = useState(false);
 
-  const [nasaApiKey, setNasaApiKey] =
-    useState("");
+  const [
+    nasaApiKey,
+    setNasaApiKey,
+  ] = useState("");
 
-  const [nasaKeyError, setNasaKeyError] =
-    useState("");
+  const [
+    nasaKeyError,
+    setNasaKeyError,
+  ] = useState("");
 
   const [
     isSavingNasaKey,
@@ -185,14 +248,20 @@ function Profile() {
     setIsRemovingNasaKey,
   ] = useState(false);
 
-  const [deleteConfirm, setDeleteConfirm] =
-    useState("");
+  const [
+    deleteConfirm,
+    setDeleteConfirm,
+  ] = useState("");
 
-  const [deletePassword, setDeletePassword] =
-    useState("");
+  const [
+    deletePassword,
+    setDeletePassword,
+  ] = useState("");
 
-  const [deleteError, setDeleteError] =
-    useState("");
+  const [
+    deleteError,
+    setDeleteError,
+  ] = useState("");
 
   const [
     isDeletingAccount,
@@ -200,86 +269,146 @@ function Profile() {
   ] = useState(false);
 
   useEffect(() => {
-    if (!isAuthenticated || !user) {
+    if (
+      !isAuthenticated ||
+      !user
+    ) {
       return undefined;
     }
 
     let isMounted = true;
 
-    async function loadFavorites() {
-      try {
-        setIsLoadingFavorites(true);
+    const timeoutId =
+      window.setTimeout(
+        async () => {
+          try {
+            setIsLoadingFavorites(
+              true
+            );
 
-        const result = await getFavorites();
+            const result =
+              await getFavorites();
 
-        if (isMounted) {
-          setFavorites(
-            Array.isArray(result)
-              ? result
-              : []
-          );
-        }
-      } catch (error) {
-        console.error(
-          "Não foi possível carregar os favoritos:",
-          error
-        );
+            if (isMounted) {
+              setFavorites(
+                Array.isArray(
+                  result
+                )
+                  ? result
+                  : []
+              );
+            }
+          } catch (error) {
+            console.error(
+              "Não foi possível carregar os favoritos:",
+              error
+            );
 
-        if (isMounted) {
-          setFavorites([]);
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoadingFavorites(false);
-        }
-      }
-    }
-
-    loadFavorites();
+            if (isMounted) {
+              setFavorites([]);
+            }
+          } finally {
+            if (isMounted) {
+              setIsLoadingFavorites(
+                false
+              );
+            }
+          }
+        },
+        0
+      );
 
     return () => {
       isMounted = false;
+
+      window.clearTimeout(
+        timeoutId
+      );
     };
-  }, [isAuthenticated, user]);
+  }, [
+    isAuthenticated,
+    user,
+  ]);
 
-  const favoriteTypes = useMemo(() => {
-    const types = new Set(
-      favorites
-        .map(
-          (favorite) =>
-            favorite.nasa_type ||
-            favorite.source ||
-            favorite.type
-        )
-        .filter(Boolean)
+  useEffect(() => {
+    return () => {
+      if (
+        toastTimeoutRef.current
+      ) {
+        window.clearTimeout(
+          toastTimeoutRef.current
+        );
+      }
+    };
+  }, []);
+
+  const favoriteTypes =
+    useMemo(() => {
+      const types =
+        new Set(
+          favorites
+            .map(
+              (favorite) =>
+                favorite.nasa_type ||
+                favorite.source ||
+                favorite.type
+            )
+            .filter(Boolean)
+        );
+
+      return types.size;
+    }, [favorites]);
+
+  const userInitials =
+    useMemo(
+      () =>
+        getInitials(
+          user?.name
+        ),
+      [user?.name]
     );
-
-    return types.size;
-  }, [favorites]);
-
-  const userInitials = useMemo(
-    () => getInitials(user?.name),
-    [user?.name]
-  );
 
   const accountType =
     user?.role === "admin"
-      ? "Administrador"
-      : "Utilizador";
+      ? t(
+          "profile.accountTypes.admin"
+        )
+      : t(
+          "profile.accountTypes.user"
+        );
 
-  const memberSince = formatMemberDate(
-    user?.created_at
-  );
+  const memberSince =
+    formatMemberDate(
+      user?.created_at,
+      locale,
+      t(
+        "profile.dateUnavailable"
+      )
+    );
+
+  const deleteConfirmationWord =
+    t(
+      "profile.delete.confirmationWord"
+    );
 
   if (isAuthLoading) {
     return (
       <main className="profile-page">
         <Container>
-          <div className="profile-loading">
+          <div
+            className="profile-loading"
+            role="status"
+            aria-live="polite"
+            aria-busy="true"
+          >
             <div className="profile-loading__avatar" />
 
             <div>
-              <p>A carregar perfil...</p>
+              <p>
+                {t(
+                  "profile.loading"
+                )}
+              </p>
             </div>
           </div>
         </Container>
@@ -287,12 +416,17 @@ function Profile() {
     );
   }
 
-  if (!isAuthenticated || !user) {
+  if (
+    !isAuthenticated ||
+    !user
+  ) {
     return (
       <Navigate
         to="/login"
         replace
-        state={{ from: "/profile" }}
+        state={{
+          from: "/profile",
+        }}
       />
     );
   }
@@ -301,27 +435,56 @@ function Profile() {
     message,
     type = "success"
   ) {
+    if (
+      toastTimeoutRef.current
+    ) {
+      window.clearTimeout(
+        toastTimeoutRef.current
+      );
+    }
+
     setToast(message);
     setToastType(type);
 
-    window.setTimeout(() => {
-      setToast("");
-    }, 3000);
+    toastTimeoutRef.current =
+      window.setTimeout(
+        () => {
+          setToast("");
+          toastTimeoutRef.current =
+            null;
+        },
+        TOAST_TIMEOUT_MS
+      );
   }
 
-  function handleChange(event) {
-    const { name, value } = event.target;
+  function handleChange(
+    event
+  ) {
+    const {
+      name,
+      value,
+    } = event.target;
 
-    setFormData((currentFormData) => ({
-      ...currentFormData,
-      [name]: value,
-    }));
+    setFormData(
+      (
+        currentFormData
+      ) => ({
+        ...currentFormData,
+        [name]: value,
+      })
+    );
+
+    if (formError) {
+      setFormError("");
+    }
   }
 
   function handleStartEditing() {
     setFormData({
-      name: user.name || "",
-      email: user.email || "",
+      name:
+        user.name || "",
+      email:
+        user.email || "",
     });
 
     setFormError("");
@@ -330,31 +493,46 @@ function Profile() {
 
   function handleCancelEdit() {
     setFormData({
-      name: user.name || "",
-      email: user.email || "",
+      name:
+        user.name || "",
+      email:
+        user.email || "",
     });
 
     setFormError("");
     setIsEditing(false);
   }
 
-  async function handleSaveProfile(event) {
+  async function handleSaveProfile(
+    event
+  ) {
     event.preventDefault();
 
     setFormError("");
 
-    const name = formData.name.trim();
-    const email = formData.email.trim();
+    const name =
+      formData.name.trim();
 
-    if (!name || !email) {
+    const email =
+      formData.email.trim();
+
+    if (
+      !name ||
+      !email
+    ) {
       setFormError(
-        "Preenche o nome e o email."
+        t(
+          "profile.errors.nameEmailRequired"
+        )
       );
+
       return;
     }
 
     try {
-      setIsSavingProfile(true);
+      setIsSavingProfile(
+        true
+      );
 
       const response =
         await updateProfile({
@@ -363,25 +541,32 @@ function Profile() {
         });
 
       setFormData({
-        name: response.user.name,
-        email: response.user.email,
+        name:
+          response.user.name,
+        email:
+          response.user.email,
       });
 
       setIsEditing(false);
 
       showToast(
-        response.message ||
-        "Perfil atualizado com sucesso."
+        t(
+          "profile.toast.profileUpdated"
+        )
       );
     } catch (error) {
       setFormError(
         getApiErrorMessage(
           error,
-          "Não foi possível atualizar o perfil."
+          t(
+            "profile.errors.profileUpdate"
+          )
         )
       );
     } finally {
-      setIsSavingProfile(false);
+      setIsSavingProfile(
+        false
+      );
     }
   }
 
@@ -390,19 +575,25 @@ function Profile() {
   ) {
     event.preventDefault();
 
-    const trimmedKey = nasaApiKey.trim();
+    const trimmedKey =
+      nasaApiKey.trim();
 
     setNasaKeyError("");
 
     if (!trimmedKey) {
       setNasaKeyError(
-        "Introduz uma chave da API NASA."
+        t(
+          "profile.errors.nasaKeyRequired"
+        )
       );
+
       return;
     }
 
     try {
-      setIsSavingNasaKey(true);
+      setIsSavingNasaKey(
+        true
+      );
 
       const response =
         await updateNasaApiKey(
@@ -417,32 +608,43 @@ function Profile() {
       setNasaApiKey("");
 
       showToast(
-        response.message ||
-        "Chave da NASA guardada com sucesso."
+        t(
+          "profile.toast.nasaKeySaved"
+        )
       );
     } catch (error) {
       setNasaKeyError(
         getApiErrorMessage(
           error,
-          "Não foi possível guardar a chave da NASA."
+          t(
+            "profile.errors.nasaKeySave"
+          )
         )
       );
     } finally {
-      setIsSavingNasaKey(false);
+      setIsSavingNasaKey(
+        false
+      );
     }
   }
 
   async function handleRemoveNasaApiKey() {
-    const confirmed = window.confirm(
-      "Pretendes remover a tua chave pessoal da NASA? A aplicação passará a utilizar a chave geral do SpaceVision."
-    );
+    const confirmed =
+      window.confirm(
+        t(
+          "profile.nasaKey.removeConfirm"
+        )
+      );
 
     if (!confirmed) {
       return;
     }
 
     try {
-      setIsRemovingNasaKey(true);
+      setIsRemovingNasaKey(
+        true
+      );
+
       setNasaKeyError("");
 
       const response =
@@ -456,24 +658,31 @@ function Profile() {
       setNasaApiKey("");
 
       showToast(
-        response.message ||
-        "Chave da NASA removida com sucesso."
+        t(
+          "profile.toast.nasaKeyRemoved"
+        )
       );
     } catch (error) {
       setNasaKeyError(
         getApiErrorMessage(
           error,
-          "Não foi possível remover a chave da NASA."
+          t(
+            "profile.errors.nasaKeyRemove"
+          )
         )
       );
     } finally {
-      setIsRemovingNasaKey(false);
+      setIsRemovingNasaKey(
+        false
+      );
     }
   }
 
   async function handleDownloadData() {
     try {
-      setIsDownloading(true);
+      setIsDownloading(
+        true
+      );
 
       const updatedFavorites =
         await getFavorites();
@@ -486,52 +695,74 @@ function Profile() {
           id: user.id,
           name: user.name,
           email: user.email,
-          role: user.role || "user",
+          role:
+            user.role ||
+            "user",
           createdAt:
-            user.created_at || null,
+            user.created_at ||
+            null,
           hasNasaApiKey:
             Boolean(
               user.has_nasa_api_key
             ),
         },
 
-        favorites: Array.isArray(
-          updatedFavorites
-        )
-          ? updatedFavorites
-          : [],
+        favorites:
+          Array.isArray(
+            updatedFavorites
+          )
+            ? updatedFavorites
+            : [],
       };
 
-      const blob = new Blob(
-        [
-          JSON.stringify(
-            exportData,
-            null,
-            2
-          ),
-        ],
-        {
-          type: "application/json",
-        }
-      );
+      const blob =
+        new Blob(
+          [
+            JSON.stringify(
+              exportData,
+              null,
+              2
+            ),
+          ],
+          {
+            type:
+              "application/json",
+          }
+        );
 
       const url =
-        URL.createObjectURL(blob);
+        URL.createObjectURL(
+          blob
+        );
 
       const link =
-        document.createElement("a");
+        document.createElement(
+          "a"
+        );
 
       link.href = url;
       link.download =
-        `spacevision-dados-${user.id}.json`;
+        `spacevision-data-${user.id}.json`;
 
-      document.body.appendChild(link);
+      document.body.appendChild(
+        link
+      );
+
       link.click();
-      document.body.removeChild(link);
 
-      URL.revokeObjectURL(url);
+      document.body.removeChild(
+        link
+      );
 
-      showToast("Download iniciado.");
+      URL.revokeObjectURL(
+        url
+      );
+
+      showToast(
+        t(
+          "profile.toast.downloadStarted"
+        )
+      );
     } catch (error) {
       console.error(
         "Erro ao descarregar dados:",
@@ -539,11 +770,15 @@ function Profile() {
       );
 
       showToast(
-        "Não foi possível descarregar os dados.",
+        t(
+          "profile.errors.download"
+        ),
         "error"
       );
     } finally {
-      setIsDownloading(false);
+      setIsDownloading(
+        false
+      );
     }
   }
 
@@ -555,66 +790,99 @@ function Profile() {
     setDeleteError("");
 
     if (
-      deleteConfirm.trim() !==
-      "ELIMINAR"
+      deleteConfirm
+        .trim()
+        .toLocaleUpperCase(
+          locale
+        ) !==
+      deleteConfirmationWord
+        .toLocaleUpperCase(
+          locale
+        )
     ) {
       setDeleteError(
-        'Escreve "ELIMINAR" para confirmar a eliminação da conta.'
+        t(
+          "profile.errors.deleteWord",
+          {
+            word:
+              deleteConfirmationWord,
+          }
+        )
       );
+
       return;
     }
 
-    if (!deletePassword.trim()) {
+    if (
+      !deletePassword.trim()
+    ) {
       setDeleteError(
-        "Introduz a tua palavra-passe atual para confirmar."
+        t(
+          "profile.errors.deletePasswordRequired"
+        )
       );
+
       return;
     }
 
-    const confirmed = window.confirm(
-      "Tens a certeza de que pretendes eliminar permanentemente a tua conta? Esta ação não pode ser anulada."
-    );
+    const confirmed =
+      window.confirm(
+        t(
+          "profile.delete.finalConfirm"
+        )
+      );
 
     if (!confirmed) {
       return;
     }
 
     try {
-      setIsDeletingAccount(true);
+      setIsDeletingAccount(
+        true
+      );
 
-      const response =
-        await deleteAccount(
-          deletePassword
-        );
+      await deleteAccount(
+        deletePassword
+      );
 
       navigate("/", {
         replace: true,
         state: {
-          message:
-            response.message ||
-            "Conta eliminada com sucesso.",
+          message: t(
+            "profile.toast.accountDeleted"
+          ),
         },
       });
     } catch (error) {
       setDeleteError(
         getApiErrorMessage(
           error,
-          "Não foi possível eliminar a conta."
+          t(
+            "profile.errors.accountDelete"
+          )
         )
       );
     } finally {
-      setIsDeletingAccount(false);
+      setIsDeletingAccount(
+        false
+      );
     }
   }
 
   async function handleLogout() {
     await logout();
+
     navigate("/");
   }
 
-  async function handleTabClick(tab) {
-    if (tab.id === "logout") {
+  async function handleTabClick(
+    tab
+  ) {
+    if (
+      tab.id === "logout"
+    ) {
       await handleLogout();
+
       return;
     }
 
@@ -622,12 +890,16 @@ function Profile() {
     setDeleteError("");
     setNasaKeyError("");
 
-    if (tab.id !== "delete") {
+    if (
+      tab.id !== "delete"
+    ) {
       setDeleteConfirm("");
       setDeletePassword("");
     }
 
-    if (tab.id !== "nasa-key") {
+    if (
+      tab.id !== "nasa-key"
+    ) {
       setNasaApiKey("");
     }
 
@@ -637,13 +909,21 @@ function Profile() {
   return (
     <>
       <PageMeta
-        title="Perfil — SpaceVision"
-        description="Gere os teus dados pessoais, favoritos e preferências da conta no SpaceVision."
+        title={t(
+          "profile.meta.title"
+        )}
+        description={t(
+          "profile.meta.description"
+        )}
       />
 
       <main className="profile-page">
         <Container>
-          <Breadcrumb title="Perfil" />
+          <Breadcrumb
+            title={t(
+              "profile.breadcrumb"
+            )}
+          />
 
           <section className="profile-hero">
             <div className="profile-hero__identity">
@@ -656,10 +936,14 @@ function Profile() {
 
               <div className="profile-hero__content">
                 <p className="profile-page__label">
-                  Área pessoal
+                  {t(
+                    "profile.hero.label"
+                  )}
                 </p>
 
-                <h1>{user.name}</h1>
+                <h1>
+                  {user.name}
+                </h1>
 
                 <p className="profile-hero__email">
                   {user.email}
@@ -678,14 +962,18 @@ function Profile() {
               </span>
 
               <p>
-                Membro da comunidade SpaceVision
+                {t(
+                  "profile.hero.communityMember"
+                )}
               </p>
             </div>
           </section>
 
           <section
             className="profile-stats"
-            aria-label="Resumo da conta"
+            aria-label={t(
+              "profile.stats.aria"
+            )}
           >
             <article className="profile-stat-card">
               <div className="profile-stat-card__icon">
@@ -703,7 +991,9 @@ function Profile() {
                 </strong>
 
                 <span>
-                  Favoritos guardados
+                  {t(
+                    "profile.stats.savedFavorites"
+                  )}
                 </span>
               </div>
             </article>
@@ -724,7 +1014,9 @@ function Profile() {
                 </strong>
 
                 <span>
-                  Fontes exploradas
+                  {t(
+                    "profile.stats.exploredSources"
+                  )}
                 </span>
               </div>
             </article>
@@ -743,7 +1035,9 @@ function Profile() {
                 </strong>
 
                 <span>
-                  Tipo de conta
+                  {t(
+                    "profile.stats.accountType"
+                  )}
                 </span>
               </div>
             </article>
@@ -762,7 +1056,9 @@ function Profile() {
                 </strong>
 
                 <span>
-                  Membro desde
+                  {t(
+                    "profile.stats.memberSince"
+                  )}
                 </span>
               </div>
             </article>
@@ -772,62 +1068,85 @@ function Profile() {
             <Toast
               message={toast}
               type={toastType}
+              onClose={() =>
+                setToast("")
+              }
             />
           )}
 
           <section className="profile-workspace">
             <nav
               className="profile-sidebar"
-              aria-label="Secções do perfil"
+              aria-label={t(
+                "profile.sidebar.aria"
+              )}
             >
               <div className="profile-sidebar__heading">
                 <span>
-                  Definições da conta
+                  {t(
+                    "profile.sidebar.heading"
+                  )}
                 </span>
               </div>
 
-              {TABS.map((tab) => {
-                const TabIcon = tab.icon;
+              {TABS.map(
+                (tab) => {
+                  const TabIcon =
+                    tab.icon;
 
-                return (
-                  <button
-                    key={tab.id}
-                    type="button"
-                    className={[
-                      "profile-sidebar__tab",
-                      activeTab === tab.id
-                        ? "profile-sidebar__tab--active"
-                        : "",
-                      tab.danger
-                        ? "profile-sidebar__tab--danger"
-                        : "",
-                    ]
-                      .filter(Boolean)
-                      .join(" ")}
-                    onClick={() =>
-                      handleTabClick(tab)
-                    }
-                    aria-current={
-                      activeTab === tab.id
-                        ? "page"
-                        : undefined
-                    }
-                  >
-                    <TabIcon
-                      size={18}
-                      aria-hidden="true"
-                    />
+                  return (
+                    <button
+                      key={
+                        tab.id
+                      }
+                      type="button"
+                      className={[
+                        "profile-sidebar__tab",
 
-                    <span>
-                      {tab.label}
-                    </span>
-                  </button>
-                );
-              })}
+                        activeTab ===
+                        tab.id
+                          ? "profile-sidebar__tab--active"
+                          : "",
+
+                        tab.danger
+                          ? "profile-sidebar__tab--danger"
+                          : "",
+                      ]
+                        .filter(
+                          Boolean
+                        )
+                        .join(" ")}
+                      onClick={() =>
+                        handleTabClick(
+                          tab
+                        )
+                      }
+                      aria-current={
+                        activeTab ===
+                        tab.id
+                          ? "page"
+                          : undefined
+                      }
+                    >
+                      <TabIcon
+                        size={18}
+                        aria-hidden="true"
+                      />
+
+                      <span>
+                        {t(
+                          tab.labelKey
+                        )}
+                      </span>
+                    </button>
+                  );
+                }
+              )}
             </nav>
 
             <div className="profile-content">
-              {activeTab === "profile" && (
+              {activeTab ===
+                "profile" && (
                 <article className="profile-card">
                   <header className="profile-card__header">
                     <div className="profile-card__title-group">
@@ -840,17 +1159,21 @@ function Profile() {
 
                       <div>
                         <p className="profile-page__label">
-                          Dados pessoais
+                          {t(
+                            "profile.personal.label"
+                          )}
                         </p>
 
                         <h2>
-                          Informação da conta
+                          {t(
+                            "profile.personal.title"
+                          )}
                         </h2>
 
                         <p className="profile-card__intro">
-                          Consulta e gere os
-                          dados associados à tua
-                          conta SpaceVision.
+                          {t(
+                            "profile.personal.description"
+                          )}
                         </p>
                       </div>
                     </div>
@@ -868,7 +1191,9 @@ function Profile() {
                           aria-hidden="true"
                         />
 
-                        Editar
+                        {t(
+                          "profile.actions.edit"
+                        )}
                       </Button>
                     )}
                   </header>
@@ -881,18 +1206,21 @@ function Profile() {
                   >
                     <div className="profile-form__grid">
                       <div className="profile-form__field">
-                        <label htmlFor="name">
-                          Nome
+                        <label htmlFor="profile-name">
+                          {t(
+                            "profile.fields.name"
+                          )}
                         </label>
 
                         <input
-                          id="name"
+                          id="profile-name"
                           name="name"
                           type="text"
                           value={
                             isEditing
                               ? formData.name
-                              : user.name || ""
+                              : user.name ||
+                                ""
                           }
                           onChange={
                             handleChange
@@ -905,18 +1233,21 @@ function Profile() {
                       </div>
 
                       <div className="profile-form__field">
-                        <label htmlFor="email">
-                          Email
+                        <label htmlFor="profile-email">
+                          {t(
+                            "profile.fields.email"
+                          )}
                         </label>
 
                         <input
-                          id="email"
+                          id="profile-email"
                           name="email"
                           type="email"
                           value={
                             isEditing
                               ? formData.email
-                              : user.email || ""
+                              : user.email ||
+                                ""
                           }
                           onChange={
                             handleChange
@@ -929,12 +1260,14 @@ function Profile() {
                       </div>
 
                       <div className="profile-form__field">
-                        <label htmlFor="role">
-                          Tipo de conta
+                        <label htmlFor="profile-role">
+                          {t(
+                            "profile.fields.accountType"
+                          )}
                         </label>
 
                         <input
-                          id="role"
+                          id="profile-role"
                           type="text"
                           value={
                             accountType
@@ -944,12 +1277,14 @@ function Profile() {
                       </div>
 
                       <div className="profile-form__field">
-                        <label htmlFor="memberSince">
-                          Membro desde
+                        <label htmlFor="profile-member-since">
+                          {t(
+                            "profile.fields.memberSince"
+                          )}
                         </label>
 
                         <input
-                          id="memberSince"
+                          id="profile-member-since"
                           type="text"
                           value={
                             memberSince
@@ -978,8 +1313,12 @@ function Profile() {
                           }
                         >
                           {isSavingProfile
-                            ? "A guardar..."
-                            : "Guardar alterações"}
+                            ? t(
+                                "profile.actions.saving"
+                              )
+                            : t(
+                                "profile.actions.saveChanges"
+                              )}
                         </Button>
 
                         <Button
@@ -992,7 +1331,9 @@ function Profile() {
                             isSavingProfile
                           }
                         >
-                          Cancelar
+                          {t(
+                            "profile.actions.cancel"
+                          )}
                         </Button>
                       </div>
                     )}
@@ -1000,7 +1341,8 @@ function Profile() {
                 </article>
               )}
 
-              {activeTab === "nasa-key" && (
+              {activeTab ===
+                "nasa-key" && (
                 <article className="profile-card">
                   <div className="profile-feature">
                     <div className="profile-feature__icon">
@@ -1012,17 +1354,21 @@ function Profile() {
 
                     <div className="profile-feature__content">
                       <p className="profile-page__label">
-                        Integração NASA
+                        {t(
+                          "profile.nasaKey.label"
+                        )}
                       </p>
 
                       <h2>
-                        Chave pessoal da API NASA
+                        {t(
+                          "profile.nasaKey.title"
+                        )}
                       </h2>
 
                       <p className="profile-card__intro">
-                        Adiciona uma chave pessoal para utilizar os teus próprios
-                        limites de pedidos às APIs da NASA. Podes obter a tua chave
-                        gratuitamente em{" "}
+                        {t(
+                          "profile.nasaKey.descriptionBeforeLink"
+                        )}{" "}
                         <a
                           href="https://api.nasa.gov/"
                           target="_blank"
@@ -1037,11 +1383,14 @@ function Profile() {
                       <div
                         className={[
                           "profile-nasa-key-status",
+
                           user.has_nasa_api_key
                             ? "profile-nasa-key-status--active"
                             : "",
                         ]
-                          .filter(Boolean)
+                          .filter(
+                            Boolean
+                          )
                           .join(" ")}
                         role="status"
                       >
@@ -1052,8 +1401,12 @@ function Profile() {
 
                         <span>
                           {user.has_nasa_api_key
-                            ? "Chave pessoal configurada"
-                            : "A utilizar a chave geral do SpaceVision"}
+                            ? t(
+                                "profile.nasaKey.statusConfigured"
+                              )
+                            : t(
+                                "profile.nasaKey.statusShared"
+                              )}
                         </span>
                       </div>
 
@@ -1065,7 +1418,9 @@ function Profile() {
                       >
                         <div className="profile-form__field">
                           <label htmlFor="nasaApiKey">
-                            NASA API Key
+                            {t(
+                              "profile.nasaKey.fieldLabel"
+                            )}
                           </label>
 
                           <input
@@ -1079,7 +1434,8 @@ function Profile() {
                               event
                             ) => {
                               setNasaApiKey(
-                                event.target
+                                event
+                                  .target
                                   .value
                               );
 
@@ -1093,8 +1449,12 @@ function Profile() {
                             }}
                             placeholder={
                               user.has_nasa_api_key
-                                ? "Introduz uma nova chave para substituir a atual"
-                                : "Introduz a tua NASA API Key"
+                                ? t(
+                                    "profile.nasaKey.replacePlaceholder"
+                                  )
+                                : t(
+                                    "profile.nasaKey.addPlaceholder"
+                                  )
                             }
                             autoComplete="off"
                             spellCheck="false"
@@ -1105,10 +1465,9 @@ function Profile() {
                           />
 
                           <p className="profile-form__help">
-                            A chave será guardada
-                            de forma encriptada e
-                            não será apresentada
-                            novamente.
+                            {t(
+                              "profile.nasaKey.help"
+                            )}
                           </p>
                         </div>
 
@@ -1131,10 +1490,16 @@ function Profile() {
                             }
                           >
                             {isSavingNasaKey
-                              ? "A validar e guardar..."
+                              ? t(
+                                  "profile.nasaKey.validating"
+                                )
                               : user.has_nasa_api_key
-                                ? "Substituir chave"
-                                : "Guardar chave"}
+                                ? t(
+                                    "profile.nasaKey.replace"
+                                  )
+                                : t(
+                                    "profile.nasaKey.save"
+                                  )}
                           </Button>
 
                           {user.has_nasa_api_key && (
@@ -1150,8 +1515,12 @@ function Profile() {
                               }
                             >
                               {isRemovingNasaKey
-                                ? "A remover..."
-                                : "Remover chave"}
+                                ? t(
+                                    "profile.nasaKey.removing"
+                                  )
+                                : t(
+                                    "profile.nasaKey.remove"
+                                  )}
                             </Button>
                           )}
                         </div>
@@ -1161,7 +1530,8 @@ function Profile() {
                 </article>
               )}
 
-              {activeTab === "download" && (
+              {activeTab ===
+                "download" && (
                 <article className="profile-card">
                   <div className="profile-feature">
                     <div className="profile-feature__icon">
@@ -1173,18 +1543,21 @@ function Profile() {
 
                     <div>
                       <p className="profile-page__label">
-                        Exportação
+                        {t(
+                          "profile.download.label"
+                        )}
                       </p>
 
                       <h2>
-                        Descarregar os meus dados
+                        {t(
+                          "profile.download.title"
+                        )}
                       </h2>
 
                       <p className="profile-card__intro">
-                        Cria uma cópia em
-                        formato JSON com os
-                        dados da conta e os
-                        favoritos guardados.
+                        {t(
+                          "profile.download.description"
+                        )}
                       </p>
 
                       <Button
@@ -1202,15 +1575,20 @@ function Profile() {
                         />
 
                         {isDownloading
-                          ? "A preparar download..."
-                          : "Descarregar dados"}
+                          ? t(
+                              "profile.download.preparing"
+                            )
+                          : t(
+                              "profile.download.action"
+                            )}
                       </Button>
                     </div>
                   </div>
                 </article>
               )}
 
-              {activeTab === "delete" && (
+              {activeTab ===
+                "delete" && (
                 <article className="profile-card profile-card--danger">
                   <div className="profile-feature">
                     <div className="profile-feature__icon profile-feature__icon--danger">
@@ -1222,18 +1600,21 @@ function Profile() {
 
                     <div className="profile-feature__content">
                       <p className="profile-page__label profile-page__label--danger">
-                        Zona de perigo
+                        {t(
+                          "profile.delete.label"
+                        )}
                       </p>
 
                       <h2>
-                        Eliminar conta e dados
+                        {t(
+                          "profile.delete.title"
+                        )}
                       </h2>
 
                       <p className="profile-card__intro">
-                        Esta ação irá eliminar
-                        permanentemente a conta
-                        e os dados associados.
-                        Não poderá ser desfeita.
+                        {t(
+                          "profile.delete.description"
+                        )}
                       </p>
 
                       <form
@@ -1244,11 +1625,17 @@ function Profile() {
                       >
                         <div className="profile-form__field">
                           <label htmlFor="deleteConfirm">
-                            Escreve{" "}
+                            {t(
+                              "profile.delete.confirmLabelBefore"
+                            )}{" "}
                             <strong>
-                              ELIMINAR
+                              {
+                                deleteConfirmationWord
+                              }
                             </strong>{" "}
-                            para confirmar
+                            {t(
+                              "profile.delete.confirmLabelAfter"
+                            )}
                           </label>
 
                           <input
@@ -1260,13 +1647,24 @@ function Profile() {
                             }
                             onChange={(
                               event
-                            ) =>
+                            ) => {
                               setDeleteConfirm(
-                                event.target
+                                event
+                                  .target
                                   .value
-                              )
+                              );
+
+                              if (
+                                deleteError
+                              ) {
+                                setDeleteError(
+                                  ""
+                                );
+                              }
+                            }}
+                            placeholder={
+                              deleteConfirmationWord
                             }
-                            placeholder="ELIMINAR"
                             autoComplete="off"
                             disabled={
                               isDeletingAccount
@@ -1276,7 +1674,9 @@ function Profile() {
 
                         <div className="profile-form__field">
                           <label htmlFor="deletePassword">
-                            Palavra-passe atual
+                            {t(
+                              "profile.delete.passwordLabel"
+                            )}
                           </label>
 
                           <input
@@ -1288,13 +1688,24 @@ function Profile() {
                             }
                             onChange={(
                               event
-                            ) =>
+                            ) => {
                               setDeletePassword(
-                                event.target
+                                event
+                                  .target
                                   .value
-                              )
-                            }
-                            placeholder="Introduz a tua palavra-passe"
+                              );
+
+                              if (
+                                deleteError
+                              ) {
+                                setDeleteError(
+                                  ""
+                                );
+                              }
+                            }}
+                            placeholder={t(
+                              "profile.delete.passwordPlaceholder"
+                            )}
                             autoComplete="current-password"
                             disabled={
                               isDeletingAccount
@@ -1324,8 +1735,12 @@ function Profile() {
                           />
 
                           {isDeletingAccount
-                            ? "A eliminar conta..."
-                            : "Eliminar permanentemente"}
+                            ? t(
+                                "profile.delete.deleting"
+                              )
+                            : t(
+                                "profile.delete.action"
+                              )}
                         </Button>
                       </form>
                     </div>
