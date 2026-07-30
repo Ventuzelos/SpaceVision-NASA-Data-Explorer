@@ -1,3 +1,5 @@
+
+App · PHP
 <?php
 
 use App\Http\Middleware\AdminMiddleware;
@@ -7,6 +9,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Laravel\Sanctum\Http\Middleware\CheckAbilities;
 use Laravel\Sanctum\Http\Middleware\CheckForAnyAbility;
+use RuntimeException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -26,5 +29,19 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
+    })
+    ->booting(function (): void {
+        if (app()->environment('production')) {
+            $hasOrigins = filled(env('CORS_ALLOWED_ORIGINS'))
+                || filled(env('FRONTEND_URL'));
+
+            if (! $hasOrigins) {
+                throw new RuntimeException(
+                    'CORS_ALLOWED_ORIGINS ou FRONTEND_URL têm de estar '
+                    .'definidas em produção. Sem isso, o CORS cai no '
+                    .'fallback de localhost e bloqueia o frontend real.'
+                );
+            }
+        }
     })
     ->create();
