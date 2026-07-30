@@ -1966,6 +1966,104 @@
             "description": "Esta declaração foi atualizada em julho de 2026."
         }
     },
+    "privacy": {
+        "meta": {
+            "title": "Política de privacidade — SpaceVision",
+            "description": "Consulta como o SpaceVision trata os dados pessoais, favoritos, mensagens e informações da tua conta."
+        },
+        "layout": {
+            "eyebrow": "Legal",
+            "title": "Política de Privacidade",
+            "description": "Que dados o SpaceVision guarda, para quê, e como podes controlá-los.",
+            "lastUpdated": "16 de julho de 2026",
+            "summary": "Guardamos o mínimo possível: sem conta, não recolhemos nada de pessoal. Com conta, apenas o essencial para autenticação e favoritos — nunca vendido nem partilhado com terceiros."
+        },
+        "sections": {
+            "introduction": {
+                "title": "Introdução",
+                "description": "Esta página explica que dados pessoais o SpaceVision guarda, porquê, e o que podes fazer para consultar ou apagar essa informação. Recolhemos o mínimo possível — apenas o que é necessário para a conta e os favoritos funcionarem."
+            },
+            "data": {
+                "title": "Que dados guardamos",
+                "table": {
+                    "columns": {
+                        "situation": "Situação",
+                        "stored": "O que guardamos"
+                    },
+                    "rows": {
+                        "guest": {
+                            "situation": "Navegação sem conta",
+                            "stored": "Nada de pessoal — podes ver APOD, DONKI, EPIC e NeoWatch sem fornecer qualquer dado."
+                        },
+                        "registration": {
+                            "situation": "Registo de conta",
+                            "stored": "Nome, email e palavra-passe, sendo esta última sempre encriptada e nunca guardada em texto simples."
+                        },
+                        "account": {
+                            "situation": "Utilização da conta",
+                            "stored": "Os favoritos que guardas e os dados de perfil que editares."
+                        },
+                        "contact": {
+                            "situation": "Formulário de contacto",
+                            "stored": "Nome, email e a mensagem que nos enviares."
+                        }
+                    }
+                },
+                "note": "Não pedimos dados de pagamento, localização precisa nem categorias especiais de dados, como saúde ou origem étnica."
+            },
+            "purposes": {
+                "title": "Para que usamos estes dados",
+                "items": {
+                    "account": "Criar e proteger a tua conta;",
+                    "favorites": "Guardar e sincronizar os teus favoritos entre sessões;",
+                    "messages": "Responder às mensagens que nos enviares;",
+                    "security": "Manter a plataforma segura e a funcionar corretamente."
+                }
+            },
+            "security": {
+                "title": "Onde guardamos e como protegemos",
+                "database": "Os dados da tua conta ficam na base de dados do backend do SpaceVision, protegidos com medidas técnicas razoáveis. A palavra-passe é sempre guardada de forma encriptada.",
+                "sessionBefore": "O token que mantém a tua sessão iniciada fica apenas no",
+                "sessionAfter": "do teu navegador e desaparece quando fechas o separador — nunca fica guardado indefinidamente no teu dispositivo.",
+                "callout": "Nenhum sistema é 100% imune a incidentes, mas fazemos o possível para manter os teus dados seguros."
+            },
+            "sharing": {
+                "title": "Partilha com terceiros",
+                "description": "Não vendemos nem alugamos os teus dados a ninguém. Existem apenas duas exceções técnicas:",
+                "hostingBefore": "O",
+                "hostingLabel": "alojamento",
+                "hostingAfter": "onde o backend e a base de dados são executados;",
+                "nasaBefore": "As",
+                "nasaLabel": "APIs da NASA",
+                "nasaAfter": "(api.nasa.gov), utilizadas apenas para obter dados e imagens — nunca enviamos os teus dados pessoais para esses serviços."
+            },
+            "rights": {
+                "title": "Os teus direitos",
+                "introduction": "Nos termos do RGPD, podes a qualquer momento:",
+                "items": {
+                    "access": "Aceder aos dados que temos sobre ti;",
+                    "correct": "Corrigir informação desatualizada;",
+                    "delete": "Eliminar a tua conta e os dados associados na página de Perfil;",
+                    "complaint": "Apresentar uma reclamação junto da CNPD, caso consideres que os teus direitos não foram respeitados."
+                },
+                "deletion": "Se eliminares a conta, os teus dados e favoritos são removidos, salvo se a lei exigir que sejam conservados durante mais tempo."
+            },
+            "children": {
+                "title": "Crianças e menores",
+                "description": "Qualquer pessoa pode explorar o SpaceVision sem conta, mas a criação de uma conta não se destina a crianças com menos de 13 anos sem o consentimento de um encarregado de educação. Caso tenhamos conhecimento de que recolhemos dados de uma criança sem esse consentimento, eliminaremos esses dados."
+            },
+            "changes": {
+                "title": "Alterações a esta política",
+                "description": "Esta política pode ser atualizada periodicamente. A data apresentada no topo desta página indica sempre a versão mais recente."
+            },
+            "contact": {
+                "title": "Contacto",
+                "beforeLink": "Para exercer os teus direitos ou esclarecer dúvidas, contacta-nos através da página",
+                "link": "Sobre nós",
+                "afterLink": "."
+            }
+        }
+    },
     "common": {
         "loading": "A carregar...",
         "error": "Ocorreu um erro",
