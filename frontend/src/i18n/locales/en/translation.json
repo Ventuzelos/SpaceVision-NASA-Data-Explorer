@@ -2064,6 +2064,74 @@
             }
         }
     },
+    "legalLayout": {
+        "lastUpdated": "Last updated: {{date}}",
+        "summaryLabel": "In summary:",
+        "documentIndexAria": "Document index",
+        "inThisDocument": "In this document"
+    },
+    "terms": {
+        "meta": {
+            "title": "Terms of use — SpaceVision",
+            "description": "Read the terms of use that apply to the SpaceVision platform."
+        },
+        "layout": {
+            "eyebrow": "Legal",
+            "title": "Terms and Conditions",
+            "description": "The simple rules that keep SpaceVision fair for everyone — what you can expect from the service and what we ask in return.",
+            "lastUpdated": "16 July 2026",
+            "summary": "SpaceVision is a free educational project without commercial guarantees. You do not need an account to explore NASA data — only to save favourites or manage a profile."
+        },
+        "sections": {
+            "introduction": {
+                "title": "Introduction and acceptance",
+                "paragraphOne": "This document explains the rules for using SpaceVision, an educational platform that presents public data and images from NASA's open APIs at api.nasa.gov. It is not a commercial product — it is a project created to explore and learn from real space data.",
+                "paragraphTwo": "By using the website, you agree to these rules. Should any part of them not make sense to you, we recommend that you stop using the platform and contact us."
+            },
+            "features": {
+                "title": "What you can do on SpaceVision",
+                "introduction": "You can use the website without an account to:",
+                "items": {
+                    "apod": "View the astronomy picture of the day, APOD;",
+                    "donki": "Explore space weather events, DONKI;",
+                    "epic": "View images of Earth captured by the DSCOVR satellite, EPIC;",
+                    "neowatch": "Track near-Earth asteroids, NeoWatch."
+                },
+                "account": "You only need to create an account to save favourites or manage a profile. As this is an educational project, we cannot guarantee that the website will always be available or free from errors — its operation depends largely on NASA's own APIs."
+            },
+            "account": {
+                "title": "Your account",
+                "introduction": "Should you decide to create an account, we ask that you:",
+                "items": {
+                    "accurateData": "Provide accurate information during registration;",
+                    "password": "Keep your password secure and do not share it;",
+                    "unauthorisedAccess": "Tell us if you believe someone has accessed your account without permission;",
+                    "automation": "Do not use bots, intensive scraping or other automation that could overload the website or NASA APIs;",
+                    "restrictedAreas": "Do not attempt to access administrative areas or other people's accounts."
+                },
+                "deletion": "You can delete your account at any time from the Profile page by confirming your password."
+            },
+            "intellectualProperty": {
+                "title": "Intellectual property",
+                "description": "The images and scientific data displayed on SpaceVision come directly from NASA and are subject to NASA's own usage terms, generally as public-domain material. The SpaceVision design, code and brand were created specifically for this project and must not be copied or used commercially without permission."
+            },
+            "liability": {
+                "title": "Availability and liability",
+                "description": "Because SpaceVision relies on external NASA APIs, the platform may experience outages, delays or incomplete data outside our control. We may change, suspend or discontinue features at any time without prior notice.",
+                "callout": "SpaceVision is provided as is, without warranties, and we are not liable for damage arising from the use of the platform or from inaccuracies in NASA data."
+            },
+            "changes": {
+                "title": "Changes to these terms",
+                "description": "We may update these Terms periodically. When this happens, we will update the date shown at the top of this page. Continuing to use SpaceVision after a change means that you accept the updated terms."
+            },
+            "contact": {
+                "title": "Contact",
+                "beforeLink": "Do you have questions about these Terms? Contact us through the",
+                "link": "About us",
+                "afterLink": "page."
+            }
+        }
+    },
     "common": {
         "loading": "Loading...",
         "error": "Something went wrong",
