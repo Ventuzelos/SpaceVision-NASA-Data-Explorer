@@ -1,5 +1,15 @@
-import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import {
+  useTranslation,
+} from "react-i18next";
+import {
+  Link,
+} from "react-router";
 import {
   Cookie,
   ShieldCheck,
@@ -12,209 +22,445 @@ import {
 
 import Container from "../../components/common/Container/Container";
 import Breadcrumb from "../../components/common/Breadcrumb/Breadcrumb";
-
 import PageMeta from "../../components/common/PageMeta/PageMeta";
 
 import "./Cookies.css";
 
-const SECTIONS = [
+const SECTION_DEFINITIONS = [
   {
     id: "o-que-sao",
-    label: "O que são cookies",
+    translationKey: "whatAreCookies",
     icon: Cookie,
   },
   {
     id: "como-usamos",
-    label: "Como o SpaceVision guarda dados",
+    translationKey: "howWeStore",
     icon: Database,
   },
   {
     id: "terceiros",
-    label: "APIs e serviços de terceiros",
+    translationKey: "thirdParties",
     icon: Globe2,
   },
   {
     id: "controlo",
-    label: "Como limpar ou desativar",
+    translationKey: "control",
     icon: SlidersHorizontal,
   },
   {
     id: "alteracoes",
-    label: "Alterações a esta política",
+    translationKey: "changes",
     icon: History,
   },
   {
     id: "contacto",
-    label: "Contacto",
+    translationKey: "contact",
     icon: Mail,
   },
 ];
 
-const STORAGE_ITEMS = [
-  {
-    name: "Sessão de autenticação",
-    mechanism: "sessionStorage",
-    duration: "Apagada ao fechar o separador",
-    purpose: "Manter-te autenticado enquanto navegas na plataforma.",
-  },
-  {
-    name: "Favoritos",
-    mechanism: "localStorage",
-    duration: "Até limpares os dados do navegador",
-    purpose: "Guardar as imagens e capturas que marcaste com o coração.",
-  },
-  {
-    name: "Cookies de publicidade ou rastreio",
-    mechanism: "Não utilizados",
-    duration: "—",
-    purpose: "O SpaceVision não integra redes de anúncios nem pixels de terceiros.",
-  },
-];
-
 function Cookies() {
-  const [activeId, setActiveId] = useState(SECTIONS[0].id);
-  const sectionRefs = useRef({});
+  const { t } =
+    useTranslation();
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveId(entry.target.id);
-          }
-        });
-      },
-      { rootMargin: "-20% 0px -70% 0px", threshold: 0 }
+  const [
+    activeId,
+    setActiveId,
+  ] = useState(
+    SECTION_DEFINITIONS[0].id
+  );
+
+  const sectionRefs =
+    useRef({});
+
+  const sections =
+    useMemo(
+      () =>
+        SECTION_DEFINITIONS.map(
+          (section) => ({
+            ...section,
+            label: t(
+              `cookies.navigation.${section.translationKey}`
+            ),
+          })
+        ),
+      [t]
     );
 
-    Object.values(sectionRefs.current).forEach((el) => {
-      if (el) observer.observe(el);
+  const storageItems =
+    useMemo(
+      () => [
+        {
+          name: t(
+            "cookies.storage.items.authentication.name"
+          ),
+          mechanism:
+            "sessionStorage",
+          duration: t(
+            "cookies.storage.items.authentication.duration"
+          ),
+          purpose: t(
+            "cookies.storage.items.authentication.purpose"
+          ),
+        },
+        {
+          name: t(
+            "cookies.storage.items.favorites.name"
+          ),
+          mechanism:
+            "localStorage",
+          duration: t(
+            "cookies.storage.items.favorites.duration"
+          ),
+          purpose: t(
+            "cookies.storage.items.favorites.purpose"
+          ),
+        },
+        {
+          name: t(
+            "cookies.storage.items.tracking.name"
+          ),
+          mechanism: t(
+            "cookies.storage.items.tracking.mechanism"
+          ),
+          duration: "—",
+          purpose: t(
+            "cookies.storage.items.tracking.purpose"
+          ),
+        },
+      ],
+      [t]
+    );
+
+  useEffect(() => {
+    const observer =
+      new IntersectionObserver(
+        (entries) => {
+          entries.forEach(
+            (entry) => {
+              if (
+                entry.isIntersecting
+              ) {
+                setActiveId(
+                  entry.target.id
+                );
+              }
+            }
+          );
+        },
+        {
+          rootMargin:
+            "-20% 0px -70% 0px",
+          threshold: 0,
+        }
+      );
+
+    Object.values(
+      sectionRefs.current
+    ).forEach((element) => {
+      if (element) {
+        observer.observe(
+          element
+        );
+      }
     });
 
-    return () => observer.disconnect();
+    return () =>
+      observer.disconnect();
   }, []);
 
   return (
     <>
       <PageMeta
-        title="Política de cookies — SpaceVision"
-        description="Consulta a informação sobre cookies e tecnologias de armazenamento utilizadas pelo SpaceVision."
+        title={t(
+          "cookies.meta.title"
+        )}
+        description={t(
+          "cookies.meta.description"
+        )}
       />
+
       <main className="cookies-page">
         <Container>
-          <Breadcrumb title="Política de Cookies" />
+          <Breadcrumb
+            title={t(
+              "cookies.breadcrumb"
+            )}
+          />
 
           <header className="cookies-hero">
-            <p className="cookies-page__eyebrow">Privacidade &amp; dados</p>
-            <h1>Política de Cookies</h1>
-            <p className="cookies-hero__description">
-              O que fica guardado no teu navegador quando exploras o
-              SpaceVision, e como podes controlá-lo.
+            <p className="cookies-page__eyebrow">
+              {t(
+                "cookies.hero.eyebrow"
+              )}
             </p>
+
+            <h1>
+              {t(
+                "cookies.hero.title"
+              )}
+            </h1>
+
+            <p className="cookies-hero__description">
+              {t(
+                "cookies.hero.description"
+              )}
+            </p>
+
             <p className="cookies-hero__meta">
-              Última atualização: 16 de julho de 2026
+              {t(
+                "cookies.hero.lastUpdated"
+              )}
             </p>
           </header>
 
           <div className="cookies-summary">
-            <ShieldCheck size={22} aria-hidden="true" />
+            <ShieldCheck
+              size={22}
+              aria-hidden="true"
+            />
+
             <p>
-              <strong>Em resumo:</strong> o SpaceVision não usa cookies de
-              publicidade nem de rastreio de terceiros. Guardamos apenas o
-              essencial &mdash; sessão e favoritos &mdash; diretamente no teu
-              navegador.
+              <strong>
+                {t(
+                  "cookies.summary.label"
+                )}
+              </strong>{" "}
+
+              {t(
+                "cookies.summary.text"
+              )}
             </p>
           </div>
 
-          <nav className="cookies-toc" aria-label="Secções da política">
-            {SECTIONS.map(({ id, label, icon: Icon }) => (
-              <a
-                key={id}
-                href={`#${id}`}
-                className={`cookies-toc__link${activeId === id ? " cookies-toc__link--active" : ""
-                  }`}
-                aria-current={activeId === id ? "true" : undefined}
-              >
-                <Icon size={16} aria-hidden="true" />
-                <span>{label}</span>
-              </a>
-            ))}
-          </nav>
-
-          <div className="cookies-layout">
-            <aside className="cookies-rail" aria-hidden="true">
-              {SECTIONS.map(({ id, label, icon: Icon }) => (
+          <nav
+            className="cookies-toc"
+            aria-label={t(
+              "cookies.navigation.aria"
+            )}
+          >
+            {sections.map(
+              ({
+                id,
+                label,
+                icon: Icon,
+              }) => (
                 <a
                   key={id}
                   href={`#${id}`}
-                  className={`cookies-rail__link${activeId === id ? " cookies-rail__link--active" : ""
-                    }`}
+                  className={`cookies-toc__link${
+                    activeId === id
+                      ? " cookies-toc__link--active"
+                      : ""
+                  }`}
+                  aria-current={
+                    activeId === id
+                      ? "true"
+                      : undefined
+                  }
                 >
-                  <Icon size={17} aria-hidden="true" />
-                  <span>{label}</span>
+                  <Icon
+                    size={16}
+                    aria-hidden="true"
+                  />
+
+                  <span>
+                    {label}
+                  </span>
                 </a>
-              ))}
+              )
+            )}
+          </nav>
+
+          <div className="cookies-layout">
+            <aside
+              className="cookies-rail"
+              aria-hidden="true"
+            >
+              {sections.map(
+                ({
+                  id,
+                  label,
+                  icon: Icon,
+                }) => (
+                  <a
+                    key={id}
+                    href={`#${id}`}
+                    className={`cookies-rail__link${
+                      activeId === id
+                        ? " cookies-rail__link--active"
+                        : ""
+                    }`}
+                  >
+                    <Icon
+                      size={17}
+                      aria-hidden="true"
+                    />
+
+                    <span>
+                      {label}
+                    </span>
+                  </a>
+                )
+              )}
             </aside>
 
             <div className="cookies-content">
               <section
                 id="o-que-sao"
-                ref={(el) => (sectionRefs.current["o-que-sao"] = el)}
+                ref={(element) => {
+                  sectionRefs.current[
+                    "o-que-sao"
+                  ] = element;
+                }}
                 className="cookies-section"
               >
-                <span className="cookies-section__index">01</span>
-                <h2>O que são cookies</h2>
+                <span className="cookies-section__index">
+                  01
+                </span>
+
+                <h2>
+                  {t(
+                    "cookies.sections.whatAreCookies.title"
+                  )}
+                </h2>
+
                 <p>
-                  Cookies são pequenos ficheiros de texto que um site pode
-                  pedir ao teu navegador para guardar, normalmente para
-                  lembrar quem és entre visitas ou para medir o uso da
-                  página. O teu navegador também oferece outras formas de
-                  armazenamento local &mdash; como o{" "}
-                  <code>localStorage</code> e o <code>sessionStorage</code>{" "}
-                  &mdash; que funcionam de forma parecida mas nunca são
-                  enviadas automaticamente para o servidor a cada pedido.
+                  {t(
+                    "cookies.sections.whatAreCookies.paragraphOneBeforeLocalStorage"
+                  )}{" "}
+
+                  <code>
+                    localStorage
+                  </code>{" "}
+
+                  {t(
+                    "cookies.sections.whatAreCookies.paragraphOneBetweenStorage"
+                  )}{" "}
+
+                  <code>
+                    sessionStorage
+                  </code>{" "}
+
+                  {t(
+                    "cookies.sections.whatAreCookies.paragraphOneAfterStorage"
+                  )}
                 </p>
+
                 <p>
-                  É essa segunda forma, mais leve e mais privada, que o
-                  SpaceVision utiliza. Chamamos-lhe "cookies" nesta página
-                  porque é o termo que a maioria das pessoas reconhece, mas
-                  tecnicamente não colocamos cookies no teu navegador.
+                  {t(
+                    "cookies.sections.whatAreCookies.paragraphTwo"
+                  )}
                 </p>
               </section>
 
               <section
                 id="como-usamos"
-                ref={(el) => (sectionRefs.current["como-usamos"] = el)}
+                ref={(element) => {
+                  sectionRefs.current[
+                    "como-usamos"
+                  ] = element;
+                }}
                 className="cookies-section"
               >
-                <span className="cookies-section__index">02</span>
-                <h2>Como o SpaceVision guarda dados</h2>
+                <span className="cookies-section__index">
+                  02
+                </span>
+
+                <h2>
+                  {t(
+                    "cookies.sections.howWeStore.title"
+                  )}
+                </h2>
+
                 <p>
-                  A tabela seguinte resume tudo o que a aplicação guarda no
-                  teu navegador, para que serve e durante quanto tempo.
+                  {t(
+                    "cookies.sections.howWeStore.description"
+                  )}
                 </p>
 
                 <div className="cookies-table-wrap">
                   <table className="cookies-table">
                     <thead>
                       <tr>
-                        <th scope="col">O que guarda</th>
-                        <th scope="col">Mecanismo</th>
-                        <th scope="col">Duração</th>
-                        <th scope="col">Finalidade</th>
+                        <th scope="col">
+                          {t(
+                            "cookies.storage.columns.item"
+                          )}
+                        </th>
+
+                        <th scope="col">
+                          {t(
+                            "cookies.storage.columns.mechanism"
+                          )}
+                        </th>
+
+                        <th scope="col">
+                          {t(
+                            "cookies.storage.columns.duration"
+                          )}
+                        </th>
+
+                        <th scope="col">
+                          {t(
+                            "cookies.storage.columns.purpose"
+                          )}
+                        </th>
                       </tr>
                     </thead>
+
                     <tbody>
-                      {STORAGE_ITEMS.map((item) => (
-                        <tr key={item.name}>
-                          <td data-label="O que guarda">{item.name}</td>
-                          <td data-label="Mecanismo">
-                            <code>{item.mechanism}</code>
-                          </td>
-                          <td data-label="Duração">{item.duration}</td>
-                          <td data-label="Finalidade">{item.purpose}</td>
-                        </tr>
-                      ))}
+                      {storageItems.map(
+                        (item) => (
+                          <tr
+                            key={
+                              item.name
+                            }
+                          >
+                            <td
+                              data-label={t(
+                                "cookies.storage.columns.item"
+                              )}
+                            >
+                              {
+                                item.name
+                              }
+                            </td>
+
+                            <td
+                              data-label={t(
+                                "cookies.storage.columns.mechanism"
+                              )}
+                            >
+                              <code>
+                                {
+                                  item.mechanism
+                                }
+                              </code>
+                            </td>
+
+                            <td
+                              data-label={t(
+                                "cookies.storage.columns.duration"
+                              )}
+                            >
+                              {
+                                item.duration
+                              }
+                            </td>
+
+                            <td
+                              data-label={t(
+                                "cookies.storage.columns.purpose"
+                              )}
+                            >
+                              {
+                                item.purpose
+                              }
+                            </td>
+                          </tr>
+                        )
+                      )}
                     </tbody>
                   </table>
                 </div>
@@ -222,100 +468,175 @@ function Cookies() {
 
               <section
                 id="terceiros"
-                ref={(el) => (sectionRefs.current["terceiros"] = el)}
+                ref={(element) => {
+                  sectionRefs.current[
+                    "terceiros"
+                  ] = element;
+                }}
                 className="cookies-section"
               >
-                <span className="cookies-section__index">03</span>
-                <h2>APIs e serviços de terceiros</h2>
+                <span className="cookies-section__index">
+                  03
+                </span>
+
+                <h2>
+                  {t(
+                    "cookies.sections.thirdParties.title"
+                  )}
+                </h2>
+
                 <p>
-                  O SpaceVision consulta as APIs públicas da NASA (
-                  <code>api.nasa.gov</code>) diretamente do teu navegador
-                  para obter imagens e dados. Esses pedidos não fazem a NASA
-                  colocar cookies no teu dispositivo através da nossa
-                  aplicação &mdash; apenas se saíres do SpaceVision e
-                  visitares{" "}
-                  <a href="https://www.nasa.gov/" target="_blank" rel="noreferrer">
+                  {t(
+                    "cookies.sections.thirdParties.paragraphOneBeforeApi"
+                  )}{" "}
+
+                  <code>
+                    api.nasa.gov
+                  </code>
+
+                  {t(
+                    "cookies.sections.thirdParties.paragraphOneBeforeLink"
+                  )}{" "}
+
+                  <a
+                    href="https://www.nasa.gov/"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
                     nasa.gov
                   </a>{" "}
-                  é que ficas sujeito à política de privacidade própria
-                  deles.
+
+                  {t(
+                    "cookies.sections.thirdParties.paragraphOneAfterLink"
+                  )}
                 </p>
+
                 <p>
-                  O serviço onde este site está alojado pode registar
-                  cookies técnicos de infraestrutura (por exemplo, para
-                  balanceamento de carga ou proteção contra abuso), fora do
-                  controlo direto da aplicação.
+                  {t(
+                    "cookies.sections.thirdParties.paragraphTwo"
+                  )}
                 </p>
               </section>
 
               <section
                 id="controlo"
-                ref={(el) => (sectionRefs.current["controlo"] = el)}
+                ref={(element) => {
+                  sectionRefs.current[
+                    "controlo"
+                  ] = element;
+                }}
                 className="cookies-section"
               >
-                <span className="cookies-section__index">04</span>
-                <h2>Como limpar ou desativar</h2>
+                <span className="cookies-section__index">
+                  04
+                </span>
+
+                <h2>
+                  {t(
+                    "cookies.sections.control.title"
+                  )}
+                </h2>
+
                 <p>
-                  Podes apagar tudo o que o SpaceVision guardou a qualquer
-                  momento, sem pedir nada à nossa equipa:
+                  {t(
+                    "cookies.sections.control.description"
+                  )}
                 </p>
+
                 <ul className="cookies-list">
                   <li>
-                    Terminar sessão apaga imediatamente o token de
-                    autenticação guardado.
+                    {t(
+                      "cookies.sections.control.items.logout"
+                    )}
                   </li>
+
                   <li>
-                    Limpar os dados de navegação do browser (definições
-                    &rarr; privacidade &rarr; dados do site) remove os
-                    favoritos e qualquer sessão ativa.
+                    {t(
+                      "cookies.sections.control.items.clearBrowserData"
+                    )}
                   </li>
+
                   <li>
-                    Navegar em modo privado/anónimo não guarda nada depois
-                    de fechares a janela.
+                    {t(
+                      "cookies.sections.control.items.privateMode"
+                    )}
                   </li>
                 </ul>
+
                 <p className="cookies-note">
-                  Nota: limpar os dados do navegador termina a tua sessão e
-                  esvazia a lista de favoritos guardada localmente.
+                  {t(
+                    "cookies.sections.control.note"
+                  )}
                 </p>
               </section>
 
               <section
                 id="alteracoes"
-                ref={(el) => (sectionRefs.current["alteracoes"] = el)}
+                ref={(element) => {
+                  sectionRefs.current[
+                    "alteracoes"
+                  ] = element;
+                }}
                 className="cookies-section"
               >
-                <span className="cookies-section__index">05</span>
-                <h2>Alterações a esta política</h2>
+                <span className="cookies-section__index">
+                  05
+                </span>
+
+                <h2>
+                  {t(
+                    "cookies.sections.changes.title"
+                  )}
+                </h2>
+
                 <p>
-                  Se a forma como o SpaceVision guarda dados no teu
-                  navegador mudar &mdash; por exemplo, ao introduzir
-                  preferências de tema ou analítica interna &mdash;
-                  atualizamos esta página e a data no topo antes de essa
-                  alteração entrar em vigor.
+                  {t(
+                    "cookies.sections.changes.description"
+                  )}
                 </p>
               </section>
 
               <section
                 id="contacto"
-                ref={(el) => (sectionRefs.current["contacto"] = el)}
+                ref={(element) => {
+                  sectionRefs.current[
+                    "contacto"
+                  ] = element;
+                }}
                 className="cookies-section"
               >
-                <span className="cookies-section__index">06</span>
-                <h2>Contacto</h2>
+                <span className="cookies-section__index">
+                  06
+                </span>
+
+                <h2>
+                  {t(
+                    "cookies.sections.contact.title"
+                  )}
+                </h2>
+
                 <p>
-                  Tens dúvidas sobre privacidade ou sobre o que fica
-                  guardado no teu navegador? Fala com a equipa através da
-                  página{" "}
-                  <Link to="/about">Sobre nós</Link>.
+                  {t(
+                    "cookies.sections.contact.descriptionBeforeLink"
+                  )}{" "}
+
+                  <Link to="/about">
+                    {t(
+                      "cookies.sections.contact.link"
+                    )}
+                  </Link>
+
+                  {t(
+                    "cookies.sections.contact.descriptionAfterLink"
+                  )}
                 </p>
               </section>
             </div>
           </div>
         </Container>
       </main>
-      </>
-      );
+    </>
+  );
 }
 
-      export default Cookies;
+export default Cookies;
