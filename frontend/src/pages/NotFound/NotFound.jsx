@@ -1,4 +1,9 @@
-import { Link } from "react-router";
+import {
+  useTranslation,
+} from "react-i18next";
+import {
+  Link,
+} from "react-router";
 
 import Container from "../../components/common/Container/Container";
 import Icon from "../../components/common/Icon/Icon";
@@ -7,12 +12,20 @@ import PageMeta from "../../components/common/PageMeta/PageMeta";
 import "./NotFound.css";
 
 function NotFound() {
+  const { t } =
+    useTranslation();
+
   return (
     <>
       <PageMeta
-        title="Página não encontrada — SpaceVision"
-        description="A página que procuras não foi encontrada no SpaceVision."
+        title={t(
+          "notFound.meta.title"
+        )}
+        description={t(
+          "notFound.meta.description"
+        )}
       />
+
       <main className="notfound-page">
         <Container>
           <div className="notfound">
@@ -21,7 +34,9 @@ function NotFound() {
                 viewBox="-33 0 600 380"
                 xmlns="http://www.w3.org/2000/svg"
                 role="img"
-                aria-label="Erro 404, página não encontrada"
+                aria-label={t(
+                  "notFound.imageAria"
+                )}
               >
                 <defs>
                   <linearGradient
@@ -31,9 +46,20 @@ function NotFound() {
                     x2="100%"
                     y2="100%"
                   >
-                    <stop offset="0%" stopColor="#2e6ff5" />
-                    <stop offset="50%" stopColor="#0033b8" />
-                    <stop offset="100%" stopColor="#4f8df0" />
+                    <stop
+                      offset="0%"
+                      stopColor="#2e6ff5"
+                    />
+
+                    <stop
+                      offset="50%"
+                      stopColor="#0033b8"
+                    />
+
+                    <stop
+                      offset="100%"
+                      stopColor="#4f8df0"
+                    />
                   </linearGradient>
 
                   <radialGradient
@@ -42,8 +68,15 @@ function NotFound() {
                     cy="35%"
                     r="75%"
                   >
-                    <stop offset="0%" stopColor="#4f8df0" />
-                    <stop offset="100%" stopColor="#0033b8" />
+                    <stop
+                      offset="0%"
+                      stopColor="#4f8df0"
+                    />
+
+                    <stop
+                      offset="100%"
+                      stopColor="#0033b8"
+                    />
                   </radialGradient>
 
                   <radialGradient
@@ -52,9 +85,20 @@ function NotFound() {
                     cy="30%"
                     r="75%"
                   >
-                    <stop offset="0%" stopColor="#4f8df0" />
-                    <stop offset="55%" stopColor="#1b1f2e" />
-                    <stop offset="100%" stopColor="#05070d" />
+                    <stop
+                      offset="0%"
+                      stopColor="#4f8df0"
+                    />
+
+                    <stop
+                      offset="55%"
+                      stopColor="#1b1f2e"
+                    />
+
+                    <stop
+                      offset="100%"
+                      stopColor="#05070d"
+                    />
                   </radialGradient>
 
                   <path
@@ -397,17 +441,21 @@ function NotFound() {
             </div>
 
             <p className="notfound__eyebrow">
-              Erro 404
+              {t(
+                "notFound.eyebrow"
+              )}
             </p>
 
             <h1 className="notfound__title">
-              Página não encontrada
+              {t(
+                "notFound.title"
+              )}
             </h1>
 
             <p className="notfound__text">
-              Parece que esta missão saiu de órbita.
-              Verifica o endereço ou volta para um local
-              conhecido.
+              {t(
+                "notFound.description"
+              )}
             </p>
 
             <div className="notfound__actions">
@@ -420,21 +468,26 @@ function NotFound() {
                   size={18}
                   aria-hidden="true"
                 />
-                Voltar ao início
+
+                {t(
+                  "notFound.actions.home"
+                )}
               </Link>
 
               <Link
                 to="/faq"
                 className="notfound__btn notfound__btn--ghost"
               >
-                Ver FAQ
+                {t(
+                  "notFound.actions.faq"
+                )}
               </Link>
             </div>
           </div>
         </Container>
       </main>
-      </>
-      );
+    </>
+  );
 }
 
-      export default NotFound;
+export default NotFound;

@@ -1796,6 +1796,20 @@
             "pageAria": "Page {{page}}"
         }
     },
+    "notFound": {
+        "meta": {
+            "title": "Page not found — SpaceVision",
+            "description": "The page you are looking for could not be found on SpaceVision."
+        },
+        "imageAria": "Error 404, page not found",
+        "eyebrow": "Error 404",
+        "title": "Page not found",
+        "description": "It looks like this mission has drifted out of orbit. Check the address or return to a familiar location.",
+        "actions": {
+            "home": "Back to home",
+            "faq": "View FAQ"
+        }
+    },
     "common": {
         "loading": "Loading...",
         "error": "Something went wrong",

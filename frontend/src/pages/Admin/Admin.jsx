@@ -78,6 +78,36 @@ function formatCount(
   ).format(value);
 }
 
+function getLocalizedFavoriteTitle(
+  title,
+  nasaType,
+  language
+) {
+  if (!title) {
+    return "";
+  }
+
+  const isEnglish =
+    language?.startsWith("en");
+
+  if (
+    String(nasaType).toLowerCase() ===
+    "epic"
+  ) {
+    return isEnglish
+      ? title.replace(
+        /\bTerra\b/g,
+        "Earth"
+      )
+      : title.replace(
+        /\bEarth\b/g,
+        "Terra"
+      );
+  }
+
+  return title;
+}
+
 function Admin() {
   const { t, i18n } =
     useTranslation();
@@ -198,9 +228,9 @@ function Admin() {
           return messageSort ===
             "oldest"
             ? firstDate -
-                secondDate
+            secondDate
             : secondDate -
-                firstDate;
+            firstDate;
         }
       );
     }, [
@@ -407,7 +437,7 @@ function Admin() {
           unread:
             Math.max(
               currentStats.unread -
-                1,
+              1,
               0
             ),
 
@@ -415,12 +445,12 @@ function Admin() {
             currentStats.messages.map(
               (message) =>
                 message.id ===
-                messageId
+                  messageId
                   ? {
-                      ...message,
-                      is_read:
-                        true,
-                    }
+                    ...message,
+                    is_read:
+                      true,
+                  }
                   : message
             ),
         })
@@ -530,7 +560,7 @@ function Admin() {
   const totalReadMessages =
     Math.max(
       messagesStats.total -
-        messagesStats.unread,
+      messagesStats.unread,
       0
     );
 
@@ -552,12 +582,12 @@ function Admin() {
       return (
         page === 1 ||
         page ===
-          messagesStats
-            .pagination
-            .lastPage ||
+        messagesStats
+          .pagination
+          .lastPage ||
         Math.abs(
           page -
-            currentPage
+          currentPage
         ) <= 1
       );
     });
@@ -664,7 +694,7 @@ function Admin() {
                     </strong>
 
                     {usersStats.total ===
-                    null ? (
+                      null ? (
                       <small className="admin-stats__hint">
                         {t(
                           "admin.stats.usersEndpointUnavailable"
@@ -743,7 +773,7 @@ function Admin() {
                   </h2>
 
                   {favoritesStats.total ===
-                  0 ? (
+                    0 ? (
                     <p className="admin-page__empty">
                       {t(
                         "admin.favorites.none"
@@ -758,10 +788,10 @@ function Admin() {
                           const percentage =
                             favoritesStats.total
                               ? Math.round(
-                                  (category.count /
-                                    favoritesStats.total) *
-                                    100
-                                )
+                                (category.count /
+                                  favoritesStats.total) *
+                                100
+                              )
                               : 0;
 
                           const categoryLabel =
@@ -863,7 +893,12 @@ function Admin() {
                           >
                             <div className="admin-favorite-breakdown__head">
                               <span>
-                                {item.title}{" "}
+                                {getLocalizedFavoriteTitle(
+                                  item.title,
+                                  item.nasaType,
+                                  i18n.resolvedLanguage
+                                )}{" "}
+
                                 <small>
                                   (
                                   {item.nasaType?.toUpperCase()}
@@ -954,7 +989,7 @@ function Admin() {
                         type="button"
                         className={
                           messageStatusFilter ===
-                          "all"
+                            "all"
                             ? "admin-message-filter-tab admin-message-filter-tab--active"
                             : "admin-message-filter-tab"
                         }
@@ -983,7 +1018,7 @@ function Admin() {
                         type="button"
                         className={
                           messageStatusFilter ===
-                          "unread"
+                            "unread"
                             ? "admin-message-filter-tab admin-message-filter-tab--active"
                             : "admin-message-filter-tab"
                         }
@@ -1012,7 +1047,7 @@ function Admin() {
                         type="button"
                         className={
                           messageStatusFilter ===
-                          "read"
+                            "read"
                             ? "admin-message-filter-tab admin-message-filter-tab--active"
                             : "admin-message-filter-tab"
                         }
@@ -1101,23 +1136,23 @@ function Admin() {
                   {!isMessagesLoading &&
                     !messagesError &&
                     sortedMessages.length ===
-                      0 && (
+                    0 && (
                       <p className="admin-page__empty">
                         {messagesStats.total ===
-                        0
+                          0
                           ? t(
-                              "admin.messages.none"
-                            )
+                            "admin.messages.none"
+                          )
                           : t(
-                              "admin.messages.noResults"
-                            )}
+                            "admin.messages.noResults"
+                          )}
                       </p>
                     )}
 
                   {!isMessagesLoading &&
                     !messagesError &&
                     sortedMessages.length >
-                      0 && (
+                    0 && (
                       <>
                         <p className="admin-messages__results">
                           {t(
@@ -1148,11 +1183,10 @@ function Admin() {
                                 key={
                                   message.id
                                 }
-                                className={`admin-message-card ${
-                                  message.is_read
-                                    ? "admin-message-card--read"
-                                    : "admin-message-card--unread"
-                                }`}
+                                className={`admin-message-card ${message.is_read
+                                  ? "admin-message-card--read"
+                                  : "admin-message-card--unread"
+                                  }`}
                               >
                                 <div className="admin-message-card__head">
                                   <div className="admin-message-card__author">
@@ -1164,19 +1198,18 @@ function Admin() {
                                       </strong>
 
                                       <span
-                                        className={`admin-message-card__status ${
-                                          message.is_read
-                                            ? "admin-message-card__status--read"
-                                            : "admin-message-card__status--unread"
-                                        }`}
+                                        className={`admin-message-card__status ${message.is_read
+                                          ? "admin-message-card__status--read"
+                                          : "admin-message-card__status--unread"
+                                          }`}
                                       >
                                         {message.is_read
                                           ? t(
-                                              "admin.messages.status.read"
-                                            )
+                                            "admin.messages.status.read"
+                                          )
                                           : t(
-                                              "admin.messages.status.unread"
-                                            )}
+                                            "admin.messages.status.unread"
+                                          )}
                                       </span>
                                     </div>
 
@@ -1267,137 +1300,137 @@ function Admin() {
                           .pagination
                           .lastPage >
                           1 && (
-                          <nav
-                            className="admin-pagination"
-                            aria-label={t(
-                              "admin.pagination.aria"
-                            )}
-                          >
-                            <button
-                              type="button"
-                              className="admin-pagination__button"
-                              onClick={
-                                handlePreviousPage
-                              }
-                              disabled={
-                                messagesStats
-                                  .pagination
-                                  .currentPage ===
-                                1
-                              }
-                            >
-                              <Icon
-                                name="ChevronLeft"
-                                size={17}
-                                aria-hidden="true"
-                              />
-
-                              {t(
-                                "admin.pagination.previous"
+                            <nav
+                              className="admin-pagination"
+                              aria-label={t(
+                                "admin.pagination.aria"
                               )}
-                            </button>
+                            >
+                              <button
+                                type="button"
+                                className="admin-pagination__button"
+                                onClick={
+                                  handlePreviousPage
+                                }
+                                disabled={
+                                  messagesStats
+                                    .pagination
+                                    .currentPage ===
+                                  1
+                                }
+                              >
+                                <Icon
+                                  name="ChevronLeft"
+                                  size={17}
+                                  aria-hidden="true"
+                                />
 
-                            <div className="admin-pagination__pages">
-                              {visiblePages.map(
-                                (
-                                  page,
-                                  index
-                                ) => {
-                                  const previousPage =
-                                    visiblePages[
+                                {t(
+                                  "admin.pagination.previous"
+                                )}
+                              </button>
+
+                              <div className="admin-pagination__pages">
+                                {visiblePages.map(
+                                  (
+                                    page,
+                                    index
+                                  ) => {
+                                    const previousPage =
+                                      visiblePages[
                                       index -
-                                        1
-                                    ];
+                                      1
+                                      ];
 
-                                  const showEllipsis =
-                                    previousPage &&
-                                    page -
+                                    const showEllipsis =
+                                      previousPage &&
+                                      page -
                                       previousPage >
                                       1;
 
-                                  return (
-                                    <span
-                                      key={
-                                        page
-                                      }
-                                      className="admin-pagination__page-wrapper"
-                                    >
-                                      {showEllipsis && (
-                                        <span
-                                          className="admin-pagination__ellipsis"
-                                          aria-hidden="true"
-                                        >
-                                          …
-                                        </span>
-                                      )}
-
-                                      <button
-                                        type="button"
-                                        className={
-                                          page ===
-                                          messagesStats
-                                            .pagination
-                                            .currentPage
-                                            ? "admin-pagination__page admin-pagination__page--active"
-                                            : "admin-pagination__page"
-                                        }
-                                        onClick={() =>
-                                          handlePageChange(
-                                            page
-                                          )
-                                        }
-                                        aria-current={
-                                          page ===
-                                          messagesStats
-                                            .pagination
-                                            .currentPage
-                                            ? "page"
-                                            : undefined
-                                        }
-                                        aria-label={t(
-                                          "admin.pagination.pageAria",
-                                          {
-                                            page,
-                                          }
-                                        )}
-                                      >
-                                        {
+                                    return (
+                                      <span
+                                        key={
                                           page
                                         }
-                                      </button>
-                                    </span>
-                                  );
+                                        className="admin-pagination__page-wrapper"
+                                      >
+                                        {showEllipsis && (
+                                          <span
+                                            className="admin-pagination__ellipsis"
+                                            aria-hidden="true"
+                                          >
+                                            …
+                                          </span>
+                                        )}
+
+                                        <button
+                                          type="button"
+                                          className={
+                                            page ===
+                                              messagesStats
+                                                .pagination
+                                                .currentPage
+                                              ? "admin-pagination__page admin-pagination__page--active"
+                                              : "admin-pagination__page"
+                                          }
+                                          onClick={() =>
+                                            handlePageChange(
+                                              page
+                                            )
+                                          }
+                                          aria-current={
+                                            page ===
+                                              messagesStats
+                                                .pagination
+                                                .currentPage
+                                              ? "page"
+                                              : undefined
+                                          }
+                                          aria-label={t(
+                                            "admin.pagination.pageAria",
+                                            {
+                                              page,
+                                            }
+                                          )}
+                                        >
+                                          {
+                                            page
+                                          }
+                                        </button>
+                                      </span>
+                                    );
+                                  }
+                                )}
+                              </div>
+
+                              <button
+                                type="button"
+                                className="admin-pagination__button"
+                                onClick={
+                                  handleNextPage
                                 }
-                              )}
-                            </div>
+                                disabled={
+                                  messagesStats
+                                    .pagination
+                                    .currentPage ===
+                                  messagesStats
+                                    .pagination
+                                    .lastPage
+                                }
+                              >
+                                {t(
+                                  "admin.pagination.next"
+                                )}
 
-                            <button
-                              type="button"
-                              className="admin-pagination__button"
-                              onClick={
-                                handleNextPage
-                              }
-                              disabled={
-                                messagesStats
-                                  .pagination
-                                  .currentPage ===
-                                messagesStats
-                                  .pagination
-                                  .lastPage
-                              }
-                            >
-                              {t(
-                                "admin.pagination.next"
-                              )}
-
-                              <Icon
-                                name="ChevronRight"
-                                size={17}
-                                aria-hidden="true"
-                              />
-                            </button>
-                          </nav>
-                        )}
+                                <Icon
+                                  name="ChevronRight"
+                                  size={17}
+                                  aria-hidden="true"
+                                />
+                              </button>
+                            </nav>
+                          )}
                       </>
                     )}
                 </section>
