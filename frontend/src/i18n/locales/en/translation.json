@@ -2145,6 +2145,98 @@
             "login": "Sign in"
         }
     },
+    "assistant": {
+        "ariaLabel": "SpaceVision Assistant",
+        "title": "SpaceVision Assistant",
+        "status": "Free virtual assistant",
+        "welcome": "Hello! I am the SpaceVision Assistant. I can help you explore the universe and the website's features.",
+        "trigger": "Need help?",
+        "suggestionsAria": "Suggested questions",
+        "actions": {
+            "open": "Open SpaceVision Assistant",
+            "close": "Close the assistant",
+            "send": "Send question"
+        },
+        "input": {
+            "label": "Write your question",
+            "placeholder": "Ask about SpaceVision..."
+        },
+        "questions": {
+            "explore": "What can I explore?",
+            "apod": "What is APOD?",
+            "favorites": "How do favourites work?",
+            "nasaKey": "How do I get a NASA key?",
+            "donki": "What is DONKI?",
+            "asteroids": "How can I explore asteroids?",
+            "addFavorites": "How do I add something to my favourites?",
+            "discovr": "What is DSCOVR?",
+            "epic": "What is EPIC?",
+            "asteroidDanger": "Is the asteroid dangerous?",
+            "createAccount": "How do I create an account?",
+            "nasaData": "What NASA data is available?"
+        },
+        "intents": {
+            "explore": {
+                "response": "On SpaceVision you can explore the astronomy picture of the day, space weather events, images of Earth, Solar System data, near-Earth asteroids, favourites and a space quiz."
+            },
+            "apod": {
+                "response": "APOD stands for Astronomy Picture of the Day. Every day, NASA publishes an image or video of the universe accompanied by a scientific explanation.",
+                "linkLabel": "Explore APOD"
+            },
+            "donki": {
+                "response": "DONKI provides space weather information, including solar flares, geomagnetic storms, coronal mass ejections and other events recorded by NASA.",
+                "linkLabel": "Explore DONKI"
+            },
+            "epic": {
+                "response": "The EPIC section lets you view images of Earth captured by the EPIC camera aboard the DSCOVR satellite, approximately 1.5 million kilometres from our planet.",
+                "linkLabel": "View Earth images"
+            },
+            "discovr": {
+                "response": "In the Discover area, you can learn about the DSCOVR mission, explore interactive content and better understand the observation of Earth and the space environment.",
+                "linkLabel": "Open Discover"
+            },
+            "neowatch": {
+                "response": "NeoWatch displays asteroids and other near-Earth objects. You can examine their dimensions, speed, passing distance and potential hazard level.",
+                "linkLabel": "Explore asteroids"
+            },
+            "asteroidDanger": {
+                "response": "Being classified as potentially hazardous does not mean that an asteroid will hit Earth. It means that the object has certain dimensions and an orbit that may bring it relatively close to our planet.",
+                "linkLabel": "Open NeoWatch"
+            },
+            "favorites": {
+                "response": "To save content, sign in and select the favourite button shown on its card. Your saved content will then be available on the Favourites page.",
+                "linkLabel": "View favourites"
+            },
+            "account": {
+                "response": "You can create an account free of charge through the registration page. Once signed in, you can save favourites and configure your personal NASA API key.",
+                "linkLabel": "Create account"
+            },
+            "nasaKey": {
+                "response": "You can obtain a free key from api.nasa.gov and save it in your SpaceVision profile. A personal key allows you to make more requests to NASA's APIs.",
+                "linkLabel": "Open profile",
+                "externalLinkLabel": "Get a NASA key"
+            },
+            "quiz": {
+                "response": "The SpaceVision Quiz lets you test your knowledge of astronomy, space exploration and the missions presented on the website.",
+                "linkLabel": "Start the quiz"
+            },
+            "faq": {
+                "response": "The Frequently Asked Questions page contains answers about NASA APIs, the data displayed, accounts and SpaceVision's main features.",
+                "linkLabel": "View frequently asked questions"
+            },
+            "language": {
+                "response": "You can change the SpaceVision language using the language selector available in the website navigation."
+            },
+            "about": {
+                "response": "SpaceVision is a NASA data explorer developed to make astronomy and space exploration more accessible, visual and interactive.",
+                "linkLabel": "About the project"
+            }
+        },
+        "fallback": {
+            "response": "I could not understand that question yet. I can help you explore SpaceVision's features or direct you to the Frequently Asked Questions page.",
+            "linkLabel": "View frequently asked questions"
+        }
+    },
     "common": {
         "loading": "Loading...",
         "error": "Something went wrong",
