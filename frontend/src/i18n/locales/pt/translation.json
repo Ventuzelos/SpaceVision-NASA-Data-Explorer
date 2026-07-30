@@ -1715,6 +1715,87 @@
             "updateFailed": "Não foi possível atualizar a palavra-passe."
         }
     },
+    "admin": {
+        "meta": {
+            "title": "Administração — SpaceVision",
+            "description": "Gere utilizadores, favoritos e mensagens recebidas através do painel de administração do SpaceVision."
+        },
+        "breadcrumb": "Administração",
+        "header": {
+            "title": "Painel de administração",
+            "welcome": "Bem-vinda, {{name}}!",
+            "description": "Aqui tens um resumo da atividade da plataforma."
+        },
+        "loading": {
+            "panel": "A carregar painel...",
+            "data": "A carregar dados...",
+            "messages": "A carregar mensagens..."
+        },
+        "errors": {
+            "dashboard": "Não foi possível carregar os dados do painel de administração.",
+            "messages": "Não foi possível carregar as mensagens de contacto.",
+            "messageUpdate": "Não foi possível atualizar a mensagem.",
+            "messageDelete": "Não foi possível eliminar a mensagem."
+        },
+        "stats": {
+            "title": "Estatísticas gerais",
+            "registeredUsers": "Utilizadores registados",
+            "usersEndpointUnavailable": "Endpoint de utilizadores ainda não disponível no backend.",
+            "newLastMonth": "{{count}} novos no último mês",
+            "contactMessages": "Mensagens de contacto",
+            "savedFavorites": "Favoritos guardados"
+        },
+        "favorites": {
+            "byCategoryTitle": "Favoritos por categoria",
+            "topSavedTitle": "Conteúdos mais guardados",
+            "none": "Ainda não existem favoritos guardados.",
+            "insufficientData": "Ainda não há dados suficientes para destacar conteúdos.",
+            "progressAria": "{{category}}: {{count}} favoritos",
+            "categories": {
+                "apod": "APOD",
+                "donki": "DONKI",
+                "epic": "EPIC",
+                "neows": "NeoWS",
+                "discovr": "DISCOVR"
+            }
+        },
+        "messages": {
+            "title": "Mensagens de contacto",
+            "unreadCount": "{{count}} por ler",
+            "filtersAria": "Filtros das mensagens",
+            "searchPlaceholder": "Pesquisar por nome, email, assunto ou mensagem...",
+            "searchAria": "Pesquisar mensagens",
+            "statusFilterAria": "Filtrar mensagens por estado",
+            "filters": {
+                "all": "Todas",
+                "unread": "Por ler",
+                "read": "Lidas"
+            },
+            "sort": {
+                "label": "Ordenar",
+                "newest": "Mais recentes",
+                "oldest": "Mais antigas"
+            },
+            "none": "Ainda não foram enviadas mensagens de contacto.",
+            "noResults": "Não foram encontradas mensagens com estes filtros.",
+            "results": "A mostrar {{from}}–{{to}} de {{total}} mensagens",
+            "status": {
+                "read": "Lida",
+                "unread": "Por ler"
+            },
+            "actions": {
+                "markRead": "Marcar como lida",
+                "delete": "Eliminar"
+            },
+            "deleteConfirm": "Tens a certeza de que queres eliminar esta mensagem?"
+        },
+        "pagination": {
+            "aria": "Paginação das mensagens",
+            "previous": "Anterior",
+            "next": "Seguinte",
+            "pageAria": "Página {{page}}"
+        }
+    },
     "common": {
         "loading": "A carregar...",
         "error": "Ocorreu um erro",
