@@ -9,6 +9,7 @@ use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use RuntimeException;
 
 class NasaController extends Controller
@@ -331,7 +332,8 @@ class NasaController extends Controller
                         $approach['orbiting_body']
                         ?? null;
 
-                    $approach['original_orbiting_body'] = $originalOrbitingBody;
+                    $approach['original_orbiting_body'] =
+                        $originalOrbitingBody;
 
                     $approach['translated_orbiting_body'] =
                         $this->translationService
@@ -390,19 +392,29 @@ class NasaController extends Controller
 
     private function translateApodItem(array $item): array
     {
-        $originalTitle = $item['title'] ?? null;
-        $originalExplanation = $item['explanation'] ?? null;
+        $originalTitle =
+            $item['title'] ?? null;
 
-        $item['original_title'] = $originalTitle;
-        $item['original_explanation'] = $originalExplanation;
+        $originalExplanation =
+            $item['explanation'] ?? null;
+
+        $item['original_title'] =
+            $originalTitle;
+
+        $item['original_explanation'] =
+            $originalExplanation;
 
         $item['translated_title'] =
             $this->translationService
-                ->translateToPortuguese($originalTitle);
+                ->translateToPortuguese(
+                    $originalTitle
+                );
 
         $item['translated_explanation'] =
             $this->translationService
-                ->translateToPortuguese($originalExplanation);
+                ->translateToPortuguese(
+                    $originalExplanation
+                );
 
         return $item;
     }
@@ -429,8 +441,18 @@ class NasaController extends Controller
             return response()->json($data);
         } catch (RequestException $exception) {
             $response = $exception->response;
+            $status = $response?->status() ?? 502;
 
-            if ($response->status() === 429) {
+            Log::warning(
+                'NASA upstream request failed.',
+                [
+                    'endpoint' => $endpoint,
+                    'status' => $status,
+                    'exception' => $exception::class,
+                ]
+            );
+
+            if ($status === 429) {
                 $hasPersonalKey = filled(
                     $request->user('sanctum')?->nasa_api_key
                 );
@@ -443,20 +465,45 @@ class NasaController extends Controller
                 ], 429);
             }
 
-            return response()->json(
-                $response->json() ?? [
-                    'message' => 'A NASA devolveu uma resposta inválida.',
-                ],
-                $response->status()
+            return response()->json([
+                'message' => 'Não foi possível obter os dados da NASA neste momento.',
+                'code' => 'NASA_UPSTREAM_ERROR',
+            ], $this->mapNasaUpstreamStatus($status));
+        } catch (ConnectionException $exception) {
+            Log::warning(
+                'NASA connection failed.',
+                [
+                    'endpoint' => $endpoint,
+                    'exception' => $exception::class,
+                ]
             );
-        } catch (ConnectionException) {
+
             return response()->json([
                 'message' => 'Não foi possível estabelecer ligação à NASA.',
+                'code' => 'NASA_CONNECTION_ERROR',
             ], 503);
         } catch (RuntimeException $exception) {
+            Log::error(
+                'NASA request processing failed.',
+                [
+                    'endpoint' => $endpoint,
+                    'exception' => $exception::class,
+                ]
+            );
+
             return response()->json([
-                'message' => $exception->getMessage(),
+                'message' => 'Não foi possível processar os dados da NASA neste momento.',
+                'code' => 'NASA_PROCESSING_ERROR',
             ], 502);
         }
+    }
+
+    private function mapNasaUpstreamStatus(int $status): int
+    {
+        return match (true) {
+            $status === 429 => 429,
+            $status >= 500 => 502,
+            default => 502,
+        };
     }
 }
