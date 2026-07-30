@@ -1,4 +1,12 @@
-import { useMemo, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import {
+  useTranslation,
+} from "react-i18next";
 import {
   ArrowLeft,
   Eye,
@@ -11,55 +19,126 @@ import {
 } from "react-router";
 
 import AuthGalaxyLayout from "../../components/common/AuthGalaxyLayout/AuthGalaxyLayout";
-import { resetPassword } from "../../services/authService";
 import PageMeta from "../../components/common/PageMeta/PageMeta";
+
+import {
+  resetPassword,
+} from "../../services/authService";
+
 import getApiErrorMessage from "../../utils/getApiErrorMessage";
 
 import "./ResetPassword.css";
 
+const REDIRECT_DELAY_MS = 1800;
+
 function ResetPassword() {
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const { t } =
+    useTranslation();
+
+  const navigate =
+    useNavigate();
+
+  const [
+    searchParams,
+  ] = useSearchParams();
+
+  const redirectTimeoutRef =
+    useRef(null);
 
   const token = useMemo(
-    () => searchParams.get("token") ?? "",
+    () =>
+      searchParams.get(
+        "token"
+      ) ?? "",
     [searchParams]
   );
 
-  const emailFromUrl = useMemo(
-    () => searchParams.get("email") ?? "",
-    [searchParams]
-  );
+  const emailFromUrl =
+    useMemo(
+      () =>
+        searchParams.get(
+          "email"
+        ) ?? "",
+      [searchParams]
+    );
 
-  const [formData, setFormData] = useState({
-    email: emailFromUrl,
+  const [
+    formData,
+    setFormData,
+  ] = useState({
+    email:
+      emailFromUrl,
     password: "",
-    passwordConfirmation: "",
+    passwordConfirmation:
+      "",
   });
 
-  const [showPassword, setShowPassword] =
-    useState(false);
+  const [
+    showPassword,
+    setShowPassword,
+  ] = useState(false);
 
   const [
     showPasswordConfirmation,
     setShowPasswordConfirmation,
   ] = useState(false);
 
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
-  const [isSubmitting, setIsSubmitting] =
-    useState(false);
+  const [
+    message,
+    setMessage,
+  ] = useState("");
 
-  function handleChange(event) {
-    const { name, value } = event.target;
+  const [
+    error,
+    setError,
+  ] = useState("");
 
-    setFormData((currentFormData) => ({
-      ...currentFormData,
-      [name]: value,
-    }));
+  const [
+    isSubmitting,
+    setIsSubmitting,
+  ] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      if (
+        redirectTimeoutRef.current
+      ) {
+        window.clearTimeout(
+          redirectTimeoutRef.current
+        );
+      }
+    };
+  }, []);
+
+  function handleChange(
+    event
+  ) {
+    const {
+      name,
+      value,
+    } = event.target;
+
+    setFormData(
+      (
+        currentFormData
+      ) => ({
+        ...currentFormData,
+        [name]: value,
+      })
+    );
+
+    if (error) {
+      setError("");
+    }
+
+    if (message) {
+      setMessage("");
+    }
   }
 
-  async function handleSubmit(event) {
+  async function handleSubmit(
+    event
+  ) {
     event.preventDefault();
 
     setMessage("");
@@ -67,15 +146,24 @@ function ResetPassword() {
 
     if (!token) {
       setError(
-        "O link de reposição é inválido ou está incompleto."
+        t(
+          "resetPassword.errors.invalidLink"
+        )
       );
+
       return;
     }
 
-    if (formData.password.length < 8) {
+    if (
+      formData.password.length <
+      8
+    ) {
       setError(
-        "A nova palavra-passe deve ter pelo menos 8 caracteres."
+        t(
+          "resetPassword.errors.passwordLength"
+        )
       );
+
       return;
     }
 
@@ -84,92 +172,143 @@ function ResetPassword() {
       formData.passwordConfirmation
     ) {
       setError(
-        "As palavras-passe não coincidem."
+        t(
+          "resetPassword.errors.passwordMismatch"
+        )
       );
+
       return;
     }
 
     setIsSubmitting(true);
 
     try {
-      const response = await resetPassword({
+      await resetPassword({
         token,
-        email: formData.email,
-        password: formData.password,
+        email:
+          formData.email.trim(),
+        password:
+          formData.password,
         passwordConfirmation:
           formData.passwordConfirmation,
       });
 
-      setMessage(response.message);
+      setMessage(
+        t(
+          "resetPassword.success"
+        )
+      );
 
-      setTimeout(() => {
-        navigate("/login");
-      }, 1800);
+      redirectTimeoutRef.current =
+        window.setTimeout(
+          () => {
+            navigate(
+              "/login"
+            );
+          },
+          REDIRECT_DELAY_MS
+        );
     } catch (requestError) {
       const validationErrors =
-        requestError.response?.data?.errors;
+        requestError.response
+          ?.data?.errors;
 
       const validationMessage =
-        validationErrors?.email?.[0] ||
-        validationErrors?.password?.[0] ||
-        validationErrors?.token?.[0];
+        validationErrors
+          ?.email?.[0] ||
+        validationErrors
+          ?.password?.[0] ||
+        validationErrors
+          ?.token?.[0];
 
       const errorMessage =
         validationMessage ||
         getApiErrorMessage(
           requestError,
-          "Não foi possível atualizar a palavra-passe."
+          t(
+            "resetPassword.errors.updateFailed"
+          )
         );
 
-      setError(errorMessage);
+      setError(
+        errorMessage
+      );
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(
+        false
+      );
     }
   }
 
   return (
     <>
       <PageMeta
-        title="Redefinir palavra-passe — SpaceVision"
-        description="Define uma nova palavra-passe para recuperares o acesso à tua conta SpaceVision."
+        title={t(
+          "resetPassword.meta.title"
+        )}
+        description={t(
+          "resetPassword.meta.description"
+        )}
       />
+
       <AuthGalaxyLayout
-        title="Define uma nova palavra-passe."
-        description="Escolhe uma palavra-passe segura para recuperares o acesso à tua conta e continuares a explorar o Universo."
-        sectionLabel="Definir uma nova palavra-passe"
-        status="A atualização será aplicada de forma segura à tua conta."
+        title={t(
+          "resetPassword.layout.title"
+        )}
+        description={t(
+          "resetPassword.layout.description"
+        )}
+        sectionLabel={t(
+          "resetPassword.layout.sectionLabel"
+        )}
+        status={t(
+          "resetPassword.layout.status"
+        )}
       >
         <div className="reset-card">
           <div className="reset-card__header">
             <p className="reset-card__eyebrow">
-              Segurança da conta
+              {t(
+                "resetPassword.card.eyebrow"
+              )}
             </p>
 
             <h1 id="reset-password-title">
-              Repor palavra-passe
+              {t(
+                "resetPassword.card.title"
+              )}
             </h1>
 
             <p className="reset-card__description">
-              Confirma o teu email e introduz uma nova
-              palavra-passe.
+              {t(
+                "resetPassword.card.description"
+              )}
             </p>
           </div>
 
           <form
             className="reset-form"
-            onSubmit={handleSubmit}
+            onSubmit={
+              handleSubmit
+            }
           >
             <div className="reset-field">
               <label htmlFor="reset-email">
-                Email
+                {t(
+                  "resetPassword.fields.email"
+                )}
               </label>
 
               <input
                 id="reset-email"
                 name="email"
                 type="email"
-                value={formData.email}
-                onChange={handleChange}
+                value={
+                  formData.email
+                }
+                onChange={
+                  handleChange
+                }
                 autoComplete="email"
                 required
               />
@@ -177,7 +316,9 @@ function ResetPassword() {
 
             <div className="reset-field">
               <label htmlFor="reset-password">
-                Nova palavra-passe
+                {t(
+                  "resetPassword.fields.password"
+                )}
               </label>
 
               <div className="reset-password">
@@ -189,9 +330,15 @@ function ResetPassword() {
                       ? "text"
                       : "password"
                   }
-                  placeholder="Mínimo de 8 caracteres"
-                  value={formData.password}
-                  onChange={handleChange}
+                  placeholder={t(
+                    "resetPassword.fields.passwordPlaceholder"
+                  )}
+                  value={
+                    formData.password
+                  }
+                  onChange={
+                    handleChange
+                  }
                   autoComplete="new-password"
                   minLength={8}
                   required
@@ -202,15 +349,24 @@ function ResetPassword() {
                   className="reset-password__toggle"
                   onClick={() =>
                     setShowPassword(
-                      (current) => !current
+                      (
+                        current
+                      ) =>
+                        !current
                     )
                   }
                   aria-label={
                     showPassword
-                      ? "Ocultar nova palavra-passe"
-                      : "Mostrar nova palavra-passe"
+                      ? t(
+                          "resetPassword.actions.hidePassword"
+                        )
+                      : t(
+                          "resetPassword.actions.showPassword"
+                        )
                   }
-                  aria-pressed={showPassword}
+                  aria-pressed={
+                    showPassword
+                  }
                 >
                   {showPassword ? (
                     <EyeOff
@@ -229,7 +385,9 @@ function ResetPassword() {
 
             <div className="reset-field">
               <label htmlFor="reset-password-confirmation">
-                Confirmar palavra-passe
+                {t(
+                  "resetPassword.fields.passwordConfirmation"
+                )}
               </label>
 
               <div className="reset-password">
@@ -241,11 +399,15 @@ function ResetPassword() {
                       ? "text"
                       : "password"
                   }
-                  placeholder="Repete a nova palavra-passe"
+                  placeholder={t(
+                    "resetPassword.fields.passwordConfirmationPlaceholder"
+                  )}
                   value={
                     formData.passwordConfirmation
                   }
-                  onChange={handleChange}
+                  onChange={
+                    handleChange
+                  }
                   autoComplete="new-password"
                   minLength={8}
                   required
@@ -256,13 +418,20 @@ function ResetPassword() {
                   className="reset-password__toggle"
                   onClick={() =>
                     setShowPasswordConfirmation(
-                      (current) => !current
+                      (
+                        current
+                      ) =>
+                        !current
                     )
                   }
                   aria-label={
                     showPasswordConfirmation
-                      ? "Ocultar confirmação da nova palavra-passe"
-                      : "Mostrar confirmação da nova palavra-passe"
+                      ? t(
+                          "resetPassword.actions.hidePasswordConfirmation"
+                        )
+                      : t(
+                          "resetPassword.actions.showPasswordConfirmation"
+                        )
                   }
                   aria-pressed={
                     showPasswordConfirmation
@@ -305,11 +474,18 @@ function ResetPassword() {
             <button
               className="reset-submit"
               type="submit"
-              disabled={isSubmitting || !token}
+              disabled={
+                isSubmitting ||
+                !token
+              }
             >
               {isSubmitting
-                ? "A atualizar..."
-                : "Atualizar palavra-passe"}
+                ? t(
+                    "resetPassword.actions.submitting"
+                  )
+                : t(
+                    "resetPassword.actions.submit"
+                  )}
             </button>
           </form>
 
@@ -319,13 +495,16 @@ function ResetPassword() {
                 size={17}
                 aria-hidden="true"
               />
-              Voltar ao início de sessão
+
+              {t(
+                "resetPassword.actions.backToLogin"
+              )}
             </Link>
           </p>
         </div>
       </AuthGalaxyLayout>
-      </>
-      );
+    </>
+  );
 }
 
-      export default ResetPassword;
+export default ResetPassword;

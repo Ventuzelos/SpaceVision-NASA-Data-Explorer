@@ -1534,6 +1534,187 @@
             "accountDelete": "Não foi possível eliminar a conta."
         }
     },
+    "login": {
+        "meta": {
+            "title": "Entrar — SpaceVision",
+            "description": "Inicia sessão no SpaceVision para guardares favoritos e gerires a tua conta."
+        },
+        "layout": {
+            "title": "Explora o Universo através de dados reais.",
+            "description": "Descobre imagens, eventos espaciais, aproximações de asteroides e observações da Terra através das APIs da NASA.",
+            "sectionLabel": "Iniciar sessão no SpaceVision"
+        },
+        "card": {
+            "eyebrow": "Bem-vindo de volta",
+            "title": "Entrar na tua conta",
+            "description": "Acede aos teus favoritos e continua a tua exploração do Universo."
+        },
+        "verified": "Email confirmado com sucesso. Já podes iniciar sessão.",
+        "fields": {
+            "email": "Email",
+            "emailPlaceholder": "o-teu-email@exemplo.com",
+            "password": "Palavra-passe"
+        },
+        "actions": {
+            "showPassword": "Mostrar palavra-passe",
+            "hidePassword": "Ocultar palavra-passe",
+            "forgotPassword": "Esqueceste-te?",
+            "submitting": "A entrar...",
+            "submit": "Entrar"
+        },
+        "register": {
+            "prompt": "Novo no SpaceVision?",
+            "action": "Criar conta"
+        },
+        "errors": {
+            "loginFailed": "Não foi possível iniciar sessão. Verifica as tuas credenciais e tenta novamente."
+        }
+    },
+    "register": {
+        "meta": {
+            "title": "Criar conta — SpaceVision",
+            "description": "Cria uma conta no SpaceVision para guardares favoritos e personalizares a tua experiência."
+        },
+        "layout": {
+            "title": "Começa a tua exploração do Universo.",
+            "description": "Cria uma conta para guardares conteúdos, acompanhares descobertas e personalizares a tua experiência SpaceVision.",
+            "sectionLabel": "Criar uma conta SpaceVision"
+        },
+        "card": {
+            "eyebrow": "Junta-te ao SpaceVision",
+            "title": "Criar conta",
+            "description": "Guarda os teus favoritos e continua a tua exploração em qualquer momento."
+        },
+        "fields": {
+            "name": "Nome",
+            "namePlaceholder": "O teu nome",
+            "email": "Email",
+            "emailPlaceholder": "o-teu-email@exemplo.com",
+            "password": "Palavra-passe",
+            "passwordPlaceholder": "Mínimo de 8 caracteres",
+            "passwordConfirmation": "Confirmar palavra-passe",
+            "passwordConfirmationPlaceholder": "Repete a palavra-passe"
+        },
+        "actions": {
+            "showPassword": "Mostrar palavra-passe",
+            "hidePassword": "Ocultar palavra-passe",
+            "showPasswordConfirmation": "Mostrar confirmação da palavra-passe",
+            "hidePasswordConfirmation": "Ocultar confirmação da palavra-passe",
+            "submitting": "A criar conta...",
+            "submit": "Criar conta"
+        },
+        "login": {
+            "prompt": "Já fazes parte do SpaceVision?",
+            "action": "Entrar"
+        },
+        "errors": {
+            "passwordLength": "A palavra-passe deve ter pelo menos 8 caracteres.",
+            "passwordMismatch": "As palavras-passe não coincidem.",
+            "registerFailed": "Não foi possível criar a conta."
+        },
+        "verification": {
+            "meta": {
+                "title": "Confirma o teu email — SpaceVision",
+                "description": "Falta confirmar o teu email para ativares a conta SpaceVision."
+            },
+            "layout": {
+                "title": "Falta só um passo.",
+                "description": "Enviámos um link de confirmação para o teu email.",
+                "sectionLabel": "Confirma a tua conta SpaceVision"
+            },
+            "card": {
+                "eyebrow": "Quase lá",
+                "title": "Verifica o teu email",
+                "descriptionBeforeEmail": "Enviámos um link de confirmação para",
+                "descriptionAfterEmail": "Abre esse email e clica no link para ativares a conta."
+            },
+            "resend": {
+                "prompt": "Não recebeste nada?",
+                "action": "Reenviar email",
+                "sending": "A reenviar...",
+                "success": "Se a conta ainda não estiver confirmada, foi enviado um novo link.",
+                "error": "Não foi possível reenviar agora. Tenta novamente dentro de momentos."
+            },
+            "development": {
+                "label": "Ambiente local — sem envio real de email",
+                "action": "Abrir link de verificação"
+            },
+            "login": {
+                "prompt": "Já confirmaste?",
+                "action": "Entrar"
+            }
+        }
+    },
+    "forgotPassword": {
+        "meta": {
+            "title": "Recuperar palavra-passe — SpaceVision",
+            "description": "Solicita uma ligação para redefinires a palavra-passe da tua conta SpaceVision."
+        },
+        "layout": {
+            "title": "Recupera o acesso à tua exploração.",
+            "description": "Enviaremos as instruções necessárias para definires uma nova palavra-passe e voltares à tua conta SpaceVision.",
+            "sectionLabel": "Recuperar o acesso à conta",
+            "status": "A tua conta e os teus favoritos continuam seguros."
+        },
+        "card": {
+            "eyebrow": "Recuperação de conta",
+            "title": "Esqueceste-te da palavra-passe?",
+            "description": "Introduz o email associado à tua conta para receberes as instruções de reposição."
+        },
+        "fields": {
+            "email": "Email",
+            "emailPlaceholder": "o-teu-email@exemplo.com"
+        },
+        "actions": {
+            "submitting": "A enviar...",
+            "submit": "Enviar link de reposição",
+            "backToLogin": "Voltar ao início de sessão"
+        },
+        "success": "Se existir uma conta associada a esse email, enviámos um link de reposição.",
+        "errors": {
+            "requestFailed": "Não foi possível enviar o link de reposição."
+        }
+    },
+    "resetPassword": {
+        "meta": {
+            "title": "Redefinir palavra-passe — SpaceVision",
+            "description": "Define uma nova palavra-passe para recuperares o acesso à tua conta SpaceVision."
+        },
+        "layout": {
+            "title": "Define uma nova palavra-passe.",
+            "description": "Escolhe uma palavra-passe segura para recuperares o acesso à tua conta e continuares a explorar o Universo.",
+            "sectionLabel": "Definir uma nova palavra-passe",
+            "status": "A atualização será aplicada de forma segura à tua conta."
+        },
+        "card": {
+            "eyebrow": "Segurança da conta",
+            "title": "Repor palavra-passe",
+            "description": "Confirma o teu email e introduz uma nova palavra-passe."
+        },
+        "fields": {
+            "email": "Email",
+            "password": "Nova palavra-passe",
+            "passwordPlaceholder": "Mínimo de 8 caracteres",
+            "passwordConfirmation": "Confirmar palavra-passe",
+            "passwordConfirmationPlaceholder": "Repete a nova palavra-passe"
+        },
+        "actions": {
+            "showPassword": "Mostrar nova palavra-passe",
+            "hidePassword": "Ocultar nova palavra-passe",
+            "showPasswordConfirmation": "Mostrar confirmação da nova palavra-passe",
+            "hidePasswordConfirmation": "Ocultar confirmação da nova palavra-passe",
+            "submitting": "A atualizar...",
+            "submit": "Atualizar palavra-passe",
+            "backToLogin": "Voltar ao início de sessão"
+        },
+        "success": "Palavra-passe atualizada com sucesso. Serás redirecionado para o início de sessão.",
+        "errors": {
+            "invalidLink": "O link de reposição é inválido ou está incompleto.",
+            "passwordLength": "A nova palavra-passe deve ter pelo menos 8 caracteres.",
+            "passwordMismatch": "As palavras-passe não coincidem.",
+            "updateFailed": "Não foi possível atualizar a palavra-passe."
+        }
+    },
     "common": {
         "loading": "A carregar...",
         "error": "Ocorreu um erro",
