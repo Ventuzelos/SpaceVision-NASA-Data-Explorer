@@ -2132,6 +2132,19 @@
             }
         }
     },
+    "unauthorized": {
+        "meta": {
+            "title": "Unauthorized access — SpaceVision",
+            "description": "You do not have permission to access this area of SpaceVision."
+        },
+        "eyebrow": "Error 403",
+        "title": "Unauthorized access",
+        "description": "You do not have permission to access this page.",
+        "actions": {
+            "home": "Back to home",
+            "login": "Sign in"
+        }
+    },
     "common": {
         "loading": "Loading...",
         "error": "Something went wrong",
