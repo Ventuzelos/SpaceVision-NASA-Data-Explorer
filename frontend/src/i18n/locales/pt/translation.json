@@ -2145,6 +2145,98 @@
             "login": "Iniciar sessão"
         }
     },
+    "assistant": {
+        "ariaLabel": "Assistente SpaceVision",
+        "title": "Assistente SpaceVision",
+        "status": "Assistente virtual gratuito",
+        "welcome": "Olá! Sou o Assistente SpaceVision. Posso ajudar-te a explorar o universo e as funcionalidades do site.",
+        "trigger": "Precisas de ajuda?",
+        "suggestionsAria": "Perguntas sugeridas",
+        "actions": {
+            "open": "Abrir Assistente SpaceVision",
+            "close": "Fechar o assistente",
+            "send": "Enviar pergunta"
+        },
+        "input": {
+            "label": "Escreve a tua pergunta",
+            "placeholder": "Pergunta sobre o SpaceVision..."
+        },
+        "questions": {
+            "explore": "O que posso explorar?",
+            "apod": "O que é o APOD?",
+            "favorites": "Como funcionam os favoritos?",
+            "nasaKey": "Como obtenho uma chave NASA?",
+            "donki": "O que é o DONKI?",
+            "asteroids": "Como explorar asteroides?",
+            "addFavorites": "Como adiciono aos favoritos?",
+            "discovr": "O que é o DISCOVR?",
+            "epic": "O que é o EPIC?",
+            "asteroidDanger": "O asteroide é perigoso?",
+            "createAccount": "Como criar uma conta?",
+            "nasaData": "Que dados da NASA existem?"
+        },
+        "intents": {
+            "explore": {
+                "response": "No SpaceVision podes explorar a imagem astronómica do dia, eventos meteorológicos espaciais, imagens da Terra, dados do sistema solar, asteroides próximos, favoritos e um quiz sobre o espaço."
+            },
+            "apod": {
+                "response": "APOD significa Astronomy Picture of the Day. Todos os dias, a NASA publica uma imagem ou vídeo do universo acompanhado por uma explicação científica.",
+                "linkLabel": "Explorar APOD"
+            },
+            "donki": {
+                "response": "O DONKI reúne informações sobre meteorologia espacial, incluindo erupções solares, tempestades geomagnéticas, ejeções de massa coronal e outros eventos registados pela NASA.",
+                "linkLabel": "Explorar DONKI"
+            },
+            "epic": {
+                "response": "A secção EPIC permite observar imagens da Terra captadas pela câmara EPIC, instalada no satélite DSCOVR, a cerca de 1,5 milhões de quilómetros do nosso planeta.",
+                "linkLabel": "Ver imagens da Terra"
+            },
+            "discovr": {
+                "response": "Na área Descobrir podes conhecer a missão DSCOVR, explorar conteúdos interativos e compreender melhor a observação da Terra e do ambiente espacial.",
+                "linkLabel": "Abrir Descobrir"
+            },
+            "neowatch": {
+                "response": "O NeoWatch apresenta asteroides e outros objetos próximos da Terra. Podes consultar dimensões, velocidade, distância de passagem e o possível nível de perigo.",
+                "linkLabel": "Explorar asteroides"
+            },
+            "asteroidDanger": {
+                "response": "A classificação de potencialmente perigoso não significa que um asteroide vá atingir a Terra. Indica que possui determinadas dimensões e que a sua órbita pode aproximá-lo do nosso planeta.",
+                "linkLabel": "Consultar NeoWatch"
+            },
+            "favorites": {
+                "response": "Para guardar um conteúdo, inicia sessão e seleciona o botão de favorito apresentado no respetivo cartão. Os conteúdos guardados ficam disponíveis na página Favoritos.",
+                "linkLabel": "Ver favoritos"
+            },
+            "account": {
+                "response": "Podes criar uma conta gratuitamente através da página de registo. Depois de iniciares sessão, poderás guardar favoritos e configurar a tua chave pessoal da NASA.",
+                "linkLabel": "Criar conta"
+            },
+            "nasaKey": {
+                "response": "Podes obter gratuitamente uma chave em api.nasa.gov e guardá-la no teu perfil do SpaceVision. A chave pessoal permite realizar mais pedidos às APIs da NASA.",
+                "linkLabel": "Abrir perfil",
+                "externalLinkLabel": "Obter chave NASA"
+            },
+            "quiz": {
+                "response": "O Quiz SpaceVision permite testar os teus conhecimentos sobre astronomia, exploração espacial e as missões apresentadas no site.",
+                "linkLabel": "Começar o quiz"
+            },
+            "faq": {
+                "response": "Na página de Perguntas Frequentes encontras respostas sobre as APIs da NASA, os dados apresentados, a conta e as principais funcionalidades do SpaceVision.",
+                "linkLabel": "Ver perguntas frequentes"
+            },
+            "language": {
+                "response": "Podes alterar o idioma do SpaceVision através do seletor de idioma disponível na navegação do site."
+            },
+            "about": {
+                "response": "O SpaceVision é um explorador de dados da NASA desenvolvido para tornar a astronomia e a exploração espacial mais acessíveis, visuais e interativas.",
+                "linkLabel": "Conhecer o projeto"
+            }
+        },
+        "fallback": {
+            "response": "Ainda não consegui compreender essa pergunta. Posso ajudar-te a explorar as funcionalidades do SpaceVision ou encaminhar-te para as Perguntas Frequentes.",
+            "linkLabel": "Consultar perguntas frequentes"
+        }
+    },
     "common": {
         "loading": "A carregar...",
         "error": "Ocorreu um erro",
