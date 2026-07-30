@@ -2237,9 +2237,34 @@
             "linkLabel": "View frequently asked questions"
         }
     },
-
-    "authGalaxyLayout": {   "status": "Scientific data. Exploration without limits."},
-    
+    "authGalaxyLayout": {
+        "status": "Scientific data. Exploration without limits."
+    },
+    "apiErrors": {
+        "connection": "The server could not be reached. Check your connection and try again.",
+        "serviceUnavailable": "The service is temporarily unavailable. Please try again in a few moments.",
+        "server": "The server encountered a problem while processing the request. Please try again later.",
+        "generic": "An unexpected problem occurred.",
+        "status": {
+            "badRequest": "The submitted request is not valid.",
+            "unauthorized": "You must sign in to perform this action.",
+            "forbidden": "You do not have permission to perform this action.",
+            "notFound": "No data was found for this search.",
+            "validation": "The information provided is not valid.",
+            "tooManyRequests": "Too many requests were made. Wait a few moments and try again."
+        },
+        "codes": {
+            "nasaRateLimitExceeded": "NASA's request limit has been reached. Add a personal key to your profile or try again later.",
+            "nasaUpstreamError": "NASA data could not be retrieved at this time.",
+            "nasaConnectionError": "A connection to NASA could not be established.",
+            "nasaProcessingError": "NASA data could not be processed at this time."
+        }
+    },
+    "errorState": {
+        "title": "Signal lost",
+        "message": "NASA images could not be loaded at this time.",
+        "retry": "Try again"
+    },
     "common": {
         "loading": "Loading...",
         "error": "Something went wrong",

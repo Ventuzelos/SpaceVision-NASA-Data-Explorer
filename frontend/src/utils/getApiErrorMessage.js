@@ -1,11 +1,39 @@
+import i18n from "../i18n";
+
+const API_ERROR_TRANSLATION_KEYS = {
+  NASA_RATE_LIMIT_EXCEEDED:
+    "apiErrors.codes.nasaRateLimitExceeded",
+  NASA_UPSTREAM_ERROR:
+    "apiErrors.codes.nasaUpstreamError",
+  NASA_CONNECTION_ERROR:
+    "apiErrors.codes.nasaConnectionError",
+  NASA_PROCESSING_ERROR:
+    "apiErrors.codes.nasaProcessingError",
+};
+
 export default function getApiErrorMessage(
   error,
-  fallbackMessage = "Ocorreu um problema inesperado."
+  fallbackMessage
 ) {
-  const status = error?.response?.status;
+  const response = error?.response;
+  const status = response?.status;
+  const errorCode = response?.data?.code;
 
-  if (!error?.response) {
-    return "Não foi possível estabelecer ligação ao servidor. Confirma a tua ligação e tenta novamente.";
+  if (!response) {
+    return i18n.t(
+      "apiErrors.connection"
+    );
+  }
+
+  const translationKey =
+    API_ERROR_TRANSLATION_KEYS[
+      errorCode
+    ];
+
+  if (translationKey) {
+    return i18n.t(
+      translationKey
+    );
   }
 
   if (status >= 500) {
@@ -13,17 +41,28 @@ export default function getApiErrorMessage(
       case 502:
       case 503:
       case 504:
-        return "O serviço está temporariamente indisponível. Tenta novamente dentro de alguns momentos.";
+        return i18n.t(
+          "apiErrors.serviceUnavailable"
+        );
 
       default:
-        return "O servidor encontrou um problema ao processar o pedido. Tenta novamente mais tarde.";
+        return i18n.t(
+          "apiErrors.server"
+        );
     }
   }
 
-  const backendMessage = error?.response?.data?.message;
+  /*
+   * Mantém mensagens específicas do backend
+   * apenas quando não existe um código conhecido
+   * que possa ser traduzido no frontend.
+   */
+  const backendMessage =
+    response?.data?.message;
 
   if (
-    typeof backendMessage === "string" &&
+    typeof backendMessage ===
+      "string" &&
     backendMessage.trim()
   ) {
     return backendMessage;
@@ -31,18 +70,46 @@ export default function getApiErrorMessage(
 
   switch (status) {
     case 400:
-      return "O pedido enviado não é válido.";
+      return i18n.t(
+        "apiErrors.status.badRequest"
+      );
+
+    case 401:
+      return i18n.t(
+        "apiErrors.status.unauthorized"
+      );
+
+    case 403:
+      return i18n.t(
+        "apiErrors.status.forbidden"
+      );
 
     case 404:
-      return "Não foram encontrados dados para esta pesquisa.";
+      return i18n.t(
+        "apiErrors.status.notFound"
+      );
 
     case 422:
-      return "Os dados introduzidos não são válidos.";
+      return i18n.t(
+        "apiErrors.status.validation"
+      );
 
     case 429:
-      return "Foram realizados demasiados pedidos. Aguarda alguns momentos e tenta novamente.";
+      return i18n.t(
+        "apiErrors.status.tooManyRequests"
+      );
 
     default:
-      return fallbackMessage;
+      if (
+        typeof fallbackMessage ===
+          "string" &&
+        fallbackMessage.trim()
+      ) {
+        return fallbackMessage;
+      }
+
+      return i18n.t(
+        "apiErrors.generic"
+      );
   }
 }
