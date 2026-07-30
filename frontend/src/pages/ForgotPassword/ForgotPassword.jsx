@@ -1,22 +1,54 @@
-import { useState } from "react";
-import { ArrowLeft } from "lucide-react";
-import { Link } from "react-router";
+import {
+  useState,
+} from "react";
+import {
+  useTranslation,
+} from "react-i18next";
+import {
+  ArrowLeft,
+} from "lucide-react";
+import {
+  Link,
+} from "react-router";
 
 import AuthGalaxyLayout from "../../components/common/AuthGalaxyLayout/AuthGalaxyLayout";
-import { requestPasswordReset } from "../../services/authService";
 import PageMeta from "../../components/common/PageMeta/PageMeta";
+
+import {
+  requestPasswordReset,
+} from "../../services/authService";
+
 import getApiErrorMessage from "../../utils/getApiErrorMessage";
 
 import "./ForgotPassword.css";
 
 function ForgotPassword() {
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
-  const [isSubmitting, setIsSubmitting] =
-    useState(false);
+  const { t } =
+    useTranslation();
 
-  async function handleSubmit(event) {
+  const [
+    email,
+    setEmail,
+  ] = useState("");
+
+  const [
+    message,
+    setMessage,
+  ] = useState("");
+
+  const [
+    error,
+    setError,
+  ] = useState("");
+
+  const [
+    isSubmitting,
+    setIsSubmitting,
+  ] = useState(false);
+
+  async function handleSubmit(
+    event
+  ) {
     event.preventDefault();
 
     setMessage("");
@@ -24,74 +56,127 @@ function ForgotPassword() {
     setIsSubmitting(true);
 
     try {
-      const response =
-        await requestPasswordReset(email);
+      await requestPasswordReset(
+        email
+      );
 
-      setMessage(response.message);
+      setMessage(
+        t(
+          "forgotPassword.success"
+        )
+      );
+
       setEmail("");
-   } catch (requestError) {
+    } catch (requestError) {
       const validationMessage =
-        requestError.response?.data?.errors
+        requestError.response
+          ?.data?.errors
           ?.email?.[0];
 
       const errorMessage =
         validationMessage ||
         getApiErrorMessage(
           requestError,
-          "Não foi possível enviar o link de reposição."
+          t(
+            "forgotPassword.errors.requestFailed"
+          )
         );
 
-      setError(errorMessage);
+      setError(
+        errorMessage
+      );
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(
+        false
+      );
+    }
+  }
+
+  function handleEmailChange(
+    event
+  ) {
+    setEmail(
+      event.target.value
+    );
+
+    if (error) {
+      setError("");
+    }
+
+    if (message) {
+      setMessage("");
     }
   }
 
   return (
     <>
       <PageMeta
-        title="Recuperar palavra-passe — SpaceVision"
-        description="Solicita uma ligação para redefinires a palavra-passe da tua conta SpaceVision."
+        title={t(
+          "forgotPassword.meta.title"
+        )}
+        description={t(
+          "forgotPassword.meta.description"
+        )}
       />
+
       <AuthGalaxyLayout
-        title="Recupera o acesso à tua exploração."
-        description="Enviaremos as instruções necessárias para definires uma nova palavra-passe e voltares à tua conta SpaceVision."
-        sectionLabel="Recuperar o acesso à conta"
-        status="A tua conta e os teus favoritos continuam seguros."
+        title={t(
+          "forgotPassword.layout.title"
+        )}
+        description={t(
+          "forgotPassword.layout.description"
+        )}
+        sectionLabel={t(
+          "forgotPassword.layout.sectionLabel"
+        )}
+        status={t(
+          "forgotPassword.layout.status"
+        )}
       >
         <div className="forgot-card">
           <div className="forgot-card__header">
             <p className="forgot-card__eyebrow">
-              Recuperação de conta
+              {t(
+                "forgotPassword.card.eyebrow"
+              )}
             </p>
 
             <h1 id="forgot-password-title">
-              Esqueceste-te da palavra-passe?
+              {t(
+                "forgotPassword.card.title"
+              )}
             </h1>
 
             <p className="forgot-card__description">
-              Introduz o email associado à tua conta para
-              receberes as instruções de reposição.
+              {t(
+                "forgotPassword.card.description"
+              )}
             </p>
           </div>
 
           <form
             className="forgot-form"
-            onSubmit={handleSubmit}
+            onSubmit={
+              handleSubmit
+            }
           >
             <div className="forgot-field">
               <label htmlFor="forgot-email">
-                Email
+                {t(
+                  "forgotPassword.fields.email"
+                )}
               </label>
 
               <input
                 id="forgot-email"
                 name="email"
                 type="email"
-                placeholder="o-teu-email@exemplo.com"
+                placeholder={t(
+                  "forgotPassword.fields.emailPlaceholder"
+                )}
                 value={email}
-                onChange={(event) =>
-                  setEmail(event.target.value)
+                onChange={
+                  handleEmailChange
                 }
                 autoComplete="email"
                 required
@@ -120,11 +205,17 @@ function ForgotPassword() {
             <button
               className="forgot-submit"
               type="submit"
-              disabled={isSubmitting}
+              disabled={
+                isSubmitting
+              }
             >
               {isSubmitting
-                ? "A enviar..."
-                : "Enviar link de reposição"}
+                ? t(
+                    "forgotPassword.actions.submitting"
+                  )
+                : t(
+                    "forgotPassword.actions.submit"
+                  )}
             </button>
           </form>
 
@@ -134,13 +225,16 @@ function ForgotPassword() {
                 size={17}
                 aria-hidden="true"
               />
-              Voltar ao início de sessão
+
+              {t(
+                "forgotPassword.actions.backToLogin"
+              )}
             </Link>
           </p>
         </div>
       </AuthGalaxyLayout>
-      </>
-      );
+    </>
+  );
 }
 
-      export default ForgotPassword;
+export default ForgotPassword;

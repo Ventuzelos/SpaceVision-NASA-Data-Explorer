@@ -1534,6 +1534,187 @@
             "accountDelete": "The account could not be deleted."
         }
     },
+    "login": {
+        "meta": {
+            "title": "Sign in — SpaceVision",
+            "description": "Sign in to SpaceVision to save favourites and manage your account."
+        },
+        "layout": {
+            "title": "Explore the Universe through real data.",
+            "description": "Discover images, space events, asteroid approaches and Earth observations through NASA APIs.",
+            "sectionLabel": "Sign in to SpaceVision"
+        },
+        "card": {
+            "eyebrow": "Welcome back",
+            "title": "Sign in to your account",
+            "description": "Access your favourites and continue exploring the Universe."
+        },
+        "verified": "Email verified successfully. You can now sign in.",
+        "fields": {
+            "email": "Email",
+            "emailPlaceholder": "your-email@example.com",
+            "password": "Password"
+        },
+        "actions": {
+            "showPassword": "Show password",
+            "hidePassword": "Hide password",
+            "forgotPassword": "Forgot your password?",
+            "submitting": "Signing in...",
+            "submit": "Sign in"
+        },
+        "register": {
+            "prompt": "New to SpaceVision?",
+            "action": "Create an account"
+        },
+        "errors": {
+            "loginFailed": "Unable to sign in. Check your credentials and try again."
+        }
+    },
+    "register": {
+        "meta": {
+            "title": "Create an account — SpaceVision",
+            "description": "Create a SpaceVision account to save favourites and personalise your experience."
+        },
+        "layout": {
+            "title": "Begin your exploration of the Universe.",
+            "description": "Create an account to save content, follow discoveries and personalise your SpaceVision experience.",
+            "sectionLabel": "Create a SpaceVision account"
+        },
+        "card": {
+            "eyebrow": "Join SpaceVision",
+            "title": "Create an account",
+            "description": "Save your favourites and continue your exploration at any time."
+        },
+        "fields": {
+            "name": "Name",
+            "namePlaceholder": "Your name",
+            "email": "Email",
+            "emailPlaceholder": "your-email@example.com",
+            "password": "Password",
+            "passwordPlaceholder": "At least 8 characters",
+            "passwordConfirmation": "Confirm password",
+            "passwordConfirmationPlaceholder": "Repeat your password"
+        },
+        "actions": {
+            "showPassword": "Show password",
+            "hidePassword": "Hide password",
+            "showPasswordConfirmation": "Show password confirmation",
+            "hidePasswordConfirmation": "Hide password confirmation",
+            "submitting": "Creating account...",
+            "submit": "Create account"
+        },
+        "login": {
+            "prompt": "Already part of SpaceVision?",
+            "action": "Sign in"
+        },
+        "errors": {
+            "passwordLength": "The password must contain at least 8 characters.",
+            "passwordMismatch": "The passwords do not match.",
+            "registerFailed": "The account could not be created."
+        },
+        "verification": {
+            "meta": {
+                "title": "Confirm your email — SpaceVision",
+                "description": "Confirm your email address to activate your SpaceVision account."
+            },
+            "layout": {
+                "title": "Just one more step.",
+                "description": "We sent a confirmation link to your email address.",
+                "sectionLabel": "Confirm your SpaceVision account"
+            },
+            "card": {
+                "eyebrow": "Almost there",
+                "title": "Check your email",
+                "descriptionBeforeEmail": "We sent a confirmation link to",
+                "descriptionAfterEmail": "Open the email and select the link to activate your account."
+            },
+            "resend": {
+                "prompt": "Did not receive anything?",
+                "action": "Resend email",
+                "sending": "Resending...",
+                "success": "A new link has been sent if the account has not already been confirmed.",
+                "error": "The email could not be resent. Try again in a few moments."
+            },
+            "development": {
+                "label": "Local environment — no real email delivery",
+                "action": "Open verification link"
+            },
+            "login": {
+                "prompt": "Already confirmed?",
+                "action": "Sign in"
+            }
+        }
+    },
+    "forgotPassword": {
+        "meta": {
+            "title": "Reset password — SpaceVision",
+            "description": "Request a link to reset the password for your SpaceVision account."
+        },
+        "layout": {
+            "title": "Recover access to your exploration.",
+            "description": "We will send the instructions you need to set a new password and return to your SpaceVision account.",
+            "sectionLabel": "Recover access to your account",
+            "status": "Your account and favourites remain secure."
+        },
+        "card": {
+            "eyebrow": "Account recovery",
+            "title": "Forgot your password?",
+            "description": "Enter the email address associated with your account to receive reset instructions."
+        },
+        "fields": {
+            "email": "Email",
+            "emailPlaceholder": "your-email@example.com"
+        },
+        "actions": {
+            "submitting": "Sending...",
+            "submit": "Send reset link",
+            "backToLogin": "Back to sign in"
+        },
+        "success": "If an account exists for that email address, we sent a password reset link.",
+        "errors": {
+            "requestFailed": "The password reset link could not be sent."
+        }
+    },
+    "resetPassword": {
+        "meta": {
+            "title": "Reset password — SpaceVision",
+            "description": "Set a new password to recover access to your SpaceVision account."
+        },
+        "layout": {
+            "title": "Set a new password.",
+            "description": "Choose a secure password to recover access to your account and continue exploring the Universe.",
+            "sectionLabel": "Set a new password",
+            "status": "The update will be applied securely to your account."
+        },
+        "card": {
+            "eyebrow": "Account security",
+            "title": "Reset password",
+            "description": "Confirm your email address and enter a new password."
+        },
+        "fields": {
+            "email": "Email",
+            "password": "New password",
+            "passwordPlaceholder": "At least 8 characters",
+            "passwordConfirmation": "Confirm password",
+            "passwordConfirmationPlaceholder": "Repeat the new password"
+        },
+        "actions": {
+            "showPassword": "Show new password",
+            "hidePassword": "Hide new password",
+            "showPasswordConfirmation": "Show new password confirmation",
+            "hidePasswordConfirmation": "Hide new password confirmation",
+            "submitting": "Updating...",
+            "submit": "Update password",
+            "backToLogin": "Back to sign in"
+        },
+        "success": "Password updated successfully. You will be redirected to sign in.",
+        "errors": {
+            "invalidLink": "The reset link is invalid or incomplete.",
+            "passwordLength": "The new password must contain at least 8 characters.",
+            "passwordMismatch": "The passwords do not match.",
+            "updateFailed": "The password could not be updated."
+        }
+    },
     "common": {
         "loading": "Loading...",
         "error": "Something went wrong",

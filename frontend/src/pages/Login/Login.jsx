@@ -1,106 +1,182 @@
-import { useMemo, useState } from "react";
+import {
+  useMemo,
+  useState,
+} from "react";
 import {
   Link,
   useLocation,
   useNavigate,
 } from "react-router";
+import { useTranslation } from "react-i18next";
 
-import { Eye, EyeOff } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+} from "lucide-react";
 
 import AuthGalaxyLayout from "../../components/common/AuthGalaxyLayout/AuthGalaxyLayout";
+import PageMeta from "../../components/common/PageMeta/PageMeta";
+
 import useAuth from "../../hooks/useAuth";
 
-import PageMeta from "../../components/common/PageMeta/PageMeta";
 import getApiErrorMessage from "../../utils/getApiErrorMessage";
 
 import "./Login.css";
 
 function Login() {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { login } = useAuth();
+  const { t } =
+    useTranslation();
 
-  const wasEmailJustVerified = useMemo(
-    () =>
-      new URLSearchParams(location.search).get("verified") ===
-      "1",
-    [location.search]
-  );
+  const navigate =
+    useNavigate();
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
+  const location =
+    useLocation();
+
+  const { login } =
+    useAuth();
+
+  const wasEmailJustVerified =
+    useMemo(
+      () =>
+        new URLSearchParams(
+          location.search
+        ).get("verified") ===
+        "1",
+      [location.search]
+    );
+
+  const [
+    showPassword,
+    setShowPassword,
+  ] = useState(false);
+
+  const [
+    formData,
+    setFormData,
+  ] = useState({
     email: "",
     password: "",
   });
 
-  const [error, setError] = useState("");
-  const [isSubmitting, setIsSubmitting] =
-    useState(false);
+  const [
+    error,
+    setError,
+  ] = useState("");
 
-  function handleChange(event) {
-    const { name, value } = event.target;
+  const [
+    isSubmitting,
+    setIsSubmitting,
+  ] = useState(false);
 
-    setFormData((current) => ({
-      ...current,
-      [name]: value,
-    }));
+  function handleChange(
+    event
+  ) {
+    const {
+      name,
+      value,
+    } = event.target;
+
+    setFormData(
+      (current) => ({
+        ...current,
+        [name]: value,
+      })
+    );
+
+    if (error) {
+      setError("");
+    }
   }
 
-  async function handleSubmit(event) {
+  async function handleSubmit(
+    event
+  ) {
     event.preventDefault();
 
     setError("");
     setIsSubmitting(true);
 
     try {
-      const user = await login(formData);
+      const user =
+        await login(formData);
 
-      if (user.role === "admin") {
+      if (
+        user.role === "admin"
+      ) {
         navigate("/admin");
       } else {
-        navigate(location.state?.from || "/");
+        navigate(
+          location.state
+            ?.from || "/"
+        );
       }
-     } catch (requestError) {
+    } catch (requestError) {
       const fallbackMessage =
-        "Não foi possível iniciar sessão. Por favor, verifica as tuas credenciais e tenta novamente.";
+        t(
+          "login.errors.loginFailed"
+        );
 
       const validationMessage =
-        requestError.response?.data?.errors?.email?.[0];
+        requestError.response
+          ?.data?.errors
+          ?.email?.[0];
 
       const message =
         validationMessage ||
-        getApiErrorMessage(requestError, fallbackMessage);
+        getApiErrorMessage(
+          requestError,
+          fallbackMessage
+        );
 
       setError(message);
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(
+        false
+      );
     }
   }
 
   return (
     <>
       <PageMeta
-        title="Entrar — SpaceVision"
-        description="Inicia sessão no SpaceVision para guardares favoritos e gerires a tua conta."
+        title={t(
+          "login.meta.title"
+        )}
+        description={t(
+          "login.meta.description"
+        )}
       />
+
       <AuthGalaxyLayout
-        title="Explora o Universo através de dados reais."
-        description="Descobre imagens, eventos espaciais, aproximações de asteroides e observações da Terra através das APIs da NASA."
-        sectionLabel="Iniciar sessão no SpaceVision"
+        title={t(
+          "login.layout.title"
+        )}
+        description={t(
+          "login.layout.description"
+        )}
+        sectionLabel={t(
+          "login.layout.sectionLabel"
+        )}
       >
         <div className="login-auth-card">
           <div className="login-auth-card__header">
             <p className="login-auth-card__eyebrow">
-              Bem-vindo de volta
+              {t(
+                "login.card.eyebrow"
+              )}
             </p>
 
             <h1 id="login-title">
-              Entrar na tua conta
+              {t(
+                "login.card.title"
+              )}
             </h1>
 
             <p className="login-auth-card__description">
-              Acede aos teus favoritos e continua a tua
-              exploração do Universo.
+              {t(
+                "login.card.description"
+              )}
             </p>
           </div>
 
@@ -109,27 +185,38 @@ function Login() {
               className="login-auth-verified-banner"
               role="status"
             >
-              Email confirmado com sucesso. Já podes
-              iniciar sessão.
+              {t(
+                "login.verified"
+              )}
             </p>
           )}
 
           <form
             className="login-auth-form"
-            onSubmit={handleSubmit}
+            onSubmit={
+              handleSubmit
+            }
           >
             <div className="login-auth-field">
               <label htmlFor="email">
-                Email
+                {t(
+                  "login.fields.email"
+                )}
               </label>
 
               <input
                 id="email"
                 name="email"
                 type="email"
-                placeholder="o-teu-email@exemplo.com"
-                value={formData.email}
-                onChange={handleChange}
+                placeholder={t(
+                  "login.fields.emailPlaceholder"
+                )}
+                value={
+                  formData.email
+                }
+                onChange={
+                  handleChange
+                }
                 autoComplete="email"
                 required
               />
@@ -138,19 +225,28 @@ function Login() {
             <div className="login-auth-field">
               <div className="login-auth-field__heading">
                 <label htmlFor="password">
-                  Palavra-passe
+                  {t(
+                    "login.fields.password"
+                  )}
                 </label>
-
               </div>
 
               <div className="login-password-input">
                 <input
                   id="password"
                   name="password"
-                  type={showPassword ? "text" : "password"}
+                  type={
+                    showPassword
+                      ? "text"
+                      : "password"
+                  }
                   placeholder="••••••••"
-                  value={formData.password}
-                  onChange={handleChange}
+                  value={
+                    formData.password
+                  }
+                  onChange={
+                    handleChange
+                  }
                   autoComplete="current-password"
                   required
                 />
@@ -158,27 +254,47 @@ function Login() {
                 <button
                   type="button"
                   className="login-password-toggle"
-                  onClick={() => setShowPassword((current) => !current)}
+                  onClick={() =>
+                    setShowPassword(
+                      (current) =>
+                        !current
+                    )
+                  }
                   aria-label={
                     showPassword
-                      ? "Ocultar palavra-passe"
-                      : "Mostrar palavra-passe"
+                      ? t(
+                          "login.actions.hidePassword"
+                        )
+                      : t(
+                          "login.actions.showPassword"
+                        )
                   }
-                  aria-pressed={showPassword}
+                  aria-pressed={
+                    showPassword
+                  }
                 >
                   {showPassword ? (
-                    <EyeOff size={20} aria-hidden="true" />
+                    <EyeOff
+                      size={20}
+                      aria-hidden="true"
+                    />
                   ) : (
-                    <Eye size={20} aria-hidden="true" />
+                    <Eye
+                      size={20}
+                      aria-hidden="true"
+                    />
                   )}
                 </button>
               </div>
+
               <Link
-                  className="login-forgot-password"
-                  to="/forgot-password"
-                >
-                  Esqueceste-te?
-                </Link>
+                className="login-forgot-password"
+                to="/forgot-password"
+              >
+                {t(
+                  "login.actions.forgotPassword"
+                )}
+              </Link>
             </div>
 
             {error && (
@@ -193,18 +309,28 @@ function Login() {
             <button
               className="login-auth-submit"
               type="submit"
-              disabled={isSubmitting}
+              disabled={
+                isSubmitting
+              }
             >
               {isSubmitting
-                ? "A entrar..."
-                : "Entrar"}
+                ? t(
+                    "login.actions.submitting"
+                  )
+                : t(
+                    "login.actions.submit"
+                  )}
             </button>
           </form>
 
           <p className="login-auth-switch">
-            Novo no SpaceVision?{" "}
+            {t(
+              "login.register.prompt"
+            )}{" "}
             <Link to="/register">
-              Criar conta
+              {t(
+                "login.register.action"
+              )}
             </Link>
           </p>
         </div>
