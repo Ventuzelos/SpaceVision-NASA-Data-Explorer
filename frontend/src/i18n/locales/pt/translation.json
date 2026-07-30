@@ -1901,6 +1901,71 @@
             }
         }
     },
+    "accessibility": {
+        "meta": {
+            "title": "Acessibilidade — SpaceVision",
+            "description": "Consulta as medidas de acessibilidade implementadas no SpaceVision e as formas de comunicar dificuldades de utilização."
+        },
+        "breadcrumb": "Acessibilidade",
+        "hero": {
+            "eyebrow": "Inclusão digital",
+            "title": "Declaração de acessibilidade",
+            "description": "O SpaceVision está empenhado em proporcionar uma experiência digital acessível e inclusiva, permitindo que todas as pessoas possam explorar conteúdos e dados oficiais da NASA."
+        },
+        "commitment": {
+            "title": "O nosso compromisso",
+            "description": "Procuramos melhorar continuamente a acessibilidade da plataforma e seguir as recomendações das Web Content Accessibility Guidelines, WCAG 2.2, no nível AA."
+        },
+        "measures": {
+            "title": "Medidas de acessibilidade implementadas",
+            "items": [
+                "Navegação através do teclado nas principais funcionalidades.",
+                "Estrutura semântica com títulos, regiões e elementos HTML adequados.",
+                "Textos alternativos em imagens relevantes.",
+                "Etiquetas acessíveis em formulários e botões.",
+                "Indicação visual clara do elemento com foco.",
+                "Contraste de cores adequado entre texto e fundo.",
+                "Mensagens de erro apresentadas de forma textual.",
+                "Utilização de atributos ARIA quando necessário.",
+                "Interface responsiva para diferentes tamanhos de ecrã.",
+                "Conteúdo utilizável sem depender apenas da cor."
+            ]
+        },
+        "compatibility": {
+            "title": "Compatibilidade",
+            "browsers": "O SpaceVision foi desenvolvido para funcionar nas versões recentes dos principais navegadores, incluindo Google Chrome, Mozilla Firefox, Microsoft Edge e Safari.",
+            "assistiveTechnologies": "A plataforma procura ser compatível com tecnologias de apoio, como leitores de ecrã, navegação por teclado e ferramentas de ampliação."
+        },
+        "limitations": {
+            "title": "Limitações conhecidas",
+            "introduction": "Apesar dos esforços realizados, algumas áreas podem ainda não cumprir totalmente todos os requisitos de acessibilidade.",
+            "items": [
+                "Algumas visualizações tridimensionais podem ser mais difíceis de utilizar apenas através do teclado.",
+                "Determinados conteúdos fornecidos pelas APIs externas da NASA podem não incluir descrições alternativas completas.",
+                "Algumas informações científicas podem exigir melhorias adicionais na simplificação da linguagem."
+            ],
+            "conclusion": "Estas limitações serão revistas e melhoradas progressivamente."
+        },
+        "feedback": {
+            "title": "Contacto e feedback",
+            "description": "Caso encontres alguma barreira de acessibilidade ou tenhas dificuldade em utilizar uma funcionalidade, envia-nos uma mensagem através da página de contacto.",
+            "instructions": "Ao reportar um problema, indica sempre que possível:",
+            "items": [
+                "A página onde encontraste o problema;",
+                "A dificuldade identificada;",
+                "O navegador ou dispositivo utilizado;",
+                "A tecnologia de apoio utilizada, caso se aplique."
+            ]
+        },
+        "assessment": {
+            "title": "Avaliação da acessibilidade",
+            "description": "A acessibilidade do SpaceVision é avaliada através de testes automáticos, inspeção manual, navegação por teclado e revisão dos principais fluxos da aplicação."
+        },
+        "update": {
+            "title": "Atualização desta declaração",
+            "description": "Esta declaração foi atualizada em julho de 2026."
+        }
+    },
     "common": {
         "loading": "A carregar...",
         "error": "Ocorreu um erro",
