@@ -2260,6 +2260,11 @@
             "nasaProcessingError": "NASA data could not be processed at this time."
         }
     },
+    "errorState": {
+        "title": "Signal lost",
+        "message": "NASA images could not be loaded at this time.",
+        "retry": "Try again"
+    },
     "common": {
         "loading": "Loading...",
         "error": "Something went wrong",

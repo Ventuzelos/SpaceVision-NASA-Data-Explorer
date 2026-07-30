@@ -2260,6 +2260,11 @@
             "nasaProcessingError": "Não foi possível processar os dados da NASA neste momento."
         }
     },
+    "errorState": {
+        "title": "Sinal perdido",
+        "message": "Não foi possível carregar imagens da NASA neste momento.",
+        "retry": "Tentar novamente"
+    },
     "common": {
         "loading": "A carregar...",
         "error": "Ocorreu um erro",
