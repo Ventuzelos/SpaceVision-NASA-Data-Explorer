@@ -2237,6 +2237,9 @@
             "linkLabel": "View frequently asked questions"
         }
     },
+
+    "authGalaxyLayout": {   "status": "Scientific data. Exploration without limits."},
+    
     "common": {
         "loading": "Loading...",
         "error": "Something went wrong",

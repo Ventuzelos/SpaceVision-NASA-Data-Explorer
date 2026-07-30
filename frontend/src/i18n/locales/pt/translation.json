@@ -2237,6 +2237,9 @@
             "linkLabel": "Consultar perguntas frequentes"
         }
     },
+    "authGalaxyLayout": {
+        "status": "Dados científicos. Exploração sem limites."
+    },
     "common": {
         "loading": "A carregar...",
         "error": "Ocorreu um erro",
