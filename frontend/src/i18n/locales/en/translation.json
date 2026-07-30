@@ -1715,6 +1715,87 @@
             "updateFailed": "The password could not be updated."
         }
     },
+    "admin": {
+        "meta": {
+            "title": "Administration — SpaceVision",
+            "description": "Manage users, favourites and received messages through the SpaceVision administration dashboard."
+        },
+        "breadcrumb": "Administration",
+        "header": {
+            "title": "Administration dashboard",
+            "welcome": "Welcome, {{name}}!",
+            "description": "Here is an overview of the platform's activity."
+        },
+        "loading": {
+            "panel": "Loading dashboard...",
+            "data": "Loading data...",
+            "messages": "Loading messages..."
+        },
+        "errors": {
+            "dashboard": "The administration dashboard data could not be loaded.",
+            "messages": "The contact messages could not be loaded.",
+            "messageUpdate": "The message could not be updated.",
+            "messageDelete": "The message could not be deleted."
+        },
+        "stats": {
+            "title": "General statistics",
+            "registeredUsers": "Registered users",
+            "usersEndpointUnavailable": "The users endpoint is not yet available in the backend.",
+            "newLastMonth": "{{count}} new in the last month",
+            "contactMessages": "Contact messages",
+            "savedFavorites": "Saved favourites"
+        },
+        "favorites": {
+            "byCategoryTitle": "Favourites by category",
+            "topSavedTitle": "Most saved content",
+            "none": "No favourites have been saved yet.",
+            "insufficientData": "There is not enough data yet to highlight content.",
+            "progressAria": "{{category}}: {{count}} favourites",
+            "categories": {
+                "apod": "APOD",
+                "donki": "DONKI",
+                "epic": "EPIC",
+                "neows": "NeoWS",
+                "discovr": "DISCOVR"
+            }
+        },
+        "messages": {
+            "title": "Contact messages",
+            "unreadCount": "{{count}} unread",
+            "filtersAria": "Message filters",
+            "searchPlaceholder": "Search by name, email, subject or message...",
+            "searchAria": "Search messages",
+            "statusFilterAria": "Filter messages by status",
+            "filters": {
+                "all": "All",
+                "unread": "Unread",
+                "read": "Read"
+            },
+            "sort": {
+                "label": "Sort",
+                "newest": "Newest first",
+                "oldest": "Oldest first"
+            },
+            "none": "No contact messages have been sent yet.",
+            "noResults": "No messages were found using these filters.",
+            "results": "Showing {{from}}–{{to}} of {{total}} messages",
+            "status": {
+                "read": "Read",
+                "unread": "Unread"
+            },
+            "actions": {
+                "markRead": "Mark as read",
+                "delete": "Delete"
+            },
+            "deleteConfirm": "Are you sure you want to delete this message?"
+        },
+        "pagination": {
+            "aria": "Message pagination",
+            "previous": "Previous",
+            "next": "Next",
+            "pageAria": "Page {{page}}"
+        }
+    },
     "common": {
         "loading": "Loading...",
         "error": "Something went wrong",
