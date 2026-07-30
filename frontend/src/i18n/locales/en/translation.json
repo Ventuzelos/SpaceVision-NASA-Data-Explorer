@@ -1901,6 +1901,71 @@
             }
         }
     },
+    "accessibility": {
+        "meta": {
+            "title": "Accessibility — SpaceVision",
+            "description": "Read about the accessibility measures implemented in SpaceVision and how to report difficulties using the platform."
+        },
+        "breadcrumb": "Accessibility",
+        "hero": {
+            "eyebrow": "Digital inclusion",
+            "title": "Accessibility statement",
+            "description": "SpaceVision is committed to providing an accessible and inclusive digital experience, allowing everyone to explore official NASA content and data."
+        },
+        "commitment": {
+            "title": "Our commitment",
+            "description": "We aim to continuously improve the platform's accessibility and follow the Web Content Accessibility Guidelines, WCAG 2.2, at level AA."
+        },
+        "measures": {
+            "title": "Accessibility measures implemented",
+            "items": [
+                "Keyboard navigation through the main features.",
+                "Semantic structure using appropriate headings, regions and HTML elements.",
+                "Alternative text for relevant images.",
+                "Accessible labels for forms and buttons.",
+                "Clear visual indication of the focused element.",
+                "Appropriate colour contrast between text and background.",
+                "Error messages presented in text form.",
+                "Use of ARIA attributes when necessary.",
+                "Responsive interface for different screen sizes.",
+                "Content that does not rely on colour alone."
+            ]
+        },
+        "compatibility": {
+            "title": "Compatibility",
+            "browsers": "SpaceVision was developed to work with recent versions of the main browsers, including Google Chrome, Mozilla Firefox, Microsoft Edge and Safari.",
+            "assistiveTechnologies": "The platform aims to support assistive technologies such as screen readers, keyboard navigation and magnification tools."
+        },
+        "limitations": {
+            "title": "Known limitations",
+            "introduction": "Despite the work carried out, some areas may not yet fully meet every accessibility requirement.",
+            "items": [
+                "Some three-dimensional visualisations may be more difficult to use using only the keyboard.",
+                "Some content provided by NASA's external APIs may not include complete alternative descriptions.",
+                "Some scientific information may require further improvements to simplify the language."
+            ],
+            "conclusion": "These limitations will be reviewed and improved progressively."
+        },
+        "feedback": {
+            "title": "Contact and feedback",
+            "description": "Should you encounter an accessibility barrier or have difficulty using a feature, send us a message through the contact page.",
+            "instructions": "When reporting a problem, include the following whenever possible:",
+            "items": [
+                "The page where you found the problem;",
+                "The difficulty you identified;",
+                "The browser or device you used;",
+                "The assistive technology used, where applicable."
+            ]
+        },
+        "assessment": {
+            "title": "Accessibility assessment",
+            "description": "SpaceVision's accessibility is assessed through automated tests, manual inspection, keyboard navigation and reviews of the application's main user flows."
+        },
+        "update": {
+            "title": "Statement update",
+            "description": "This statement was updated in July 2026."
+        }
+    },
     "common": {
         "loading": "Loading...",
         "error": "Something went wrong",

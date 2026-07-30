@@ -1,208 +1,229 @@
+import {
+  useTranslation,
+} from "react-i18next";
+
 import Container from "../../components/common/Container/Container";
 import Breadcrumb from "../../components/common/Breadcrumb/Breadcrumb";
 import PageMeta from "../../components/common/PageMeta/PageMeta";
+
 import "./Accessibility.css";
 
 function Accessibility() {
+  const { t } =
+    useTranslation();
+
+  const accessibilityMeasures = t(
+    "accessibility.measures.items",
+    {
+      returnObjects: true,
+    }
+  );
+
+  const knownLimitations = t(
+    "accessibility.limitations.items",
+    {
+      returnObjects: true,
+    }
+  );
+
+  const feedbackDetails = t(
+    "accessibility.feedback.items",
+    {
+      returnObjects: true,
+    }
+  );
+
   return (
     <>
       <PageMeta
-        title="Acessibilidade — SpaceVision"
-        description="Consulta as medidas de acessibilidade implementadas no SpaceVision e as formas de comunicar dificuldades de utilização."
+        title={t(
+          "accessibility.meta.title"
+        )}
+        description={t(
+          "accessibility.meta.description"
+        )}
       />
+
       <main className="accessibility-page">
         <Container>
-          <Breadcrumb title="Acessibilidade" />
+          <Breadcrumb
+            title={t(
+              "accessibility.breadcrumb"
+            )}
+          />
 
           <header className="accessibility-page__header">
             <span className="accessibility-page__eyebrow">
-              Inclusão digital
+              {t(
+                "accessibility.hero.eyebrow"
+              )}
             </span>
 
-            <h1>Declaração de acessibilidade</h1>
+            <h1>
+              {t(
+                "accessibility.hero.title"
+              )}
+            </h1>
 
             <p>
-              O SpaceVision está empenhado em proporcionar
-              uma experiência digital acessível e inclusiva,
-              permitindo que todas as pessoas possam explorar
-              conteúdos e dados oficiais da NASA.
+              {t(
+                "accessibility.hero.description"
+              )}
             </p>
           </header>
 
           <section aria-labelledby="commitment-title">
             <h2 id="commitment-title">
-              O nosso compromisso
+              {t(
+                "accessibility.commitment.title"
+              )}
             </h2>
 
             <p>
-              Procuramos melhorar continuamente a
-              acessibilidade da plataforma e seguir as
-              recomendações das Web Content Accessibility
-              Guidelines, WCAG 2.2, no nível AA.
+              {t(
+                "accessibility.commitment.description"
+              )}
             </p>
           </section>
 
           <section aria-labelledby="measures-title">
             <h2 id="measures-title">
-              Medidas de acessibilidade implementadas
+              {t(
+                "accessibility.measures.title"
+              )}
             </h2>
 
             <ul>
-              <li>
-                Navegação através do teclado nas principais
-                funcionalidades.
-              </li>
-
-              <li>
-                Estrutura semântica com títulos, regiões e
-                elementos HTML adequados.
-              </li>
-
-              <li>
-                Textos alternativos em imagens relevantes.
-              </li>
-
-              <li>
-                Etiquetas acessíveis em formulários e botões.
-              </li>
-
-              <li>
-                Indicação visual clara do elemento com foco.
-              </li>
-
-              <li>
-                Contraste de cores adequado entre texto e fundo.
-              </li>
-
-              <li>
-                Mensagens de erro apresentadas de forma textual.
-              </li>
-
-              <li>
-                Utilização de atributos ARIA quando necessário.
-              </li>
-
-              <li>
-                Interface responsiva para diferentes tamanhos
-                de ecrã.
-              </li>
-
-              <li>
-                Conteúdo utilizável sem depender apenas da cor.
-              </li>
+              {Array.isArray(
+                accessibilityMeasures
+              ) &&
+                accessibilityMeasures.map(
+                  (item) => (
+                    <li key={item}>
+                      {item}
+                    </li>
+                  )
+                )}
             </ul>
           </section>
 
           <section aria-labelledby="compatibility-title">
             <h2 id="compatibility-title">
-              Compatibilidade
+              {t(
+                "accessibility.compatibility.title"
+              )}
             </h2>
 
             <p>
-              O SpaceVision foi desenvolvido para funcionar
-              nas versões recentes dos principais navegadores,
-              incluindo Google Chrome, Mozilla Firefox,
-              Microsoft Edge e Safari.
+              {t(
+                "accessibility.compatibility.browsers"
+              )}
             </p>
 
             <p>
-              A plataforma procura ser compatível com
-              tecnologias de apoio, como leitores de ecrã,
-              navegação por teclado e ferramentas de ampliação.
+              {t(
+                "accessibility.compatibility.assistiveTechnologies"
+              )}
             </p>
           </section>
 
           <section aria-labelledby="limitations-title">
             <h2 id="limitations-title">
-              Limitações conhecidas
+              {t(
+                "accessibility.limitations.title"
+              )}
             </h2>
 
             <p>
-              Apesar dos esforços realizados, algumas áreas
-              podem ainda não cumprir totalmente todos os
-              requisitos de acessibilidade.
+              {t(
+                "accessibility.limitations.introduction"
+              )}
             </p>
 
             <ul>
-              <li>
-                Algumas visualizações tridimensionais podem
-                ser mais difíceis de utilizar apenas através
-                do teclado.
-              </li>
-
-              <li>
-                Determinados conteúdos fornecidos pelas APIs
-                externas da NASA podem não incluir descrições
-                alternativas completas.
-              </li>
-
-              <li>
-                Algumas informações científicas podem exigir
-                melhorias adicionais na simplificação da
-                linguagem.
-              </li>
+              {Array.isArray(
+                knownLimitations
+              ) &&
+                knownLimitations.map(
+                  (item) => (
+                    <li key={item}>
+                      {item}
+                    </li>
+                  )
+                )}
             </ul>
 
             <p>
-              Estas limitações serão revistas e melhoradas
-              progressivamente.
+              {t(
+                "accessibility.limitations.conclusion"
+              )}
             </p>
           </section>
 
           <section aria-labelledby="feedback-title">
             <h2 id="feedback-title">
-              Contacto e feedback
+              {t(
+                "accessibility.feedback.title"
+              )}
             </h2>
 
             <p>
-              Caso encontres alguma barreira de acessibilidade
-              ou tenhas dificuldade em utilizar uma
-              funcionalidade, envia-nos uma mensagem através
-              da página de contacto.
+              {t(
+                "accessibility.feedback.description"
+              )}
             </p>
 
             <p>
-              Ao reportar um problema, indica sempre que
-              possível:
+              {t(
+                "accessibility.feedback.instructions"
+              )}
             </p>
 
             <ul>
-              <li>A página onde encontraste o problema;</li>
-              <li>A dificuldade identificada;</li>
-              <li>O navegador ou dispositivo utilizado;</li>
-              <li>
-                A tecnologia de apoio utilizada, caso se
-                aplique.
-              </li>
+              {Array.isArray(
+                feedbackDetails
+              ) &&
+                feedbackDetails.map(
+                  (item) => (
+                    <li key={item}>
+                      {item}
+                    </li>
+                  )
+                )}
             </ul>
           </section>
 
           <section aria-labelledby="assessment-title">
             <h2 id="assessment-title">
-              Avaliação da acessibilidade
+              {t(
+                "accessibility.assessment.title"
+              )}
             </h2>
 
             <p>
-              A acessibilidade do SpaceVision é avaliada
-              através de testes automáticos, inspeção manual,
-              navegação por teclado e revisão dos principais
-              fluxos da aplicação.
+              {t(
+                "accessibility.assessment.description"
+              )}
             </p>
           </section>
 
           <section aria-labelledby="update-title">
             <h2 id="update-title">
-              Atualização desta declaração
+              {t(
+                "accessibility.update.title"
+              )}
             </h2>
 
             <p>
-              Esta declaração foi atualizada em julho de 2026.
+              {t(
+                "accessibility.update.description"
+              )}
             </p>
           </section>
         </Container>
       </main>
-      </>
-      );
+    </>
+  );
 }
 
-      export default Accessibility;
+export default Accessibility;
