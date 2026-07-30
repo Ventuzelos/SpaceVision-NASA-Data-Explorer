@@ -35,4 +35,14 @@ i18n
     },
   });
 
+  function syncHtmlLang(language) {
+  document.documentElement.lang =
+    language === "en" ? "en" : "pt-PT";
+}
+
+i18n.on("languageChanged", syncHtmlLang);
+
+
+syncHtmlLang(i18n.resolvedLanguage);
+
 export default i18n;

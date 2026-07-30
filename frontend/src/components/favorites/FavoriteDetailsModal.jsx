@@ -926,7 +926,7 @@ function FavoriteDetailsModal({
                     data.url
                   }
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                 >
                   {t(
                     "favoriteModal.apod.openVideo"

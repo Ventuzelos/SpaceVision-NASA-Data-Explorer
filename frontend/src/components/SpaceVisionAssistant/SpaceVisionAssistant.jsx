@@ -362,7 +362,7 @@ function SpaceVisionAssistant() {
                                                                     }
                                                                     className="spacevision-assistant__link spacevision-assistant__link--secondary"
                                                                     target="_blank"
-                                                                    rel="noreferrer"
+                                                                    rel="noopener noreferrer"
                                                                 >
                                                                     {
                                                                         message.externalLinkLabel
