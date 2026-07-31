@@ -6,6 +6,9 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
+ENV FRONTEND_URL=https://space-vision-nine.vercel.app
+ENV CORS_ALLOWED_ORIGINS=https://space-vision-nine.vercel.app
+
 COPY composer.json composer.lock ./
 
 RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader --no-scripts
@@ -17,4 +20,5 @@ RUN composer dump-autoload --optimize && php artisan package:discover --ansi && 
 EXPOSE 10000
 
 CMD ["sh", "-c", "php artisan optimize && php artisan serve --host=0.0.0.0 --port=${PORT:-10000}"]
+
 
