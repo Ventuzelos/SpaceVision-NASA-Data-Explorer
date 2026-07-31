@@ -1,4 +1,8 @@
-import { useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   Trans,
   useTranslation,
@@ -23,6 +27,11 @@ import {
   quizRanks,
   quizFacts,
 } from "../../data/quizQuestions";
+
+import {
+  getAiQuizQuestions,
+  localizeQuizType,
+} from "../../services/quizService";
 
 import "./Quiz.css";
 
@@ -157,13 +166,57 @@ function getOptionLabel(
 }
 
 function Quiz() {
-  const { t } =
+  const { t, i18n } =
     useTranslation();
+
+  const isEnglish =
+    i18n.resolvedLanguage?.startsWith(
+      "en"
+    ) ?? false;
 
   useSmoothScroll();
 
   const [phase, setPhase] =
     useState("idle");
+
+  const [
+    questions,
+    setQuestions,
+  ] = useState(quizQuestions);
+
+  const phaseRef = useRef(phase);
+
+  useEffect(() => {
+    phaseRef.current = phase;
+  }, [phase]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    getAiQuizQuestions()
+      .then((aiQuestions) => {
+        if (
+          isMounted &&
+          phaseRef.current ===
+            "idle" &&
+          aiQuestions.length > 0
+        ) {
+          setQuestions(
+            aiQuestions
+          );
+        }
+      })
+      .catch((error) => {
+        console.error(
+          "Error loading AI quiz questions:",
+          error
+        );
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const [
     questionIndex,
@@ -186,10 +239,10 @@ function Quiz() {
   );
 
   const totalQuestions =
-    quizQuestions.length;
+    questions.length;
 
   const question =
-    quizQuestions[
+    questions[
       questionIndex
     ];
 
@@ -266,32 +319,58 @@ function Quiz() {
     setPickedIndex(null);
   }
 
-  const questionType = t(
-    `quiz.content.questions.${question.id}.type`,
-    {
-      defaultValue:
-        question.type,
-    }
-  );
+  const isAiQuestion =
+    question.source === "ai";
 
-  const questionText = t(
-    `quiz.content.questions.${question.id}.text`,
-    {
-      defaultValue:
-        question.text,
-    }
-  );
+  const displayOptions =
+    isAiQuestion
+      ? (isEnglish
+          ? question.options_en
+          : question.options_pt)
+      : question.options;
 
-  const questionFact = t(
-    `quiz.content.questions.${question.id}.fact`,
-    {
-      defaultValue:
-        question.fact,
-    }
-  );
+  const questionType =
+    isAiQuestion
+      ? localizeQuizType(
+          question.type,
+          isEnglish
+        )
+      : t(
+          `quiz.content.questions.${question.id}.type`,
+          {
+            defaultValue:
+              question.type,
+          }
+        );
+
+  const questionText =
+    isAiQuestion
+      ? (isEnglish
+          ? question.text_en
+          : question.text_pt)
+      : t(
+          `quiz.content.questions.${question.id}.text`,
+          {
+            defaultValue:
+              question.text,
+          }
+        );
+
+  const questionFact =
+    isAiQuestion
+      ? (isEnglish
+          ? question.fact_en
+          : question.fact_pt)
+      : t(
+          `quiz.content.questions.${question.id}.fact`,
+          {
+            defaultValue:
+              question.fact,
+          }
+        );
 
   const correctOption =
-    question.options[
+    displayOptions[
       question.correctIndex
     ];
 
@@ -547,7 +626,7 @@ function Quiz() {
                       initial="hidden"
                       animate="visible"
                     >
-                      {question.options.map(
+                      {displayOptions.map(
                         (
                           option,
                           index
