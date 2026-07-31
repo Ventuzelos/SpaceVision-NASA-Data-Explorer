@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ContactMessageController;
 use App\Http\Controllers\Api\FavoriteController;
 use App\Http\Controllers\Api\NasaController;
 use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\QuizController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['throttle:auth', 'throttle:auth-per-account'])->group(function () {
@@ -121,6 +122,15 @@ Route::prefix('nasa')
         Route::get(
             '/donki/{type}',
             [NasaController::class, 'donki']
+        );
+    });
+
+Route::prefix('quiz')
+    ->middleware('throttle:30,1')
+    ->group(function () {
+        Route::get(
+            '/questions',
+            [QuizController::class, 'index']
         );
     });
 
