@@ -35,10 +35,15 @@ class QuizQuestionGeneratorService
 
         $model = (string) config('services.gemini.model');
 
-        $response = Http::timeout(60)
+        // A chave vai no header, nunca na query string: o Guzzle inclui a URL
+        // completa nas mensagens de exceção, que acabam nos logs.
+        $response = Http::withHeaders(['x-goog-api-key' => $apiKey])
+            // Um lote de 15 perguntas bilingues demora bem mais que um pedido
+            // normal; é um comando semanal, vale a pena esperar.
+            ->timeout(180)
             ->retry(2, 500)
             ->post(
-                "{$baseUrl}/models/{$model}:generateContent?key={$apiKey}",
+                "{$baseUrl}/models/{$model}:generateContent",
                 [
                     'contents' => [
                         [

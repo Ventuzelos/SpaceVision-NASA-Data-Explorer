@@ -12,7 +12,9 @@ O Quiz Espacial (`/Quiz`) tinha 8 perguntas fixas, escritas à mão em [quizQues
 
 Se a chamada à API falhar ou a pool estiver vazia, o Quiz usa sempre o array estático original como *fallback* — nunca fica partido por causa da IA.
 
-**Fornecedor:** Google Gemini API (`gemini-flash-latest`), por ter um tier gratuito suficiente para este volume (~15-20 perguntas/semana) e suportar saída JSON estruturada (`responseSchema`).
+**Fornecedor:** Google Gemini API (`gemini-3.6-flash`), por ter um tier gratuito suficiente para este volume (~15-20 perguntas/semana) e suportar saída JSON estruturada (`responseSchema`).
+
+O modelo está **fixo numa versão concreta, não no alias `gemini-flash-latest`**. O alias aponta para um modelo *thinking* que chegou a demorar 73s a responder "ola" e devolveu 503 (`high demand`) em três tentativas seguidas — um lote semanal falhava sem razão aparente. `gemini-3.6-flash` responde em ~4s e gera as 15 perguntas em ~33s.
 
 ---
 
@@ -23,8 +25,10 @@ Chave da API e modelo em `backend/.env` (nunca commitado — está no `.gitignor
 ```env
 GEMINI_API_KEY=...
 GEMINI_BASE_URL=https://generativelanguage.googleapis.com/v1beta
-GEMINI_MODEL=gemini-flash-latest
+GEMINI_MODEL=gemini-3.6-flash
 ```
+
+A chave é enviada no header `x-goog-api-key`, **nunca em `?key=` na URL**: o Guzzle inclui a URL completa nas mensagens de exceção, e essas mensagens vão parar ao `laravel.log` — bastava uma falha da Gemini para a chave ficar escrita em claro nos logs.
 
 Bloco correspondente em [config/services.php](../backend/config/services.php), seguindo o mesmo padrão já usado para `nasa` e `libretranslate`:
 
@@ -32,7 +36,7 @@ Bloco correspondente em [config/services.php](../backend/config/services.php), s
 'gemini' => [
     'api_key' => env('GEMINI_API_KEY'),
     'base_url' => env('GEMINI_BASE_URL', 'https://generativelanguage.googleapis.com/v1beta'),
-    'model' => env('GEMINI_MODEL', 'gemini-flash-latest'),
+    'model' => env('GEMINI_MODEL', 'gemini-3.6-flash'),
 ],
 ```
 
