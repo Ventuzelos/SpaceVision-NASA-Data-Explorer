@@ -4,6 +4,10 @@
 !.env.example
 
 # Node
+# Lock orfao na raiz: nao existe package.json aqui, so em frontend/ e backend/.
+# Ancorado com "/" para nao apanhar frontend/package-lock.json, que e versionado
+# e usado pelo cache do CI.
+/package-lock.json
 node_modules/
 dist/
 coverage/
