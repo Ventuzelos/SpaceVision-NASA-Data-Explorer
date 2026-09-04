@@ -14,7 +14,7 @@ class GenerateQuizQuestions extends Command
      *
      * @var string
      */
-    protected $signature = 'quiz:generate-questions {--count=15} {--prune=100}';
+    protected $signature = 'quiz:generate-questions {--count=15} {--prune=100} {--if-empty}';
 
     /**
      * The console command description.
@@ -25,6 +25,12 @@ class GenerateQuizQuestions extends Command
 
     public function handle(QuizQuestionGeneratorService $generator): int
     {
+        if ($this->option('if-empty') && QuizQuestion::query()->exists()) {
+            $this->info('A pool já tem perguntas; nada a gerar.');
+
+            return self::SUCCESS;
+        }
+
         $count = (int) $this->option('count');
         $keepAtMost = (int) $this->option('prune');
 

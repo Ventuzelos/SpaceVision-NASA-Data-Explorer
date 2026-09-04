@@ -23,6 +23,8 @@ EXPOSE 10000
 
 CMD ["sh", "-c", "php artisan migrate --force || echo '[BOOT] MIGRACAO FALHOU'; \
                   php artisan optimize || true; \
-                  php artisan serve --host=0.0.0.0 --port=${PORT:-10000}"]
+                  php artisan quiz:generate-questions --if-empty || true; \
+                  { php artisan schedule:work & }; \
+                  exec php artisan serve --host=0.0.0.0 --port=${PORT:-10000}"]
 
 
